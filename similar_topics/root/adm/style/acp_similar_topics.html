@@ -1,0 +1,81 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_PST_TITLE}</h1>
+<!-- IF S_PST_VERSION --><p>{S_PST_VERSION}</p><!-- ENDIF -->
+
+<form id="select_victim" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_PST_LEGEND1}</legend>
+	<dl>
+		<dt><label>{L_PST_ENABLE}:</label></dt>
+		<dd>
+			<input type="radio" class="radio" name="pst_enable" value="1"<!-- IF S_PST_ENABLE --> checked="checked"<!-- ENDIF --> /><label> {L_YES}</label>
+			<input type="radio" class="radio" name="pst_enable" value="0"<!-- IF not S_PST_ENABLE --> checked="checked"<!-- ENDIF --> /><label> {L_NO}</label>
+		</dd>
+	</dl>
+	</fieldset>
+
+	<fieldset>
+		<legend>{L_PST_LEGEND2}</legend>
+	<dl>
+		<dt><label>{L_PST_LIST}:</label><br />
+		<span>{L_PST_LIST_EXPLAIN}</span></dt>
+		<dd>
+			<input name="pst_list" type="text" size="5" maxlength="2" value="{PST_LIST}" />
+		</dd>
+	</dl>
+	<dl>
+		<dt><label>{L_PST_YEAR}:</label><br />
+		<span>{L_PST_YEAR_EXPLAIN}</span></dt>
+		<dd>
+			<input name="pst_year" type="text" size="5" maxlength="2" value="{PST_YEAR}" />&nbsp;{L_PST_YEARS}
+		</dd>
+	</dl>
+	</fieldset>
+
+<!-- IF .forums -->
+	<fieldset>
+			<legend>{L_PST_LEGEND3}</legend>
+		<div style="max-height:500px; overflow:auto;">
+		<table cellspacing="1">
+			<col class="row1" /><col class="row2" /><col class="row2" />
+		<thead>
+		<tr>
+			<th>{L_FORUMS}</th>
+			<th style="text-align: center;">{L_PST_NOSHOW_LIST}</th>
+			<th style="text-align: center;">{L_PST_IGNORE_SEARCH}</th>
+		</tr>
+		</thead>
+		<tbody>
+		<!-- BEGIN forums -->
+		<tr>
+			<td>
+				<strong><a href="{forums.U_FORUM}">{forums.FORUM_NAME}</a></strong>
+			</td>
+			<td style="width:25%; text-align: center;" title="{L_PST_NOSHOW_TITLE} {forums.FORUM_NAME}">
+			<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{forums.FORUM_ID}" {forums.CHECKED_NOSHOW_FORUM} />
+			</td>
+			<td style="width:25%; text-align: center;" title="{L_PST_IGNORE_TITLE} {forums.FORUM_NAME}">
+			<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{forums.FORUM_ID}" {forums.CHECKED_IGNORE_FORUM} />
+			</td>
+		</tr>
+		<!-- END forums -->
+		</tbody>
+		</table>
+		</div>
+	</fieldset>
+<!-- ENDIF -->
+
+	<fieldset>
+		<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</p>
+	{S_FORM_TOKEN}
+	</fieldset>
+
+</form>
+
+<!-- INCLUDE overall_footer.html -->
