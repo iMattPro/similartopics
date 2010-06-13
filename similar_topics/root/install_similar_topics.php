@@ -3,7 +3,7 @@
 *
 * @author VSE (Matt Friedman) maf675@gmail.com
 * @package umil
-* @version $Id install_similar_topics.php 1 2010-06-07 00:47:11GMT VSE $
+* @version $Id install_similar_topics.php 3 2010-06-11 23:16:11GMT VSE $
 * @copyright (c) 2010 VSE
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -78,6 +78,14 @@ $versions = array(
 		'custom'	=> 'make_fulltext',
 	),
 
+	// Version 1.0.1
+	'1.0.1'	=> array(
+		// Add the new similar_topic_forums column to the forums table
+		'table_column_add' => array(
+			array(FORUMS_TABLE, 'similar_topic_forums', array('VCHAR_UNI', '')),
+		),
+
+	),
 
 );
 

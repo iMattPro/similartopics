@@ -2,8 +2,8 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: similar_topics.php, 2 2010/6/10 17:27:42 VSE Exp $
-* @copyright (c) Matt Friedman, Tobias Schäfer, Xabi, Stokerpiller
+* @version $Id: similar_topics.php, 4 2010/6/11 21:54:42 VSE Exp $
+* @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -37,11 +37,21 @@ function similar_topics(&$topic_data, $forum_id)
 	
 	if ($config['similar_topics'] && $config['similar_topics_list'])
 	{
-		$similar_topics_ignore = '';
+		// First lets set an empty var for unrestricted forum searching
+		$similar_topics_forum_id = '';
+
+		// Now lets check for any forums that are not allowed to be searched
 		if (!empty($config['similar_topics_ignore']))
 		{
-			$similar_topics_ignore = ' AND f.forum_id NOT IN (' . $config['similar_topics_ignore'] . ')';
+			$similar_topics_forum_id = ' AND f.forum_id NOT IN (' . $config['similar_topics_ignore'] . ')';
 		}
+
+		// Now lets see if the current forum is set to search in specific forums only (this will over-ride the previous check)
+		if (!empty($topic_data['similar_topic_forums']))
+		{
+			$similar_topics_forum_id = ' AND f.forum_id IN (' . $topic_data['similar_topic_forums'] . ')';
+		}
+
 		$timespan = time() - (60 * 60 * 24 * 365 * $config['similar_topics_year']);
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
@@ -61,7 +71,7 @@ function similar_topics(&$topic_data, $forum_id)
 		
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_data['topic_title']) . "') >= 0.5
 				AND t.topic_status <> " . ITEM_MOVED . '
-				AND t.topic_time > ' . (int) $timespan . $similar_topics_ignore . '
+				AND t.topic_time > ' . (int) $timespan . $similar_topics_forum_id . '
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
 		
 			'GROUP_BY'	=> 't.topic_id',

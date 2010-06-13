@@ -12,6 +12,13 @@
 		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation in your forum.]]></description>
 		<author-group>
 			<author>
+				<username><![CDATA[VSE]]></username>
+				<homepage><![CDATA[http://vse.heliohost.org]]></homepage>
+				<contributions-group>
+					<contributions status="current" position="Added ACP, Updated SQL Code &amp; Styles"/>
+				</contributions-group>
+			</author>
+			<author>
 				<username><![CDATA[tas2580]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/similar_topics]]></homepage>
 				<contributions-group>
@@ -22,29 +29,46 @@
 				<username><![CDATA[Xabi]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1492515]]></homepage>
 				<contributions-group>
-					<contributions status="past" position="Updated SQL Code"/>
+					<contributions status="past" position="Updated SQL Code for Precision"/>
 				</contributions-group>
 			</author>
 			<author>
 				<username><![CDATA[stokerpiller]]></username>
 				<homepage><![CDATA[http://www.phpbb3bbcodes.com]]></homepage>
 				<contributions-group>
-					<contributions status="past" position="Updated SQL Code &amp; Style"/>
-				</contributions-group>
-			</author>
-			<author>
-				<username><![CDATA[VSE]]></username>
-				<contributions-group>
-					<contributions status="current" position="Added ACP, Updated SQL Code &amp; Style"/>
+					<contributions status="past" position="Inspired some styling"/>
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.0.0</mod-version>
+		<mod-version>1.0.1</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
 			<target-version>3.0.7-PL1</target-version>
 		</installation>
+
+
+		<history>
+			<entry>
+				<date>2010-06-12</date>
+				<rev-version>1.0.1</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Added 'Advanced' Forum settings to allow Admins to customize where each forum can get its Similar Topics from.]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-06-07</date>
+				<rev-version>1.0.0</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[First working release version]]></change>
+					<change><![CDATA[Built Prosilver and Subsilver2 styling layouts]]></change>
+					<change><![CDATA[Added an ACP settings page]]></change>
+					<change><![CDATA[Cleaned up all code and packaged in MODX format]]></change>
+				</changelog>
+			</entry>
+		</history>
+
+
 		<link-group>
 			<link type="template" href="contrib/subsilver2.xml" lang="en">subsilver2</link>
 		</link-group>

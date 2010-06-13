@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: info_acp_similar_topics.php 5 6/11/10 12:07 AM VSE $
+* @version $Id: info_acp_similar_topics.php 6 6/12/10 12:09 AM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -34,7 +34,12 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'Do not display similar topics in',
 	'PST_IGNORE_SEARCH' => 'Do Not Search In',
 	'PST_IGNORE_TITLE'	=> 'Do not search for similar topics in',
+	'PST_ADVANCED'		=> 'Advanced',
+	'PST_ADVANCED_TITLE'=> 'Click to set up advanced similar topic settings for',
+	'PST_ADVANCED_EXP'	=> 'Here you can select specific forums to pull similar topics from. Only similar topics found in the forums you select here will be displayed in <b>%s</b>.<br /><br />Do not select any of these options if you want similar topics from all searchable forums to be displayed in this forum.',
+	'PST_DESELECT_ALL'	=> 'Deselect all',
 	'PST_SAVED'			=> 'Similar Topics settings updated',
+	'PST_FORUM_INFO'	=> '’Do Not Display In’: Will disable the display of similar topics in the selected forums.<br />’Do Not Search In’: Will not search the selected forums for similar topics.',
 
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Adding FULLTEXT index: topic_title',
