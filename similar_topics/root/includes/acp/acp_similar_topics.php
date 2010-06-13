@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: acp_similar_topics.php 5 6/12/10 12:35 AM VSE $
+* @version $Id: acp_similar_topics.php 6 6/13/10 11:00 AM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -137,6 +137,7 @@ class acp_similar_topics
 						'FORUM_ID'				=> $row['forum_id'],
 						'CHECKED_IGNORE_FORUM'	=> (in_array($row['forum_id'], $ignore_forums)) ? 'checked="checked"' : '',
 						'CHECKED_NOSHOW_FORUM'	=> (in_array($row['forum_id'], $noshow_forums)) ? 'checked="checked"' : '',
+						'S_IS_ADVANCED'			=> $row['similar_topic_forums'] ? true : false,
 						'U_ADVANCED'			=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=similar_topics&amp;action=advanced&amp;f=' . $row['forum_id']),
 						'U_FORUM'				=> "{$phpbb_root_path}viewforum.$phpEx?f=" . $row['forum_id'],
 					));
@@ -156,7 +157,7 @@ class acp_similar_topics
 		
 		$forum_list = array();
 
-		$sql = 'SELECT forum_id, forum_name
+		$sql = 'SELECT forum_id, forum_name, similar_topic_forums
 			FROM ' . FORUMS_TABLE . '
 			WHERE forum_type = ' .	FORUM_POST . '
 			ORDER BY left_id ASC';
