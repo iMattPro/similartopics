@@ -10,6 +10,7 @@
 		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your threads, based on finding the most relevant Topic Titles.
 
 		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation in your forum.]]></description>
+		<author-notes lang="en"><![CDATA[Note: Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>

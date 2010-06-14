@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: acp_similar_topics.php 6 6/13/10 11:00 AM VSE $
+* @version $Id: acp_similar_topics.php 7 6/14/10 12:47 AM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -55,7 +55,7 @@ class acp_similar_topics
 					$similar_forums_string = implode(',', $similar_forums);
 
 					$sql = 'UPDATE ' . FORUMS_TABLE . "
-						SET similar_topic_forums = '" .  $db->sql_escape($similar_forums_string) . "'
+						SET similar_topic_forums = '" . $db->sql_escape($similar_forums_string) . "'
 						WHERE forum_id = $forum_id";
 					$db->sql_query($sql);
 					
