@@ -41,15 +41,20 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.0.1</mod-version>
+		<mod-version>1.0.2</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
 			<target-version>3.0.7-PL1</target-version>
 		</installation>
-
-
 		<history>
+			<entry>
+				<date>2010-06-14</date>
+				<rev-version>1.0.2</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Added ability to define Search Period by days, weeks, months or years. Idea thanks to Christian 2.0]]></change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-06-12</date>
 				<rev-version>1.0.1</rev-version>
@@ -68,8 +73,6 @@
 				</changelog>
 			</entry>
 		</history>
-
-
 		<link-group>
 			<link type="template" href="contrib/subsilver2.xml" lang="en">subsilver2</link>
 		</link-group>
