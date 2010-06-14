@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: similar_topics.php, 4 2010/6/11 21:54:42 VSE Exp $
+* @version $Id: similar_topics.php, 5 2010/6/14 14:12:42 VSE Exp $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -52,7 +52,7 @@ function similar_topics(&$topic_data, $forum_id)
 			$similar_topics_forum_id = ' AND f.forum_id IN (' . $topic_data['similar_topic_forums'] . ')';
 		}
 
-		$timespan = time() - (60 * 60 * 24 * 365 * $config['similar_topics_year']);
+		$timespan = time() - (60 * 60 * 24 * $config['similar_topics_period']);
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
 							t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 
