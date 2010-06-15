@@ -1,8 +1,8 @@
 <?php
 /**
 *
-* @package - Precise Similar Topics II
-* @version $Id: info_acp_similar_topics.php 8 6/14/10 2:14 PM VSE $
+* @package language
+* @version $Id: info_acp_similar_topics.php 9 VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
