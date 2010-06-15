@@ -92,8 +92,11 @@
 			<edit>
 				<find><![CDATA[page_header($user->lang['VIEW_TOPIC'] . ' - ' . $topic_data['topic_title'], true, $forum_id);]]></find>
 				<action type="after-add"><![CDATA[// BEGIN Precise Similar Topics
-include($phpbb_root_path . 'includes/similar_topics.' . $phpEx);
-similar_topics($topic_data, $forum_id);
+if ($config['similar_topics'])
+{
+	include($phpbb_root_path . 'includes/similar_topics.' . $phpEx);
+	similar_topics($topic_data, $forum_id);
+}
 // END Precise Similar Topics]]></action>
 			</edit>
 		</open>
