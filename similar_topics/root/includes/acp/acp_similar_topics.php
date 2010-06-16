@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 8 VSE $
+* @version $Id: acp_similar_topics.php 9 6/15/10 10:59 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -103,11 +103,8 @@ class acp_similar_topics
 					$pst_enable = request_var('pst_enable', 0);
 					set_config('similar_topics', $pst_enable);
 
-					$pst_list = request_var('pst_list', 0);
-					set_config('similar_topics_list', $pst_list);
-
-					$pst_time = request_var('pst_time', 0);
-					set_config('similar_topics_time', $pst_time);
+					$pst_limit = request_var('pst_limit', 0);
+					set_config('similar_topics_limit', $pst_limit);
 
 					$pst_time_type = request_var('pst_time_type', '');
 					set_config('similar_topics_type', $pst_time_type);
@@ -118,30 +115,8 @@ class acp_similar_topics
 					$pst_noshow_forum = request_var('mark_noshow_forum', array(0), true);
 					set_config('similar_topics_hide', (sizeof($pst_noshow_forum)) ? implode(',', $pst_noshow_forum) : '');
 
-					// Calculate the search time period now and store in config
-					switch ($pst_time_type)
-					{
-						case 'y':
-							$pst_time_period = ($pst_time * 365);
-						break;
-						
-						case 'm':
-							$pst_time_period = round(($pst_time * 30.4));
-						break;
-
-						case 'w':
-							$pst_time_period = ($pst_time * 7);
-						break;
-
-						case 'd':
-							$pst_time_period = $pst_time;
-						break;
-						
-						default:
-							$pst_time_period = 365;
-						break;
-					}
-					set_config('similar_topics_period', $pst_time_period);
+					$pst_time = request_var('pst_time', 0);
+					set_config('similar_topics_time', $this->set_days($pst_time, $pst_time_type));
 
 					trigger_error($user->lang['PST_SAVED'] . adm_back_link($this->u_action));
 				}
@@ -157,8 +132,8 @@ class acp_similar_topics
 
 				$template->assign_vars(array(
 					'S_PST_ENABLE'		=> isset($config['similar_topics']) ? $config['similar_topics'] : false,
-					'PST_LIST'			=> isset($config['similar_topics_list']) ? $config['similar_topics_list'] : '',
-					'PST_TIME'			=> isset($config['similar_topics_time']) ? $config['similar_topics_time'] : '',
+					'PST_LIMIT'			=> isset($config['similar_topics_limit']) ? $config['similar_topics_limit'] : '',
+					'PST_TIME'			=> $this->get_days($config['similar_topics_time'], $config['similar_topics_type']),
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : false,
 					'U_ACTION'			=> $this->u_action,
@@ -205,5 +180,68 @@ class acp_similar_topics
 
 		return $forum_list;
 	}
+
+	/**
+	* Calculate the $days based on user input
+	*
+	* @param int $time user entered value
+	* @param string $type years, months, weeks, days
+	*/
+	function set_days($time, $type = 'y')
+	{
+		switch ($type)
+		{
+			case 'y':
+				$days = ($time * 365);
+			break;
+
+			case 'm':
+				$days = round(($time * 30.4));
+			break;
+
+			case 'w':
+				$days = ($time * 7);
+			break;
+
+			case 'd':
+				$days = $time;
+			break;
+		}
+		return $days;
+	}
+
+	/**
+	* Get the correct $time value for the form
+	*
+	* @param int $days user entered value
+	* @param string $type years, months, weeks, days
+	*/
+	function get_days($days, $type)
+	{
+		switch ($type)
+		{
+			case 'y':
+				$time = ($days / 365);
+			break;
+
+			case 'm':
+				$time = round(($days / 30.4));
+			break;
+
+			case 'w':
+				$time = ($days / 7);
+			break;
+
+			case 'd':
+				$time = $days;
+			break;
+
+			default:
+				$time = '';
+			break;
+		}
+		return $time;
+	}
+
 }
 ?>

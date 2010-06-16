@@ -2,7 +2,7 @@
 /**
 *
 * @package language
-* @version $Id: info_acp_similar_topics.php 9 VSE $
+* @version $Id: info_acp_similar_topics.php 10 6/15/10 10:22 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -24,8 +24,8 @@ $lang = array_merge($lang, array(
 	'PST_LEGEND1'		=> 'General Settings',
 	'PST_ENABLE'		=> 'Enable Similar Topics',
 	'PST_LEGEND2'		=> 'Load Settings',
-	'PST_LIST'			=> 'Number of Similar Topics to display',
-	'PST_LIST_EXPLAIN'	=> 'Here you can define how many similar topics to display. The default is 5 topics.',	
+	'PST_LIMIT'			=> 'Number of Similar Topics to display',
+	'PST_LIMIT_EXPLAIN'	=> 'Here you can define how many similar topics to display. The default is 5 topics.',
 	'PST_TIME'			=> 'Search Period',
 	'PST_TIME_EXPLAIN'	=> 'This option allows you to configure the Similar Topics search period. For example, if set to “5 days” the system will only show similar topics from within the last 5 days. The default is 1 year.',	
 	'PST_YEARS'			=> 'Years',

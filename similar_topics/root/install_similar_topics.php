@@ -3,7 +3,7 @@
 *
 * @author VSE (Matt Friedman) maf675@gmail.com
 * @package umil
-* @version $Id install_similar_topics.php 4 2010-06-14 14:18:11GMT VSE $
+* @version $Id install_similar_topics.php 5 6/15/10 8:00 PM VSE $
 * @copyright (c) 2010 VSE
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -51,15 +51,21 @@ $language_file = 'mods/info_acp_similar_topics';
 * The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
 */
 $versions = array(
-	// Version 1.0.0
-	'1.0.0'	=> array(
+	// Version 1.0.3
+	'1.0.3'	=> array(
 		// Set default configuration variables
 		'config_add' => array(
 			array('similar_topics', '0'),
-			array('similar_topics_list', '5'),
-			array('similar_topics_year', '1'),
+			array('similar_topics_limit', '5'),
 			array('similar_topics_hide', ''),
 			array('similar_topics_ignore', ''),
+			array('similar_topics_type', 'y'),
+			array('similar_topics_time', '365'),
+		),
+
+		// Add the new similar_topic_forums column to the forums table
+		'table_column_add' => array(
+			array(FORUMS_TABLE, 'similar_topic_forums', array('VCHAR_UNI', '')),
 		),
 
 		// Alright, now lets add some modules to the ACP
@@ -78,29 +84,6 @@ $versions = array(
 		'custom'	=> 'make_fulltext',
 	),
 
-	// Version 1.0.1
-	'1.0.1'	=> array(
-		// Add the new similar_topic_forums column to the forums table
-		'table_column_add' => array(
-			array(FORUMS_TABLE, 'similar_topic_forums', array('VCHAR_UNI', '')),
-		),
-
-	),
-
-	// Version 1.0.2
-	'1.0.2'	=> array(
-		// Remove deprecated config var
-		'config_remove' => array(
-			array('similar_topics_year'),
-		),
-		// Set new default configuration variables
-		'config_add' => array(
-			array('similar_topics_time', '1'),
-			array('similar_topics_type', 'y'),
-			array('similar_topics_period', '365'),
-		),
-
-	),
 
 );
 
@@ -108,7 +91,7 @@ $versions = array(
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 
 /*
-* Here is our custom function that will be called for version 1.0.0.
+* Here is our custom function that will be called for version 1.0.3.
 *
 * @param string $action The action (install|update|uninstall) will be sent through this.
 * @param string $version The version this is being run for will be sent through this.

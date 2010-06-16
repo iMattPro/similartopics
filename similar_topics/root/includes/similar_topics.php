@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: similar_topics.php, 5 2010/6/14 14:12:42 VSE Exp $
+* @version $Id: similar_topics.php, 7 6/15/10 10:28 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -35,24 +35,9 @@ function similar_topics(&$topic_data, $forum_id)
 		}
 	}
 	
-	if ($config['similar_topics'] && $config['similar_topics_list'])
+	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		// First lets set an empty var for unrestricted forum searching
-		$similar_topics_forum_id = '';
-
-		// Now lets check for any forums that are not allowed to be searched
-		if (!empty($config['similar_topics_ignore']))
-		{
-			$similar_topics_forum_id = ' AND f.forum_id NOT IN (' . $config['similar_topics_ignore'] . ')';
-		}
-
-		// Now lets see if the current forum is set to search in specific forums only (this will over-ride the previous check)
-		if (!empty($topic_data['similar_topic_forums']))
-		{
-			$similar_topics_forum_id = ' AND f.forum_id IN (' . $topic_data['similar_topic_forums'] . ')';
-		}
-
-		$timespan = time() - (60 * 60 * 24 * $config['similar_topics_period']);
+		$timespan = time() - (60 * 60 * 24 * $config['similar_topics_time']);
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
 							t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 
@@ -71,16 +56,28 @@ function similar_topics(&$topic_data, $forum_id)
 		
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_data['topic_title']) . "') >= 0.5
 				AND t.topic_status <> " . ITEM_MOVED . '
-				AND t.topic_time > ' . (int) $timespan . 
-				$similar_topics_forum_id . '
+				AND t.topic_time > ' . (int) $timespan . '
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
 		
 			'GROUP_BY'	=> 't.topic_id',
 		
 			'ORDER_BY'	=> 'score desc',
 		);
+
+		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
+		if (!empty($topic_data['similar_topic_forums']))
+		{
+			$sql_array['WHERE'] .= ' AND f.forum_id IN (' . $topic_data['similar_topic_forums'] . ')';
+		}
+		// Otherwise, lets see what forums are not allowed to be searched, and ignore those
+		else if (!empty($config['similar_topics_ignore']))
+		{
+			$sql_array['WHERE'] .= ' AND f.forum_id NOT IN (' . $config['similar_topics_ignore'] . ')';
+		}
+
 		$sql = $db->sql_build_query('SELECT', $sql_array);
-		if ($result = $db->sql_query_limit($sql, $config['similar_topics_list']))
+
+		if ($result = $db->sql_query_limit($sql, $config['similar_topics_limit']))
 		{
 			while($similar = $db->sql_fetchrow($result))
 			{
