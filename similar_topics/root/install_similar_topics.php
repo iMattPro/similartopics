@@ -51,8 +51,8 @@ $language_file = 'mods/info_acp_similar_topics';
 * The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
 */
 $versions = array(
-	// Version 1.0.3
-	'1.0.3'	=> array(
+	// Version 1.1.0
+	'1.1.0'	=> array(
 		// Set default configuration variables
 		'config_add' => array(
 			array('similar_topics', '0'),
@@ -91,7 +91,7 @@ $versions = array(
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 
 /*
-* Here is our custom function that will be called for version 1.0.3.
+* Here is our custom function that will be called for version 1.1.0.
 *
 * @param string $action The action (install|update|uninstall) will be sent through this.
 * @param string $version The version this is being run for will be sent through this.

@@ -41,13 +41,22 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.0.2</mod-version>
+		<mod-version>1.1.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
 			<target-version>3.0.7-PL1</target-version>
 		</installation>
 		<history>
+			<entry>
+				<date>2010-06-15</date>
+				<rev-version>1.1.0</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Minor version update due to rewrite of the variables we store in the database.]]></change>
+					<change><![CDATA[Prior versions should be uninstalled and this version should be installed fresh.]]></change>
+					<change><![CDATA[Re-organized and optimized the code and the database variables so things under the hood make more sense.]]></change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-06-14</date>
 				<rev-version>1.0.2</rev-version>
