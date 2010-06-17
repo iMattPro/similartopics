@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: similar_topics.php, 7 6/15/10 10:28 PM VSE $
+* @version $Id: similar_topics.php, 8 6/16/10 5:14 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -25,7 +25,7 @@ if (!defined('IN_PHPBB'))
 
 function similar_topics(&$topic_data, $forum_id)
 {
-	global $auth, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
+	global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
 
 	if (!empty($config['similar_topics_hide']))
 	{
@@ -77,9 +77,20 @@ function similar_topics(&$topic_data, $forum_id)
 
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 
-		if ($result = $db->sql_query_limit($sql, $config['similar_topics_limit']))
+		// Lets do some caching. If a cache for this topic exists, use it, otherwise run sql and cache the results for 30 minutes
+		/* To Do - Enable switch for this in config? Make cache time a config? */
+		if (!($similar_topics = $cache->get('_similar_topics_' . $topic_data['topic_id'])))
 		{
-			while($similar = $db->sql_fetchrow($result))
+			$sql = $db->sql_build_query('SELECT', $sql_array);
+			$result = $db->sql_query_limit($sql, $config['similar_topics_limit']);
+			$similar_topics = $db->sql_fetchrowset($result);
+			$db->sql_freeresult($result);
+			$cache->put('_similar_topics_' . $topic_data['topic_id'], $similar_topics, 1800);
+		}
+
+		if (sizeof($similar_topics))
+		{
+			foreach ($similar_topics as $similar)
 			{
 				if ($auth->acl_get('f_read', $similar['forum_id']))
 				{
