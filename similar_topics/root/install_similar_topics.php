@@ -3,7 +3,7 @@
 *
 * @author VSE (Matt Friedman) maf675@gmail.com
 * @package umil
-* @version $Id install_similar_topics.php 6 6/17/10 12:09 AM VSE $
+* @version $Id install_similar_topics.php 7 6/17/10 12:21 AM VSE $
 * @copyright (c) 2010 VSE
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -97,6 +97,11 @@ $versions = array(
 			array('ROLE_USER_STANDARD', 'u_similar_topics'),
     		array('REGISTERED', 'u_similar_topics', 'group'),
     		array('REGISTERED_COPPA', 'u_similar_topics', 'group'),
+		),
+
+		// Lets change our similar_topics_time to 1 year timestamp
+		'config_update'	=> array(
+			array('similar_topics_time', '31536000'),
 		),
 
 	),

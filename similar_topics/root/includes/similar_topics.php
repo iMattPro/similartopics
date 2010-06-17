@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: similar_topics.php, 8 6/16/10 5:14 PM VSE $
+* @version $Id: similar_topics.php, 9 6/17/10 12:21 AM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -37,7 +37,7 @@ function similar_topics(&$topic_data, $forum_id)
 	
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		$timespan = time() - (60 * 60 * 24 * $config['similar_topics_time']);
+		$timespan = time() - $config['similar_topics_time'];
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
 							t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 

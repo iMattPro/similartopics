@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 9 6/15/10 10:59 PM VSE $
+* @version $Id: acp_similar_topics.php 10 6/17/10 12:22 AM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -116,7 +116,7 @@ class acp_similar_topics
 					set_config('similar_topics_hide', (sizeof($pst_noshow_forum)) ? implode(',', $pst_noshow_forum) : '');
 
 					$pst_time = request_var('pst_time', 0);
-					set_config('similar_topics_time', $this->set_days($pst_time, $pst_time_type));
+					set_config('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
 					trigger_error($user->lang['PST_SAVED'] . adm_back_link($this->u_action));
 				}
@@ -133,7 +133,7 @@ class acp_similar_topics
 				$template->assign_vars(array(
 					'S_PST_ENABLE'		=> isset($config['similar_topics']) ? $config['similar_topics'] : false,
 					'PST_LIMIT'			=> isset($config['similar_topics_limit']) ? $config['similar_topics_limit'] : '',
-					'PST_TIME'			=> $this->get_days($config['similar_topics_time'], $config['similar_topics_type']),
+					'PST_TIME'			=> $this->get_pst_time($config['similar_topics_time'], $config['similar_topics_type']),
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : false,
 					'U_ACTION'			=> $this->u_action,
@@ -182,65 +182,64 @@ class acp_similar_topics
 	}
 
 	/**
-	* Calculate the $days based on user input
+	* Calculate the $pst_time based on user input
 	*
-	* @param int $time user entered value
+	* @param int $length user entered value
 	* @param string $type years, months, weeks, days
 	*/
-	function set_days($time, $type = 'y')
+	function set_pst_time($length, $type = 'y')
 	{
 		switch ($type)
 		{
 			case 'y':
-				$days = ($time * 365);
+				return ($length * 365 * 24 * 60 * 60);
 			break;
 
 			case 'm':
-				$days = round(($time * 30.4));
+				return (round($length * 30.4) * 24 * 60 * 60);
 			break;
 
 			case 'w':
-				$days = ($time * 7);
+				return ($length * 7 * 24 * 60 * 60);
 			break;
 
 			case 'd':
-				$days = $time;
+				return ($length * 24 * 60 * 60);
 			break;
 		}
-		return $days;
 	}
 
 	/**
-	* Get the correct $time value for the form
+	* Get the correct time $length value for the form
 	*
-	* @param int $days user entered value
+	* @param int $time as a timestamp
 	* @param string $type years, months, weeks, days
 	*/
-	function get_days($days, $type)
+	function get_pst_time($time, $type)
 	{
 		switch ($type)
 		{
 			case 'y':
-				$time = ($days / 365);
+				$length = ($time / 365 / 24 / 60 / 60);
 			break;
 
 			case 'm':
-				$time = round(($days / 30.4));
+				$length = (round($time / 30.4 / 24 / 60 / 60));
 			break;
 
 			case 'w':
-				$time = ($days / 7);
+				$length = ($time / 7 / 24 / 60 / 60);
 			break;
 
 			case 'd':
-				$time = $days;
+				$length = ($time / 24 / 60 / 60);
 			break;
 
 			default:
-				$time = '';
+				$length = '';
 			break;
 		}
-		return $time;
+		return (int) $length;
 	}
 
 }
