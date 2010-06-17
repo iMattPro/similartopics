@@ -3,7 +3,7 @@
 *
 * @author VSE (Matt Friedman) maf675@gmail.com
 * @package umil
-* @version $Id install_similar_topics.php 5 6/15/10 8:00 PM VSE $
+* @version $Id install_similar_topics.php 6 6/17/10 12:09 AM VSE $
 * @copyright (c) 2010 VSE
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -82,6 +82,23 @@ $versions = array(
 		
 		// Custom function to update SQL topic_title table to FULLTEXT
 		'custom'	=> 'make_fulltext',
+	),
+
+	// Version 1.1.1
+	'1.1.1'	=> array(
+		// Add permission settings
+		'permission_add' => array(
+			array('u_similar_topics', true),
+		),
+
+		// Set up some permission defaults
+		'permission_set' => array(
+			array('ROLE_USER_FULL', 'u_similar_topics'),
+			array('ROLE_USER_STANDARD', 'u_similar_topics'),
+    		array('REGISTERED', 'u_similar_topics', 'group'),
+    		array('REGISTERED_COPPA', 'u_similar_topics', 'group'),
+		),
+
 	),
 
 

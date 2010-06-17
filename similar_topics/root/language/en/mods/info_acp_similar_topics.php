@@ -2,7 +2,7 @@
 /**
 *
 * @package language
-* @version $Id: info_acp_similar_topics.php 10 6/15/10 10:22 PM VSE $
+* @version $Id: info_acp_similar_topics.php 11 6/17/10 12:09 AM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -47,6 +47,11 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Adding FULLTEXT index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Dropped FULLTEXT index: topic_title',
+));
+
+// For permissions
+$lang = array_merge($lang, array(
+	'acl_u_similar_topics'    => array('lang' => 'Can view similar topics', 'cat' => 'misc'),
 ));
 
 ?>
