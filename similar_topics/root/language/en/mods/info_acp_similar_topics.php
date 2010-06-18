@@ -2,7 +2,7 @@
 /**
 *
 * @package language
-* @version $Id: info_acp_similar_topics.php 11 6/17/10 12:09 AM VSE $
+* @version $Id: info_acp_similar_topics.php 12 6/18/10 3:28 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -43,6 +43,7 @@ $lang = array_merge($lang, array(
 	'PST_DESELECT_ALL'	=> 'Deselect all',
 	'PST_SAVED'			=> 'Similar Topics settings updated',
 	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will disable the display of similar topics in the selected forums.<br />“Do Not Search In” : Will ignore the selected forums when searching for similar topics.',
+	'PST_WARNING'		=> 'Similar Topics will not work with your forum. Similar Topics requires a MySQL 4 or MySQL 5 database.',
 
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Adding FULLTEXT index: topic_title',

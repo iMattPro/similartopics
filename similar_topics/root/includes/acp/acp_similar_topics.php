@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 10 6/17/10 12:22 AM VSE $
+* @version $Id: acp_similar_topics.php 11 6/18/10 3:29 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -157,8 +157,14 @@ class acp_similar_topics
 				}
 
 			break;
-
 		}
+
+		// Warn if database layer is not MySQL 4+
+		if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
+		{
+			$template->assign_var('S_PST_WARNING', true);
+		}
+
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: similar_topics.php, 9 6/17/10 12:21 AM VSE $
+* @version $Id: similar_topics.php, 10 6/18/10 3:28 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -17,16 +17,23 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
-* This function will load all similar topics based on matching topic titles
+* Get similar topics based on matching topic titles
+* Note: currently requires MySQL due to use of MATCH and AGAINST
 * 
-* @param int $forum_id
-* @param array $topic_data
+* @param array 	$topic_data		The current topic data for use in searching
+* @param int 	$forum_id		The current forum to check
 */
-
 function similar_topics(&$topic_data, $forum_id)
 {
 	global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
 
+	// Bail out if not using required MySQL to prevent any problems
+	if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
+	{
+		return;
+	}
+
+	// Bail out if the current forum is set to DO NOT DISPLAY similar topics
 	if (!empty($config['similar_topics_hide']))
 	{
 		if (in_array($forum_id, explode(',', $config['similar_topics_hide'])))
@@ -34,34 +41,36 @@ function similar_topics(&$topic_data, $forum_id)
 			return;
 		}
 	}
-	
+
+	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		$timespan = time() - $config['similar_topics_time'];
+		$time_limit = time() - $config['similar_topics_time'];
+
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
-							t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 
-							MATCH (t.topic_title) AGAINST (\'' . $db->sql_escape($topic_data['topic_title']) . '\') as score',
+				t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 
+				MATCH (t.topic_title) AGAINST (\'' . $db->sql_escape($topic_data['topic_title']) . '\') as score',
 		
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
 			),
-		
+
 			'LEFT_JOIN'	=> array(
 				array(
 					'FROM'	=>	array(FORUMS_TABLE	=> 'f'),
 					'ON'	=> 'f.forum_id = t.forum_id'
 				)
 			),
-		
+
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_data['topic_title']) . "') >= 0.5
 				AND t.topic_status <> " . ITEM_MOVED . '
-				AND t.topic_time > ' . (int) $timespan . '
+				AND t.topic_time > ' . (int) $time_limit . '
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
-		
+
 			'GROUP_BY'	=> 't.topic_id',
-		
-			'ORDER_BY'	=> 'score desc',
+
+			'ORDER_BY'	=> 'score DESC',
 		);
 
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
@@ -75,17 +84,15 @@ function similar_topics(&$topic_data, $forum_id)
 			$sql_array['WHERE'] .= ' AND f.forum_id NOT IN (' . $config['similar_topics_ignore'] . ')';
 		}
 
-		$sql = $db->sql_build_query('SELECT', $sql_array);
-
 		// Lets do some caching. If a cache for this topic exists, use it, otherwise run sql and cache the results for 30 minutes
 		/* To Do - Enable switch for this in config? Make cache time a config? */
-		if (!($similar_topics = $cache->get('_similar_topics_' . $topic_data['topic_id'])))
+		if (!($similar_topics = $cache->get('_similar_topics_' . md5($topic_data['topic_title']))))
 		{
 			$sql = $db->sql_build_query('SELECT', $sql_array);
 			$result = $db->sql_query_limit($sql, $config['similar_topics_limit']);
 			$similar_topics = $db->sql_fetchrowset($result);
 			$db->sql_freeresult($result);
-			$cache->put('_similar_topics_' . $topic_data['topic_id'], $similar_topics, 1800);
+			$cache->put('_similar_topics_' . md5($topic_data['topic_title']), $similar_topics, 1800);
 		}
 
 		if (sizeof($similar_topics))

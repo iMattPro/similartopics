@@ -5,6 +5,13 @@
 <h1>{L_PST_TITLE}</h1>
 <!-- IF S_PST_VERSION --><p>{S_PST_VERSION}</p><!-- ENDIF -->
 
+<!-- IF S_PST_WARNING -->
+	<div class="errorbox">
+		<h3>{L_WARNING}</h3>
+		<p>{L_PST_WARNING}</p>
+	</div>
+<!-- ENDIF -->
+
 <form id="select_victim" method="post" action="{U_ACTION}">
 
 <!-- IF S_ADVANCED_SETTINGS -->
