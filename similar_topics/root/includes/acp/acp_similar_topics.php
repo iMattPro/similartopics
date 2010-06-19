@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 12 6/18/10 5:18 PM VSE $
+* @version $Id: acp_similar_topics.php 13 6/18/10 9:07 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -58,6 +58,8 @@ class acp_similar_topics
 						SET similar_topic_forums = '" . $db->sql_escape($similar_forums_string) . "'
 						WHERE forum_id = $forum_id";
 					$db->sql_query($sql);
+
+					add_log('admin', 'PST_LOG_MSG');
 
 					trigger_error($user->lang['PST_SAVED'] . adm_back_link($this->u_action));
 				}
@@ -117,6 +119,8 @@ class acp_similar_topics
 
 					$pst_time = request_var('pst_time', 0);
 					set_config('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
+
+					add_log('admin', 'PST_LOG_MSG');
 
 					trigger_error($user->lang['PST_SAVED'] . adm_back_link($this->u_action));
 				}
