@@ -41,13 +41,22 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.1.0</mod-version>
+		<mod-version>1.1.1</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
 			<target-version>3.0.7-PL1</target-version>
 		</installation>
 		<history>
+			<entry>
+				<date>2010-XX-XX</date>
+				<rev-version>1.1.1</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Add cache option to the ACP to store search results in the cache system.]]></change>
+					<change><![CDATA[Added user permission to allow/disallow users and/or groups permission to view similar topics.]]></change>
+					<change><![CDATA[Additional code tweaks and optimizations.]]></change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-06-15</date>
 				<rev-version>1.1.0</rev-version>
@@ -128,7 +137,8 @@ $lang = array_merge($lang, array(
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[1. Run yourforum/install_similar_topics.php
-2. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.]]></diy-instructions>
+		<diy-instructions lang="en"><![CDATA[1. Go to yourforum/install_similar_topics.php
+2. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
+3. Go to the ACP -> Permissions, and set up Group permissions to your liking.]]></diy-instructions>
 	</action-group>
 </mod>
