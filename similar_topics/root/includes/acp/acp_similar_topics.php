@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 11 6/18/10 3:29 PM VSE $
+* @version $Id: acp_similar_topics.php 12 6/18/10 5:18 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -104,7 +104,7 @@ class acp_similar_topics
 					set_config('similar_topics', $pst_enable);
 
 					$pst_limit = request_var('pst_limit', 0);
-					set_config('similar_topics_limit', $pst_limit);
+					set_config('similar_topics_limit', abs($pst_limit));
 
 					$pst_time_type = request_var('pst_time_type', '');
 					set_config('similar_topics_type', $pst_time_type);
@@ -195,6 +195,7 @@ class acp_similar_topics
 	*/
 	function set_pst_time($length, $type = 'y')
 	{
+		$length = abs($length);
 		switch ($type)
 		{
 			case 'y':
