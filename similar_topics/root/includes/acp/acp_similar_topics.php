@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 13 6/18/10 9:07 PM VSE $
+* @version $Id: acp_similar_topics.php 14 6/18/10 10:47 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -111,6 +111,9 @@ class acp_similar_topics
 					$pst_time_type = request_var('pst_time_type', '');
 					set_config('similar_topics_type', $pst_time_type);
 
+					$pst_cache = request_var('pst_cache', 0);
+					set_config('similar_topics_cache', abs($pst_cache));
+
 					$pst_ignore_forum = request_var('mark_ignore_forum', array(0), true);
 					set_config('similar_topics_ignore', (sizeof($pst_ignore_forum)) ? implode(',', $pst_ignore_forum) : '');
 
@@ -119,6 +122,10 @@ class acp_similar_topics
 
 					$pst_time = request_var('pst_time', 0);
 					set_config('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
+
+					// Need to clear cache if using data-caching method
+				//	$cache->purge();
+				//	add_log('admin', 'LOG_PURGE_CACHE');
 
 					add_log('admin', 'PST_LOG_MSG');
 
@@ -138,6 +145,7 @@ class acp_similar_topics
 					'S_PST_ENABLE'		=> isset($config['similar_topics']) ? $config['similar_topics'] : false,
 					'PST_LIMIT'			=> isset($config['similar_topics_limit']) ? $config['similar_topics_limit'] : '',
 					'PST_TIME'			=> $this->get_pst_time($config['similar_topics_time'], $config['similar_topics_type']),
+					'PST_CACHE'			=> isset($config['similar_topics_cache']) ? $config['similar_topics_cache'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : false,
 					'U_ACTION'			=> $this->u_action,

@@ -62,18 +62,16 @@
 	<fieldset>
 		<legend>{L_PST_LEGEND2}</legend>
 	<dl>
-		<dt><label>{L_PST_LIMIT}:</label><br />
-		<span>{L_PST_LIMIT_EXPLAIN}</span></dt>
-		<dd>
-			<input name="pst_limit" type="text" size="5" maxlength="2" value="{PST_LIMIT}" />
-		</dd>
+		<dt><label>{L_PST_LIMIT}:</label><br /><span>{L_PST_LIMIT_EXPLAIN}</span></dt>
+		<dd><input name="pst_limit" type="text" size="4" maxlength="2" value="{PST_LIMIT}" /></dd>
 	</dl>
 	<dl>
-		<dt><label>{L_PST_TIME}:</label><br />
-		<span>{L_PST_TIME_EXPLAIN}</span></dt>
-		<dd>
-			<input name="pst_time" type="text" size="5" maxlength="2" value="{PST_TIME}" /> <select name="pst_time_type">{S_TIME_OPTIONS}</select>
-		</dd>
+		<dt><label>{L_PST_TIME}:</label><br /><span>{L_PST_TIME_EXPLAIN}</span></dt>
+		<dd><input name="pst_time" type="text" size="4" maxlength="2" value="{PST_TIME}" /> <select name="pst_time_type">{S_TIME_OPTIONS}</select></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_PST_CACHE}:</label><br /><span>{L_PST_CACHE_EXPLAIN}</span></dt>
+		<dd><input name="pst_cache" type="text" size="4" maxlength="6" value="{PST_CACHE}" /> {L_SECONDS}</dd>
 	</dl>
 	</fieldset>
 

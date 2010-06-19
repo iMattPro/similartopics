@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: similar_topics.php, 10 6/18/10 3:28 PM VSE $
+* @version $Id: similar_topics.php, 11 6/18/10 10:47 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -18,14 +18,14 @@ if (!defined('IN_PHPBB'))
 
 /**
 * Get similar topics based on matching topic titles
-* Note: currently requires MySQL due to use of MATCH and AGAINST
+* Note: currently requires MySQL due to use of MATCH and AGAINST and UNIX_TIMESTAMP
 * 
 * @param array 	$topic_data		The current topic data for use in searching
 * @param int 	$forum_id		The current forum to check
 */
 function similar_topics(&$topic_data, $forum_id)
 {
-	global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
+	global $auth, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
 
 	// Bail out if not using required MySQL to prevent any problems
 	if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
@@ -45,8 +45,6 @@ function similar_topics(&$topic_data, $forum_id)
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		$time_limit = time() - $config['similar_topics_time'];
-
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
 				t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 
@@ -65,7 +63,7 @@ function similar_topics(&$topic_data, $forum_id)
 
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_data['topic_title']) . "') >= 0.5
 				AND t.topic_status <> " . ITEM_MOVED . '
-				AND t.topic_time > ' . (int) $time_limit . '
+				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $config['similar_topics_time'] . ')
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
 
 			'GROUP_BY'	=> 't.topic_id',
@@ -84,16 +82,10 @@ function similar_topics(&$topic_data, $forum_id)
 			$sql_array['WHERE'] .= ' AND f.forum_id NOT IN (' . $config['similar_topics_ignore'] . ')';
 		}
 
-		// Lets do some caching. If a cache for this topic exists, use it, otherwise run sql and cache the results for 30 minutes
-		/* To Do - Enable switch for this in config? Make cache time a config? */
-		if (!($similar_topics = $cache->get('_similar_topics_' . md5($topic_data['topic_title']))))
-		{
-			$sql = $db->sql_build_query('SELECT', $sql_array);
-			$result = $db->sql_query_limit($sql, $config['similar_topics_limit']);
-			$similar_topics = $db->sql_fetchrowset($result);
-			$db->sql_freeresult($result);
-			$cache->put('_similar_topics_' . md5($topic_data['topic_title']), $similar_topics, 1800);
-		}
+		$sql = $db->sql_build_query('SELECT', $sql_array);
+		$result = $db->sql_query_limit($sql, $config['similar_topics_limit'], 0, $config['similar_topics_cache']);
+		$similar_topics = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
 
 		if (sizeof($similar_topics))
 		{

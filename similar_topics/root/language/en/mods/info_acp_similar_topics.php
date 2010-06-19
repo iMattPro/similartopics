@@ -2,7 +2,7 @@
 /**
 *
 * @package language
-* @version $Id: info_acp_similar_topics.php 13 6/18/10 9:07 PM VSE $
+* @version $Id: info_acp_similar_topics.php 14 6/18/10 10:47 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -32,6 +32,8 @@ $lang = array_merge($lang, array(
 	'PST_MONTHS'		=> 'Months',
 	'PST_WEEKS'			=> 'Weeks',
 	'PST_DAYS'			=> 'Days',
+	'PST_CACHE'			=> 'Similar Topics cache length',
+	'PST_CACHE_EXPLAIN'	=> 'Cached similar topics will expire after this time, in seconds. Set to 0 if you want to disable the similar topics cache.',
 	'PST_LEGEND3'		=> 'Forum Settings',
 	'PST_NOSHOW_LIST' 	=> 'Do Not Display In',
 	'PST_NOSHOW_TITLE'	=> 'Do not display similar topics in',
