@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 14 6/18/10 10:47 PM VSE $
+* @version $Id: acp_similar_topics.php 15 6/19/10 7:54 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -122,10 +122,6 @@ class acp_similar_topics
 
 					$pst_time = request_var('pst_time', 0);
 					set_config('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
-
-					// Need to clear cache if using data-caching method
-				//	$cache->purge();
-				//	add_log('admin', 'LOG_PURGE_CACHE');
 
 					add_log('admin', 'PST_LOG_MSG');
 
