@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 15 6/19/10 7:54 PM VSE $
+* @version $Id: acp_similar_topics.php 16 6/19/10 11:08 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -235,19 +235,19 @@ class acp_similar_topics
 		switch ($type)
 		{
 			case 'y':
-				$length = ($time / 365 / 24 / 60 / 60);
+				$length = $time / (365 * 24 * 60 * 60);
 			break;
 
 			case 'm':
-				$length = (round($time / 30.4 / 24 / 60 / 60));
+				$length = round($time / (30.4 * 24 * 60 * 60));
 			break;
 
 			case 'w':
-				$length = ($time / 7 / 24 / 60 / 60);
+				$length = $time / (7 * 24 * 60 * 60);
 			break;
 
 			case 'd':
-				$length = ($time / 24 / 60 / 60);
+				$length = $time / (24 * 60 * 60);
 			break;
 
 			default:
