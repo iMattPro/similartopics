@@ -3,20 +3,13 @@ Hi! I'm VSE from the phpBB community.
 Welcome to my Github repository for my MODs for phpBB3.
 
 *
-* Precise Similar Topics II v1.1.0
+* Precise Similar Topics II v1.1.1
 * ========================================================================
 *
 * Description:
 * This MOD will display a list of similar/related topics at the bottom of
 * your threads, based on finding the most relevant Topic Titles.
 *
-* ************************************************************************
-* IMPORTANT NOTICE:
-* IF YOU ARE GOING TO UPDATE FROM A VERSION PRIOR TO v1.1.0:
-* YOU MUST FULLY UNINSTALL THE OLD VERSION - UNDO ANY OF THE FILE EDITS
-* AND RUN THE "UNINSTALL" OPTION IN THE INSTALL_SIMILAR_TOPICS.PHP FILE.
-* THEN YOU CAN INSTALL THE NEW VERSION 1.1.0
-* ************************************************************************
 *
 * To-do list:
 * Just keep testing ;)
