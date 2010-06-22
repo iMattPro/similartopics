@@ -2,7 +2,7 @@
 /**
 *
 * @package - Precise Similar Topics II
-* @version $Id: similar_topics.php, 12 6/21/10 1:35 PM VSE $
+* @version $Id: similar_topics.php, 13 6/21/10 10:55 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -138,19 +138,14 @@ function filter_stop_words($text)
 	if (!empty($word_list))
 	{
 		global $phpbb_root_path, $user, $phpEx;
-		// add stop words to $user session to allow reuse
-		if (empty($user->stop_words))
+
+		$words = array();	// $words is our array of stop_words
+		if (file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
 		{
-			$words = array();
-			if (file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
-			{
-				// include the file containing ignore words
-				include("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx");
-			}
-			$user->stop_words = &$words;
-			unset($words);
+			// include the file containing ignore words
+			include("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx");
 		}
-		$word_list = array_diff($word_list, $user->stop_words);
+		$word_list = array_diff($word_list, $words);
 	}
 
 	// Rebuild our cleaned up topic title
