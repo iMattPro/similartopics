@@ -6,8 +6,8 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.0 to v1.1.1]]></title>
-		<description lang="en"><![CDATA[Update instructions for v1.1.0 to v1.1.1]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.0 to v1.1.2]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.1.0 to v1.1.2]]></description>
 		<author-notes lang="en"><![CDATA[Note: Similar Topics adds a new ACP option to enable the caching of search results. It is turned off by default.]]></author-notes>
 		<author-group>
 			<author>
@@ -18,7 +18,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.1.1</mod-version>
+		<mod-version>1.1.2</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
@@ -33,19 +33,35 @@
 			<file from="root/adm/style/acp_similar_topics.html" to="adm/style/acp_similar_topics.html"/>
 			<file from="root/includes/acp/acp_similar_topics.php" to="includes/acp/acp_similar_topics.php"/>
 			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
-			<file from="root/includes/similar_topics.php" to="includes/similar_topics.php"/>
+			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
+		<delete>
+			<file name="includes/similar_topics.php"/>
+		</delete>
 		<open src="viewtopic.php">
 			<edit>
-				<find><![CDATA[if ($config['similar_topics'])]]></find>
-				<action type="replace-with"><![CDATA[if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))]]></action>
+				<find><![CDATA[// BEGIN Precise Similar Topics
+if ($config['similar_topics'])
+{
+	include($phpbb_root_path . 'includes/similar_topics.' . $phpEx);
+	similar_topics($topic_data, $forum_id);
+}
+// END Precise Similar Topics]]></find>
+				<action type="replace-with"><![CDATA[// BEGIN Precise Similar Topics
+if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))
+{
+	include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
+	similar_topics($topic_data, $forum_id);
+}
+// END Precise Similar Topics]]></action>
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[1. Run yourforum/install_similar_topics.php
-2. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.]]></diy-instructions>
+2. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
+3. Go to the ACP -> Permissions, and set up Group permissions to your liking.]]></diy-instructions>
 	</action-group>
 </mod>

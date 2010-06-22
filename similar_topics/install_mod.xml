@@ -41,7 +41,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.1.1</mod-version>
+		<mod-version>1.1.2</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
@@ -49,10 +49,19 @@
 		</installation>
 		<history>
 			<entry>
+				<date>2010-06-22</date>
+				<rev-version>1.1.2</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Added multi-lingual support for stop-word filtering for boards using non-English language packs]]></change>
+					<change><![CDATA[Additional code tweaks and optimizations.]]></change>
+					<change><![CDATA[Properly renamed file: similar_topics.php to functions_similar_topics.php.]]></change>
+				</changelog>
+			</entry>
+			<entry>
 				<date>2010-06-19</date>
 				<rev-version>1.1.1</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[Add cache option to the ACP to store search results in the cache system.]]></change>
+					<change><![CDATA[Add cache option to the ACP to store search results in the cache system. Idea thanks to knmt]]></change>
 					<change><![CDATA[Added user permission to allow/disallow users and/or groups permission to view similar topics.]]></change>
 					<change><![CDATA[Additional code tweaks and optimizations.]]></change>
 				</changelog>
@@ -77,7 +86,7 @@
 				<date>2010-06-12</date>
 				<rev-version>1.0.1</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[Added 'Advanced' Forum settings to allow Admins to customize where each forum can get its Similar Topics from.]]></change>
+					<change><![CDATA[Added 'Advanced' Forum settings to allow Admins to customize where each forum can get its Similar Topics from. Idea thanks to DoYouSpeakWak]]></change>
 				</changelog>
 			</entry>
 			<entry>
@@ -93,7 +102,8 @@
 		</history>
 		<link-group>
 			<link type="template" href="contrib/subsilver2.xml" lang="en">subsilver2</link>
-			<link type="contrib" href="contrib/update_110-111.xml" lang="en">Update: From 1.1.0 to 1.1.1</link>
+			<link type="contrib" href="contrib/update_111-112.xml" lang="en">Update: From 1.1.1 to 1.1.2</link>
+			<link type="contrib" href="contrib/update_110-112.xml" lang="en">Update: From 1.1.0 to 1.1.2</link>
 		</link-group>
 	</header>
 	<action-group>
@@ -101,7 +111,7 @@
 			<file from="root/adm/style/acp_similar_topics.html" to="adm/style/acp_similar_topics.html"/>
 			<file from="root/includes/acp/acp_similar_topics.php" to="includes/acp/acp_similar_topics.php"/>
 			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
-			<file from="root/includes/similar_topics.php" to="includes/similar_topics.php"/>
+			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
 			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
@@ -113,7 +123,7 @@
 				<action type="after-add"><![CDATA[// BEGIN Precise Similar Topics
 if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))
 {
-	include($phpbb_root_path . 'includes/similar_topics.' . $phpEx);
+	include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
 	similar_topics($topic_data, $forum_id);
 }
 // END Precise Similar Topics]]></action>
