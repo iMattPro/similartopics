@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 14 6/22/10 3:45 PM VSE $
+* @version $Id: functions_similar_topics.php, 15 6/22/10 8:46 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -119,8 +119,7 @@ function similar_topics(&$topic_data, $forum_id)
 function filter_stop_words($text)
 {
 	$word_list = array();
-//	$text = trim(preg_replace('/[ \t]+/', ' ', $text));
-	$text = trim(mb_ereg_replace('[\s]+', ' ', $text)); // strip extra whitespaces or tabs, multibyte safe for foreign languages
+	$text = trim(preg_replace('/[ \t]+/', ' ', $text)); // strip extra whitespaces or tabs
 	if (!empty($text))
 	{
 		// Put all unique words in the title into an array, and remove uppercases
