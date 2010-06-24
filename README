@@ -8,7 +8,7 @@ Welcome to my Github repository for my MODs for phpBB3.
 *
 * Description:
 * This MOD will display a list of similar/related topics at the bottom of
-* your threads, based on finding the most relevant Topic Titles.
+* your threads, based on finding the most relevant matching Topic Titles.
 *
 *
 * To-do list:

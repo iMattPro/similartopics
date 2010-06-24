@@ -7,7 +7,7 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[Precise Similar Topics II]]></title>
-		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your threads, based on finding the most relevant Topic Titles.
+		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your threads, based on finding the most relevant matching Topic Titles.
 
 		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation in your forum.]]></description>
 		<author-notes lang="en"><![CDATA[Note: Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
@@ -33,13 +33,6 @@
 					<contributions status="past" position="Updated SQL Code for Precision"/>
 				</contributions-group>
 			</author>
-			<author>
-				<username><![CDATA[stokerpiller]]></username>
-				<homepage><![CDATA[http://www.phpbb3bbcodes.com]]></homepage>
-				<contributions-group>
-					<contributions status="past" position="Inspired some styling"/>
-				</contributions-group>
-			</author>
 		</author-group>
 		<mod-version>1.1.2</mod-version>
 		<installation>
@@ -53,7 +46,7 @@
 				<rev-version>1.1.2</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[Added multi-lingual support for stop-word filtering for boards using non-English language packs]]></change>
-					<change><![CDATA[Additional code tweaks and optimizations.]]></change>
+					<change><![CDATA[Additional code tweaks and optimizations, especially to improve query time on large boards.]]></change>
 					<change><![CDATA[Properly renamed file: similar_topics.php to functions_similar_topics.php.]]></change>
 				</changelog>
 			</entry>
@@ -94,7 +87,7 @@
 				<rev-version>1.0.0</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[First working release version]]></change>
-					<change><![CDATA[Built Prosilver and Subsilver2 styling layouts]]></change>
+					<change><![CDATA[Built Prosilver and Subsilver2 styling layouts (based on search results, but also inspired by stokerpiller's version at phpbb3bbcodes.com)]]></change>
 					<change><![CDATA[Added an ACP settings page]]></change>
 					<change><![CDATA[Cleaned up all code and packaged in MODX format]]></change>
 				</changelog>

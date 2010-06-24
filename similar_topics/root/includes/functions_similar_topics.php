@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 15 6/22/10 8:46 PM VSE $
+* @version $Id: functions_similar_topics.php, 16 6/23/10 11:20 AM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -42,7 +42,7 @@ function similar_topics(&$topic_data, $forum_id)
 		}
 	}
 
-	// Use phpBB's stop-words if non-English language is detected
+	// Use phpBB's stop-words if non-English user language is detected
 	$topic_title = ($user->lang_name != 'en' && $user->lang_name != 'en_us') ? filter_stop_words($topic_data['topic_title']) : $topic_data['topic_title'];
 
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
@@ -109,17 +109,17 @@ function similar_topics(&$topic_data, $forum_id)
 }
 
 /**
-* MySQL full-text has built-in English stop words. Use phpBB's stop words for non-english languages
+* MySQL full-text has built-in English stop words. Use phpBB's ignore words for non-English languages
 * This will remove uppercases, handle utf8 characters, and ignore words of 2 characters or less
 * Based on a function by phpbb-seo.com
 * 
 * @param  string $text			The topic title
-* @return string $text			The topic titled with any stop-words removed
+* @return string $text			The topic titled with any ignore words removed
 */
 function filter_stop_words($text)
 {
 	$word_list = array();
-	$text = trim(preg_replace('/[ \t]+/', ' ', $text)); // strip extra whitespaces or tabs
+	$text = trim(preg_replace('/[ \t]+/', ' ', $text)); // strip extra whitespaces and tabs
 	if (!empty($text))
 	{
 		// Put all unique words in the title into an array, and remove uppercases
@@ -139,7 +139,8 @@ function filter_stop_words($text)
 	{
 		global $phpbb_root_path, $user, $phpEx;
 
-		$words = array();	// $words is our array of stop_words
+		// Retrieves a language dependent list of words that should be ignored (method copied from search.php)
+		$words = array();
 		if (file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
 		{
 			// include the file containing ignore words
