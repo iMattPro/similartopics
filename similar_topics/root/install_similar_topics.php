@@ -3,7 +3,7 @@
 *
 * @author VSE (Matt Friedman) maf675@gmail.com
 * @package umil
-* @version $Id install_similar_topics.php 9 6/22/10 4:02 PM VSE $
+* @version $Id install_similar_topics.php 10 7/15/10 1:54 PM VSE $
 * @copyright (c) 2010 VSE
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -115,6 +115,10 @@ $versions = array(
 		// Nothing changed in this version.
 	),
 
+	// Version 1.1.3
+	'1.1.3' => array(
+		// Nothing changed in this version.
+	),
 
 );
 
