@@ -3,7 +3,10 @@ Hi! I'm VSE from the phpBB community.
 Welcome to my Github repository for my MODs for phpBB3.
 
 *
-* Precise Similar Topics II v1.1.3
+* Precise Similar Topics II 
+* 
+* Current Release version: v1.1.3
+* Current Develop version: 
 * ========================================================================
 *
 * Description:
@@ -12,9 +15,9 @@ Welcome to my Github repository for my MODs for phpBB3.
 *
 *
 * To-do list:
-* Get it validated by phpBB
+* Add cache purge to the end of the installer
 *
 * More information:
-* http://www.phpbb.com/community/viewtopic.php?f=70&t=2093731
+* http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/
 *
 * ------------------------------------------------------------------------
