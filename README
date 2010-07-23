@@ -16,6 +16,7 @@ Welcome to my Github repository for my MODs for phpBB3.
 *
 * To-do list:
 * Add cache purge to the end of the installer
+* Add ACP option to define custom ignore words
 *
 * More information:
 * http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/
