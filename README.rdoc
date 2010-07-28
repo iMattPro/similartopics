@@ -1,0 +1,26 @@
+= Precise Similar Topics II 
+
+Hi! I'm VSE from the phpBB community.
+
+Welcome to my Github repository for my MODs for phpBB3.
+
+* Current Release version: v1.1.3
+
+== DESCRIPTION:
+
+This MOD will display a list of similar/related topics at the bottom of your threads, based on finding the most relevant matching Topic Titles.
+
+More information:
+* http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii
+
+== DEVELOPMENT:
+
+* Report any bugs or problems you encounter to the issue tracker http://github.com/VSEphpbb/precise-similar-topics-II/issues
+
+== REQUIREMENTS:
+
+* phpBB 3.0.7-PL1
+
+== LICENSE:
+
+GNU General Public License v2
