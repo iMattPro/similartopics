@@ -6,14 +6,12 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Subsilver2]]></title>
-		<description lang="en"><![CDATA[Subsilver2 instructions. See main install file for more description.]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.2 to v1.1.4]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.1.2 to v1.1.4]]></description>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
-				<contributions-group>
-					<contributions status="current" position="Developer"/>
-				</contributions-group>
+				<homepage><![CDATA[http://vse.heliohost.org]]></homepage>
 			</author>
 		</author-group>
 		<mod-version>1.1.4</mod-version>
@@ -28,15 +26,11 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/styles/subsilver2/template/similar_topics.html" to="styles/subsilver2/template/similar_topics.html"/>
+			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
+			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
+			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
-		<open src="styles/subsilver2/template/viewtopic_body.html">
-			<edit>
-				<find><![CDATA[<!-- INCLUDE breadcrumbs.html -->]]></find>
-				<action type="before-add"><![CDATA[<!-- IF .similar and not S_IS_BOT -->
-	<!-- INCLUDE similar_topics.html -->
-<!-- ENDIF -->]]></action>
-			</edit>
-		</open>
+		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
+		<diy-instructions lang="en"><![CDATA[Run yourforum/install_similar_topics.php]]></diy-instructions>
 	</action-group>
 </mod>

@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 6 7/15/10 1:54 PM VSE $
+* @version $Id: acp_similar_topics.php 7 7/27/10 5:23 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -26,7 +26,7 @@ class acp_similar_topics_info
 		return array(
 			'filename'	=> 'acp_similar_topics',
 			'title'		=> 'PST_TITLE',
-			'version'	=> '1.1.3',
+			'version'	=> '1.1.4',
 			'modes'		=> array(
 				'index'	=> array(
 					'title'			=> 'PST_TITLE',
