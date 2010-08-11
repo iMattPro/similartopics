@@ -48,6 +48,7 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<changelog lang="en">
 					<change><![CDATA[Added cache purge to the UMIL-based install script.]]></change>
 					<change><![CDATA[Added Spanish language translation. Thanks to phpbb.com user davaguco]]></change>
+					<change><![CDATA[Upgraded to new UMIL v1.0.3]]></change>
 					<change><![CDATA[Repackaged MODX so only one XSL file needed.]]></change>
 				</changelog>
 			</entry>
