@@ -14,8 +14,9 @@
 Note: Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
 		<author-group>
 			<author>
+				<realname><![CDATA[Matt Friedman]]></realname>
 				<username><![CDATA[VSE]]></username>
-				<homepage><![CDATA[http://vse.heliohost.org]]></homepage>
+				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 				<contributions-group>
 					<contributions status="current" position="Added ACP, Updated SQL Code &amp; Styles"/>
 				</contributions-group>
