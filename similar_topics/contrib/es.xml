@@ -6,14 +6,11 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Subsilver2]]></title>
-		<description lang="en"><![CDATA[Subsilver2 instructions. See main install file for more description.]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Spanish Language Pack]]></title>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
-				<contributions-group>
-					<contributions status="current" position="Developer"/>
-				</contributions-group>
+				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
 		<mod-version>1.1.4</mod-version>
@@ -28,14 +25,16 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/styles/subsilver2/template/similar_topics.html" to="styles/subsilver2/template/similar_topics.html"/>
+			<file from="root/language/es/mods/info_acp_similar_topics.php" to="language/es/mods/info_acp_similar_topics.php"/>
 		</copy>
-		<open src="styles/subsilver2/template/viewtopic_body.html">
+		<open src="language/es/viewtopic.php">
 			<edit>
-				<find><![CDATA[<!-- INCLUDE breadcrumbs.html -->]]></find>
-				<action type="before-add"><![CDATA[<!-- IF .similar and not S_IS_BOT -->
-	<!-- INCLUDE similar_topics.html -->
-<!-- ENDIF -->]]></action>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[// BEGIN Precise Similar Topics
+$lang = array_merge($lang, array(
+	'SIMILAR_TOPICS'			=> 'Otros hilos parecidos a este',
+));
+// END Precise Similar Topics]]></action>
 			</edit>
 		</open>
 	</action-group>

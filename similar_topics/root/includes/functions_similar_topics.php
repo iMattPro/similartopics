@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 16 6/23/10 11:20 AM VSE $
+* @version $Id: functions_similar_topics.php, 17 8/24/10 10:20 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -77,12 +77,12 @@ function similar_topics(&$topic_data, $forum_id)
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
 		if (!empty($topic_data['similar_topic_forums']))
 		{
-			$sql_array['WHERE'] .= ' AND f.forum_id IN (' . $topic_data['similar_topic_forums'] . ')';
+			$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('f.forum_id', explode(',', $topic_data['similar_topic_forums']));
 		}
 		// Otherwise, lets see what forums are not allowed to be searched, and ignore those
 		else if (!empty($config['similar_topics_ignore']))
 		{
-			$sql_array['WHERE'] .= ' AND f.forum_id NOT IN (' . $config['similar_topics_ignore'] . ')';
+			$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('f.forum_id', explode(',', $config['similar_topics_ignore']), true);
 		}
 
 		$sql = $db->sql_build_query('SELECT', $sql_array);

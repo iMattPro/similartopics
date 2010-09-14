@@ -5,6 +5,10 @@ Hi! I'm VSE from the phpBB community.
 Welcome to my Github repository for my MODs for phpBB3.
 
 * Current Release version: v1.1.3
+<<<<<<< HEAD
+=======
+* Current Develop version: v1.1.4
+>>>>>>> develop
 
 == DESCRIPTION:
 
@@ -17,6 +21,12 @@ More information:
 
 * Report any bugs or problems you encounter to the issue tracker http://github.com/VSEphpbb/precise-similar-topics-II/issues
 
+<<<<<<< HEAD
+=======
+To-do list:
+* Give admins an ACP option to define custom ignore words
+
+>>>>>>> develop
 == REQUIREMENTS:
 
 * phpBB 3.0.7-PL1
