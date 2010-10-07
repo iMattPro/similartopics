@@ -44,9 +44,11 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</installation>
 		<history>
 			<entry>
-				<date>2010-07-27</date>
+				<date>2010-10-06</date>
 				<rev-version>1.1.4</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[Fix in prosilver style to correctly loop the LI's, not the UL's.]]></change>
+					<change><![CDATA[Use phpBB's sql_in_set function.]]></change>
 					<change><![CDATA[Added cache purge to the UMIL-based install script.]]></change>
 					<change><![CDATA[Added Spanish language translation. Thanks to phpbb.com user davaguco]]></change>
 					<change><![CDATA[Upgraded to new UMIL v1.0.3]]></change>

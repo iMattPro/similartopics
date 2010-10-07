@@ -33,6 +33,7 @@
 			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
+			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<delete>
