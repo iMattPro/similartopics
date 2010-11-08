@@ -36,13 +36,20 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.1.4</mod-version>
+		<mod-version>1.1.5</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
 			<target-version>3.0.7-PL1</target-version>
 		</installation>
 		<history>
+			<entry>
+				<date>2010-11-07</date>
+				<rev-version>1.1.5</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Added Portuguese language translation. Thanks to phpBB Portugal.]]></change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-10-06</date>
 				<rev-version>1.1.4</rev-version>
@@ -116,10 +123,12 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</history>
 		<link-group>
 			<link type="template" href="contrib/subsilver2.xml" lang="en">subsilver2</link>
-			<link type="contrib" href="contrib/update_113-114.xml" lang="en">Update: From 1.1.3 to 1.1.4</link>
-			<link type="contrib" href="contrib/update_112-114.xml" lang="en">Update: From 1.1.2 to 1.1.4</link>
-			<link type="contrib" href="contrib/update_111-114.xml" lang="en">Update: From 1.1.1 to 1.1.4</link>
-			<link type="contrib" href="contrib/update_110-114.xml" lang="en">Update: From 1.1.0 to 1.1.4</link>
+			<link type="contrib" href="contrib/update_114-115.xml" lang="en">Update: From 1.1.4 to 1.1.5</link>
+			<link type="contrib" href="contrib/update_113-115.xml" lang="en">Update: From 1.1.3 to 1.1.5</link>
+			<link type="contrib" href="contrib/update_112-115.xml" lang="en">Update: From 1.1.2 to 1.1.5</link>
+			<link type="contrib" href="contrib/update_111-115.xml" lang="en">Update: From 1.1.1 to 1.1.5</link>
+			<link type="contrib" href="contrib/update_110-115.xml" lang="en">Update: From 1.1.0 to 1.1.5</link>
+			<link type="language" href="contrib/pt.xml" lang="en">Portuguese Language Pack</link>
 			<link type="language" href="contrib/es.xml" lang="en">Spanish Language Pack</link>
 		</link-group>
 	</header>

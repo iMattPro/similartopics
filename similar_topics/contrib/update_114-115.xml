@@ -6,15 +6,15 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.2 to v1.1.4]]></title>
-		<description lang="en"><![CDATA[Update instructions for v1.1.2 to v1.1.4]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.4 to v1.1.5]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.1.4 to v1.1.5]]></description>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
-		<mod-version>1.1.4</mod-version>
+		<mod-version>1.1.5</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
@@ -27,9 +27,7 @@
 	<action-group>
 		<copy>
 			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
-			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
-			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>

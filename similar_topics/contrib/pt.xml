@@ -6,15 +6,14 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.3 to v1.1.4]]></title>
-		<description lang="en"><![CDATA[Update instructions for v1.1.3 to v1.1.4]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Portuguese Language Pack]]></title>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
-		<mod-version>1.1.4</mod-version>
+		<mod-version>1.1.5</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
@@ -26,13 +25,17 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
-			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
-			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
-			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
-			<file from="root/umil/*.*" to="umil/*.*"/>
+			<file from="root/language/pt/mods/info_acp_similar_topics.php" to="language/pt/mods/info_acp_similar_topics.php"/>
 		</copy>
-		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[Run yourforum/install_similar_topics.php]]></diy-instructions>
+		<open src="language/pt/viewtopic.php">
+			<edit>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[// BEGIN Precise Similar Topics
+$lang = array_merge($lang, array(
+	'SIMILAR_TOPICS'			=> 'Tópicos Semelhantes',
+));
+// END Precise Similar Topics]]></action>
+			</edit>
+		</open>
 	</action-group>
 </mod>
