@@ -47,6 +47,7 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<date>2010-11-07</date>
 				<rev-version>1.1.5</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[Added German/Deutsch language translation. Thanks to WileCoyote.]]></change>
 					<change><![CDATA[Added Portuguese language translation. Thanks to phpBB Portugal.]]></change>
 				</changelog>
 			</entry>
@@ -128,6 +129,7 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 			<link type="contrib" href="contrib/update_112-115.xml" lang="en">Update: From 1.1.2 to 1.1.5</link>
 			<link type="contrib" href="contrib/update_111-115.xml" lang="en">Update: From 1.1.1 to 1.1.5</link>
 			<link type="contrib" href="contrib/update_110-115.xml" lang="en">Update: From 1.1.0 to 1.1.5</link>
+			<link type="language" href="contrib/de.xml" lang="en">German/Deutsch Language Pack</link>
 			<link type="language" href="contrib/pt.xml" lang="en">Portuguese Language Pack</link>
 			<link type="language" href="contrib/es.xml" lang="en">Spanish Language Pack</link>
 		</link-group>
