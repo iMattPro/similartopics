@@ -23,7 +23,7 @@ To-do list:
 
 == REQUIREMENTS:
 
-* phpBB 3.0.7-PL1
+* phpBB 3.0.7-PL1 or greater
 
 == LICENSE:
 
