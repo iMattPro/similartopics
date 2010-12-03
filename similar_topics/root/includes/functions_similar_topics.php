@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 18 9/14/10 1:22 PM VSE $
+* @version $Id: functions_similar_topics.php, 19 12/2/10 4:01 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -47,6 +47,7 @@ function similar_topics(&$topic_data, $forum_id)
 	{
 		// Use phpBB's stop-words if non-English user language is detected
 		$topic_title = ($user->lang_name != 'en' && $user->lang_name != 'en_us') ? filter_stop_words($topic_data['topic_title']) : $topic_data['topic_title'];
+		$topic_title = str_replace(array('&quot;', '&amp;'), '', $topic_title); //strip quotes, ampersands
 
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
