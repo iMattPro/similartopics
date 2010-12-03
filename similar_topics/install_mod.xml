@@ -44,9 +44,11 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</installation>
 		<history>
 			<entry>
-				<date>2010-11-07</date>
+				<date>2010-12-02</date>
 				<rev-version>1.1.5</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[Strip ampersands and double-quotes from the search criteria, as they seem to be considered when finding matches.]]></change>
+					<change><![CDATA[Tested and confirmed compatability with phpBB v3.0.8.]]></change>
 					<change><![CDATA[Added German/Deutsch language translation. Thanks to WileCoyote.]]></change>
 					<change><![CDATA[Added Portuguese language translation. Thanks to phpBB Portugal.]]></change>
 				</changelog>
