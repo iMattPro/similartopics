@@ -135,6 +135,7 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 			<link type="language" href="contrib/de.xml" lang="en">German/Deutsch Language Pack</link>
 			<link type="language" href="contrib/pt.xml" lang="en">Portuguese Language Pack</link>
 			<link type="language" href="contrib/es.xml" lang="en">Spanish Language Pack</link>
+			<link type="contrib" href="contrib/add_on-topic_preview.xml" lang="en">Topic Preview MOD Add-On</link>
 		</link-group>
 	</header>
 	<action-group>
