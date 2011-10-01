@@ -120,11 +120,8 @@ function filter_title_words($text)
 {
 	global $config, $user;
 	
-	// strip extra whitespaces and tabs
-	$text = trim(preg_replace('/[ \t]+/', ' ', $text));
-	
-	// strip out any punctuation characters using PCRE regex syntax
-	$text = preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text); 
+	// strip out any non alpha-numeric characters using PCRE regex syntax
+	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text)); 
 
 	// Put all unique words in the title into an array, and remove uppercases and short words
 	$word_list = array();
