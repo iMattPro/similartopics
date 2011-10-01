@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 20 9/30/11 8:03 PM VSE $
+* @version $Id: functions_similar_topics.php, 21 9/30/11 8:42 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -23,9 +23,15 @@ if (!defined('IN_PHPBB'))
 * @param array 	$topic_data		The current topic data for use in searching
 * @param int 	$forum_id		The current forum to check
 */
-function similar_topics(&$topic_data, $forum_id)
+function similar_topics_hook(&$hook, $handle)
 {
-	global $auth, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
+	global $auth, $config, $user, $db, $template, $phpbb_root_path, $phpEx, $topic_data, $forum_id;
+
+	// Bail out if not supposed to see similar topics
+	if (!$config['similar_topics'] || !$auth->acl_get('u_similar_topics') || ($user->page['page_name'] != 'viewtopic.' . $phpEx) || $handle != 'body')
+	{
+		return;
+	}
 
 	// Bail out if not using required MySQL to prevent any problems
 	if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
@@ -42,8 +48,8 @@ function similar_topics(&$topic_data, $forum_id)
 		}
 	}
 
-	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
-	if ($config['similar_topics'] && $config['similar_topics_limit'])
+	// If similar topics to show is <> 0, proceed...
+	if ($config['similar_topics_limit'])
 	{
 		$topic_title = (($user->lang_name == 'en' || $user->lang_name == 'en_us') && empty($config['similar_topics_words'])) ? $topic_data['topic_title'] : filter_title_words($topic_data['topic_title']);
 		$topic_title = str_replace(array('&quot;', '&amp;'), '', $topic_title); //strip quotes, ampersands
@@ -105,12 +111,18 @@ function similar_topics(&$topic_data, $forum_id)
 			}
 		}
 		$db->sql_freeresult($result);
+
+		$user->add_lang('mods/info_acp_similar_topics');
+		$template->assign_vars(array(
+			'L_SIMILAR_TOPICS' => $user->lang['PST_TITLE_ACP'],
+		));
+		
 	}
 }
 
 /**
 * MySQL full-text has built-in English stop words. Use phpBB's ignore words for non-English languages
-* Also remove any admin-defined custom ignore words
+* Also remove any admin-defined special ignore words
 * This will remove uppercases, and ignore words of 2 characters or less
 * 
 * @param  string $text			The topic title
@@ -168,5 +180,8 @@ function filter_title_words($text)
 	$text = !empty($word_list) ? implode(' ', $word_list) : '';
 	return $text;
 }
+
+// Register the hook
+$phpbb_hook->register(array('template','display'), 'similar_topics_hook');
 
 ?>

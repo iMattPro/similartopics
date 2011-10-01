@@ -17,7 +17,7 @@
 		<mod-version>1.1.6</mod-version>
 		<installation>
 			<level>easy</level>
-			<time>60</time>
+			<time>180</time>
 			<target-version>3.0.9</target-version>
 		</installation>
 		<link-group>
@@ -29,11 +29,34 @@
 			<file from="root/adm/style/acp_similar_topics.html" to="adm/style/acp_similar_topics.html"/>
 			<file from="root/includes/acp/acp_similar_topics.php" to="includes/acp/acp_similar_topics.php"/>
 			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
-			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
+			<file from="root/includes/hooks/hook_similar_topics.php" to="includes/hooks/hook_similar_topics.php"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
+		<delete>
+			<file name="includes/functions_similar_topics.php"/>
+		</delete>
+		<open src="viewtopic.php">
+			<edit>
+				<remove><![CDATA[// BEGIN Precise Similar Topics
+if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))
+{
+	include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
+	similar_topics($topic_data, $forum_id);
+}
+// END Precise Similar Topics]]></remove>
+			</edit>
+		</open>
+		<open src="language/en/viewtopic.php">
+			<edit>
+				<remove><![CDATA[// BEGIN Precise Similar Topics
+$lang = array_merge($lang, array(
+	'SIMILAR_TOPICS'			=> 'Similar topics',
+));
+// END Precise Similar Topics]]></remove>
+			</edit>
+		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[Run yourforum/install_similar_topics.php]]></diy-instructions>
 	</action-group>

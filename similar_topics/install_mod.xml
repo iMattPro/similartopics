@@ -47,6 +47,7 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<date>2011-09-30</date>
 				<rev-version>1.1.6</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[Refactored to use phpBB's Hook system]]></change>
 					<change><![CDATA[Fix: Ignore punctuation characters]]></change>
 					<change><![CDATA[Added new ACP option: Add your own special words to ignore (aka stop-words).]]></change>
 					<change><![CDATA[Add-On: Topic Preview MOD integration for Precise Similar Topics]]></change>
@@ -155,34 +156,12 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 			<file from="root/adm/style/acp_similar_topics.html" to="adm/style/acp_similar_topics.html"/>
 			<file from="root/includes/acp/acp_similar_topics.php" to="includes/acp/acp_similar_topics.php"/>
 			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
-			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
+			<file from="root/includes/hooks/hook_similar_topics.php" to="includes/hooks/hook_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
 			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
-		<open src="viewtopic.php">
-			<edit>
-				<find><![CDATA[page_header($user->lang['VIEW_TOPIC'] . ' - ' . $topic_data['topic_title'], true, $forum_id);]]></find>
-				<action type="after-add"><![CDATA[// BEGIN Precise Similar Topics
-if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))
-{
-	include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
-	similar_topics($topic_data, $forum_id);
-}
-// END Precise Similar Topics]]></action>
-			</edit>
-		</open>
-		<open src="language/en/viewtopic.php">
-			<edit>
-				<find><![CDATA[?>]]></find>
-				<action type="before-add"><![CDATA[// BEGIN Precise Similar Topics
-$lang = array_merge($lang, array(
-	'SIMILAR_TOPICS'			=> 'Similar topics',
-));
-// END Precise Similar Topics]]></action>
-			</edit>
-		</open>
 		<open src="styles/prosilver/template/viewtopic_body.html">
 			<edit>
 				<find><![CDATA[<!-- INCLUDE jumpbox.html -->]]></find>
