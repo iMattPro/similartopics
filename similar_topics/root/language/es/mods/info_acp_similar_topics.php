@@ -4,7 +4,7 @@
 * similar_topics [Spanish]
 *
 * @package language
-* @version $Id: info_acp_similar_topics.php 14 6/18/10 10:47 PM VSE $
+* @version $Id: info_acp_similar_topics.php 15 9/30/11 8:08 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -45,6 +45,9 @@ $lang = array_merge($lang, array(
 	'PST_ADVANCED_TITLE'=> 'Haz click para habilitar la configuración avanzada de hilos parecidos para',
 	'PST_ADVANCED_EXP'	=> 'Aquí puedes seleccionar foros específicos de donde extraer hilos parecidos. Sólo los hilos parecidos que se encuentren en los foros que selecciones aquí se mostrarán en <strong>%s</strong>.<br /><br />No selecciones ningún foro si quieres que todos los foros que tengan habilitado la búsqueda en ellos sean mostrados en este foro.',
 	'PST_DESELECT_ALL'	=> 'Deseleccionar todos',
+	'PST_LEGEND4'		=> 'Optional Settings',
+	'PST_WORDS'			=> 'Special words to ignore',
+	'PST_WORDS_EXPLAIN'	=> 'Common words in your language will already be ignored, so this is for special words unique to your forum that may be too common and interfering with finding relevant similar topics. Separate each word with a space. Max. 255 characters.',
 	'PST_SAVED'			=> 'La configuración de Hilos Parecidos ha sido actualizada',
 	'PST_FORUM_INFO'	=> '“No Mostrar En”: Deshabilitará la visualización de hilos parecidos en el foro seleccionado.<br />“No Buscar En” : Ignorará los foros seleccionados cuando se estén buscando hilos parecidos.',
 	'PST_WARNING'		=> 'Hilos Parecidos no va a funcionar en tu foro. Hilos Parecidos requiere una base de datos MySQL 4 o MySQL 5.',

@@ -26,9 +26,12 @@
 	</header>
 	<action-group>
 		<copy>
+			<file from="root/adm/style/acp_similar_topics.html" to="adm/style/acp_similar_topics.html"/>
+			<file from="root/includes/acp/acp_similar_topics.php" to="includes/acp/acp_similar_topics.php"/>
 			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
 			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
+			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
 			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>

@@ -2,7 +2,7 @@
 /**
 *
 * @package acp
-* @version $Id: acp_similar_topics.php 16 6/19/10 11:08 PM VSE $
+* @version $Id: acp_similar_topics.php 17 9/30/11 8:05 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -123,6 +123,9 @@ class acp_similar_topics
 					$pst_time = request_var('pst_time', 0);
 					set_config('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
+					$pst_words = request_var('pst_words', '');
+					set_config('similar_topics_words', $pst_words);
+
 					add_log('admin', 'PST_LOG_MSG');
 
 					trigger_error($user->lang['PST_SAVED'] . adm_back_link($this->u_action));
@@ -142,6 +145,7 @@ class acp_similar_topics
 					'PST_LIMIT'			=> isset($config['similar_topics_limit']) ? $config['similar_topics_limit'] : '',
 					'PST_TIME'			=> $this->get_pst_time($config['similar_topics_time'], $config['similar_topics_type']),
 					'PST_CACHE'			=> isset($config['similar_topics_cache']) ? $config['similar_topics_cache'] : '',
+					'PST_WORDS'			=> isset($config['similar_topics_words']) ? $config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : false,
 					'U_ACTION'			=> $this->u_action,

@@ -3,7 +3,7 @@
 *
 * @author VSE (Matt Friedman) maf675@gmail.com
 * @package umil
-* @version $Id install_similar_topics.php 14 11/7/10 3:49 PM VSE $
+* @version $Id install_similar_topics.php 15 9/30/11 8:16 PM VSE $
 * @copyright (c) 2010 VSE
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -135,7 +135,13 @@ $versions = array(
 
 	// Version 1.1.6
 	'1.1.6' => array(
-		// Nothing changed in this version.
+		// Lets add a config to store user defined words to ignore
+		'config_add' => array(
+			array('similar_topics_words', ''),
+		),
+
+		// purge the cache
+		'cache_purge' => array(),
 	),
 
 );

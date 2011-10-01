@@ -4,7 +4,7 @@
 * acp_similiar_topics.php [Deutsch]
 * 
 * @package language
-* @version $Id: info_acp_similar_topics.php 14 6/18/10 10:47 PM VSE $
+* @version $Id: info_acp_similar_topics.php 15 9/30/11 8:08 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *
@@ -45,6 +45,9 @@ $lang = array_merge($lang, array(
 	'PST_ADVANCED_TITLE'=> 'Klicken um erweiterte Einstellungen für Vergleichbare Themen vorzunehmen',
 	'PST_ADVANCED_EXP'	=> 'Hier kannst du spezifische Foren auswählen aus denen Vergleichbare Themen angezeigt werden sollen. Es werden nur Vergleichbare Themen in Foren, die du die hier einstellst, angezeigt <strong>%s</strong>.<br /><br />Wählen keine Foren, wenn Vergleichbare Themen aus allen durchsuchbaren Foren in diesem Forum angezeigt werden sollen.',
 	'PST_DESELECT_ALL'	=> 'Alle abwählen',
+	'PST_LEGEND4'		=> 'Optional Settings',
+	'PST_WORDS'			=> 'Special words to ignore',
+	'PST_WORDS_EXPLAIN'	=> 'Common words in your language will already be ignored, so this is for special words unique to your forum that may be too common and interfering with finding relevant similar topics. Separate each word with a space. Max. 255 characters.',
 	'PST_SAVED'			=> 'Einstellungen für Vergleichbare Themen aktualisiert',
 	'PST_FORUM_INFO'	=> '“Nicht anzeigen in”: Wird die Anzeige von Vergleichbaren Themen in den ausgewählten Foren deaktivieren.<br />“Nicht Suchen Nach in” : Wird die ausgewählten Foren bei der Suche nach Vergleichbaren Themen ignorieren.',
 	'PST_WARNING'		=> 'Vergleichbare Themen werden in diesem Forum nicht funktionieren. Vergleichbare Themen erfordert eine MySQL 4 oder MySQL 5 Datenbank.',

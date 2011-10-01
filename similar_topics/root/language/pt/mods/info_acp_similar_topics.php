@@ -2,7 +2,7 @@
 /**
 *
 * @package language
-* @version $Id: info_acp_similar_topics.php 14 6/18/10 10:47 PM VSE $
+* @version $Id: info_acp_similar_topics.php 15 9/30/11 8:08 PM VSE $
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 * @Traduzido por The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico
@@ -43,6 +43,9 @@ $lang = array_merge($lang, array(
 	'PST_ADVANCED_TITLE'=> 'Clique para configurar definições avançadas de Tópicos Semelhantes para',
 	'PST_ADVANCED_EXP'	=> 'Aqui pode selecionar os Fóruns de onde serão extraidos os Tópicos Semelhantes. Apenas Tópicos Semelhantes encontrados nos Fóruns que selecionar aqui serão exibidos em <strong>%s</strong>.<br /><br />Não selecione nenhum se deseja Tópicos Semelhantes de todos os Fóruns pesquisáveis a serem exibidos neste Fórum.',
 	'PST_DESELECT_ALL'	=> 'Desmarcar todos',
+	'PST_LEGEND4'		=> 'Optional Settings',
+	'PST_WORDS'			=> 'Special words to ignore',
+	'PST_WORDS_EXPLAIN'	=> 'Common words in your language will already be ignored, so this is for special words unique to your forum that may be too common and interfering with finding relevant similar topics. Separate each word with a space. Max. 255 characters.',
 	'PST_SAVED'			=> 'As configurações de Tópicos Semelhantes foram atualizadas',
 	'PST_FORUM_INFO'	=> '<strong>Não exibir em</strong>: Desativa a exibição de Tópicos Semelhantes nos Fóruns selecionados.<br /><strong>Não pesquisar em</strong>: Ignora os Fóruns selecionados na pesquisa de Tópicos Semelhantes.',
 	'PST_WARNING'		=> 'Similar Topics não irá funcionar com seu Fórum. Similar Topics requer uma Base de Dados MySQL 4 ou MySQL 5.',

@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 19 12/2/10 4:01 PM VSE $
+* @version $Id: functions_similar_topics.php, 20 9/30/11 8:03 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -45,8 +45,7 @@ function similar_topics(&$topic_data, $forum_id)
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		// Use phpBB's stop-words if non-English user language is detected
-		$topic_title = ($user->lang_name != 'en' && $user->lang_name != 'en_us') ? filter_stop_words($topic_data['topic_title']) : $topic_data['topic_title'];
+		$topic_title = (($user->lang_name == 'en' || $user->lang_name == 'en_us') && empty($config['similar_topics_words'])) ? $topic_data['topic_title'] : filter_title_words($topic_data['topic_title']);
 		$topic_title = str_replace(array('&quot;', '&amp;'), '', $topic_title); //strip quotes, ampersands
 
 		$sql_array = array(
@@ -111,19 +110,27 @@ function similar_topics(&$topic_data, $forum_id)
 
 /**
 * MySQL full-text has built-in English stop words. Use phpBB's ignore words for non-English languages
-* This will remove uppercases, handle utf8 characters, and ignore words of 2 characters or less
-* Based on a function by phpbb-seo.com
+* Also remove any admin-defined custom ignore words
+* This will remove uppercases, and ignore words of 2 characters or less
 * 
 * @param  string $text			The topic title
 * @return string $text			The topic titled with any ignore words removed
 */
-function filter_stop_words($text)
+function filter_title_words($text)
 {
+	global $config, $user;
+	
+	// strip extra whitespaces and tabs
+	$text = trim(preg_replace('/[ \t]+/', ' ', $text));
+	
+	// strip out any punctuation characters using PCRE regex syntax
+	$text = preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text); 
+
+	// Put all unique words in the title into an array, and remove uppercases and short words
 	$word_list = array();
-	$text = trim(preg_replace('/[ \t]+/', ' ', $text)); // strip extra whitespaces and tabs
+
 	if (!empty($text))
 	{
-		// Put all unique words in the title into an array, and remove uppercases
 		$word_list = array_unique(explode(' ', utf8_strtolower($text)));
 		foreach ($word_list as $key => $word)
 		{
@@ -135,10 +142,10 @@ function filter_stop_words($text)
 		}
 	}
 
-	// Remove any stop words from our array
-	if (!empty($word_list))
+	// Use phpBB's stop-words if non-English user language is detected
+	if ($user->lang_name != 'en' && $user->lang_name != 'en_us' && !empty($word_list))
 	{
-		global $phpbb_root_path, $user, $phpEx;
+		global $phpbb_root_path, $phpEx;
 
 		// Retrieves a language dependent list of words that should be ignored (method copied from search.php)
 		$words = array();
@@ -150,6 +157,13 @@ function filter_stop_words($text)
 		$word_list = array_diff($word_list, $words);
 	}
 
+	// Filter out custom un-wanted words
+	if(!empty($config['similar_topics_words']) && !empty($word_list))
+	{
+		$words = explode(' ', utf8_strtolower($config['similar_topics_words']));
+		$word_list = array_diff($word_list, $words);
+	}
+	
 	// Rebuild our cleaned up topic title
 	$text = !empty($word_list) ? implode(' ', $word_list) : '';
 	return $text;
