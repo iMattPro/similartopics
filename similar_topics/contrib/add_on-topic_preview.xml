@@ -27,7 +27,7 @@
 		</link-group>
 	</header>
 	<action-group>
-		<open src="includes/hooks/hook_similar_topics.php">
+		<open src="includes/functions_similar_topics.php">
 			<edit>
 				<find><![CDATA[		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
 		if (!empty($topic_data['similar_topic_forums']))]]></find>

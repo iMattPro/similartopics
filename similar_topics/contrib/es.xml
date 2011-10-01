@@ -27,5 +27,15 @@
 		<copy>
 			<file from="root/language/es/mods/info_acp_similar_topics.php" to="language/es/mods/info_acp_similar_topics.php"/>
 		</copy>
+		<open src="language/es/viewtopic.php">
+			<edit>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[// BEGIN Precise Similar Topics
+$lang = array_merge($lang, array(
+	'SIMILAR_TOPICS'			=> 'Otros hilos parecidos a este',
+));
+// END Precise Similar Topics]]></action>
+			</edit>
+		</open>
 	</action-group>
 </mod>
