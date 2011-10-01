@@ -45,7 +45,7 @@ function similar_topics(&$topic_data, $forum_id)
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		$topic_title = (($user->lang_name == 'en' || $user->lang_name == 'en_us') && empty($config['similar_topics_words'])) ? $topic_data['topic_title'] : filter_title_words($topic_data['topic_title']);
+		$topic_title = (($user->lang_name == 'en' || $user->lang_name == 'en_us') && empty($config['similar_topics_words'])) ? $topic_data['topic_title'] : pst_ignore_words($topic_data['topic_title']);
 		$topic_title = str_replace(array('&quot;', '&amp;'), '', $topic_title); //strip quotes, ampersands
 
 		$sql_array = array(
@@ -116,7 +116,7 @@ function similar_topics(&$topic_data, $forum_id)
 * @param  string $text			The topic title
 * @return string $text			The topic titled with any ignore words removed
 */
-function filter_title_words($text)
+function pst_ignore_words($text)
 {
 	global $config, $user;
 	
