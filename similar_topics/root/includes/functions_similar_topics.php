@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: hook_similar_topics.php, 21 9/30/11 8:42 PM VSE $
+* @version $Id: functions_similar_topics.php, 20 9/30/11 8:03 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -16,12 +16,6 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-// Bail out if the MOD isn't installed
-if (!isset($config['similar_topics']))
-{
-	return;
-}
-
 /**
 * Get similar topics based on matching topic titles
 * Note: currently requires MySQL due to use of MATCH and AGAINST and UNIX_TIMESTAMP
@@ -29,15 +23,9 @@ if (!isset($config['similar_topics']))
 * @param array 	$topic_data		The current topic data for use in searching
 * @param int 	$forum_id		The current forum to check
 */
-function similar_topics_hook(&$hook, $handle)
+function similar_topics(&$topic_data, $forum_id)
 {
-	global $auth, $config, $user, $db, $template, $phpbb_root_path, $phpEx, $topic_data, $forum_id;
-
-	// Bail out if not supposed to see similar topics
-	if (!$config['similar_topics'] || !$auth->acl_get('u_similar_topics') || ($user->page['page_name'] != 'viewtopic.' . $phpEx) || $handle != 'body')
-	{
-		return;
-	}
+	global $auth, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
 
 	// Bail out if not using required MySQL to prevent any problems
 	if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
@@ -54,8 +42,8 @@ function similar_topics_hook(&$hook, $handle)
 		}
 	}
 
-	// If similar topics to show is <> 0, proceed...
-	if ($config['similar_topics_limit'])
+	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
+	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
 		$topic_title = (($user->lang_name == 'en' || $user->lang_name == 'en_us') && empty($config['similar_topics_words'])) ? $topic_data['topic_title'] : filter_title_words($topic_data['topic_title']);
 		$topic_title = str_replace(array('&quot;', '&amp;'), '', $topic_title); //strip quotes, ampersands
@@ -117,18 +105,12 @@ function similar_topics_hook(&$hook, $handle)
 			}
 		}
 		$db->sql_freeresult($result);
-
-		$user->add_lang('mods/info_acp_similar_topics');
-		$template->assign_vars(array(
-			'L_SIMILAR_TOPICS' => $user->lang['PST_TITLE_ACP'],
-		));
-		
 	}
 }
 
 /**
 * MySQL full-text has built-in English stop words. Use phpBB's ignore words for non-English languages
-* Also remove any admin-defined special ignore words
+* Also remove any admin-defined custom ignore words
 * This will remove uppercases, and ignore words of 2 characters or less
 * 
 * @param  string $text			The topic title
@@ -137,9 +119,12 @@ function similar_topics_hook(&$hook, $handle)
 function filter_title_words($text)
 {
 	global $config, $user;
-
-	// strip out any non alpha-numeric characters using PCRE regex syntax
-	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
+	
+	// strip extra whitespaces and tabs
+	$text = trim(preg_replace('/[ \t]+/', ' ', $text));
+	
+	// strip out any punctuation characters using PCRE regex syntax
+	$text = preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text); 
 
 	// Put all unique words in the title into an array, and remove uppercases and short words
 	$word_list = array();
@@ -183,8 +168,5 @@ function filter_title_words($text)
 	$text = !empty($word_list) ? implode(' ', $word_list) : '';
 	return $text;
 }
-
-// Register the hook
-$phpbb_hook->register(array('template','display'), 'similar_topics_hook');
 
 ?>
