@@ -50,6 +50,7 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 					<change><![CDATA[[Feature]: Added ACP option to enter your own custom ignore-words (aka stop-words).]]></change>
 					<change><![CDATA[[Change]: Ignore punctuation characters.]]></change>
 					<change><![CDATA[[Added]: Topic Preview MOD integration for Precise Similar Topics.]]></change>
+					<change><![CDATA[[Added]: MOD Version Check.]]></change>
 					<change><![CDATA[[Added]: Polish language translation. Thanks to liptonace.]]></change>
 				</changelog>
 			</entry>
