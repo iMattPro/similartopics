@@ -1,6 +1,8 @@
 <?php
 /**
 *
+* similar_topics [Polish]
+*
 * @package language
 * @version $Id: info_acp_similar_topics.php 15 9/30/11 8:08 PM VSE $
 * @copyright (c) 2010 Matt Friedman
@@ -44,9 +46,9 @@ $lang = array_merge($lang, array(
 	'PST_ADVANCED_TITLE'=> 'Kliknij, aby ustawić zaawansowane ustawienia dla',
 	'PST_ADVANCED_EXP'	=> 'Tutaj możesz wybrać konkretne fora dla wyświetlania podobnych tematów. Tylko podobne tematy znalezione na wybranych forach będą wyświetlane w <strong>%s</strong>.<br /><br />Nie należy wybierać żadnych, jeśli chcesz aby podobne tematy były wyszukiwane we wszystkich forach.',
 	'PST_DESELECT_ALL'	=> 'Odznacz wszystko',
-	'PST_LEGEND4'		=> 'Optional Settings',
-	'PST_WORDS'			=> 'Special words to ignore',
-	'PST_WORDS_EXPLAIN'	=> 'Common words in your language will already be ignored, so this is for special words unique to your forum that may be too common and interfering with finding relevant similar topics. Separate each word with a space. Max. 255 characters.',
+	'PST_LEGEND4'		=> 'Ustawienia dodatkowe',
+	'PST_WORDS'			=> 'Specjalne słowa do zignorowania',
+	'PST_WORDS_EXPLAIN'	=> 'Dodaj specjalne słowa unikatowy dla danego forum, że może być zbyt częste i ingerencji ze znalezieniem odpowiednich podobne tematy. Oddzielania poszczególnych słowa spacją. Sprawa nie jest wrażliwa. Maksymalnie 255 znaków.',
 	'PST_SAVED'			=> 'Zaktualizowano ustawienia podobnych tematów',
 	'PST_FORUM_INFO'	=> '“Nie wyświetlaj w” : Wyłącza wyświetlanie podobnych tematów w wybranym forum.<br />“Nie szukaj w” : Będzie ignorować wybrane forum, szukając podobnych tematów.',
 	'PST_WARNING'		=> 'Similar Topics nie będą działać z forum. Similar Topics wymaga MySQL 4 lub MySQL 5 bazy danych.',
