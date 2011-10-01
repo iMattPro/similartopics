@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 21 9/30/11 8:42 PM VSE $
+* @version $Id: hook_similar_topics.php, 21 9/30/11 8:42 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -14,6 +14,12 @@
 if (!defined('IN_PHPBB'))
 {
 	exit;
+}
+
+// Bail out if the MOD isn't installed
+if (!isset($config['similar_topics']))
+{
+	return;
 }
 
 /**
@@ -131,12 +137,9 @@ function similar_topics_hook(&$hook, $handle)
 function filter_title_words($text)
 {
 	global $config, $user;
-	
-	// strip extra whitespaces and tabs
-	$text = trim(preg_replace('/[ \t]+/', ' ', $text));
-	
-	// strip out any punctuation characters using PCRE regex syntax
-	$text = preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text); 
+
+	// strip out any non alpha-numeric characters using PCRE regex syntax
+	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
 
 	// Put all unique words in the title into an array, and remove uppercases and short words
 	$word_list = array();
