@@ -133,6 +133,11 @@ $versions = array(
 		// Nothing changed in this version.
 	),
 
+	// Version 1.1.6
+	'1.1.6' => array(
+		// Nothing changed in this version.
+	),
+
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.

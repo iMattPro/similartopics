@@ -6,8 +6,8 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.1 to v1.1.5]]></title>
-		<description lang="en"><![CDATA[Update instructions for v1.1.1 to v1.1.5]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.1 to v1.1.6]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.1.1 to v1.1.6]]></description>
 		<author-notes lang="en"><![CDATA[Note: Similar Topics adds a new ACP option to enable the caching of search results. It is turned off by default.]]></author-notes>
 		<author-group>
 			<author>
@@ -15,7 +15,7 @@
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
-		<mod-version>1.1.5</mod-version>
+		<mod-version>1.1.6</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>

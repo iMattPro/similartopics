@@ -5,6 +5,7 @@ Hi! I'm VSE from the phpBB community.
 Welcome to my Github repository for my MODs for phpBB3.
 
 * Current Release version: v1.1.5
+* Version in development: v1.1.6
 
 == DESCRIPTION:
 
