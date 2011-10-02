@@ -45,8 +45,15 @@ function similar_topics(&$topic_data, $forum_id)
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
+		// If board is non-English or custom ignore words are defined, apply pst_ignore_words function to topic_title
 		$topic_title = (($user->lang_name == 'en' || $user->lang_name == 'en_us') && empty($config['similar_topics_words'])) ? $topic_data['topic_title'] : pst_ignore_words($topic_data['topic_title']);
 		$topic_title = str_replace(array('&quot;', '&amp;'), '', $topic_title); //strip quotes, ampersands
+
+		// If the topic_title winds up being empty, no need to continue
+		if (empty($topic_title))
+		{
+			return;
+		}
 
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
@@ -110,7 +117,7 @@ function similar_topics(&$topic_data, $forum_id)
 
 /**
 * MySQL full-text has built-in English stop words. Use phpBB's ignore words for non-English languages
-* Also remove any admin-defined custom ignore words
+* Also remove any admin-defined special ignore words
 * This will remove uppercases, and ignore words of 2 characters or less
 * 
 * @param  string $text			The topic title
