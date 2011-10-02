@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 20 10/1/11 6:22 PM VSE $
+* @version $Id: functions_similar_topics.php, 21 10/2/11 1:43 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -45,9 +45,7 @@ function similar_topics(&$topic_data, $forum_id)
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		// If board is non-English or custom ignore words are defined, apply pst_ignore_words function to topic_title
-		$topic_title = (($user->lang_name != 'en' && $user->lang_name != 'en_us') || !empty($config['similar_topics_words'])) ? pst_ignore_words($topic_data['topic_title']) : $topic_data['topic_title'];
-		$topic_title = str_replace(array('&quot;', '&amp;'), '', $topic_title); //strip quotes, ampersands
+		$topic_title = pst_prepare_title($topic_data['topic_title']);
 
 		// If the topic_title winds up being empty, no need to continue
 		if (empty($topic_title))
@@ -116,26 +114,35 @@ function similar_topics(&$topic_data, $forum_id)
 }
 
 /**
+* Clean up problem characters from the topic title
 * MySQL full-text has built-in English stop words. Use phpBB's ignore words for non-English languages
 * Also remove any admin-defined special ignore words
-* This will remove uppercases, and ignore words of 2 characters or less
 * 
 * @param  string $text			The topic title
 * @return string $text			The topic titled with any ignore words removed
 */
-function pst_ignore_words($text)
+function pst_prepare_title($text)
 {
 	global $config, $user;
-	
+
+	$english_lang = ($user->lang_name == 'en' || $user->lang_name == 'en_us') ? true : false;
+	$ignore_words = !empty($config['similar_topics_words']) ? true : false;
+
+	// if we're using English and not removing custom ignore words, no need to continue
+	if ($english_lang && !$ignore_words)
+	{
+		$text = str_replace(array('&quot;', '&amp;'), '', $text); //strip quotes, ampersands
+		return $text;
+	}
+
 	// strip out any non alpha-numeric characters using PCRE regex syntax
 	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
 
-	// Put all unique words in the title into an array, and remove uppercases and short words
+	// Put words in the title into an array, and remove uppercases and short words
 	$word_list = array();
-
 	if (!empty($text))
 	{
-		$word_list = array_unique(explode(' ', utf8_strtolower($text)));
+		$word_list = explode(' ', utf8_strtolower($text));
 		foreach ($word_list as $key => $word)
 		{
 			// Lets eliminate all words of 2 characters or less
@@ -146,8 +153,8 @@ function pst_ignore_words($text)
 		}
 	}
 
-	// Use phpBB's stop-words if non-English user language is detected
-	if ($user->lang_name != 'en' && $user->lang_name != 'en_us' && !empty($word_list))
+	// Remove words from phpBB's stop-words list if non-English user language is detected
+	if (!$english_lang && !empty($word_list))
 	{
 		global $phpbb_root_path, $phpEx;
 
@@ -161,8 +168,8 @@ function pst_ignore_words($text)
 		$word_list = array_diff($word_list, $words);
 	}
 
-	// Filter out custom un-wanted words
-	if(!empty($config['similar_topics_words']) && !empty($word_list))
+	// Remove custom ignore words
+	if ($ignore_words && !empty($word_list))
 	{
 		$words = explode(' ', utf8_strtolower($config['similar_topics_words']));
 		$word_list = array_diff($word_list, $words);
