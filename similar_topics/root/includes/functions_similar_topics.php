@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 20 9/30/11 8:03 PM VSE $
+* @version $Id: functions_similar_topics.php, 20 10/1/11 6:22 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -46,7 +46,7 @@ function similar_topics(&$topic_data, $forum_id)
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
 		// If board is non-English or custom ignore words are defined, apply pst_ignore_words function to topic_title
-		$topic_title = (($user->lang_name == 'en' || $user->lang_name == 'en_us') && empty($config['similar_topics_words'])) ? $topic_data['topic_title'] : pst_ignore_words($topic_data['topic_title']);
+		$topic_title = (($user->lang_name != 'en' && $user->lang_name != 'en_us') || !empty($config['similar_topics_words'])) ? pst_ignore_words($topic_data['topic_title']) : $topic_data['topic_title'];
 		$topic_title = str_replace(array('&quot;', '&amp;'), '', $topic_title); //strip quotes, ampersands
 
 		// If the topic_title winds up being empty, no need to continue
@@ -128,7 +128,7 @@ function pst_ignore_words($text)
 	global $config, $user;
 	
 	// strip out any non alpha-numeric characters using PCRE regex syntax
-	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text)); 
+	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
 
 	// Put all unique words in the title into an array, and remove uppercases and short words
 	$word_list = array();
