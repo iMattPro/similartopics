@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 21 10/2/11 1:43 PM VSE $
+* @version $Id: functions_similar_topics.php, 22 10/3/11 10:41 AM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -45,7 +45,7 @@ function similar_topics(&$topic_data, $forum_id)
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		$topic_title = pst_prepare_title($topic_data['topic_title']);
+		$topic_title = pst_clean_title($topic_data['topic_title']);
 
 		// If the topic_title winds up being empty, no need to continue
 		if (empty($topic_title))
@@ -121,62 +121,61 @@ function similar_topics(&$topic_data, $forum_id)
 * @param  string $text			The topic title
 * @return string $text			The topic titled with any ignore words removed
 */
-function pst_prepare_title($text)
+function pst_clean_title($text)
 {
 	global $config, $user;
+
+	$text = str_replace(array('&quot;', '&amp;'), '', $text); //strip quotes, ampersands
 
 	$english_lang = ($user->lang_name == 'en' || $user->lang_name == 'en_us') ? true : false;
 	$ignore_words = !empty($config['similar_topics_words']) ? true : false;
 
-	// if we're using English and not removing custom ignore words, no need to continue
-	if ($english_lang && !$ignore_words)
+	if (!$english_lang || $ignore_words)
 	{
-		$text = str_replace(array('&quot;', '&amp;'), '', $text); //strip quotes, ampersands
-		return $text;
-	}
-
-	// strip out any non alpha-numeric characters using PCRE regex syntax
-	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
-
-	// Put words in the title into an array, and remove uppercases and short words
-	$word_list = array();
-	if (!empty($text))
-	{
-		$word_list = explode(' ', utf8_strtolower($text));
-		foreach ($word_list as $key => $word)
+		// strip out any non-alpha-numeric characters using PCRE regex syntax
+		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
+	
+		// Put words in the title into an array, and remove uppercases and short words
+		$word_list = array();
+		if (!empty($text))
 		{
-			// Lets eliminate all words of 2 characters or less
-			if (utf8_strlen(trim($word)) < 3)
+			$word_list = explode(' ', utf8_strtolower($text));
+			foreach ($word_list as $key => $word)
 			{
-				unset($word_list[$key]);
+				// Lets eliminate all words of 2 characters or less
+				if (utf8_strlen(trim($word)) < 3)
+				{
+					unset($word_list[$key]);
+				}
 			}
 		}
-	}
-
-	// Remove words from phpBB's stop-words list if non-English user language is detected
-	if (!$english_lang && !empty($word_list))
-	{
-		global $phpbb_root_path, $phpEx;
-
-		// Retrieves a language dependent list of words that should be ignored (method copied from search.php)
-		$words = array();
-		if (file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
-		{
-			// include the file containing ignore words
-			include("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx");
-		}
-		$word_list = array_diff($word_list, $words);
-	}
-
-	// Remove custom ignore words
-	if ($ignore_words && !empty($word_list))
-	{
-		$words = explode(' ', utf8_strtolower($config['similar_topics_words']));
-		$word_list = array_diff($word_list, $words);
-	}
 	
-	// Rebuild our cleaned up topic title
-	$text = !empty($word_list) ? implode(' ', $word_list) : '';
+		// If non-English user language is detected, we must remove stop-words using phpBB's ignore words list
+		if (!$english_lang && !empty($word_list))
+		{
+			global $phpbb_root_path, $phpEx;
+	
+			// Retrieves a language dependent list of words that should be ignored (method copied from search.php)
+			$words = array();
+			if (file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
+			{
+				// include the file containing ignore words
+				include("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx");
+			}
+			$word_list = array_diff($word_list, $words);
+		}
+	
+		// Remove custom ignore words
+		if ($ignore_words && !empty($word_list))
+		{
+			$words = explode(' ', utf8_strtolower($config['similar_topics_words']));
+			$word_list = array_diff($word_list, $words);
+		}
+		
+		// Rebuild our cleaned up topic title
+		$text = !empty($word_list) ? implode(' ', $word_list) : '';
+	}
+
 	return $text;
 }
 
