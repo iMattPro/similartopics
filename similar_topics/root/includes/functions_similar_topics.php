@@ -45,7 +45,7 @@ function similar_topics(&$topic_data, $forum_id)
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		$topic_title = pst_clean_title($topic_data['topic_title']);
+		$topic_title = clean_title($topic_data['topic_title']);
 
 		// If the topic_title winds up being empty, no need to continue
 		if (empty($topic_title))
@@ -114,14 +114,14 @@ function similar_topics(&$topic_data, $forum_id)
 }
 
 /**
-* Clean up problem characters from the topic title
-* MySQL full-text has built-in English stop words. Use phpBB's ignore words for non-English languages
+* Remove problem characters from the topic title
+* MySQL fulltext has built-in English stop words. Use phpBB's ignore words for non-English languages
 * Also remove any admin-defined special ignore words
 * 
 * @param  string $text			The topic title
-* @return string $text			The topic titled with any ignore words removed
+* @return string $text			The topic title cleaned and with any ignore words removed
 */
-function pst_clean_title($text)
+function clean_title($text)
 {
 	global $config, $user;
 
