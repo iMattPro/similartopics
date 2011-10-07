@@ -10,8 +10,8 @@
 		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your threads, based on finding the most relevant matching Topic Titles.
 
 		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation in your forum.]]></description>
-		<author-notes lang="en"><![CDATA[Requirements: You must be using MySQL 4.0.1 or later using MyISAM tables (this is the default table type for most MySQL databases).
-Note: Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
+		<author-notes lang="en"><![CDATA[REQUIREMENTS: You must be using a MySQL 4.0.1 or later database. The table type must be MyISAM (this is the default table type for most MySQL databases).
+NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[Matt Friedman]]></realname>
@@ -47,7 +47,7 @@ Note: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<date>2011-09-30</date>
 				<rev-version>1.1.6</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[[Feature]: New ACP option to add your own custom ignore-words (aka stop-words).]]></change>
+					<change><![CDATA[[Feature]: New ACP option to add your own custom ignore-words.]]></change>
 					<change><![CDATA[[Added]: Add-On: Topic Preview MOD integration for Precise Similar Topics.]]></change>
 					<change><![CDATA[[Added]: Add-On: MOD Version Check.]]></change>
 					<change><![CDATA[[Added]: Language: Polish language translation. Thanks to liptonace.]]></change>
