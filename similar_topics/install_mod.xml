@@ -47,6 +47,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<date>20XX-XX-XX</date>
 				<rev-version>1.1.X</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[[Added]: Language: Romanian language translation. Thanks to ivanpetrepaul.]]></change>
 					<change><![CDATA[[Added]: Language: Swedish language translation. Thanks to Aros.]]></change>
 				</changelog>
 			</entry>
@@ -153,7 +154,9 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 			<link type="language" href="contrib/de.xml" lang="en">German/Deutsch Language Pack</link>
 			<link type="language" href="contrib/pl.xml" lang="en">Polish Language Pack</link>
 			<link type="language" href="contrib/pt.xml" lang="en">Portuguese Language Pack</link>
+			<link type="language" href="contrib/ro.xml" lang="en">Romanian Language Pack</link>
 			<link type="language" href="contrib/es.xml" lang="en">Spanish Language Pack</link>
+			<link type="language" href="contrib/sv.xml" lang="en">Swedish Language Pack</link>
 			<link type="contrib" href="contrib/add_on-topic_preview.xml" lang="en">Topic Preview MOD Add-On</link>
 		</link-group>
 	</header>
