@@ -44,6 +44,13 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</installation>
 		<history>
 			<entry>
+				<date>20XX-XX-XX</date>
+				<rev-version>1.1.X</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[[Added]: Language: Swedish language translation. Thanks to Aros.]]></change>
+				</changelog>
+			</entry>
+			<entry>
 				<date>2011-09-30</date>
 				<rev-version>1.1.6</rev-version>
 				<changelog lang="en">
