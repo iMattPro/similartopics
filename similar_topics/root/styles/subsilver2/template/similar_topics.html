@@ -9,13 +9,21 @@
 	<!-- BEGIN similar -->
 		<tr valign="middle">
 			<td class="row1">				
-				<a href="{similar.U_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>
-				<p class="gensmall">{L_IN} <a href="{similar.U_FORUM}">{similar.FORUM}</a></p>
+				<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>
+				<!-- IF similar.PAGINATION -->
+					<p class="gensmall"> [ {GOTO_PAGE_IMG}{L_GOTO_PAGE}: {similar.PAGINATION} ] </p>
+				<!-- ENDIF -->
+				<p class="gensmall">{L_IN} <a href="{similar.U_VIEW_FORUM}">{similar.FORUM_TITLE}</a></p>
 			</td>
 			<td class="row2" width="100" align="center"><p class="topicauthor">{similar.TOPIC_AUTHOR_FULL}</p></td>
 			<td class="row1" width="50" align="center"><p class="topicdetails">{similar.TOPIC_REPLIES}</p></td>
 			<td class="row2" width="50" align="center"><p class="topicdetails">{similar.TOPIC_VIEWS}</p></td>
-			<td class="row1" width="120" align="center"><p class="topicdetails">{similar.TOPIC_TIME}</p></td>
+			<td class="row1" width="120" align="center">
+				<p class="topicdetails">{similar.LAST_POST_TIME}</p>
+				<p class="topicdetails">{similar.LAST_POST_AUTHOR_FULL}
+					<a href="{searchresults.U_LAST_POST}">{LAST_POST_IMG}</a>
+				</p>
+			</td>
 		</tr>
 	<!-- END similar -->
 	</table>

@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 22 10/3/11 10:41 AM VSE $
+* @version $Id: functions_similar_topics.php, 23 2/20/12 2:16 AM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -56,6 +56,7 @@ function similar_topics(&$topic_data, $forum_id)
 		$sql_array = array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, 
 				t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 
+				t.topic_last_post_id, t.topic_last_post_time, t.topic_last_poster_id, t.topic_last_poster_name, t.topic_last_poster_colour, 
 				MATCH (t.topic_title) AGAINST (\'' . $db->sql_escape($topic_title) . '\') as score',
 		
 			'FROM'		=> array(
@@ -98,18 +99,27 @@ function similar_topics(&$topic_data, $forum_id)
 			if ($auth->acl_get('f_read', $similar['forum_id']))
 			{
 				$template->assign_block_vars('similar', array(
-					'TOPIC_TITLE'		=> $similar['topic_title'],
-					'TOPIC_VIEWS'		=> $similar['topic_views'],
-					'TOPIC_REPLIES'		=> $similar['topic_replies'],
-					'TOPIC_TIME'		=> $user->format_date($similar['topic_time']),
-					'TOPIC_AUTHOR_FULL'	=> get_username_string('full', $similar['topic_poster'], $similar['topic_first_poster_name'], $similar['topic_first_poster_colour']),
-					'U_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar['forum_id'] . '&amp;t=' . $similar['topic_id']),
-					'U_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=" . $similar['forum_id']),
-					'FORUM'				=> $similar['forum_name'])
-				);
+					'FIRST_POST_TIME'		=> $user->format_date($similar['topic_time']),
+					'FORUM_TITLE'			=> $similar['forum_name'],
+					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $similar['topic_last_poster_id'], $similar['topic_last_poster_name'], $similar['topic_last_poster_colour']),
+					'LAST_POST_TIME'		=> $user->format_date($similar['topic_last_post_time']),
+					'PAGINATION'			=> topic_generate_pagination($similar['topic_replies'], append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar['forum_id'] . '&amp;t=' . $similar['topic_id'])),
+					'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $similar['topic_poster'], $similar['topic_first_poster_name'], $similar['topic_first_poster_colour']),
+					'TOPIC_REPLIES'			=> $similar['topic_replies'],
+					'TOPIC_TITLE'			=> $similar['topic_title'],
+					'TOPIC_VIEWS'			=> $similar['topic_views'],
+					'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar['forum_id'] . '&amp;t=' . $similar['topic_id'] . '&amp;p=' . $similar['topic_last_post_id']) . '#p' . $similar['topic_last_post_id'],
+					'U_VIEW_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=" . $similar['forum_id']),
+					'U_VIEW_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar['forum_id'] . '&amp;t=' . $similar['topic_id']),
+				));
 			}
 		}
+
 		$db->sql_freeresult($result);
+
+		$template->assign_vars(array(
+			'LAST_POST_IMG'		=> $user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
+		));
 	}
 }
 
