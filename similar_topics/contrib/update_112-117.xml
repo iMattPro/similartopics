@@ -6,19 +6,19 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.5 to v1.1.6]]></title>
-		<description lang="en"><![CDATA[Update instructions for v1.1.5 to v1.1.6]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.2 to v1.1.7]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.1.2 to v1.1.7]]></description>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
-		<mod-version>1.1.6</mod-version>
+		<mod-version>1.1.7</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
-			<target-version>3.0.9</target-version>
+			<target-version>3.0.10</target-version>
 		</installation>
 		<link-group>
 			<link type="parent" href="../install_mod.xml" lang="en">Main Install Instructions</link>
@@ -32,6 +32,8 @@
 			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
+			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
+			<file from="root/styles/subsilver2/template/similar_topics.html" to="styles/subsilver2/template/similar_topics.html"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>

@@ -6,8 +6,8 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.0 to v1.1.6]]></title>
-		<description lang="en"><![CDATA[Update instructions for v1.1.0 to v1.1.6]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.1 to v1.1.7]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.1.1 to v1.1.7]]></description>
 		<author-notes lang="en"><![CDATA[Note: Similar Topics adds a new ACP option to enable the caching of search results. It is turned off by default.]]></author-notes>
 		<author-group>
 			<author>
@@ -15,11 +15,11 @@
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
-		<mod-version>1.1.6</mod-version>
+		<mod-version>1.1.7</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
-			<target-version>3.0.9</target-version>
+			<target-version>3.0.10</target-version>
 		</installation>
 		<link-group>
 			<link type="parent" href="../install_mod.xml" lang="en">Main Install Instructions</link>
@@ -34,6 +34,7 @@
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
 			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
+			<file from="root/styles/subsilver2/template/similar_topics.html" to="styles/subsilver2/template/similar_topics.html"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<delete>
@@ -41,20 +42,8 @@
 		</delete>
 		<open src="viewtopic.php">
 			<edit>
-				<find><![CDATA[// BEGIN Precise Similar Topics
-if ($config['similar_topics'])
-{
-	include($phpbb_root_path . 'includes/similar_topics.' . $phpEx);
-	similar_topics($topic_data, $forum_id);
-}
-// END Precise Similar Topics]]></find>
-				<action type="replace-with"><![CDATA[// BEGIN Precise Similar Topics
-if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))
-{
-	include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
-	similar_topics($topic_data, $forum_id);
-}
-// END Precise Similar Topics]]></action>
+				<find><![CDATA[	include($phpbb_root_path . 'includes/similar_topics.' . $phpEx);]]></find>
+				<action type="replace-with"><![CDATA[	include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);]]></action>
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
