@@ -25,7 +25,7 @@ class similar_topics_version
 			'author'	=> 'VSE',
 			'title'		=> 'Precise Similar Topics II',
 			'tag'		=> 'similar_topics',
-			'version'	=> '1.1.6',
+			'version'	=> '1.1.7',
 			'file'		=> array('www.orca-music.com', 'software', 'mods.xml'),
 		);
 	}

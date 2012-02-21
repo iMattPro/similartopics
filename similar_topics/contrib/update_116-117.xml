@@ -6,7 +6,8 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Portuguese Language Pack]]></title>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.6 to v1.1.7]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.1.6 to v1.1.7]]></description>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
@@ -25,17 +26,14 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/language/pt/mods/info_acp_similar_topics.php" to="language/pt/mods/info_acp_similar_topics.php"/>
+			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
+			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
+			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
+			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
+			<file from="root/styles/subsilver2/template/similar_topics.html" to="styles/subsilver2/template/similar_topics.html"/>
+			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
-		<open src="language/pt/viewtopic.php">
-			<edit>
-				<find><![CDATA[?>]]></find>
-				<action type="before-add"><![CDATA[// BEGIN Precise Similar Topics
-$lang = array_merge($lang, array(
-	'SIMILAR_TOPICS'			=> 'Tópicos Semelhantes',
-));
-// END Precise Similar Topics]]></action>
-			</edit>
-		</open>
+		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
+		<diy-instructions lang="en"><![CDATA[Run yourforum/install_similar_topics.php]]></diy-instructions>
 	</action-group>
 </mod>
