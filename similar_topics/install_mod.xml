@@ -44,10 +44,12 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</installation>
 		<history>
 			<entry>
-				<date>2012-02-21</date>
+				<date>2012-02-26</date>
 				<rev-version>1.1.7</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[[Change]: Added the topic's last post author, date and link to topics list.]]></change>
+					<change><![CDATA[[Added]: Instructions and compatability with we_clearblue style.]]></change>
+					<change><![CDATA[[Added]: Instructions and compatability with we_universal style.]]></change>
 					<change><![CDATA[[Added]: Language: Romanian language translation. Thanks to ivanpetrepaul.]]></change>
 					<change><![CDATA[[Added]: Language: Swedish language translation. Thanks to Aros.]]></change>
 				</changelog>

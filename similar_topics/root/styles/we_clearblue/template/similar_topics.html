@@ -1,0 +1,32 @@
+<div class="forums-wrapper">
+	<table class="forums">
+		<thead>
+			<tr>
+				<th colspan="2">{L_SIMILAR_TOPICS}</th>
+				<th class="statistics">{L_STATISTICS}</th>
+				<th class="last-post">{L_LAST_POST}</th>
+			</tr>
+		</thead>
+		<tbody>
+
+<!-- BEGIN similar -->
+	<tr class="<!-- IF similar.S_ROW_COUNT is even -->bg1<!-- ELSE -->bg2<!-- ENDIF -->">
+		<td class="topic" colspan="2">
+			<h4><a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a></h4>
+			<!-- IF similar.PAGINATION --><strong class="pagination"><span>{similar.PAGINATION}</span></strong><!-- ENDIF -->
+			<p>{L_POST_BY_AUTHOR} {similar.TOPIC_AUTHOR_FULL} &raquo; {similar.FIRST_POST_TIME}</p>
+		</td>
+		<td class="bg2">
+			<p>{L_REPLIES}: <strong>{similar.TOPIC_REPLIES}</strong></p>
+			<p>{L_VIEWS}: <strong>{similar.TOPIC_VIEWS}</strong></p>
+		</td>
+		<td>
+			<p>{similar.LAST_POST_TIME}</p>
+			<p>{L_POST_BY_AUTHOR} {similar.LAST_POST_AUTHOR_FULL} <!-- IF not S_IS_BOT --><a href="{similar.U_LAST_POST}">{LAST_POST_IMG}</a><!-- ENDIF --></p>
+		</td>
+	</tr>
+<!-- END similar -->
+
+	</tbody>
+	</table>
+</div>
