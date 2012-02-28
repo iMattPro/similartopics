@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* @author VSE (Matt Friedman) maf675@gmail.com
+* @author VSE (Matt Friedman)
 * @package umil
 * @version $Id install_similar_topics.php 16 2/21/12 1:50 AM VSE $
 * @copyright (c) 2010 VSE
