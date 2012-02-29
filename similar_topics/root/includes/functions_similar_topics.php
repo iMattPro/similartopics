@@ -2,7 +2,7 @@
 /**
 *
 * @package Precise Similar Topics II
-* @version $Id: functions_similar_topics.php, 23 2/20/12 2:16 AM VSE $
+* @version $Id: functions_similar_topics.php, 24 2/29/12 12:04 PM VSE $
 * @copyright (c) Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -23,7 +23,7 @@ if (!defined('IN_PHPBB'))
 * @param array 	$topic_data		The current topic data for use in searching
 * @param int 	$forum_id		The current forum to check
 */
-function similar_topics(&$topic_data, $forum_id)
+function similar_topics($topic_data, $forum_id)
 {
 	global $auth, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
 
@@ -77,7 +77,7 @@ function similar_topics(&$topic_data, $forum_id)
 
 //			'GROUP_BY'	=> 't.topic_id',
 
-//			'ORDER_BY'	=> 'score DESC',
+//			'ORDER_BY'	=> 'score DESC', /*this is done automatically by MySQL when not using IN BOOLEAN mode*/
 		);
 
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
