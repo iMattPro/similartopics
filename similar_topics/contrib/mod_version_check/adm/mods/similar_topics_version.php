@@ -26,7 +26,7 @@ class similar_topics_version
 			'title'		=> 'Precise Similar Topics II',
 			'tag'		=> 'similar_topics',
 			'version'	=> '1.1.7',
-			'file'		=> array('www.orca-music.com', 'software', 'mods.xml'),
+			'file'		=> array('orcamx.vlexofree.com', 'software', 'mods.xml'),
 		);
 	}
 }
