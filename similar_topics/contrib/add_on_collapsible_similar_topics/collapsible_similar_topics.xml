@@ -33,9 +33,9 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/contrib/add_on_collapsible_similar_topics/styles/prosilver/template/jquery.collapse.js" to="styles/prosilver/template/jquery.collapse.js"/>
-			<file from="root/contrib/add_on_collapsible_similar_topics/styles/prosilver/template/jquery.cookie.js" to="styles/prosilver/template/jquery.cookie.js"/>
-			<file from="root/contrib/add_on_collapsible_similar_topics/styles/prosilver/theme/images/collapse-icon.png" to="styles/prosilver/theme/images/collapse-icon.png"/>
+			<file from="contrib/add_on_collapsible_similar_topics/styles/prosilver/template/jquery.collapse.js" to="styles/prosilver/template/jquery.collapse.js"/>
+			<file from="contrib/add_on_collapsible_similar_topics/styles/prosilver/template/jquery.cookie.js" to="styles/prosilver/template/jquery.cookie.js"/>
+			<file from="contrib/add_on_collapsible_similar_topics/styles/prosilver/theme/images/collapse-icon.png" to="styles/prosilver/theme/images/collapse-icon.png"/>
 		</copy>
 		<open src="styles/prosilver/template/similar_topics.html">
 			<edit>
@@ -55,7 +55,7 @@
 		<open src="styles/prosilver/template/overall_footer.html">
 			<edit>
 				<find><![CDATA[</body>]]></find>
-				<action type="before-add"><![CDATA[<<!-- IF SCRIPT_NAME eq 'viewtopic' -->
+				<action type="before-add"><![CDATA[<!-- IF SCRIPT_NAME eq 'viewtopic' -->
 <script type="text/javascript">
 	window.jQuery || document.write(unescape('%3Cscript src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"%3E%3C/script%3E'));
 </script>
