@@ -37,6 +37,10 @@
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[Run yourforum/install_similar_topics.php]]></diy-instructions>
+		<diy-instructions lang="en"><![CDATA[Did you remember to run: yourforum/install_similar_topics.php ?
+
+Purge your forum and template caches.
+
+Enjoy!]]></diy-instructions>
 	</action-group>
 </mod>
