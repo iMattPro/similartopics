@@ -153,7 +153,7 @@ $versions = array(
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 
-/*
+/**
 * Here is our custom function that will be called for version 1.1.0.
 *
 * @param string $action The action (install|update|uninstall) will be sent through this.
