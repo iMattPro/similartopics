@@ -1,11 +1,10 @@
 <?php
 /**
 *
-* @author VSE (Matt Friedman)
 * @package umil
-* @version $Id install_similar_topics.php 16 2/21/12 1:50 AM VSE $
-* @copyright (c) 2010 VSE
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+* @version $Id: install_similar_topics.php 16 2/21/12 1:50 AM VSE $
+* @copyright (c) 2010 Matt Friedman
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
 

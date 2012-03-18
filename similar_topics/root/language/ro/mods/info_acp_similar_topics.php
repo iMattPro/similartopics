@@ -1,11 +1,13 @@
 <?php
 /**
 *
-* @package language [Română]
-* @package language partially translated by Ionuţ Butnaru and corrected by Ivan Petre Paul, both from phpBB Romanian Community (www.phpbb.ro)
+* similar_topics [Română]
+*
+* @package language
 * @version $Id: info_acp_similar_topics.php 15 9/30/11 8:08 PM VSE $
 * @copyright (c) 2010 Matt Friedman
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* @Translated by Ionuţ Butnaru and corrected by Ivan Petre Paul, both from phpBB Romanian Community (www.phpbb.ro)
 *
 */
 
