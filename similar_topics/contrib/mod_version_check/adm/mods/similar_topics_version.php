@@ -4,7 +4,7 @@
 * @package acp
 * @version $Id: similar_topics_version.php 4 2/25/12 10:16 AM VSE $
 * @copyright (c) 2007 StarTrekGuide
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
 
