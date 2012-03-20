@@ -47,7 +47,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<date>2012-03-14</date>
 				<rev-version>1.1.7</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[[Change]: Added the topic's last post author, date and link to topics list.]]></change>
+					<change><![CDATA[[Change]: Added the similar topic's last post author, date, link and pagination links to topics list.]]></change>
 					<change><![CDATA[[Added]: Add-On: Collapsible Similar Topics.]]></change>
 					<change><![CDATA[[Added]: Instructions and compatability with we_clearblue style.]]></change>
 					<change><![CDATA[[Added]: Instructions and compatability with we_universal style.]]></change>
@@ -212,7 +212,7 @@ $lang = array_merge($lang, array(
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[1. Go to yourforum/install_similar_topics.php
+		<diy-instructions lang="en"><![CDATA[1. Go to yourforum/install_similar_topics.php (or click the hi-lighted link above if you are using AutoMOD)
 2. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
 3. Go to the ACP -> Permissions, and set up Group permissions to your liking.]]></diy-instructions>
 	</action-group>

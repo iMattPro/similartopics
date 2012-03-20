@@ -35,7 +35,7 @@
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[Did you remember to run: yourforum/install_similar_topics.php ?
+		<diy-instructions lang="en"><![CDATA[Go to yourforum/install_similar_topics.php (or click the hi-lighted link above if you are using AutoMOD)
 
 Purge your forum and template caches.
 
