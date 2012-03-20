@@ -2,10 +2,10 @@
 
 Hi! I'm VSE from the phpBB community.
 
-Welcome to my Github repository for my MODs for phpBB3.
+Welcome to my Github repository for Precise Similar Topics II for phpBB3.
 
-* Current Release version: v1.1.6
-* Version in development: v1.1.7
+* Current Release version: 1.1.6
+* Version in development: 1.1.7
 
 == DESCRIPTION:
 
@@ -17,9 +17,6 @@ More information:
 == DEVELOPMENT:
 
 * Report any bugs or problems you encounter to the issue tracker http://github.com/VSEphpbb/precise-similar-topics-II/issues
-
-To-do list:
-* Give admins an ACP option to define custom ignore words
 
 == REQUIREMENTS:
 
