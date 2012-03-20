@@ -4,10 +4,8 @@
 * similar_topics [Portuguese]
 *
 * @package language
-* @version $Id: info_acp_similar_topics.php 15 9/30/11 8:08 PM VSE $
-* @copyright (c) 2010 Matt Friedman
+* @copyright (c) 2010 Matt Friedman (Traduzido por The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
-* @Traduzido por The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico
 *
 */
 

@@ -4,10 +4,8 @@
 * similar_topics [Swedish]
 *
 * @package language
-* @version $Id: info_acp_similar_topics.php 15 9/30/11 8:08 PM VSE $
-* @copyright (c) 2010 Matt Friedman
+* @copyright (c) 2010 Matt Friedman (Translated by Aros via phpbb.com)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
-* @Translated by Aros via phpbb.com
 *
 */
 

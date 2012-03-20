@@ -2,7 +2,6 @@
 /**
 *
 * @package phpBB3
-* @version $Id: functions_similar_topics.php, 24 2/29/12 12:04 PM VSE $
 * @copyright (c) 2010 Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
