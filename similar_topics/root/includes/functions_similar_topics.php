@@ -76,7 +76,7 @@ function similar_topics($topic_data, $forum_id)
 
 //			'GROUP_BY'	=> 't.topic_id',
 
-//			'ORDER_BY'	=> 'score DESC', /*this is done automatically by MySQL when not using IN BOOLEAN mode*/
+//			'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN mode
 		);
 
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
