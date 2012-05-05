@@ -48,6 +48,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<rev-version>1.1.8</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[[Change]: Added the similar topic's last post author, date, link and pagination links to topics list.]]></change>
+					<change><![CDATA[[Change]: Installer script will warn admin if their database is not MyISAM and does not support FULLTEXT indexes.]]></change>
 					<change><![CDATA[[Added]: Add-On: Collapsible Similar Topics.]]></change>
 					<change><![CDATA[[Added]: Instructions and compatability with we_clearblue style.]]></change>
 					<change><![CDATA[[Added]: Instructions and compatability with we_universal style.]]></change>
