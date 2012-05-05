@@ -55,7 +55,7 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Adding FULLTEXT index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Dropped FULLTEXT index: topic_title',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>WARNING:</strong> You should not install this MOD! Your database does not support FULLTEXT indexes. This usually means your topics table is not using the MyISAM storage engine required for this MOD to work.</span>',
+	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>WARNING:</strong> You should not install this MOD! Your database does not support FULLTEXT indexes. This usually means your topics table is not using the MyISAM storage engine required for this MOD to work. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737">More information</a>.</span>',
 	'PST_FULLTEXT_PASS' => 'Your database is compatible with this MOD. Enjoy :-)',
 ));
 

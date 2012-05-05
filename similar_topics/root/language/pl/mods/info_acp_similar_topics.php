@@ -55,7 +55,7 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Dodawanie FULLTEXT index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Usuwanie FULLTEXT index: topic_title',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>OSTRZEŻENIE:</strong> Nie należy instalować ten mod! Baza danych nie obsługuje FULLTEXT indeksy. To zazwyczaj oznacza, że ​​tabela tematy nie wykorzystuje silnik przechowywania MyISAM wymagane do tego moda do pracy.</span>',
+	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>OSTRZEŻENIE:</strong> Nie należy instalować ten mod! Baza danych nie obsługuje FULLTEXT indeksy. To zazwyczaj oznacza, że ​​tabela tematy nie wykorzystuje silnik przechowywania MyISAM wymagane do tego moda do pracy. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737">Więcej informacji</a>.</span>',
 	'PST_FULLTEXT_PASS' => 'Baza danych jest zgodna z tego moda.',
 ));
 
