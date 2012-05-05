@@ -124,22 +124,22 @@ $versions = array(
 
 	// Version 1.1.2
 	'1.1.2' => array(
-		// Nothing changed in this version.
+		// No db changes in this version.
 	),
 
 	// Version 1.1.3
 	'1.1.3' => array(
-		// Nothing changed in this version.
+		// No db changes in this version.
 	),
 
 	// Version 1.1.4
 	'1.1.4' => array(
-		// Nothing changed in this version.
+		// No db changes in this version.
 	),
 
 	// Version 1.1.5
 	'1.1.5' => array(
-		// Nothing changed in this version.
+		// No db changes in this version.
 	),
 
 	// Version 1.1.6
@@ -153,11 +153,13 @@ $versions = array(
 		'cache_purge' => array(),
 	),
 
+	// Version 1.1.7 - version skipped
+
 	// Version 1.1.8
 	'1.1.8' => array(
 		// No db changes in this version.
 
-		// purge the cache
+		// purge the cache (we had template changes in this version)
 		'cache_purge' => array(),
 	),
 
@@ -196,10 +198,10 @@ function make_fulltext($action, $version)
 }
 
 /**
-* Here is our custom function that display options to the user
+* Here is our custom function that displays options to the user
 *
-* Since this MOD requires FULLTEXT indexes, available only in MyISAM tables, this
-* function will check the phpbb_topics storage engine and display a message to the admin
+* Since this MOD requires FULLTEXT indexes, available only in MyISAM tables, this function
+* will check the phpbb_topics storage engine and display a pass/fail message to the admin
 */
 function check_table_engine()
 {
