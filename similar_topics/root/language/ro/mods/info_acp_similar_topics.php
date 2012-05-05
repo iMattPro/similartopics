@@ -55,6 +55,8 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Adding FULLTEXT index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Dropped FULLTEXT index: topic_title',
+	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>AVERTISMENT:</strong> Nu ar trebui să instalaţi această MOD! Baza de date nu acceptă indexuri FULLTEXT. Acest lucru înseamnă, de obicei masa ta nu se teme folosind motorul de stocare MyISAM necesar pentru acest MOD pentru a lucra.</span>',
+	'PST_FULLTEXT_PASS' => 'Baza de date este compatibil cu acest MOD.',
 ));
 
 // For permissions

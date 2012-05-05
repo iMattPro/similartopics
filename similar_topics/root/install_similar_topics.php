@@ -42,6 +42,14 @@ $version_config_name = 'similar_topics_version';
 $language_file = 'mods/info_acp_similar_topics';
 
 /*
+* Options to display to the user
+* Check the topics table engine for MyISAM type, and display result.
+*/
+$options = array(
+	'status'	=> array('lang' => 'INFORMATION', 'type' => 'custom', 'function' => 'check_table_engine', 'explain' => false),
+);
+
+/*
 * The array of versions and actions within each.
 * You do not need to order it a specific way (it will be sorted automatically), however, you must enter every version, even if no actions are done for it.
 *
@@ -77,9 +85,12 @@ $versions = array(
 				),
 			),
 		),
-		
-		// Custom function to update SQL topic_title table to FULLTEXT
+
+		// Custom function to update SQL topics table to FULLTEXT
 		'custom'	=> 'make_fulltext',
+
+		// purge the cache
+		'cache_purge' => array(),
 	),
 
 	// Version 1.1.1
@@ -144,7 +155,10 @@ $versions = array(
 
 	// Version 1.1.7
 	'1.1.7' => array(
-		// Nothing changed in this version.
+		// No db changes in this version.
+
+		// purge the cache
+		'cache_purge' => array(),
 	),
 
 );
@@ -160,7 +174,7 @@ include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 */
 function make_fulltext($action, $version)
 {
-	global $db, $table_prefix, $umil;
+	global $db;
 
 	if ($action == 'install')
 	{
@@ -179,6 +193,26 @@ function make_fulltext($action, $version)
 
 		return 'PST_FULLTEXT_DROP';
 	}
+}
+
+function check_table_engine()
+{
+	global $db, $user;
+	
+	// First we should verify the table is MyISAM before doing anything else
+	$sql = "SHOW TABLE STATUS WHERE Name = '" . TOPICS_TABLE . "'";
+	$result = $db->sql_query($sql);
+	while($row = mysql_fetch_array($result))
+	{
+		$type = strtolower($row['Engine']);
+	}
+	
+	if ($type != 'myisam')
+	{
+		return $user->lang['PST_FULLTEXT_FAIL'];
+	}
+
+	return $user->lang['PST_FULLTEXT_PASS'];
 }
 
 ?>
