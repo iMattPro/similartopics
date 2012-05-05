@@ -195,24 +195,30 @@ function make_fulltext($action, $version)
 	}
 }
 
+/**
+* Here is our custom function that display options to the user
+*
+* Since this MOD requires FULLTEXT indexes, available only in MyISAM tables, this
+* function will check the phpbb_topics storage engine and display a message to the admin
+*/
 function check_table_engine()
 {
 	global $db, $user;
 	
-	// First we should verify the table is MyISAM before doing anything else
+	$engine = '';
 	$sql = "SHOW TABLE STATUS WHERE Name = '" . TOPICS_TABLE . "'";
 	$result = $db->sql_query($sql);
-	while($row = mysql_fetch_array($result))
+	while ($row = $db->sql_fetchrow($result))
 	{
-		$type = strtolower($row['Engine']);
+		$engine = strtolower($row['Engine']);
 	}
 	
-	if ($type != 'myisam')
+	if ($engine == 'myisam')
 	{
-		return $user->lang['PST_FULLTEXT_FAIL'];
+		return $user->lang['PST_FULLTEXT_PASS'];
 	}
 
-	return $user->lang['PST_FULLTEXT_PASS'];
+	return $user->lang['PST_FULLTEXT_FAIL'];
 }
 
 ?>
