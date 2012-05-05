@@ -6,15 +6,16 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.3 to v1.1.7]]></title>
-		<description lang="en"><![CDATA[Update instructions for v1.1.3 to v1.1.7]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.0 to v1.1.8]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.1.0 to v1.1.8]]></description>
+		<author-notes lang="en"><![CDATA[Note: Similar Topics adds a new ACP option to enable the caching of search results. It is turned off by default.]]></author-notes>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
-		<mod-version>1.1.7</mod-version>
+		<mod-version>1.1.8</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
@@ -36,11 +37,30 @@
 			<file from="root/styles/subsilver2/template/similar_topics.html" to="styles/subsilver2/template/similar_topics.html"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
+		<delete>
+			<file name="includes/similar_topics.php"/>
+		</delete>
+		<open src="viewtopic.php">
+			<edit>
+				<find><![CDATA[// BEGIN Precise Similar Topics
+if ($config['similar_topics'])
+{
+	include($phpbb_root_path . 'includes/similar_topics.' . $phpEx);
+	similar_topics($topic_data, $forum_id);
+}
+// END Precise Similar Topics]]></find>
+				<action type="replace-with"><![CDATA[// BEGIN Precise Similar Topics
+if (!empty($config['similar_topics']) && $auth->acl_get('u_similar_topics'))
+{
+	include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
+	similar_topics($topic_data, $forum_id);
+}
+// END Precise Similar Topics]]></action>
+			</edit>
+		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[Go to yourforum/install_similar_topics.php (or click the hi-lighted link above if you are using AutoMOD)
-
-Purge your forum and template caches.
-
-Enjoy!]]></diy-instructions>
+		<diy-instructions lang="en"><![CDATA[1. Go to yourforum/install_similar_topics.php (or click the hi-lighted link above if you are using AutoMOD)
+2. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
+3. Go to the ACP -> Permissions, and set up Group permissions to your liking.]]></diy-instructions>
 	</action-group>
 </mod>
