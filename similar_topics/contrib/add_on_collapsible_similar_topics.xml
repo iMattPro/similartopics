@@ -21,7 +21,7 @@
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
-		<mod-version>1.1.7</mod-version>
+		<mod-version>1.1.8</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>120</time>

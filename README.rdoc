@@ -5,7 +5,7 @@ Hi! I'm VSE from the phpBB community.
 Welcome to my Github repository for Precise Similar Topics II for phpBB3.
 
 * Current Release version: 1.1.6
-* Version in development: 1.1.7
+* Version in development: 1.1.8
 
 == DESCRIPTION:
 

@@ -25,7 +25,7 @@ class acp_similar_topics_info
 		return array(
 			'filename'	=> 'acp_similar_topics',
 			'title'		=> 'PST_TITLE',
-			'version'	=> '1.1.7',
+			'version'	=> '1.1.8',
 			'modes'		=> array(
 				'index'	=> array(
 					'title'			=> 'PST_TITLE',
