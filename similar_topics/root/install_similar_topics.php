@@ -213,7 +213,8 @@ function check_table_engine()
 	global $db, $user;
 	
 	$engine = '';
-	$sql = "SHOW TABLE STATUS WHERE Name = '" . TOPICS_TABLE . "'";
+	$sql = "SHOW TABLE STATUS 
+			WHERE Name = '" . TOPICS_TABLE . "'";
 	$result = $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
