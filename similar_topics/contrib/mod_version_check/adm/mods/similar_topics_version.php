@@ -24,7 +24,7 @@ class similar_topics_version
 			'author'	=> 'VSE',
 			'title'		=> 'Precise Similar Topics II',
 			'tag'		=> 'similar_topics',
-			'version'	=> '1.1.8',
+			'version'	=> '1.1.9',
 			'file'		=> array('orcamx.vlexofree.com', 'software', 'mods.xml'),
 		);
 	}

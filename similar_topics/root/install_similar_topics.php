@@ -158,6 +158,11 @@ $versions = array(
 	// Version 1.1.8
 	'1.1.8' => array(
 		// No db changes in this version.
+	),
+
+	// Version 1.1.9
+	'1.1.9' => array(
+		// No db changes in this version.
 
 		// purge the cache (we had template changes in this version)
 		'cache_purge' => array(),
