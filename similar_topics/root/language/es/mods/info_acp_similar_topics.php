@@ -54,7 +54,7 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Añadiendo índice FULLTEXT: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Eliminando índice FULLTEXT: topic_title',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>ADVERTENCIA:</strong> No se debe instalar este MOD! Su base de datos no es compatible con índices FULLTEXT. Esto generalmente significa que la mesa temas que no se está utilizando el motor de almacenamiento MyISAM se requiere para este MOD para trabajar. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737">Más información</a>.</span>',
+	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>ADVERTENCIA:</strong> No se debe instalar este MOD! Su base de datos no es compatible con índices FULLTEXT. Esto generalmente significa que la mesa temas que no se está utilizando el motor de almacenamiento MyISAM se requiere para este MOD para trabajar. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Más información</a>.</span>',
 	'PST_FULLTEXT_PASS' => 'Su base de datos es compatible con este MOD.',
 ));
 
