@@ -26,10 +26,9 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
-			<file from="root/includes/functions_similar_topics.php" to="includes/functions_similar_topics.php"/>
-			<file from="root/includes/hooks/hook_similar_topics.php" to="includes/hooks/hook_similar_topics.php"/>
+			<file from="root/includes/*.*" to="includes/*.*"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
+			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<open src="viewtopic.php">
