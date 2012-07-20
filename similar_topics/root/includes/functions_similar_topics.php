@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* @package phpBB3
+* @package Precise Similar Topics II
 * @copyright (c) 2010 Matt Friedman, Tobias Schäfer, Xabi
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
