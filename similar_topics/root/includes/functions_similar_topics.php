@@ -116,7 +116,10 @@ function similar_topics($topic_data, $forum_id)
 
 		$db->sql_freeresult($result);
 
+		$user->add_lang('mods/info_acp_similar_topics');
+
 		$template->assign_vars(array(
+			'L_SIMILAR_TOPICS'	=> $user->lang['PST_TITLE_ACP'],
 			'LAST_POST_IMG'		=> $user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
 		));
 	}
