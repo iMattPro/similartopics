@@ -19,7 +19,6 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	//For ACP Page
 	'PST_TITLE_ACP'		=> 'Podobne tematy',
 	'PST_TITLE'			=> 'Precise Similar Topics II',
 	'PST_LEGEND1'		=> 'Ustawienia ogólne',
