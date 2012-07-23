@@ -52,11 +52,12 @@ function similar_topics($topic_data, $forum_id)
 			return;
 		}
 
+		// Similar Topics query
 		$sql_array = array(
-			'SELECT'	=> 'f.forum_id, f.forum_name, 
+			'SELECT'	=> "f.forum_id, f.forum_name, 
 				t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 
 				t.topic_last_post_id, t.topic_last_post_time, t.topic_last_poster_id, t.topic_last_poster_name, t.topic_last_poster_colour, 
-				MATCH (t.topic_title) AGAINST (\'' . $db->sql_escape($topic_title) . '\') as score',
+				MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_title) . "') AS score",
 		
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
