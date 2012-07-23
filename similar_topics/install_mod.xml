@@ -36,7 +36,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.1.9</mod-version>
+		<mod-version>1.2.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
@@ -45,7 +45,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		<history>
 			<entry>
 				<date>2012-07-22</date>
-				<rev-version>1.1.9</rev-version>
+				<rev-version>1.2.0</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[[Change]: Use phpBB hook system to eliminate all but 1 file edit.]]></change>
 					<change><![CDATA[[Change]: Updated compatability with Aero style v1.4.7.]]></change>
@@ -162,14 +162,14 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 			<link type="template" href="contrib/aero.xml" lang="en">Aero v1.4.7</link>
 			<link type="template" href="contrib/we_clearblue.xml" lang="en">we_clearblue v1.0.1</link>
 			<link type="template" href="contrib/we_universal.xml" lang="en">we_universal v2.2.0</link>
-			<link type="contrib" href="contrib/update_118-119.xml" lang="en">Update: from 1.1.8 to 1.1.9</link>
-			<link type="contrib" href="contrib/update_116-119.xml" lang="en">Update: from 1.1.6 to 1.1.9</link>
-			<link type="contrib" href="contrib/update_115-119.xml" lang="en">Update: from 1.1.5 to 1.1.9</link>
-			<link type="contrib" href="contrib/update_114-119.xml" lang="en">Update: from 1.1.4 to 1.1.9</link>
-			<link type="contrib" href="contrib/update_113-119.xml" lang="en">Update: from 1.1.3 to 1.1.9</link>
-			<link type="contrib" href="contrib/update_112-119.xml" lang="en">Update: from 1.1.2 to 1.1.9</link>
-			<link type="contrib" href="contrib/update_111-119.xml" lang="en">Update: from 1.1.1 to 1.1.9</link>
-			<link type="contrib" href="contrib/update_110-119.xml" lang="en">Update: from 1.1.0 to 1.1.9</link>
+			<link type="contrib" href="contrib/update_118-120.xml" lang="en">Update: from 1.1.8 to 1.2.0</link>
+			<link type="contrib" href="contrib/update_116-120.xml" lang="en">Update: from 1.1.6 to 1.2.0</link>
+			<link type="contrib" href="contrib/update_115-120.xml" lang="en">Update: from 1.1.5 to 1.2.0</link>
+			<link type="contrib" href="contrib/update_114-120.xml" lang="en">Update: from 1.1.4 to 1.2.0</link>
+			<link type="contrib" href="contrib/update_113-120.xml" lang="en">Update: from 1.1.3 to 1.2.0</link>
+			<link type="contrib" href="contrib/update_112-120.xml" lang="en">Update: from 1.1.2 to 1.2.0</link>
+			<link type="contrib" href="contrib/update_111-120.xml" lang="en">Update: from 1.1.1 to 1.2.0</link>
+			<link type="contrib" href="contrib/update_110-120.xml" lang="en">Update: from 1.1.0 to 1.2.0</link>
 			<link type="language" href="contrib/de.xml" lang="en">German/Deutsch Language Pack</link>
 			<link type="language" href="contrib/pl.xml" lang="en">Polish Language Pack</link>
 			<link type="language" href="contrib/pt.xml" lang="en">Portuguese Language Pack</link>

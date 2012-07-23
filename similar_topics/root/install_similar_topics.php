@@ -160,8 +160,10 @@ $versions = array(
 		// No db changes in this version.
 	),
 
-	// Version 1.1.9
-	'1.1.9' => array(
+	// Version 1.1.9 - version skipped
+
+	// Version 1.2.0
+	'1.2.0' => array(
 		// No db changes in this version.
 
 		// purge the cache (we had template changes in this version)
