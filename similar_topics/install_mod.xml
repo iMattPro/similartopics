@@ -44,10 +44,11 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</installation>
 		<history>
 			<entry>
-				<date>2012-07-20</date>
+				<date>2012-07-22</date>
 				<rev-version>1.1.9</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[[Change]: Use phpBB hook system to eliminate all but 1 file edit.]]></change>
+					<change><![CDATA[[Change]: Updated compatability with Aero style v1.4.7.]]></change>
 				</changelog>
 			</entry>
 			<entry>
@@ -158,9 +159,9 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</history>
 		<link-group>
 			<link type="template" href="contrib/subsilver2.xml" lang="en">subsilver2</link>
-			<link type="template" href="contrib/aero.xml" lang="en">Aero</link>
-			<link type="template" href="contrib/we_clearblue.xml" lang="en">we_clearblue</link>
-			<link type="template" href="contrib/we_universal.xml" lang="en">we_universal</link>
+			<link type="template" href="contrib/aero.xml" lang="en">Aero v1.4.7</link>
+			<link type="template" href="contrib/we_clearblue.xml" lang="en">we_clearblue v1.0.1</link>
+			<link type="template" href="contrib/we_universal.xml" lang="en">we_universal v2.2.0</link>
 			<link type="contrib" href="contrib/update_118-119.xml" lang="en">Update: from 1.1.8 to 1.1.9</link>
 			<link type="contrib" href="contrib/update_116-119.xml" lang="en">Update: from 1.1.6 to 1.1.9</link>
 			<link type="contrib" href="contrib/update_115-119.xml" lang="en">Update: from 1.1.5 to 1.1.9</link>
