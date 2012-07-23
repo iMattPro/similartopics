@@ -6,9 +6,9 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Topic Preview Add-On]]></title>
-		<description lang="en"><![CDATA[This Add-On will add my "Topic Preview" MODs feature to the Similar Topics results, allowing users to see a preview of the first post's text when they hover the mouse of the title of the Similar Topics.]]></description>
-		<author-notes lang="en"><![CDATA[Requirements: You must already have installed on your forum my "Topic Preview" MOD.]]></author-notes>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Topic Preview MOD Compatibility Add-On]]></title>
+		<description lang="en"><![CDATA[This Add-On will allow my "Topic Preview" MOD's feature to work with the Similar Topics results, allowing users to see a preview of the first post's text when they hover the mouse over the title of Similar Topics.]]></description>
+		<author-notes lang="en"><![CDATA[Requirements: You must already have my "Topic Preview" MOD installed on your forum. It is available here: http://www.phpbb.com/customise/db/mod/topic_preview/]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[Matt Friedman]]></realname>
@@ -40,7 +40,7 @@
 		// END Topic Preview Mod]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[			if ($auth->acl_get('f_read', $similar['forum_id']))
+				<find><![CDATA[			if ($auth->acl_get('f_read', $similar_forum_id))
 			{]]></find>
 				<action type="after-add"><![CDATA[				// BEGIN Topic Preview Mod
 				if (!empty($similar['first_post_preview_text']))
@@ -63,14 +63,14 @@
 		</open>
 		<open src="styles/prosilver/template/similar_topics.html">
 			<edit>
-				<find><![CDATA[				<dt>
-					<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>]]></find>
-				<action type="replace-with"><![CDATA[				<dt <!-- IF similar.TOPIC_PREVIEW_TEXT -->title="{similar.TOPIC_PREVIEW_TEXT}"<!-- ENDIF -->>
-					<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>]]></action>
+				<comment lang="en"><![CDATA[Note: This edit is required for prosilver and all prosilver-based styles (ie: Aero style)]]></comment>
+				<find><![CDATA[<dt <!-- IF similar.TOPIC_ICON_IMG -->style="background-image: url({T_ICONS_PATH}{similar.TOPIC_ICON_IMG}); background-repeat: no-repeat;"<!-- ENDIF -->>]]></find>
+				<action type="replace-with"><![CDATA[<dt <!-- IF similar.TOPIC_ICON_IMG -->style="background-image: url({T_ICONS_PATH}{similar.TOPIC_ICON_IMG}); background-repeat: no-repeat;"<!-- ENDIF --><!-- IF similar.TOPIC_PREVIEW_TEXT --> title="{similar.TOPIC_PREVIEW_TEXT}"<!-- ENDIF -->>]]></action>
 			</edit>
 		</open>
 		<open src="styles/subsilver2/template/similar_topics.html">
 			<edit>
+				<comment lang="en"><![CDATA[Note: This edit is required for subsilver2 and all subsilver2-based styles (ie: we_clearblue and we_universal)]]></comment>
 				<find><![CDATA[<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>]]></find>
 				<inline-edit>
 					<inline-find><![CDATA[class="topictitle"]]></inline-find>

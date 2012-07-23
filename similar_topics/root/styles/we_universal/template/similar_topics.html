@@ -10,9 +10,12 @@
 		<tbody>
 
 <!-- BEGIN similar -->
-	<tr class="row <!-- IF similar.S_ROW_COUNT is even -->bg1<!-- ELSE -->bg2<!-- ENDIF -->">
-		<td class="topic" colspan="2">
-			<h4><a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a></h4>
+	<tr class="row <!-- IF similar.S_ROW_COUNT is even -->bg1<!-- ELSE -->bg2<!-- ENDIF --><!-- IF similar.S_TOPIC_REPORTED --> reported<!-- ENDIF -->">
+		<td class="icon bg2" style="background-image: url({similar.TOPIC_FOLDER_IMG_SRC});">
+			<!-- IF similar.TOPIC_ICON_IMG --><img src="{T_ICONS_PATH}{similar.TOPIC_ICON_IMG}" alt="" title="" /><!-- ENDIF -->
+		</td>
+		<td class="topic">
+			<h4><!-- IF similar.ATTACH_ICON_IMG -->{similar.ATTACH_ICON_IMG}<!-- ENDIF --> <a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a></h4>
 			<!-- IF similar.PAGINATION --><strong class="pagination"><span>{similar.PAGINATION}</span></strong><!-- ENDIF -->
 			<p>{L_POST_BY_AUTHOR} {similar.TOPIC_AUTHOR_FULL} &raquo; {similar.FIRST_POST_TIME}</p>
 		</td>

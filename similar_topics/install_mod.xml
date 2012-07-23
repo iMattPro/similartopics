@@ -47,6 +47,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<date>2012-07-22</date>
 				<rev-version>1.2.0</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[[Change]: Added topic icons and topic status/type icons]]></change>
 					<change><![CDATA[[Change]: Use phpBB hook system to eliminate all but 1 file edit.]]></change>
 					<change><![CDATA[[Change]: Updated compatability with Aero style v1.4.7.]]></change>
 				</changelog>
@@ -176,7 +177,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 			<link type="language" href="contrib/ro.xml" lang="en">Romanian Language Pack</link>
 			<link type="language" href="contrib/es.xml" lang="en">Spanish Language Pack</link>
 			<link type="language" href="contrib/sv.xml" lang="en">Swedish Language Pack</link>
-			<link type="contrib" href="contrib/add_on-topic_preview.xml" lang="en">Topic Preview MOD Add-On</link>
+			<link type="contrib" href="contrib/add_on-topic_preview.xml" lang="en">Topic Preview MOD Compatibility Add-On</link>
 			<link type="contrib" href="contrib/add_on_collapsible_similar_topics.xml" lang="en">Collapsible Similar Topics Add-On</link>
 		</link-group>
 	</header>

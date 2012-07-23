@@ -29,6 +29,8 @@
 			<file from="root/includes/*.*" to="includes/*.*"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
+			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
+			<file from="root/styles/subsilver2/template/similar_topics.html" to="styles/subsilver2/template/similar_topics.html"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<open src="viewtopic.php">

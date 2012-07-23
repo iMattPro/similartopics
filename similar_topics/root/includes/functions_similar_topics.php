@@ -24,7 +24,7 @@ if (!defined('IN_PHPBB'))
 */
 function similar_topics($topic_data, $forum_id)
 {
-	global $auth, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
+	global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
 
 	// Bail out if not using required MySQL to prevent any problems
 	if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
@@ -52,11 +52,14 @@ function similar_topics($topic_data, $forum_id)
 			return;
 		}
 
+		// Grab icons
+		$icons = $cache->obtain_icons();
+		$attachement_icon = $user->img('icon_topic_attach', $user->lang['TOTAL_ATTACHMENTS']);
+		$s_attachement = $auth->acl_get('u_download');
+
 		// Similar Topics query
 		$sql_array = array(
-			'SELECT'	=> "f.forum_id, f.forum_name, 
-				t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_poster, t.topic_first_poster_name, t.topic_first_poster_colour, 
-				t.topic_last_post_id, t.topic_last_post_time, t.topic_last_poster_id, t.topic_last_poster_name, t.topic_last_poster_colour, 
+			'SELECT'	=> "f.forum_id, f.forum_name, t.*, 
 				MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_title) . "') AS score",
 		
 			'FROM'		=> array(
@@ -80,6 +83,13 @@ function similar_topics($topic_data, $forum_id)
 //			'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN mode
 		);
 
+		// Add topic tracking data to query (only when query caching is off)
+		if ($user->data['is_registered'] && $config['load_db_lastread'] && !$config['similar_topics_cache'])
+		{
+			$sql_array['LEFT_JOIN'][] = array('FROM' => array(TOPICS_TRACK_TABLE => 'tt'), 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']);
+			$sql_array['SELECT'] .= ', tt.mark_time';
+		}
+
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
 		if (!empty($topic_data['similar_topic_forums']))
 		{
@@ -94,23 +104,57 @@ function similar_topics($topic_data, $forum_id)
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query_limit($sql, $config['similar_topics_limit'], 0, $config['similar_topics_cache']);
 
+		$rowset = array();
+
 		while ($similar = $db->sql_fetchrow($result))
 		{
-			if ($auth->acl_get('f_read', $similar['forum_id']))
+			$similar_forum_id = (int) $similar['forum_id'];
+			$similar_topic_id = (int) $similar['topic_id'];
+			$rowset[$similar_topic_id] = $similar;
+
+			if ($auth->acl_get('f_read', $similar_forum_id))
 			{
+				// Get topic tracking info
+				if ($user->data['is_registered'] && $config['load_db_lastread'] && !$config['similar_topics_cache'])
+				{
+					$topic_tracking_info = get_topic_tracking($similar_forum_id, $similar_topic_id, $rowset, array($similar_forum_id => $similar['mark_time']));
+				}
+				else if ($config['load_anon_lastread'] || $user->data['is_registered'])
+				{
+					$topic_tracking_info = get_complete_topic_tracking($similar_forum_id, $similar_topic_id);
+				}
+				$replies = ($auth->acl_get('m_approve', $similar_forum_id)) ? $similar['topic_replies_real'] : $similar['topic_replies'];
+				$unread_topic = (isset($topic_tracking_info[$similar_topic_id]) && $similar['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id]) ? true : false;
+				$topic_unapproved = (!$similar['topic_approved'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
+				$u_mcp_queue = ($topic_unapproved) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue&amp;mode=approve_details&amp;t=$similar_topic_id", true, $user->session_id) : '';
+				$folder_img = $folder_alt = $topic_type = '';
+				topic_status($similar, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
+
 				$template->assign_block_vars('similar', array(
+					'ATTACH_ICON_IMG'		=> ($similar['topic_attachment'] && $s_attachement) ? $attachement_icon : '',
 					'FIRST_POST_TIME'		=> $user->format_date($similar['topic_time']),
 					'FORUM_TITLE'			=> $similar['forum_name'],
 					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $similar['topic_last_poster_id'], $similar['topic_last_poster_name'], $similar['topic_last_poster_colour']),
 					'LAST_POST_TIME'		=> $user->format_date($similar['topic_last_post_time']),
-					'PAGINATION'			=> topic_generate_pagination($similar['topic_replies'], append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar['forum_id'] . '&amp;t=' . $similar['topic_id'])),
+					'PAGINATION'			=> topic_generate_pagination($similar['topic_replies'], append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar_forum_id . '&amp;t=' . $similar_topic_id)),
+					'S_TOPIC_REPORTED'		=> (!empty($similar['topic_reported']) && $auth->acl_get('m_report', $similar_forum_id)) ? true : false,
+					'S_TOPIC_UNAPPROVED'	=> $topic_unapproved,
+					'S_UNREAD_TOPIC'		=> $unread_topic,
 					'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $similar['topic_poster'], $similar['topic_first_poster_name'], $similar['topic_first_poster_colour']),
+					'TOPIC_FOLDER_IMG'		=> $user->img($folder_img, $folder_alt),
+					'TOPIC_FOLDER_IMG_SRC'	=> $user->img($folder_img, $folder_alt, false, '', 'src'),
+					'TOPIC_ICON_IMG'		=> (!empty($icons[$similar['icon_id']])) ? $icons[$similar['icon_id']]['img'] : '',
+					'TOPIC_ICON_IMG_WIDTH'	=> (!empty($icons[$similar['icon_id']])) ? $icons[$similar['icon_id']]['width'] : '',
+					'TOPIC_ICON_IMG_HEIGHT'	=> (!empty($icons[$similar['icon_id']])) ? $icons[$similar['icon_id']]['height'] : '',
 					'TOPIC_REPLIES'			=> $similar['topic_replies'],
 					'TOPIC_TITLE'			=> $similar['topic_title'],
 					'TOPIC_VIEWS'			=> $similar['topic_views'],
-					'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar['forum_id'] . '&amp;t=' . $similar['topic_id'] . '&amp;p=' . $similar['topic_last_post_id']) . '#p' . $similar['topic_last_post_id'],
-					'U_VIEW_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=" . $similar['forum_id']),
-					'U_VIEW_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar['forum_id'] . '&amp;t=' . $similar['topic_id']),
+					'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $similar['topic_last_post_id']) . '#p' . $similar['topic_last_post_id'],
+					'U_MCP_QUEUE'			=> $u_mcp_queue,
+					'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=reports&amp;f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id, true, $user->session_id),
+					'U_NEWEST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
+					'U_VIEW_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=" . $similar_forum_id),
+					'U_VIEW_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar_forum_id . '&amp;t=' . $similar_topic_id),
 				));
 			}
 		}
@@ -122,6 +166,9 @@ function similar_topics($topic_data, $forum_id)
 		$template->assign_vars(array(
 			'L_SIMILAR_TOPICS'	=> $user->lang['PST_TITLE_ACP'],
 			'LAST_POST_IMG'		=> $user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
+			'NEWEST_POST_IMG'	=> $user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),
+			'REPORTED_IMG'		=> $user->img('icon_topic_reported', 'TOPIC_REPORTED'),
+			'UNAPPROVED_IMG'	=> $user->img('icon_topic_unapproved', 'TOPIC_UNAPPROVED'),
 		));
 	}
 }

@@ -2,7 +2,7 @@
 <div class="cat">
 	<ul class="topiclist">
 		<li class="header">
-			<dl>
+			<dl class="icon">
 				<dt>{L_SIMILAR_TOPICS}</dt>
 				<dd class="posts">{L_REPLIES}</dd>
 				<dd class="views">{L_VIEWS}</dd>
@@ -15,10 +15,12 @@
 
 	<!-- BEGIN similar -->
 		<li class="row">
-			<dl>
-				<dt>
-					<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>
-					<br />
+			<dl class="icon" style="background-image: url({similar.TOPIC_FOLDER_IMG_SRC}); background-repeat: no-repeat;">
+				<dt <!-- IF similar.TOPIC_ICON_IMG -->style="background-image: url({T_ICONS_PATH}{similar.TOPIC_ICON_IMG}); background-repeat: no-repeat;"<!-- ENDIF -->>
+					<!-- IF similar.S_UNREAD_TOPIC --><a href="{similar.U_NEWEST_POST}">{NEWEST_POST_IMG}</a> <!-- ENDIF -->
+					<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a> {similar.ATTACH_ICON_IMG}
+					<!-- IF similar.S_TOPIC_UNAPPROVED --><a href="{similar.U_MCP_QUEUE}">{UNAPPROVED_IMG}</a> <!-- ENDIF -->
+					<!-- IF similar.S_TOPIC_REPORTED --><a href="{similar.U_MCP_REPORT}">{REPORTED_IMG}</a><!-- ENDIF --><br />
 					<!-- IF similar.PAGINATION --><strong class="pagination"><span>{similar.PAGINATION}</span></strong><!-- ENDIF -->
 					{L_POST_BY_AUTHOR} {similar.TOPIC_AUTHOR_FULL} &raquo; {similar.FIRST_POST_TIME}
 					{L_IN} <a href="{similar.U_VIEW_FORUM}">{similar.FORUM_TITLE}</a>
