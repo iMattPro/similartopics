@@ -166,7 +166,7 @@ $versions = array(
 	'1.2.0' => array(
 		// No db changes in this version.
 
-		// purge the cache (we had template changes in this version)
+		// purge the cache (we have template changes in this version)
 		'cache_purge' => array(),
 	),
 
