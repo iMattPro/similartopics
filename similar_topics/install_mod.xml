@@ -49,6 +49,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<changelog lang="en">
 					<change><![CDATA[[Change]: Added topic icons and topic status/type icons]]></change>
 					<change><![CDATA[[Change]: Use phpBB hook system to eliminate all but 1 file edit.]]></change>
+					<change><![CDATA[[Change]: Do not include unapproved topics in similar topics results.]]></change>
 					<change><![CDATA[[Change]: Updated compatability with Aero style v1.4.7.]]></change>
 				</changelog>
 			</entry>
