@@ -19,7 +19,7 @@
 				<dt <!-- IF similar.TOPIC_ICON_IMG -->style="background-image: url({T_ICONS_PATH}{similar.TOPIC_ICON_IMG}); background-repeat: no-repeat;"<!-- ENDIF -->>
 					<!-- IF similar.S_UNREAD_TOPIC --><a href="{similar.U_NEWEST_POST}">{NEWEST_POST_IMG}</a> <!-- ENDIF -->
 					<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a> {similar.ATTACH_ICON_IMG}
-					<!-- IF similar.S_TOPIC_UNAPPROVED --><a href="{similar.U_MCP_QUEUE}">{UNAPPROVED_IMG}</a> <!-- ENDIF -->
+					<!-- IF similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED --><a href="{similar.U_MCP_QUEUE}">{similar.UNAPPROVED_IMG}</a> <!-- ENDIF -->
 					<!-- IF similar.S_TOPIC_REPORTED --><a href="{similar.U_MCP_REPORT}">{REPORTED_IMG}</a><!-- ENDIF --><br />
 					<!-- IF similar.PAGINATION --><strong class="pagination"><span>{similar.PAGINATION}</span></strong><!-- ENDIF -->
 					{L_POST_BY_AUTHOR} {similar.TOPIC_AUTHOR_FULL} &raquo; {similar.FIRST_POST_TIME}

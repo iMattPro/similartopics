@@ -18,7 +18,7 @@
 			<td class="row1">
 				<!-- IF similar.S_UNREAD_TOPIC --><a href="{similar.U_NEWEST_POST}">{NEWEST_POST_IMG}</a><!-- ENDIF -->
 				{similar.ATTACH_ICON_IMG} <a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>
-				<!-- IF similar.S_TOPIC_UNAPPROVED -->
+				<!-- IF similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED -->
 					<a href="{similar.U_MCP_QUEUE}">{similar.UNAPPROVED_IMG}</a>&nbsp;
 				<!-- ENDIF -->
 				<!-- IF similar.S_TOPIC_REPORTED -->

@@ -126,7 +126,8 @@ function similar_topics($topic_data, $forum_id)
 				$replies = ($auth->acl_get('m_approve', $similar_forum_id)) ? $similar['topic_replies_real'] : $similar['topic_replies'];
 				$unread_topic = (isset($topic_tracking_info[$similar_topic_id]) && $similar['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id]) ? true : false;
 				$topic_unapproved = (!$similar['topic_approved'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
-				$u_mcp_queue = ($topic_unapproved) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=queue&amp;mode=approve_details&amp;t=$similar_topic_id", true, $user->session_id) : '';
+				$posts_unapproved = ($similar['topic_approved'] && $similar['topic_replies'] < $similar['topic_replies_real'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
+				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $user->session_id) : '';
 				$folder_img = $folder_alt = $topic_type = '';
 				topic_status($similar, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
 
@@ -139,6 +140,7 @@ function similar_topics($topic_data, $forum_id)
 					'PAGINATION'			=> topic_generate_pagination($similar['topic_replies'], append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar_forum_id . '&amp;t=' . $similar_topic_id)),
 					'S_TOPIC_REPORTED'		=> (!empty($similar['topic_reported']) && $auth->acl_get('m_report', $similar_forum_id)) ? true : false,
 					'S_TOPIC_UNAPPROVED'	=> $topic_unapproved,
+					'S_POSTS_UNAPPROVED'	=> $posts_unapproved,
 					'S_UNREAD_TOPIC'		=> $unread_topic,
 					'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $similar['topic_poster'], $similar['topic_first_poster_name'], $similar['topic_first_poster_colour']),
 					'TOPIC_FOLDER_IMG'		=> $user->img($folder_img, $folder_alt),
@@ -155,6 +157,7 @@ function similar_topics($topic_data, $forum_id)
 					'U_NEWEST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
 					'U_VIEW_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=" . $similar_forum_id),
 					'U_VIEW_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=" . $similar_forum_id . '&amp;t=' . $similar_topic_id),
+					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $user->img('icon_topic_unapproved', ($topic_unapproved) ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 				));
 			}
 		}
@@ -168,7 +171,6 @@ function similar_topics($topic_data, $forum_id)
 			'LAST_POST_IMG'		=> $user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
 			'NEWEST_POST_IMG'	=> $user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),
 			'REPORTED_IMG'		=> $user->img('icon_topic_reported', 'TOPIC_REPORTED'),
-			'UNAPPROVED_IMG'	=> $user->img('icon_topic_unapproved', 'TOPIC_UNAPPROVED'),
 		));
 	}
 }
