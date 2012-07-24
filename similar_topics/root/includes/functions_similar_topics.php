@@ -75,6 +75,7 @@ function similar_topics($topic_data, $forum_id)
 
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_title) . "') >= 0.5
 				AND t.topic_status <> " . ITEM_MOVED . '
+				AND t.topic_approved = 1
 				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $config['similar_topics_time'] . ')
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
 
