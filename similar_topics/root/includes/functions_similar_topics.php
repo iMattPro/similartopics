@@ -54,14 +54,12 @@ function similar_topics($topic_data, $forum_id)
 
 		// Grab icons
 		$icons = $cache->obtain_icons();
-		$attachement_icon = $user->img('icon_topic_attach', $user->lang['TOTAL_ATTACHMENTS']);
-		$s_attachement = $auth->acl_get('u_download');
 
 		// Similar Topics query
 		$sql_array = array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*, 
 				MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_title) . "') AS score",
-		
+
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
 			),
@@ -81,7 +79,7 @@ function similar_topics($topic_data, $forum_id)
 
 //			'GROUP_BY'	=> 't.topic_id',
 
-//			'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN mode
+//			'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
 
 		// Add topic tracking data to query (only when query caching is off)
@@ -124,16 +122,18 @@ function similar_topics($topic_data, $forum_id)
 				{
 					$topic_tracking_info = get_complete_topic_tracking($similar_forum_id, $similar_topic_id);
 				}
+
+				$folder_img = $folder_alt = $topic_type = '';
 				$replies = ($auth->acl_get('m_approve', $similar_forum_id)) ? $similar['topic_replies_real'] : $similar['topic_replies'];
 				$unread_topic = (isset($topic_tracking_info[$similar_topic_id]) && $similar['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id]) ? true : false;
+				topic_status($similar, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
+
 				$topic_unapproved = (!$similar['topic_approved'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
 				$posts_unapproved = ($similar['topic_approved'] && $similar['topic_replies'] < $similar['topic_replies_real'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
 				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $user->session_id) : '';
-				$folder_img = $folder_alt = $topic_type = '';
-				topic_status($similar, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
 
 				$template->assign_block_vars('similar', array(
-					'ATTACH_ICON_IMG'		=> ($similar['topic_attachment'] && $s_attachement) ? $attachement_icon : '',
+					'ATTACH_ICON_IMG'		=> ($similar['topic_attachment'] && $auth->acl_get('u_download')) ? $user->img('icon_topic_attach', $user->lang['TOTAL_ATTACHMENTS']) : '',
 					'FIRST_POST_TIME'		=> $user->format_date($similar['topic_time']),
 					'FORUM_TITLE'			=> $similar['forum_name'],
 					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $similar['topic_last_poster_id'], $similar['topic_last_poster_name'], $similar['topic_last_poster_colour']),
@@ -197,7 +197,7 @@ function clean_title($text)
 	{
 		// strip out any non-alpha-numeric characters using PCRE regex syntax
 		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
-	
+
 		// Put words in the title into an array, and remove uppercases and short words
 		$word_list = array();
 		if (!empty($text))
@@ -212,12 +212,12 @@ function clean_title($text)
 				}
 			}
 		}
-	
+
 		// If non-English user language is detected, we must remove stop-words using phpBB's ignore words list
 		if (!$english_lang && !empty($word_list))
 		{
 			global $phpbb_root_path, $phpEx;
-	
+
 			// Retrieves a language dependent list of words that should be ignored (method copied from search.php)
 			$words = array();
 			if (file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
@@ -227,14 +227,14 @@ function clean_title($text)
 			}
 			$word_list = array_diff($word_list, $words);
 		}
-	
+
 		// Remove custom ignore words
 		if ($ignore_words && !empty($word_list))
 		{
 			$words = explode(' ', utf8_strtolower($config['similar_topics_words']));
 			$word_list = array_diff($word_list, $words);
 		}
-		
+
 		// Rebuild our cleaned up topic title
 		$text = !empty($word_list) ? implode(' ', $word_list) : '';
 	}
