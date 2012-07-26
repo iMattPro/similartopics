@@ -86,7 +86,8 @@ function similar_topics($topic_data, $forum_id)
 		if ($user->data['is_registered'] && $config['load_db_lastread'] && !$config['similar_topics_cache'])
 		{
 			$sql_array['LEFT_JOIN'][] = array('FROM' => array(TOPICS_TRACK_TABLE => 'tt'), 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']);
-			$sql_array['SELECT'] .= ', tt.mark_time';
+			$sql_array['LEFT_JOIN'][] = array('FROM' => array(FORUMS_TRACK_TABLE => 'ft'), 'ON' => 'ft.forum_id = f.forum_id AND ft.user_id = ' . $user->data['user_id']);
+			$sql_array['SELECT'] .= ', tt.mark_time, ft.mark_time as f_mark_time';
 		}
 
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
@@ -116,7 +117,7 @@ function similar_topics($topic_data, $forum_id)
 				// Get topic tracking info
 				if ($user->data['is_registered'] && $config['load_db_lastread'] && !$config['similar_topics_cache'])
 				{
-					$topic_tracking_info = get_topic_tracking($similar_forum_id, $similar_topic_id, $rowset, array($similar_forum_id => $similar['mark_time']));
+					$topic_tracking_info = get_topic_tracking($similar_forum_id, $similar_topic_id, $rowset, array($similar_forum_id => $similar['f_mark_time']));
 				}
 				else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 				{
