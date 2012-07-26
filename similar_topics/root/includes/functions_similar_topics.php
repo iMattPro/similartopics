@@ -44,7 +44,7 @@ function similar_topics($topic_data, $forum_id)
 	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
 	if ($config['similar_topics'] && $config['similar_topics_limit'])
 	{
-		$topic_title = clean_title($topic_data['topic_title']);
+		$topic_title = strip_topic_title($topic_data['topic_title']);
 
 		// If the topic_title winds up being empty, no need to continue
 		if (empty($topic_title))
@@ -181,65 +181,75 @@ function similar_topics($topic_data, $forum_id)
 * Remove problem characters from the topic title
 * MySQL fulltext has built-in English stop words. Use phpBB's ignore words for non-English languages
 * Also remove any admin-defined special ignore words
-* 
-* @param  string $text			The topic title
-* @return string $text			The topic title cleaned and with any ignore words removed
+*
+* @param  string $text		The topic title
+* @return string $text		The topic title cleaned and with any ignore words removed
 */
-function clean_title($text)
+function strip_topic_title($text)
 {
 	global $config, $user;
 
-	$text = str_replace(array('&quot;', '&amp;'), '', $text); //strip quotes, ampersands
+	// strip quotes, ampersands
+	$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
 	$english_lang = ($user->lang_name == 'en' || $user->lang_name == 'en_us') ? true : false;
 	$ignore_words = !empty($config['similar_topics_words']) ? true : false;
 
 	if (!$english_lang || $ignore_words)
 	{
-		// strip out any non-alpha-numeric characters using PCRE regex syntax
-		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
-
-		// Put words in the title into an array, and remove uppercases and short words
-		$word_list = array();
-		if (!empty($text))
-		{
-			$word_list = explode(' ', utf8_strtolower($text));
-			foreach ($word_list as $key => $word)
-			{
-				// Lets eliminate all words of 2 characters or less
-				if (utf8_strlen(trim($word)) < 3)
-				{
-					unset($word_list[$key]);
-				}
-			}
-		}
-
-		// If non-English user language is detected, we must remove stop-words using phpBB's ignore words list
-		if (!$english_lang && !empty($word_list))
-		{
-			global $phpbb_root_path, $phpEx;
-
-			// Retrieves a language dependent list of words that should be ignored (method copied from search.php)
-			$words = array();
-			if (file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
-			{
-				// include the file containing ignore words
-				include("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx");
-			}
-			$word_list = array_diff($word_list, $words);
-		}
-
-		// Remove custom ignore words
-		if ($ignore_words && !empty($word_list))
-		{
-			$words = explode(' ', utf8_strtolower($config['similar_topics_words']));
-			$word_list = array_diff($word_list, $words);
-		}
-
-		// Rebuild our cleaned up topic title
-		$text = !empty($word_list) ? implode(' ', $word_list) : '';
+		$text = strip_stop_words($text, $english_lang, $ignore_words);
 	}
 
 	return $text;
 }
 
+/**
+* Remove any non-english and/or custom defined stop-words
+*/
+function strip_stop_words($text, $english_lang, $ignore_words)
+{
+	global $config, $user, $phpEx;
+
+	$words = array();
+
+	if (!$english_lang && file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
+	{
+		// Retrieve a language dependent list of words to be ignored (method copied from search.php)
+		include("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx");
+	}
+
+	if ($ignore_words)
+	{
+		// Merge any custom defined ignore words from the ACP to the stop-words array
+		$words = array_merge(make_word_array($config['similar_topics_words']), $words);
+	}
+
+	// Remove stop-words from the topic title text
+	$words = array_diff(make_word_array($text), $words);
+
+	// Convert our words array back to a string
+	$text = !empty($words) ? implode(' ', $words) : '';
+
+	return $text;
+}
+
+/**
+* Split string into an array of words
+*/
+function make_word_array($text)
+{
+	// strip out any non-alpha-numeric characters using PCRE regex syntax
+	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
+
+	$words = explode(' ', utf8_strtolower($text));
+	foreach ($words as $key => $word)
+	{
+		// strip words of 2 characters or less
+		if (utf8_strlen(trim($word)) < 3)
+		{
+			unset($words[$key]);
+		}
+	}
+
+	return $words;
+}
