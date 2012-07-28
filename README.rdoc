@@ -9,7 +9,7 @@ Welcome to my Github repository for Precise Similar Topics II for phpBB3.
 
 == DESCRIPTION:
 
-This MOD will display a list of similar/related topics at the bottom of your threads, based on finding the most relevant matching Topic Titles.
+This MOD will display a list of similar/related topics at the bottom of your topic pages, based on finding the most relevant matching Topic Titles.
 
 More information:
 * http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii
