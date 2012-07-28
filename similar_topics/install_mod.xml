@@ -9,8 +9,8 @@
 		<title lang="en"><![CDATA[Precise Similar Topics II]]></title>
 		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your threads, based on finding the most relevant matching Topic Titles.
 
-		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation in your forum.]]></description>
-		<author-notes lang="en"><![CDATA[REQUIREMENTS: You must be using a MySQL 4.0.1 or later database. The phpbb_topics table type must be MyISAM (this is the default table type for most MySQL databases).
+		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation for your phpBB board..]]></description>
+		<author-notes lang="en"><![CDATA[REQUIREMENTS: You must be using a MySQL 4.0.1 or later database. The phpbb_topics table type must be MyISAM (this is the default table type for most MySQL databases). The install script will test your database to see if it meets this requirement and notify you if this MOD will be compatible with your phpBB board.
 NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
 		<author-group>
 			<author>
@@ -25,7 +25,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<username><![CDATA[tas2580]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/similar_topics]]></homepage>
 				<contributions-group>
-					<contributions status="past" position="Original Author"/>
+					<contributions status="past" position="Original Author of SQL Code"/>
 				</contributions-group>
 			</author>
 			<author>
@@ -200,9 +200,9 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[1. Go to yourforum/install_similar_topics.php and install (or click the hi-lighted link above if you are using AutoMOD)
+		<diy-instructions lang="en"><![CDATA[1. Go to yourboard/install_similar_topics.php and install (or click the hi-lighted link above if you are using AutoMOD)
 2. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
 3. Go to the ACP -> Permissions, and set up Group permissions to your liking.
-4. Delete the file at yourforum/install_similar_topics.php]]></diy-instructions>
+4. Delete the file at yourboard/install_similar_topics.php]]></diy-instructions>
 	</action-group>
 </mod>
