@@ -43,7 +43,8 @@ function similar_topics_hook(&$hook, $handle)
 	}
 
 	// get similar topics
-	similar_topics($topic_data, $forum_id);
+	$similar_topics = new phpbb_similar_topics();
+	$similar_topics->similar_topics_init($topic_data, $forum_id);
 }
 
 // Register the hook

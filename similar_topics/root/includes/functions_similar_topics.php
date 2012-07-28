@@ -16,44 +16,96 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
-* Get similar topics based on matching topic titles
-* Note: currently requires MySQL due to use of MATCH and AGAINST and UNIX_TIMESTAMP
-* 
-* @param array 	$topic_data		The current topic data for use in searching
-* @param int 	$forum_id		The current forum to check
+* Find similar topics based on matching topic titles. Currently requires MySQL 
+* due to the use of FULLTEXT indexes and MATCH and AGAINST and UNIX_TIMESTAMP.
+* MySQL FULLTEXT has built-in English ignore words. We'll use phpBB's ignore words
+* for non-English languages. Also removes any admin-defined special ignore words.
+*
+* @package Precise Similar Topics II
 */
-function similar_topics($topic_data, $forum_id)
+class phpbb_similar_topics
 {
-	global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
+	/**
+	* Is the MOD enabled?
+	*/
+	var $is_active		= false;
 
-	// Bail out if not using required MySQL to prevent any problems
-	if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
-	{
-		return;
-	}
+	/**
+	* The maximum number of similar topics to display
+	*/
+	var $topic_limit	= 5;
 
-	// Bail out if the current forum is set to DO NOT DISPLAY similar topics
-	if (!empty($config['similar_topics_hide']))
+	/**
+	* The maximum age of similar topics to display
+	*/
+	var $topic_age		= 365;
+
+	/**
+	* Cache SQL queries for similar topics
+	*/
+	var $cache_time		= 0;
+
+	/**
+	* String of custom words defined in the ACP to be ignored in similar topic searches
+	*/
+	var $ignore_words	= '';
+
+	/**
+	* String of forum IDs that are not to be searched for similar topics
+	*/
+	var $ignore_forums	= '';
+
+	/**
+	* Is the current forum allowed to display similar topics?
+	*/
+	var $allowed_forum	= true;
+
+	/**
+	* Is the board using a MySQL database?
+	*/
+	var $mysql_db		= true;
+
+	/**
+	* Initialize similar topics MOD
+	* @access public
+	*/
+	function similar_topics_init($topic_data, $forum_id)
 	{
-		if (in_array($forum_id, explode(',', $config['similar_topics_hide'])))
+		global $config, $db;
+
+		$this->is_active		= (bool) $config['similar_topics'];
+		$this->topic_limit		= (int) $config['similar_topics_limit'];
+		$this->topic_age		= (int) $config['similar_topics_time'];
+		$this->cache_time		= (int) $config['similar_topics_cache'];
+		$this->ignore_words		= (string) $config['similar_topics_words'];
+		$this->ignore_forums	= (string) $config['similar_topics_ignore'];
+		$this->allowed_forum	= (!in_array($forum_id, explode(',', $config['similar_topics_hide']))) ? true : false;
+		$this->mysql_db			= (($db->sql_layer == 'mysql4') || ($db->sql_layer == 'mysqli')) ? true : false;
+
+		// All reasons to bail out of the MOD
+		if (!$this->is_active || !$this->mysql_db || !$this->topic_limit || !$this->allowed_forum)
 		{
 			return;
 		}
+
+		$this->_similar_topics($topic_data);
 	}
 
-	// If similar topics is enabled and the number of topics to show is <> 0, proceed...
-	if ($config['similar_topics'] && $config['similar_topics_limit'])
+	/**
+	* Get similar topics by matching topic titles
+	* @access private
+	*/
+	function _similar_topics($topic_data)
 	{
-		$topic_title = strip_topic_title($topic_data['topic_title']);
+		global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
+
+		$topic_title = $this->_strip_topic_title($topic_data['topic_title']);
 
 		// If the topic_title winds up being empty, no need to continue
 		if (empty($topic_title))
 		{
 			return;
 		}
-
-		// Grab icons
-		$icons = $cache->obtain_icons();
 
 		// Similar Topics query
 		$sql_array = array(
@@ -74,16 +126,15 @@ function similar_topics($topic_data, $forum_id)
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_title) . "') >= 0.5
 				AND t.topic_status <> " . ITEM_MOVED . '
 				AND t.topic_approved = 1
-				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $config['similar_topics_time'] . ')
+				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->topic_age . ')
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
 
 //			'GROUP_BY'	=> 't.topic_id',
-
 //			'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
 
-		// Add topic tracking data to query (only when query caching is off)
-		if ($user->data['is_registered'] && $config['load_db_lastread'] && !$config['similar_topics_cache'])
+		// Add topic tracking data to query (only when query caching is 0)
+		if ($user->data['is_registered'] && $config['load_db_lastread'] && !$this->cache_time)
 		{
 			$sql_array['LEFT_JOIN'][] = array('FROM' => array(TOPICS_TRACK_TABLE => 'tt'), 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']);
 			$sql_array['LEFT_JOIN'][] = array('FROM' => array(FORUMS_TRACK_TABLE => 'ft'), 'ON' => 'ft.forum_id = f.forum_id AND ft.user_id = ' . $user->data['user_id']);
@@ -96,13 +147,16 @@ function similar_topics($topic_data, $forum_id)
 			$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('f.forum_id', explode(',', $topic_data['similar_topic_forums']));
 		}
 		// Otherwise, lets see what forums are not allowed to be searched, and ignore those
-		else if (!empty($config['similar_topics_ignore']))
+		else if (!empty($this->ignore_forums))
 		{
-			$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('f.forum_id', explode(',', $config['similar_topics_ignore']), true);
+			$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('f.forum_id', explode(',', $this->ignore_forums), true);
 		}
 
 		$sql = $db->sql_build_query('SELECT', $sql_array);
-		$result = $db->sql_query_limit($sql, $config['similar_topics_limit'], 0, $config['similar_topics_cache']);
+		$result = $db->sql_query_limit($sql, $this->topic_limit, 0, $this->cache_time);
+
+		// Grab icons
+		$icons = $cache->obtain_icons();
 
 		$rowset = array();
 
@@ -115,7 +169,7 @@ function similar_topics($topic_data, $forum_id)
 			if ($auth->acl_get('f_read', $similar_forum_id))
 			{
 				// Get topic tracking info
-				if ($user->data['is_registered'] && $config['load_db_lastread'] && !$config['similar_topics_cache'])
+				if ($user->data['is_registered'] && $config['load_db_lastread'] && !$this->cache_time)
 				{
 					$topic_tracking_info = get_topic_tracking($similar_forum_id, $similar_topic_id, $rowset, array($similar_forum_id => $similar['f_mark_time']));
 				}
@@ -175,81 +229,79 @@ function similar_topics($topic_data, $forum_id)
 			'REPORTED_IMG'		=> $user->img('icon_topic_reported', 'TOPIC_REPORTED'),
 		));
 	}
-}
 
-/**
-* Remove problem characters from the topic title
-* MySQL fulltext has built-in English stop words. Use phpBB's ignore words for non-English languages
-* Also remove any admin-defined special ignore words
-*
-* @param  string $text		The topic title
-* @return string $text		The topic title cleaned and with any ignore words removed
-*/
-function strip_topic_title($text)
-{
-	global $config, $user;
-
-	// strip quotes, ampersands
-	$text = str_replace(array('&quot;', '&amp;'), '', $text);
-
-	$english_lang = ($user->lang_name == 'en' || $user->lang_name == 'en_us') ? true : false;
-	$ignore_words = !empty($config['similar_topics_words']) ? true : false;
-
-	if (!$english_lang || $ignore_words)
+	/**
+	* Remove problem characters (and if needed, any ignore-words) from the topic title
+	* @access private
+	*/
+	function _strip_topic_title($text)
 	{
-		$text = strip_stop_words($text, $english_lang, $ignore_words);
-	}
+		global $user;
 
-	return $text;
-}
+		// strip quotes, ampersands
+		$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
-/**
-* Remove any non-english and/or custom defined stop-words
-*/
-function strip_stop_words($text, $english_lang, $ignore_words)
-{
-	global $config, $user, $phpEx;
+		$english_lang = ($user->lang_name == 'en' || $user->lang_name == 'en_us') ? true : false;
+		$ignore_words = !empty($this->ignore_words) ? true : false;
 
-	$words = array();
-
-	if (!$english_lang && file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
-	{
-		// Retrieve a language dependent list of words to be ignored (method copied from search.php)
-		include("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx");
-	}
-
-	if ($ignore_words)
-	{
-		// Merge any custom defined ignore words from the ACP to the stop-words array
-		$words = array_merge(make_word_array($config['similar_topics_words']), $words);
-	}
-
-	// Remove stop-words from the topic title text
-	$words = array_diff(make_word_array($text), $words);
-
-	// Convert our words array back to a string
-	$text = !empty($words) ? implode(' ', $words) : '';
-
-	return $text;
-}
-
-/**
-* Split string into an array of words
-*/
-function make_word_array($text)
-{
-	// strip out any non-alpha-numeric characters using PCRE regex syntax
-	$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
-
-	$words = explode(' ', utf8_strtolower($text));
-	foreach ($words as $key => $word)
-	{
-		// strip words of 2 characters or less
-		if (utf8_strlen(trim($word)) < 3)
+		if (!$english_lang || $ignore_words)
 		{
-			unset($words[$key]);
+			$text = $this->_strip_stop_words($text, $english_lang, $ignore_words);
 		}
+
+		return $text;
 	}
 
-	return $words;
+	/**
+	* Remove any non-english and/or custom defined ignore-words
+	* @access private
+	*/
+	function _strip_stop_words($text, $english_lang, $ignore_words)
+	{
+		global $user, $phpEx;
+
+		$words = array();
+
+		if (!$english_lang && file_exists("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx"))
+		{
+			// Retrieve a language dependent list of words to be ignored (method copied from search.php)
+			include("{$user->lang_path}{$user->lang_name}/search_ignore_words.$phpEx");
+		}
+
+		if ($ignore_words)
+		{
+			// Merge any custom defined ignore words from the ACP to the stop-words array
+			$words = array_merge($this->_make_word_array($this->ignore_words), $words);
+		}
+
+		// Remove stop-words from the topic title text
+		$words = array_diff($this->_make_word_array($text), $words);
+
+		// Convert our words array back to a string
+		$text = !empty($words) ? implode(' ', $words) : '';
+
+		return $text;
+	}
+
+	/**
+	* Split string into an array of words
+	* @access private
+	*/
+	function _make_word_array($text)
+	{
+		// strip out any non-alpha-numeric characters using PCRE regex syntax
+		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
+
+		$words = explode(' ', utf8_strtolower($text));
+		foreach ($words as $key => $word)
+		{
+			// strip words of 2 characters or less
+			if (utf8_strlen(trim($word)) < 3)
+			{
+				unset($words[$key]);
+			}
+		}
+
+		return $words;
+	}
 }
