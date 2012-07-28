@@ -29,7 +29,7 @@ if (!isset($config['similar_topics']))
  */
 function similar_topics_hook(&$hook, $handle)
 {
-	global $auth, $config, $user, $phpbb_root_path, $phpEx, $topic_data, $forum_id;
+	global $auth, $config, $user, $phpbb_root_path, $phpEx;
 
 	// Return if not supposed to see similar topics
 	if (empty($config['similar_topics']) || !$auth->acl_get('u_similar_topics') || ($user->page['page_name'] != 'viewtopic.' . $phpEx) || $handle != 'body')
@@ -43,8 +43,7 @@ function similar_topics_hook(&$hook, $handle)
 	}
 
 	// get similar topics
-	$similar_topics = new phpbb_similar_topics();
-	$similar_topics->similar_topics_init($topic_data, $forum_id);
+	$similar_topics = new similar_topics();
 }
 
 // Register the hook

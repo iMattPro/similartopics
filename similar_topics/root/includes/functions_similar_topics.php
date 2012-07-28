@@ -23,7 +23,7 @@ if (!defined('IN_PHPBB'))
 *
 * @package Precise Similar Topics II
 */
-class phpbb_similar_topics
+class similar_topics
 {
 	/**
 	* Is the MOD enabled?
@@ -66,12 +66,12 @@ class phpbb_similar_topics
 	var $mysql_db		= true;
 
 	/**
-	* Initialize similar topics MOD
+	* Similar Topics MOD constructor
 	* @access public
 	*/
-	function similar_topics_init($topic_data, $forum_id)
+	function similar_topics()
 	{
-		global $config, $db;
+		global $config, $db, $forum_id;
 
 		$this->is_active		= (bool) $config['similar_topics'];
 		$this->topic_limit		= (int) $config['similar_topics_limit'];
@@ -88,16 +88,16 @@ class phpbb_similar_topics
 			return;
 		}
 
-		$this->_similar_topics($topic_data);
+		$this->_get_similar_topics();
 	}
 
 	/**
 	* Get similar topics by matching topic titles
 	* @access private
 	*/
-	function _similar_topics($topic_data)
+	function _get_similar_topics()
 	{
-		global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
+		global $auth, $cache, $config, $user, $db, $topic_data, $template, $phpbb_root_path, $phpEx;
 
 		$topic_title = $this->_strip_topic_title($topic_data['topic_title']);
 
