@@ -66,8 +66,7 @@ class similar_topics
 	var $mysql_db		= true;
 
 	/**
-	* Similar Topics MOD constructor
-	* @access public
+	* Similar Topics MOD constructor method
 	*/
 	function similar_topics()
 	{
@@ -81,23 +80,21 @@ class similar_topics
 		$this->ignore_forums	= (string) $config['similar_topics_ignore'];
 		$this->allowed_forum	= (!in_array($forum_id, explode(',', $config['similar_topics_hide']))) ? true : false;
 		$this->mysql_db			= (($db->sql_layer == 'mysql4') || ($db->sql_layer == 'mysqli')) ? true : false;
+	}
+
+	/**
+	* Get similar topics by matching topic titles
+	* @access public
+	*/
+	function get_similar_topics()
+	{
+		global $auth, $cache, $config, $user, $db, $topic_data, $template, $phpbb_root_path, $phpEx;
 
 		// All reasons to bail out of the MOD
 		if (!$this->is_active || !$this->mysql_db || !$this->topic_limit || !$this->allowed_forum)
 		{
 			return;
 		}
-
-		$this->_get_similar_topics();
-	}
-
-	/**
-	* Get similar topics by matching topic titles
-	* @access private
-	*/
-	function _get_similar_topics()
-	{
-		global $auth, $cache, $config, $user, $db, $topic_data, $template, $phpbb_root_path, $phpEx;
 
 		$topic_title = $this->_strip_topic_title($topic_data['topic_title']);
 

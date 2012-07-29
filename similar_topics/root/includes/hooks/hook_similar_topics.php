@@ -43,7 +43,8 @@ function similar_topics_hook(&$hook, $handle)
 	}
 
 	// get similar topics
-	$similar_topics = new similar_topics();
+	$similar = new similar_topics();
+	$similar->get_similar_topics();
 }
 
 // Register the hook
