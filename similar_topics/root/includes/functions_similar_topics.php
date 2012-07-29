@@ -46,7 +46,7 @@ class similar_topics
 	var $cache_time		= 0;
 
 	/**
-	* String of custom words defined in the ACP to be ignored in similar topic searches
+	* String of words defined in ACP to be ignored in similar topic searches
 	*/
 	var $ignore_words	= '';
 
@@ -228,7 +228,7 @@ class similar_topics
 	}
 
 	/**
-	* Remove problem characters (and if needed, any ignore-words) from the topic title
+	* Remove problem characters (and if needed, ignore-words) from topic title
 	* @access private
 	*/
 	function _strip_topic_title($text)
