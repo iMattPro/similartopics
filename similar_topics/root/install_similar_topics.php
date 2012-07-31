@@ -46,7 +46,7 @@ $language_file = 'mods/info_acp_similar_topics';
 * Check the topics table engine for MyISAM type, and display result.
 */
 $options = array(
-	'status'	=> array('lang' => 'INFORMATION', 'type' => 'custom', 'function' => 'check_table_engine', 'explain' => false),
+	'status'	=> array('lang' => 'INFORMATION', 'type' => 'custom', 'function' => 'check_database_requirements', 'explain' => false),
 );
 
 /*
@@ -205,10 +205,15 @@ function make_fulltext($action, $version)
 * Since this MOD requires FULLTEXT indexes, available only in MyISAM tables, this function
 * will check the phpbb_topics storage engine and display a pass/fail message to the admin
 */
-function check_table_engine()
+function check_database_requirements()
 {
 	global $db, $user;
-	
+
+	if (($db->sql_layer != 'mysql4') && ($db->sql_layer != 'mysqli'))
+	{
+		return $user->lang['PST_DATABASE_FAIL'];
+	}
+
 	$engine = '';
 	$sql = "SHOW TABLE STATUS 
 			WHERE Name = '" . TOPICS_TABLE . "'";

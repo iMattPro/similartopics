@@ -44,12 +44,13 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</installation>
 		<history>
 			<entry>
-				<date>2012-07-22</date>
+				<date>2012-07-30</date>
 				<rev-version>1.2.0</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[[Change]: Added topic icons and topic status/type icons]]></change>
 					<change><![CDATA[[Change]: Use phpBB hook system to eliminate all but 1 file edit.]]></change>
 					<change><![CDATA[[Change]: Do not include unapproved topics in similar topics results.]]></change>
+					<change><![CDATA[[Change]: Installer script will warn admin if their database is not MySQL.]]></change>
 					<change><![CDATA[[Change]: Updated compatability with Aero style v1.4.7.]]></change>
 				</changelog>
 			</entry>

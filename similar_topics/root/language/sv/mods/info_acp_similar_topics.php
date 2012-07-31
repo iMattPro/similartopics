@@ -54,8 +54,9 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Lägger till FULLTEXT index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Ignorerade FULLTEXT index: topic_title',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>VARNING:</strong> Du bör inte installera detta mod! Din databas stöder inte Fulltext index. Detta innebär vanligtvis din trådar bordet inte använder MyISAM lagring motorn som krävs för detta MOD ska fungera. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Mer information</a>.</span>',
 	'PST_FULLTEXT_PASS' => 'Din databas är förenlig med denna MOD.',
+	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>VARNING:</strong> Du bör inte installera detta mod! Din databas stöder inte Fulltext index. Detta innebär vanligtvis din trådar bordet inte använder MyISAM lagring motorn som krävs för detta MOD ska fungera. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Mer information</a>.</span>',
+	'PST_DATABASE_FAIL' => '<span class="error"><strong>VARNING:</strong> Du bör inte installera detta mod! Din databas är inte MySQL.</span>',
 ));
 
 // For permissions
