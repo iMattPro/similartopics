@@ -156,19 +156,13 @@ $versions = array(
 	// Version 1.2.0
 	'1.2.0' => array(
 		// No db changes in this version.
+		'cache_purge' => array(),	
 	),
 
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
-
-// Clear cache
-$umil->cache_purge(array(
-	array(''),
-	array('auth'),
-	array('template'),
-));
 
 /**
 * Here is our custom function that will be called for version 1.1.0.

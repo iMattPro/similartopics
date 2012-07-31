@@ -38,5 +38,6 @@
 <!-- ENDIF -->]]></action>
 			</edit>
 		</open>
+		<diy-instructions lang="en"><![CDATA[Purge your style's template cache]]></diy-instructions>
 	</action-group>
 </mod>

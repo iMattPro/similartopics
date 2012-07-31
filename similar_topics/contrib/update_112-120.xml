@@ -57,6 +57,8 @@ $lang = array_merge($lang, array(
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[Go to yourforum/install_similar_topics.php and update (or click the hi-lighted link above if you are using AutoMOD)
 
+Purge your forum cache
+
 Delete the file at yourforum/install_similar_topics.php
 
 Enjoy!]]></diy-instructions>
