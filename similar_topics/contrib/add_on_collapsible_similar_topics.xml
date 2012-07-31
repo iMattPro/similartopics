@@ -105,6 +105,6 @@ $("#similartopiclist").collapse({show: function(){
 .inactive {background-position: left bottom;}]]></action>
 			</edit>
 		</open>
-		<diy-instructions lang="en"><![CDATA[Purge your style templates]]></diy-instructions>
+		<diy-instructions lang="en"><![CDATA[Refresh your style templates]]></diy-instructions>
 	</action-group>
 </mod>

@@ -203,7 +203,7 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[1. Go to yourboard/install_similar_topics.php and install (or click the hi-lighted link above if you are using AutoMOD)
-2. Go to the ACP and Purge your forum cache
+2. Go to the ACP to Purge the cache, refresh template files
 3. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
 4. Go to the ACP -> Permissions, and set up Group permissions to your liking.
 5. Delete the file at yourboard/install_similar_topics.php]]></diy-instructions>
