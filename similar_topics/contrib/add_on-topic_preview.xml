@@ -23,6 +23,7 @@
 			<target-version>3.0.10</target-version>
 		</installation>
 		<link-group>
+			<link type="dependency" href="http://www.phpbb.com/customise/db/mod/topic_preview/" lang="en">Topic Preview MOD v1.0.10</link>
 			<link type="parent" href="../install_mod.xml" lang="en">Main Install Instructions</link>
 		</link-group>
 	</header>
