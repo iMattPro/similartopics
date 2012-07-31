@@ -88,9 +88,6 @@ $versions = array(
 
 		// Custom function to update SQL topics table to FULLTEXT
 		'custom'	=> 'make_fulltext',
-
-		// purge the cache
-		'cache_purge' => array(),
 	),
 
 	// Version 1.1.1
@@ -117,9 +114,6 @@ $versions = array(
 		'config_update'	=> array(
 			array('similar_topics_time', '31536000'),
 		),
-
-		// purge the cache
-		'cache_purge' => array(),
 	),
 
 	// Version 1.1.2
@@ -148,9 +142,6 @@ $versions = array(
 		'config_add' => array(
 			array('similar_topics_words', ''),
 		),
-
-		// purge the cache
-		'cache_purge' => array(),
 	),
 
 	// Version 1.1.7 - version skipped
@@ -165,15 +156,19 @@ $versions = array(
 	// Version 1.2.0
 	'1.2.0' => array(
 		// No db changes in this version.
-
-		// purge the cache (we have template changes in this version)
-		'cache_purge' => array(),
 	),
 
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
+
+// Clear cache
+$umil->cache_purge(array(
+	array(''),
+	array('auth'),
+	array('template'),
+));
 
 /**
 * Here is our custom function that will be called for version 1.1.0.
