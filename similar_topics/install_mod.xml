@@ -47,11 +47,12 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<date>2012-07-30</date>
 				<rev-version>1.2.0</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[[Change]: Added topic icons and topic status/type icons]]></change>
-					<change><![CDATA[[Change]: Use phpBB hook system to eliminate all but 1 file edit.]]></change>
-					<change><![CDATA[[Change]: Do not include unapproved topics in similar topics results.]]></change>
+					<change><![CDATA[[Change]: Added topic icons with topic status/tracking icons.]]></change>
+					<change><![CDATA[[Change]: Use phpBB hook system to eliminate all file edits but one.]]></change>
+					<change><![CDATA[[Change]: Unapproved topics will not be included in similar topics results.]]></change>
 					<change><![CDATA[[Change]: Installer script will warn admin if their database is not MySQL.]]></change>
 					<change><![CDATA[[Change]: Updated compatability with Aero style v1.4.7.]]></change>
+					<change><![CDATA[[Change]: General code refactoring and improvements, similar topics functions are now enclosed in a class.]]></change>
 				</changelog>
 			</entry>
 			<entry>

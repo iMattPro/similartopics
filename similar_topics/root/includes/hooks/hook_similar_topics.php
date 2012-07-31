@@ -22,7 +22,7 @@ if (!isset($config['similar_topics']))
 }
 
 /**
- * A hook that is used to load similar topics in the viewtopic pages
+ * A hook that is used to load similar topics in the viewtopic body
  * @param	$hook		the phpBB hook object
  * @param	$handle		the phpBB handle object
  * @return	void
