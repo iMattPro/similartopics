@@ -16,7 +16,6 @@ $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 
-// Start session management
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup();
@@ -26,19 +25,8 @@ if (!file_exists($phpbb_root_path . 'umil/umil_auto.' . $phpEx))
 	trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
 }
 
-// The name of the mod to be displayed during installation.
 $mod_name = 'PST_TITLE';
-
-/*
-* The name of the config variable which will hold the currently installed version
-* UMIL will handle checking, setting, and updating the version itself.
-*/
 $version_config_name = 'similar_topics_version';
-
-/*
-* The language file which will be included when installing
-* Language entries that should exist in the language file for UMIL (replace $mod_name with the mod's name you set to $mod_name above)
-*/
 $language_file = 'mods/info_acp_similar_topics';
 
 /*
@@ -49,13 +37,6 @@ $options = array(
 	'status'	=> array('lang' => 'INFORMATION', 'type' => 'custom', 'function' => 'check_database_requirements', 'explain' => false),
 );
 
-/*
-* The array of versions and actions within each.
-* You do not need to order it a specific way (it will be sorted automatically), however, you must enter every version, even if no actions are done for it.
-*
-* You must use correct version numbering.  Unless you know exactly what you can use, only use X.X.X (replacing X with an integer).
-* The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
-*/
 $versions = array(
 	// Version 1.1.0
 	'1.1.0'	=> array(
@@ -76,10 +57,8 @@ $versions = array(
 
 		// Alright, now lets add some modules to the ACP
 		'module_add' => array(
-			// First, lets add a new category named PST_TITLE_ACP to ACP_CAT_DOT_MODS
 			array('acp', 'ACP_CAT_DOT_MODS', 'PST_TITLE_ACP'),
 
-			// Now we will add the settings and features modes from the acp_board module to the ACP_CAT_TEST_MOD category using the "automatic" method.
 			array('acp', 'PST_TITLE_ACP', array(
 					'module_basename'		=> 'similar_topics',
 				),
@@ -117,24 +96,16 @@ $versions = array(
 	),
 
 	// Version 1.1.2
-	'1.1.2' => array(
-		// No db changes in this version.
-	),
+	'1.1.2' => array(),
 
 	// Version 1.1.3
-	'1.1.3' => array(
-		// No db changes in this version.
-	),
+	'1.1.3' => array(),
 
 	// Version 1.1.4
-	'1.1.4' => array(
-		// No db changes in this version.
-	),
+	'1.1.4' => array(),
 
 	// Version 1.1.5
-	'1.1.5' => array(
-		// No db changes in this version.
-	),
+	'1.1.5' => array(),
 
 	// Version 1.1.6
 	'1.1.6' => array(
@@ -147,21 +118,16 @@ $versions = array(
 	// Version 1.1.7 - version skipped
 
 	// Version 1.1.8
-	'1.1.8' => array(
-		// No db changes in this version.
-	),
+	'1.1.8' => array(),
 
 	// Version 1.1.9 - version skipped
 
 	// Version 1.2.0
 	'1.2.0' => array(
-		// No db changes in this version.
 		'cache_purge' => array(),	
 	),
-
 );
 
-// Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 
 /**
