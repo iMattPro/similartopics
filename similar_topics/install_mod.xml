@@ -10,8 +10,12 @@
 		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your topic pages, based on finding the most relevant matching Topic Titles.
 
 		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation for your phpBB board..]]></description>
-		<author-notes lang="en"><![CDATA[REQUIREMENTS: You must be using a MySQL 4.0.1 or later database. The phpbb_topics table type must be MyISAM (this is the default table type for most MySQL databases). The install script will test your database to see if it meets this requirement and notify you if this MOD will be compatible with your phpBB board.
-NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
+		<author-notes lang="en"><![CDATA[
+REQUIREMENTS:
+You must be using a MySQL 4.0.1 or later database. The phpbb_topics table type must be MyISAM (this is the default table type for most MySQL databases). The install script will test your database to see if it meets this requirement and notify you if this MOD will be compatible with your phpBB board.
+
+NOTE:
+Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[Matt Friedman]]></realname>
@@ -47,36 +51,36 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 				<date>2012-07-30</date>
 				<rev-version>1.2.0</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[[Change]: Added topic icons with topic status/tracking icons.]]></change>
-					<change><![CDATA[[Change]: Use phpBB hook system to eliminate all file edits but one.]]></change>
-					<change><![CDATA[[Change]: Unapproved topics will not be included in similar topics results.]]></change>
-					<change><![CDATA[[Change]: Installer script will warn admin if their database is not MySQL.]]></change>
-					<change><![CDATA[[Change]: Updated compatability with Aero style v1.4.7.]]></change>
-					<change><![CDATA[[Change]: General code refactoring and improvements, similar topics functions are now enclosed in a class.]]></change>
+					<change><![CDATA[Added topic icons with topic status/tracking icons.]]></change>
+					<change><![CDATA[Use phpBB hook system to eliminate all file edits but one.]]></change>
+					<change><![CDATA[Unapproved topics will not be included in similar topics results.]]></change>
+					<change><![CDATA[Installer script will warn admin if their database is not MySQL.]]></change>
+					<change><![CDATA[Updated compatability with Aero style v1.4.7.]]></change>
+					<change><![CDATA[General code refactoring and improvements, similar topics functions are now enclosed in a class.]]></change>
 				</changelog>
 			</entry>
 			<entry>
 				<date>2012-05-04</date>
 				<rev-version>1.1.8</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[[Change]: Added the similar topic's last post author, date, link and pagination links to topics list.]]></change>
-					<change><![CDATA[[Change]: Installer script will warn admin if their database is not MyISAM and does not support FULLTEXT indexes.]]></change>
-					<change><![CDATA[[Added]: Add-On: Collapsible Similar Topics.]]></change>
-					<change><![CDATA[[Added]: Instructions and compatability with we_clearblue style.]]></change>
-					<change><![CDATA[[Added]: Instructions and compatability with we_universal style.]]></change>
-					<change><![CDATA[[Added]: Instructions and compatability with Aero style.]]></change>
-					<change><![CDATA[[Added]: Language: Romanian language translation. Thanks to ivanpetrepaul.]]></change>
-					<change><![CDATA[[Added]: Language: Swedish language translation. Thanks to Aros.]]></change>
+					<change><![CDATA[Added the similar topic's last post author, date, link and pagination links to topics list.]]></change>
+					<change><![CDATA[Installer script will warn admin if their database is not MyISAM and does not support FULLTEXT indexes.]]></change>
+					<change><![CDATA[Add-On: Collapsible Similar Topics.]]></change>
+					<change><![CDATA[Added instructions and compatability with we_clearblue style.]]></change>
+					<change><![CDATA[Added instructions and compatability with we_universal style.]]></change>
+					<change><![CDATA[Added instructions and compatability with Aero style.]]></change>
+					<change><![CDATA[Added Romanian language translation. Thanks to ivanpetrepaul.]]></change>
+					<change><![CDATA[Added Swedish language translation. Thanks to Aros.]]></change>
 				</changelog>
 			</entry>
 			<entry>
 				<date>2011-09-30</date>
 				<rev-version>1.1.6</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[[Feature]: New ACP option to add your own custom ignore-words.]]></change>
-					<change><![CDATA[[Added]: Add-On: Topic Preview MOD integration for Precise Similar Topics.]]></change>
-					<change><![CDATA[[Added]: Add-On: MOD Version Check.]]></change>
-					<change><![CDATA[[Added]: Language: Polish language translation. Thanks to liptonace.]]></change>
+					<change><![CDATA[New ACP option to add your own custom ignore-words.]]></change>
+					<change><![CDATA[Add-On: Topic Preview MOD integration for Precise Similar Topics.]]></change>
+					<change><![CDATA[Add-On: MOD Version Check.]]></change>
+					<change><![CDATA[Added Polish language translation. Thanks to liptonace.]]></change>
 				</changelog>
 			</entry>
 			<entry>
@@ -202,10 +206,9 @@ NOTE: Similar Topics is off by default. Visit the ACP/.MODs section after instal
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[1. Go to yourboard/install_similar_topics.php and install (or click the hi-lighted link above if you are using AutoMOD)
-2. Go to the ACP to Purge the cache, refresh template files
-3. Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
-4. Go to the ACP -> Permissions, and set up Group permissions to your liking.
-5. Delete the file at yourboard/install_similar_topics.php]]></diy-instructions>
+		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the hi-lighted link above if you are using AutoMOD)
+* Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
+* Go to the ACP -> Permissions, and set up Group permissions to your liking.
+* Delete the PHP install file at yourboard/install_similar_topics.php]]></diy-instructions>
 	</action-group>
 </mod>
