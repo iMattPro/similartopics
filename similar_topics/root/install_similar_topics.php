@@ -115,12 +115,8 @@ $versions = array(
 		),
 	),
 
-	// Version 1.1.7 - version skipped
-
 	// Version 1.1.8
 	'1.1.8' => array(),
-
-	// Version 1.1.9 - version skipped
 
 	// Version 1.2.0
 	'1.2.0' => array(
