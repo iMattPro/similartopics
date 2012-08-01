@@ -23,7 +23,7 @@ if (!defined('IN_PHPBB'))
 *
 * @package Precise Similar Topics II
 */
-class similar_topics
+class phpbb_similar_topics
 {
 	/**
 	* Is the MOD enabled?
@@ -68,7 +68,7 @@ class similar_topics
 	/**
 	* Similar Topics MOD constructor method
 	*/
-	function similar_topics()
+	function phpbb_similar_topics()
 	{
 		global $config, $db, $forum_id;
 
@@ -116,8 +116,8 @@ class similar_topics
 			'LEFT_JOIN'	=> array(
 				array(
 					'FROM'	=>	array(FORUMS_TABLE	=> 'f'),
-					'ON'	=> 'f.forum_id = t.forum_id'
-				)
+					'ON'	=> 'f.forum_id = t.forum_id',
+				),
 			),
 
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $db->sql_escape($topic_title) . "') >= 0.5
