@@ -130,12 +130,22 @@ class phpbb_similar_topics
 //			'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
 
-		// Add topic tracking data to query (only when query caching is 0)
+		// Add topic tracking data to query (only when query caching is off)
 		if ($user->data['is_registered'] && $config['load_db_lastread'] && !$this->cache_time)
 		{
 			$sql_array['LEFT_JOIN'][] = array('FROM' => array(TOPICS_TRACK_TABLE => 'tt'), 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']);
 			$sql_array['LEFT_JOIN'][] = array('FROM' => array(FORUMS_TRACK_TABLE => 'ft'), 'ON' => 'ft.forum_id = f.forum_id AND ft.user_id = ' . $user->data['user_id']);
 			$sql_array['SELECT'] .= ', tt.mark_time, ft.mark_time as f_mark_time';
+		}
+		else if ($config['load_anon_lastread'] || $user->data['is_registered'])
+		{
+			$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_track'])) ? ((STRIP) ? stripslashes($_COOKIE[$config['cookie_name'] . '_track']) : $_COOKIE[$config['cookie_name'] . '_track']) : '';
+			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
+
+			if (!$user->data['is_registered'])
+			{
+				$user->data['user_lastmark'] = (isset($tracking_topics['l'])) ? (int) (base_convert($tracking_topics['l'], 36, 10) + $config['board_startdate']) : 0;
+			}
 		}
 
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
