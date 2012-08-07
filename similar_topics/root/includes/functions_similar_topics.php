@@ -137,6 +137,11 @@ class phpbb_similar_topics
 			$sql_array['LEFT_JOIN'][] = array('FROM' => array(FORUMS_TRACK_TABLE => 'ft'), 'ON' => 'ft.forum_id = f.forum_id AND ft.user_id = ' . $user->data['user_id']);
 			$sql_array['SELECT'] .= ', tt.mark_time, ft.mark_time as f_mark_time';
 		}
+		else if ($config['load_anon_lastread'] || $user->data['is_registered'])
+		{
+			$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_track'])) ? ((STRIP) ? stripslashes($_COOKIE[$config['cookie_name'] . '_track']) : $_COOKIE[$config['cookie_name'] . '_track']) : '';
+			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
+		}
 
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
 		if (!empty($topic_data['similar_topic_forums']))
@@ -173,6 +178,11 @@ class phpbb_similar_topics
 				else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 				{
 					$topic_tracking_info = get_complete_topic_tracking($similar_forum_id, $similar_topic_id);
+
+					if (!$user->data['is_registered'])
+					{
+						$user->data['user_lastmark'] = (isset($tracking_topics['l'])) ? (int) (base_convert($tracking_topics['l'], 36, 10) + $config['board_startdate']) : 0;
+					}
 				}
 
 				$folder_img = $folder_alt = $topic_type = '';
