@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* @package umil
+* @package Precise Similar Topics II
 * @copyright (c) 2010 Matt Friedman
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
@@ -29,9 +29,8 @@ $mod_name = 'PST_TITLE';
 $version_config_name = 'similar_topics_version';
 $language_file = 'mods/info_acp_similar_topics';
 
-/*
-* Options to display to the user
-* Check the topics table engine for MyISAM type, and display result.
+/**
+* Check the topics table engine for MyISAM type, and display pass/fail message.
 */
 $options = array(
 	'status'	=> array('lang' => 'INFORMATION', 'type' => 'custom', 'function' => 'check_database_requirements', 'explain' => false),
@@ -65,7 +64,7 @@ $versions = array(
 			),
 		),
 
-		// Custom function to update SQL topics table to FULLTEXT
+		// Custom function to update topics_title to a FULLTEXT index
 		'custom'	=> 'make_fulltext',
 	),
 
@@ -156,10 +155,10 @@ function make_fulltext($action, $version)
 }
 
 /**
-* Here is our custom function that displays options to the user
+* Here is our custom function that displays a message to the user
 *
-* Since this MOD requires FULLTEXT indexes, available only in MyISAM tables, this function
-* will check the phpbb_topics storage engine and display a pass/fail message to the admin
+* Since this MOD requires FULLTEXT indexes, available only in MyISAM tables in a MySQL db,
+* this function will check the phpbb_topics storage engine and display a pass/fail message
 */
 function check_database_requirements()
 {
