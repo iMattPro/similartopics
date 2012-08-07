@@ -162,18 +162,18 @@ class phpbb_similar_topics
 
 		$rowset = array();
 
-		while ($similar = $db->sql_fetchrow($result))
+		while ($row = $db->sql_fetchrow($result))
 		{
-			$similar_forum_id = (int) $similar['forum_id'];
-			$similar_topic_id = (int) $similar['topic_id'];
-			$rowset[$similar_topic_id] = $similar;
+			$similar_forum_id = (int) $row['forum_id'];
+			$similar_topic_id = (int) $row['topic_id'];
+			$rowset[$similar_topic_id] = $row;
 
 			if ($auth->acl_get('f_read', $similar_forum_id))
 			{
 				// Get topic tracking info
 				if ($user->data['is_registered'] && $config['load_db_lastread'] && !$this->cache_time)
 				{
-					$topic_tracking_info = get_topic_tracking($similar_forum_id, $similar_topic_id, $rowset, array($similar_forum_id => $similar['f_mark_time']));
+					$topic_tracking_info = get_topic_tracking($similar_forum_id, $similar_topic_id, $rowset, array($similar_forum_id => $row['f_mark_time']));
 				}
 				else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 				{
@@ -186,41 +186,46 @@ class phpbb_similar_topics
 				}
 
 				$folder_img = $folder_alt = $topic_type = '';
-				$replies = ($auth->acl_get('m_approve', $similar_forum_id)) ? $similar['topic_replies_real'] : $similar['topic_replies'];
-				$unread_topic = (isset($topic_tracking_info[$similar_topic_id]) && $similar['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id]) ? true : false;
-				topic_status($similar, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
+				$replies = ($auth->acl_get('m_approve', $similar_forum_id)) ? $row['topic_replies_real'] : $row['topic_replies'];
+				$unread_topic = (isset($topic_tracking_info[$similar_topic_id]) && $row['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id]) ? true : false;
+				topic_status($row, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
 
-				$topic_unapproved = (!$similar['topic_approved'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
-				$posts_unapproved = ($similar['topic_approved'] && $similar['topic_replies'] < $similar['topic_replies_real'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
+				$topic_unapproved = (!$row['topic_approved'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
+				$posts_unapproved = ($row['topic_approved'] && $row['topic_replies'] < $row['topic_replies_real'] && $auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
 				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . '&amp;t=' . $similar_topic_id, true, $user->session_id) : '';
 
 				$template->assign_block_vars('similar', array(
-					'ATTACH_ICON_IMG'		=> ($similar['topic_attachment'] && $auth->acl_get('u_download')) ? $user->img('icon_topic_attach', $user->lang['TOTAL_ATTACHMENTS']) : '',
-					'FIRST_POST_TIME'		=> $user->format_date($similar['topic_time']),
-					'FORUM_TITLE'			=> $similar['forum_name'],
-					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $similar['topic_last_poster_id'], $similar['topic_last_poster_name'], $similar['topic_last_poster_colour']),
-					'LAST_POST_TIME'		=> $user->format_date($similar['topic_last_post_time']),
-					'PAGINATION'			=> topic_generate_pagination($similar['topic_replies'], append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id)),
-					'S_TOPIC_REPORTED'		=> (!empty($similar['topic_reported']) && $auth->acl_get('m_report', $similar_forum_id)) ? true : false,
-					'S_TOPIC_UNAPPROVED'	=> $topic_unapproved,
-					'S_POSTS_UNAPPROVED'	=> $posts_unapproved,
-					'S_UNREAD_TOPIC'		=> $unread_topic,
-					'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $similar['topic_poster'], $similar['topic_first_poster_name'], $similar['topic_first_poster_colour']),
+					'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
+					'FIRST_POST_TIME'		=> $user->format_date($row['topic_time']),
+					'LAST_POST_TIME'		=> $user->format_date($row['topic_last_post_time']),
+					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
+
+					'PAGINATION'			=> topic_generate_pagination($row['topic_replies'], append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id)),
+					'TOPIC_REPLIES'			=> $row['topic_replies'],
+					'TOPIC_VIEWS'			=> $row['topic_views'],
+					'TOPIC_TITLE'			=> $row['topic_title'],
+					'FORUM_TITLE'			=> $row['forum_name'],
+
 					'TOPIC_FOLDER_IMG'		=> $user->img($folder_img, $folder_alt),
 					'TOPIC_FOLDER_IMG_SRC'	=> $user->img($folder_img, $folder_alt, false, '', 'src'),
-					'TOPIC_ICON_IMG'		=> (!empty($icons[$similar['icon_id']])) ? $icons[$similar['icon_id']]['img'] : '',
-					'TOPIC_ICON_IMG_WIDTH'	=> (!empty($icons[$similar['icon_id']])) ? $icons[$similar['icon_id']]['width'] : '',
-					'TOPIC_ICON_IMG_HEIGHT'	=> (!empty($icons[$similar['icon_id']])) ? $icons[$similar['icon_id']]['height'] : '',
-					'TOPIC_REPLIES'			=> $similar['topic_replies'],
-					'TOPIC_TITLE'			=> $similar['topic_title'],
-					'TOPIC_VIEWS'			=> $similar['topic_views'],
-					'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $similar['topic_last_post_id']) . '#p' . $similar['topic_last_post_id'],
-					'U_MCP_QUEUE'			=> $u_mcp_queue,
-					'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=reports&amp;f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id, true, $user->session_id),
-					'U_NEWEST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
-					'U_VIEW_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $similar_forum_id),
-					'U_VIEW_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id),
+
+					'TOPIC_ICON_IMG'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
+					'TOPIC_ICON_IMG_WIDTH'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
+					'TOPIC_ICON_IMG_HEIGHT'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
+					'ATTACH_ICON_IMG'		=> ($row['topic_attachment'] && $auth->acl_get('u_download')) ? $user->img('icon_topic_attach', $user->lang['TOTAL_ATTACHMENTS']) : '',
 					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $user->img('icon_topic_unapproved', ($topic_unapproved) ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
+
+					'S_UNREAD_TOPIC'		=> $unread_topic,
+					'S_TOPIC_REPORTED'		=> (!empty($row['topic_reported']) && $auth->acl_get('m_report', $similar_forum_id)) ? true : false,
+					'S_TOPIC_UNAPPROVED'	=> $topic_unapproved,
+					'S_POSTS_UNAPPROVED'	=> $posts_unapproved,
+
+					'U_NEWEST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
+					'U_LAST_POST'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
+					'U_VIEW_TOPIC'			=> append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id),
+					'U_VIEW_FORUM'			=> append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $similar_forum_id),
+					'U_MCP_REPORT'			=> append_sid("{$phpbb_root_path}mcp.$phpEx", 'i=reports&amp;mode=reports&amp;f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id, true, $user->session_id),
+					'U_MCP_QUEUE'			=> $u_mcp_queue,
 				));
 			}
 		}
@@ -231,8 +236,8 @@ class phpbb_similar_topics
 
 		$template->assign_vars(array(
 			'L_SIMILAR_TOPICS'	=> $user->lang['PST_TITLE_ACP'],
-			'LAST_POST_IMG'		=> $user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
 			'NEWEST_POST_IMG'	=> $user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),
+			'LAST_POST_IMG'		=> $user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
 			'REPORTED_IMG'		=> $user->img('icon_topic_reported', 'TOPIC_REPORTED'),
 		));
 	}
