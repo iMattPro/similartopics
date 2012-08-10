@@ -19,7 +19,7 @@ if (!defined('IN_PHPBB'))
 * Find similar topics based on matching topic titles. Currently requires MySQL 
 * due to the use of FULLTEXT indexes and MATCH and AGAINST and UNIX_TIMESTAMP.
 * MySQL FULLTEXT has built-in English ignore words. We'll use phpBB's ignore words
-* for non-English languages. Also removes any admin-defined special ignore words.
+* for non-English languages. We also remove any admin-defined special ignore words.
 *
 * @package Precise Similar Topics II
 */
@@ -41,7 +41,7 @@ class phpbb_similar_topics
 	var $topic_age		= 365;
 
 	/**
-	* Cache SQL queries for similar topics
+	* Cache static SQL queries for similar topics
 	*/
 	var $cache_time		= 0;
 
