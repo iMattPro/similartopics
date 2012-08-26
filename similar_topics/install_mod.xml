@@ -11,10 +11,10 @@
 
 		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation for your phpBB board..]]></description>
 		<author-notes lang="en"><![CDATA[
-REQUIREMENTS:
-You must be using a MySQL 4.0.1 or later database. The phpbb_topics table type must be MyISAM (this is the default table type for most MySQL databases). The install script will test your database to see if it meets this requirement and notify you if this MOD will be compatible with your phpBB board.
+REQUIREMENTS: 
+Your database must be using MySQL 4.0.1 or higher. The phpbb_topics table storage engine must be MyISAM (this is the default table type for most MySQL databases). The install script will test your database to see if it meets these requirement and notify you if this MOD will be compatible with your phpBB board.
 
-NOTE:
+NOTE: 
 Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
 		<author-group>
 			<author>
@@ -43,7 +43,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		<mod-version>1.2.0</mod-version>
 		<installation>
 			<level>easy</level>
-			<time>300</time>
+			<time>180</time>
 			<target-version>3.0.11</target-version>
 		</installation>
 		<history>
@@ -206,7 +206,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the hi-lighted link above if you are using AutoMOD)
+		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the hilighted link above if you are using AutoMOD)
 * Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
 * Go to the ACP -> Permissions, and set up Group permissions to your liking.
 * Delete the PHP install file at yourboard/install_similar_topics.php]]></diy-instructions>

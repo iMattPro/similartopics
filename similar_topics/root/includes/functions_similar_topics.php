@@ -36,7 +36,7 @@ class phpbb_similar_topics
 	var $topic_limit	= 5;
 
 	/**
-	* The maximum age of similar topics to display
+	* The maximum age of similar topics to display (in days)
 	*/
 	var $topic_age		= 365;
 
@@ -66,7 +66,7 @@ class phpbb_similar_topics
 	var $mysql_db		= true;
 
 	/**
-	* Similar Topics MOD constructor method
+	* Similar Topics MOD constructor
 	*/
 	function phpbb_similar_topics()
 	{
@@ -126,8 +126,8 @@ class phpbb_similar_topics
 				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->topic_age . ')
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
 
-//			'GROUP_BY'	=> 't.topic_id',
-//			'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
+		//	'GROUP_BY'	=> 't.topic_id',
+		//	'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
 
 		// Add topic tracking data to query (only when query caching is off)
