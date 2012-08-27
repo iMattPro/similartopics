@@ -1,11 +1,12 @@
 <?php
 /**
 *
-* similar_topics [Română]
+* info_acp_similiar_topics [Română]
 *
-* @package language
+* @package Precise Similar Topics II
+* @version $Id$
 * @copyright (c) 2010 Matt Friedman (Translated by Ionuţ Butnaru and corrected by Ivan Petre Paul, both from phpBB Romanian Community www.phpbb.ro)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 

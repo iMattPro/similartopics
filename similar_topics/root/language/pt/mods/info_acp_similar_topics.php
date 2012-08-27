@@ -1,11 +1,12 @@
 <?php
 /**
 *
-* similar_topics [Portuguese]
+* info_acp_similiar_topics [Portuguese]
 *
-* @package language
+* @package Precise Similar Topics II
+* @version $Id$
 * @copyright (c) 2010 Matt Friedman (Traduzido por The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
 
