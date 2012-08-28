@@ -99,7 +99,7 @@ class phpbb_similar_topics
 
 		$topic_title = $this->_strip_topic_title($topic_data['topic_title']);
 
-		// If the topic_title winds up being empty, no need to continue
+		// If the stripped down topic_title is empty, no need to continue
 		if (empty($topic_title))
 		{
 			return;
@@ -131,7 +131,7 @@ class phpbb_similar_topics
 		//	'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
 
-		// Add topic tracking data to query (only when query caching is off)
+		// Add topic tracking data to the query (only when query caching is off)
 		if ($user->data['is_registered'] && $config['load_db_lastread'] && !$this->cache_time)
 		{
 			$sql_array['LEFT_JOIN'][] = array('FROM' => array(TOPICS_TRACK_TABLE => 'tt'), 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $user->data['user_id']);
@@ -140,6 +140,7 @@ class phpbb_similar_topics
 		}
 		else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 		{
+			// cookie based tracking copied from search.php
 			$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_track'])) ? ((STRIP) ? stripslashes($_COOKIE[$config['cookie_name'] . '_track']) : $_COOKIE[$config['cookie_name'] . '_track']) : '';
 			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 		}
