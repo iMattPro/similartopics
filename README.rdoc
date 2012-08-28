@@ -20,7 +20,7 @@ More information:
 
 == REQUIREMENTS:
 
-* phpBB 3.0.7-PL1 or greater
+* phpBB 3.0.7-PL1 or newer
 
 == LICENSE:
 
