@@ -140,7 +140,7 @@ class phpbb_similar_topics
 		}
 		else if ($config['load_anon_lastread'] || $user->data['is_registered'])
 		{
-			// cookie based tracking copied from search.php
+			// Cookie based tracking copied from search.php
 			$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_track'])) ? ((STRIP) ? stripslashes($_COOKIE[$config['cookie_name'] . '_track']) : $_COOKIE[$config['cookie_name'] . '_track']) : '';
 			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 		}
@@ -252,7 +252,7 @@ class phpbb_similar_topics
 	{
 		global $user;
 
-		// strip quotes, ampersands
+		// Strip quotes, ampersands
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
 		$english_lang = ($user->lang_name == 'en' || $user->lang_name == 'en_us') ? true : false;
@@ -303,13 +303,13 @@ class phpbb_similar_topics
 	*/
 	function _make_word_array($text)
 	{
-		// strip out any non-alpha-numeric characters using PCRE regex syntax
+		// Strip out any non-alpha-numeric characters using PCRE regex syntax
 		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
 
 		$words = explode(' ', utf8_strtolower($text));
 		foreach ($words as $key => $word)
 		{
-			// strip words of 2 characters or less
+			// Strip words of 2 characters or less
 			if (utf8_strlen(trim($word)) < 3)
 			{
 				unset($words[$key]);

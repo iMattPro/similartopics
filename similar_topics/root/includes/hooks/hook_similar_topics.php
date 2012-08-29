@@ -43,7 +43,7 @@ function similar_topics_hook(&$hook, $handle)
 		include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
 	}
 
-	// get similar topics
+	// Get similar topics
 	$similar = new phpbb_similar_topics();
 	$similar->get_similar_topics();
 }
