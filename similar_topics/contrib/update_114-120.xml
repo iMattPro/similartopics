@@ -47,6 +47,7 @@ if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))
 		</open>
 		<open src="language/en/viewtopic.php">
 			<edit>
+				<comment lang="en"><![CDATA[Note: This change should be made for all languages your board may be using.]]></comment>
 				<remove><![CDATA[// BEGIN Precise Similar Topics
 $lang = array_merge($lang, array(
 	'SIMILAR_TOPICS'			=> 'Similar topics',

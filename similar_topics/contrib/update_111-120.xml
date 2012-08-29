@@ -8,7 +8,7 @@
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.1 to v1.2.0]]></title>
 		<description lang="en"><![CDATA[Update instructions for v1.1.1 to v1.2.0]]></description>
-		<author-notes lang="en"><![CDATA[Note: Similar Topics adds a new ACP option to enable the caching of search results. It is turned off by default.]]></author-notes>
+		<author-notes lang="en"><![CDATA[Note: This update adds a new ACP option to enable the caching of search results. It is turned off by default.]]></author-notes>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
@@ -51,6 +51,7 @@ if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))
 		</open>
 		<open src="language/en/viewtopic.php">
 			<edit>
+				<comment lang="en"><![CDATA[Note: This change should be made for all languages your board may be using.]]></comment>
 				<remove><![CDATA[// BEGIN Precise Similar Topics
 $lang = array_merge($lang, array(
 	'SIMILAR_TOPICS'			=> 'Similar topics',
