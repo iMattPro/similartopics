@@ -6,9 +6,9 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Topic Preview MOD Compatibility Add-On]]></title>
-		<description lang="en"><![CDATA[This Add-On will allow my "Topic Preview" MOD's feature to work with the Similar Topics results, allowing users to see a preview of the first post's text when they hover the mouse over the title of Similar Topics.]]></description>
-		<author-notes lang="en"><![CDATA[Requirements: You must already have my "Topic Preview" MOD installed on your forum. It is available here: http://www.phpbb.com/customise/db/mod/topic_preview/]]></author-notes>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Compatibility with Topic Preview MOD]]></title>
+		<description lang="en"><![CDATA[This Add-On will allow my "Topic Preview" MOD's feature to work with the Similar Topics results, allowing users to see a preview of the first post's text when they hover the mouse over the titles of Similar Topics.]]></description>
+		<author-notes lang="en"><![CDATA[Requirements: You must already have my "Topic Preview" MOD v1.0.10 installed on your forum. It is available here: http://www.phpbb.com/customise/db/mod/topic_preview/]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[Matt Friedman]]></realname>
@@ -44,13 +44,13 @@
 				<find><![CDATA[			if ($auth->acl_get('f_read', $similar_forum_id))
 			{]]></find>
 				<action type="after-add"><![CDATA[				// BEGIN Topic Preview Mod
-				if (!empty($similar['first_post_preview_text']))
+				if (!empty($row['first_post_preview_text']))
 				{
 					if(!function_exists('trim_topic_preview'))
 					{
 						include($phpbb_root_path . 'includes/topic_preview.' . $phpEx);
 					}
-					$first_post_preview_text = trim_topic_preview($similar['first_post_preview_text'], $config['topic_preview_limit']);
+					$first_post_preview_text = trim_topic_preview($row['first_post_preview_text'], $config['topic_preview_limit']);
 				}
 				// END Topic Preview Mod]]></action>
 			</edit>
