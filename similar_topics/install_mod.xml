@@ -7,9 +7,9 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[Precise Similar Topics II]]></title>
-		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your topic pages, based on finding the most relevant matching Topic Titles.
+		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your topic pages, based on finding the most relevant matching topic titles.
 
-		This MOD was originally written by tas2580 as 'Similar Topics'. It was then modified by Xabi into 'Precise Similar Topics' offering a lighter and more precise query. Now I have modified it further for a complete, light-weight, efficient and pretty implementation for your phpBB board..]]></description>
+		Based on a very old MOD written by tas2580 as 'Similar Topics' that was then modified by Xabi into 'Precise Similar Topics' with a lighter and more precise query, my 'Precise Similar Topics II' takes this MOD further for a complete, customizable, efficient and pretty implementation for your phpBB board.]]></description>
 		<author-notes lang="en"><![CDATA[
 REQUIREMENTS: 
 Your database must be using MySQL 4.0.1 or higher. The phpbb_topics table storage engine must be MyISAM (this is the default table type for most MySQL databases). The install script will test your database to see if it meets these requirement and notify you if this MOD will be compatible with your phpBB board.
@@ -22,21 +22,21 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 				<username><![CDATA[VSE]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 				<contributions-group>
-					<contributions status="current" position="Added ACP, Updated SQL Code &amp; Styles"/>
+					<contributions status="current" position="Added ACP settings, more options, updated SQL code &amp; styles"/>
 				</contributions-group>
 			</author>
 			<author>
 				<username><![CDATA[tas2580]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/similar_topics]]></homepage>
 				<contributions-group>
-					<contributions status="past" position="Original Author of SQL Code"/>
+					<contributions status="past" position="Original author of SQL code"/>
 				</contributions-group>
 			</author>
 			<author>
 				<username><![CDATA[Xabi]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1492515]]></homepage>
 				<contributions-group>
-					<contributions status="past" position="Updated SQL Code for Precision"/>
+					<contributions status="past" position="Updated SQL code for precision and efficiency"/>
 				</contributions-group>
 			</author>
 		</author-group>
