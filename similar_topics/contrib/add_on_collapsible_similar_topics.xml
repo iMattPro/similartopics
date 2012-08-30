@@ -33,9 +33,9 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="contrib/add_on_collapsible_similar_topics/styles/prosilver/template/jquery.collapse.js" to="styles/prosilver/template/jquery.collapse.js"/>
-			<file from="contrib/add_on_collapsible_similar_topics/styles/prosilver/template/jquery.cookie.js" to="styles/prosilver/template/jquery.cookie.js"/>
-			<file from="contrib/add_on_collapsible_similar_topics/styles/prosilver/theme/images/collapse-icon.png" to="styles/prosilver/theme/images/collapse-icon.png"/>
+			<file from="contrib/add_on_collapsible_similar_topics/root/styles/prosilver/template/jquery.collapse.js" to="styles/prosilver/template/jquery.collapse.js"/>
+			<file from="contrib/add_on_collapsible_similar_topics/root/styles/prosilver/template/jquery.cookie.js" to="styles/prosilver/template/jquery.cookie.js"/>
+			<file from="contrib/add_on_collapsible_similar_topics/root/styles/prosilver/theme/images/collapse-icon.png" to="styles/prosilver/theme/images/collapse-icon.png"/>
 		</copy>
 		<open src="styles/prosilver/template/similar_topics.html">
 			<edit>
