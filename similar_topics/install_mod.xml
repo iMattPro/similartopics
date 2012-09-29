@@ -48,6 +48,13 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</installation>
 		<history>
 			<entry>
+				<date>2012-09-29</date>
+				<rev-version>X.X.X</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Added Dutch language translation. Thanks to Theriddler1.]]></change>
+				</changelog>
+			</entry>
+			<entry>
 				<date>2012-07-30</date>
 				<rev-version>1.2.0</rev-version>
 				<changelog lang="en">
@@ -170,6 +177,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 			<link type="template" href="contrib/aero.xml" lang="en">Aero v1.4.7</link>
 			<link type="template" href="contrib/we_clearblue.xml" lang="en">we_clearblue v1.0.1</link>
 			<link type="template" href="contrib/we_universal.xml" lang="en">we_universal v2.2.0</link>
+			<link type="language" href="contrib/nl.xml" lang="en">Dutch Language Pack</link>
 			<link type="language" href="contrib/de.xml" lang="en">German/Deutsch Language Pack</link>
 			<link type="language" href="contrib/pl.xml" lang="en">Polish Language Pack</link>
 			<link type="language" href="contrib/pt.xml" lang="en">Portuguese Language Pack</link>
