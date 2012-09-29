@@ -36,9 +36,9 @@ $lang = array_merge($lang, array(
 	'PST_CACHE'			=> 'Zeitraum der Zwischenspeicherung für Vergleichbare Themen',
 	'PST_CACHE_EXPLAIN'	=> 'Zwischengespeichterte Vergleichbare Themen werden nach dieser Zeit verfallen. In Sekunden angeben. Auf 0 setzen, wenn du den Zwichenspeicher deaktivieren willst.',
 	'PST_LEGEND3'		=> 'Foren',
-	'PST_NOSHOW_LIST' 	=> 'Nicht anzeigen in',
+	'PST_NOSHOW_LIST'	=> 'Nicht anzeigen in',
 	'PST_NOSHOW_TITLE'	=> 'Vergleichbare Themen nicht anzeigen in',
-	'PST_IGNORE_SEARCH' => 'Nicht Suchen Nach in',
+	'PST_IGNORE_SEARCH'	=> 'Nicht Suchen Nach in',
 	'PST_IGNORE_TITLE'	=> 'Nicht suchen nach Vergleichbaren Themen in',
 	'PST_ADVANCED'		=> 'Erweiterte Einstellungen',
 	'PST_ADVANCED_TITLE'=> 'Klicken um erweiterte Einstellungen für Vergleichbare Themen vorzunehmen',
@@ -55,14 +55,14 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Hinzufügen FULLTEXT Index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Entfernen FULLTEXT Index: topic_title',
-	'PST_FULLTEXT_PASS' => 'Ihre Datenbank ist kompatibel mit diesem MOD.',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>WARNUNG:</strong> Sie sollten nicht installieren Sie diesen MOD! Ihre Datenbank unterstützt nicht Volltextindizes. Das bedeutet normalerweise, Ihre Themen-Tabelle wird nicht mit der MyISAM-Engine für diesen Mod benötigt, um zu arbeiten. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Mehr Informationen</a>.</span>',
-	'PST_DATABASE_FAIL' => '<span class="error"><strong>WARNUNG:</strong> Sie sollten nicht installieren Sie diesen MOD! Ihre Datenbank wird MySQL als nicht von dieser MOD erforderlich.</span>',
+	'PST_FULLTEXT_PASS'	=> 'Ihre Datenbank ist kompatibel mit diesem MOD.',
+	'PST_FULLTEXT_FAIL'	=> '<span class="error"><strong>WARNUNG:</strong> Sie sollten nicht installieren Sie diesen MOD! Ihre Datenbank unterstützt nicht Volltextindizes. Das bedeutet normalerweise, Ihre Themen-Tabelle wird nicht mit der MyISAM-Engine für diesen Mod benötigt, um zu arbeiten. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Mehr Informationen</a>.</span>',
+	'PST_DATABASE_FAIL'	=> '<span class="error"><strong>WARNUNG:</strong> Sie sollten nicht installieren Sie diesen MOD! Ihre Datenbank wird MySQL als nicht von dieser MOD erforderlich.</span>',
 ));
 
 // For permissions
 $lang = array_merge($lang, array(
-	'acl_u_similar_topics'    => array('lang' => 'Kann Vergleichbare Themen sehen', 'cat' => 'misc'),
+	'acl_u_similar_topics'	=> array('lang' => 'Kann Vergleichbare Themen sehen', 'cat' => 'misc'),
 ));
 
 ?>

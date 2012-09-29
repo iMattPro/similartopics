@@ -36,9 +36,9 @@ $lang = array_merge($lang, array(
 	'PST_CACHE'			=> 'Similar Topics cache length',
 	'PST_CACHE_EXPLAIN'	=> 'Cached similar topics will expire after this time, in seconds. Set to 0 if you want to disable the similar topics cache.',
 	'PST_LEGEND3'		=> 'Forum Settings',
-	'PST_NOSHOW_LIST' 	=> 'Do Not Display In',
+	'PST_NOSHOW_LIST'	=> 'Do Not Display In',
 	'PST_NOSHOW_TITLE'	=> 'Do not display similar topics in',
-	'PST_IGNORE_SEARCH' => 'Do Not Search In',
+	'PST_IGNORE_SEARCH'	=> 'Do Not Search In',
 	'PST_IGNORE_TITLE'	=> 'Do not search for similar topics in',
 	'PST_ADVANCED'		=> 'Advanced',
 	'PST_ADVANCED_TITLE'=> 'Click to set up advanced similar topic settings for',
@@ -55,14 +55,14 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Adding FULLTEXT index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Dropped FULLTEXT index: topic_title',
-	'PST_FULLTEXT_PASS' => 'Your database is compatible with this MOD. Enjoy :-)',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>WARNING:</strong> You should not install this MOD! Your database does not support FULLTEXT indexes. This usually means your topics table is not using the MyISAM storage engine required for this MOD to work. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">More information</a>.</span>',
-	'PST_DATABASE_FAIL' => '<span class="error"><strong>WARNING:</strong> You should not install this MOD! Your database is not MySQL as required by this MOD.</span>',
+	'PST_FULLTEXT_PASS'	=> 'Your database is compatible with this MOD. Enjoy :-)',
+	'PST_FULLTEXT_FAIL'	=> '<span class="error"><strong>WARNING:</strong> You should not install this MOD! Your database does not support FULLTEXT indexes. This usually means your topics table is not using the MyISAM storage engine required for this MOD to work. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">More information</a>.</span>',
+	'PST_DATABASE_FAIL'	=> '<span class="error"><strong>WARNING:</strong> You should not install this MOD! Your database is not MySQL as required by this MOD.</span>',
 ));
 
 // For permissions
 $lang = array_merge($lang, array(
-	'acl_u_similar_topics'    => array('lang' => 'Can view similar topics', 'cat' => 'misc'),
+	'acl_u_similar_topics'	=> array('lang' => 'Can view similar topics', 'cat' => 'misc'),
 ));
 
 ?>

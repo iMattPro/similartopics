@@ -36,9 +36,9 @@ $lang = array_merge($lang, array(
 	'PST_CACHE'			=> 'Duração da Cache de Tópicos Semelhantes',
 	'PST_CACHE_EXPLAIN'	=> 'A Cache de Tópicos Semelhantes vai expirar após esse tempo, em segundos. 0 para desativar a Cache de Tópicos Semelhantes.',
 	'PST_LEGEND3'		=> 'Configurações do Fórum',
-	'PST_NOSHOW_LIST' 	=> 'Não exibir em',
+	'PST_NOSHOW_LIST'	=> 'Não exibir em',
 	'PST_NOSHOW_TITLE'	=> 'Não exibir Tópicos Semelhantes em',
-	'PST_IGNORE_SEARCH' => 'Não pesquisar em',
+	'PST_IGNORE_SEARCH'	=> 'Não pesquisar em',
 	'PST_IGNORE_TITLE'	=> 'Não pesquisar Tópicos Semelhantes em',
 	'PST_ADVANCED'		=> 'Avançado',
 	'PST_ADVANCED_TITLE'=> 'Clique para configurar definições avançadas de Tópicos Semelhantes para',
@@ -55,14 +55,14 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Adicionando índice FULLTEXT: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Removido índice FULLTEXT: topic_title',
-	'PST_FULLTEXT_PASS' => 'Seu banco de dados é compatível com este MOD.',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>AVISO:</strong> Você não deve instalar este MOD! Seu banco de dados não suporta índices FULLTEXT. Isso geralmente significa que a sua tabela de tópicos não está usando o mecanismo de armazenamento MyISAM necessário para este MOD para trabalhar. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Mais informações</a>.</span>',
-	'PST_DATABASE_FAIL' => '<span class="error"><strong>AVISO:</strong> Você não deve instalar este MOD! Seu banco de dados MySQL não é.</span>',
+	'PST_FULLTEXT_PASS'	=> 'Seu banco de dados é compatível com este MOD.',
+	'PST_FULLTEXT_FAIL'	=> '<span class="error"><strong>AVISO:</strong> Você não deve instalar este MOD! Seu banco de dados não suporta índices FULLTEXT. Isso geralmente significa que a sua tabela de tópicos não está usando o mecanismo de armazenamento MyISAM necessário para este MOD para trabalhar. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Mais informações</a>.</span>',
+	'PST_DATABASE_FAIL'	=> '<span class="error"><strong>AVISO:</strong> Você não deve instalar este MOD! Seu banco de dados MySQL não é.</span>',
 ));
 
 // For permissions
 $lang = array_merge($lang, array(
-	'acl_u_similar_topics'    => array('lang' => 'Pode ver Tópicos Semelhantes', 'cat' => 'misc'),
+	'acl_u_similar_topics'	=> array('lang' => 'Pode ver Tópicos Semelhantes', 'cat' => 'misc'),
 ));
 
 ?>

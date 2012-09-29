@@ -36,9 +36,9 @@ $lang = array_merge($lang, array(
 	'PST_CACHE'			=> 'Lagring av liknande trådar',
 	'PST_CACHE_EXPLAIN'	=> 'Lagrade trådar upphör efter denna tid, inställt i sekunder. Ange 0 om du vill stänga av lagring av liknande trådar.',
 	'PST_LEGEND3'		=> 'Foruminställningar',
-	'PST_NOSHOW_LIST' 	=> 'Visa inte i',
+	'PST_NOSHOW_LIST'	=> 'Visa inte i',
 	'PST_NOSHOW_TITLE'	=> 'Visa inte liknande trådar i',
-	'PST_IGNORE_SEARCH' => 'Sök inte i',
+	'PST_IGNORE_SEARCH'	=> 'Sök inte i',
 	'PST_IGNORE_TITLE'	=> 'Sök inte efter liknande trådar i',
 	'PST_ADVANCED'		=> 'Avancerade',
 	'PST_ADVANCED_TITLE'=> 'Klicka för att ställa in avancerade inställningar',
@@ -55,14 +55,14 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Lägger till FULLTEXT index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Ignorerade FULLTEXT index: topic_title',
-	'PST_FULLTEXT_PASS' => 'Din databas är förenlig med denna MOD.',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>VARNING:</strong> Du bör inte installera detta mod! Din databas stöder inte Fulltext index. Detta innebär vanligtvis din trådar bordet inte använder MyISAM lagring motorn som krävs för detta MOD ska fungera. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Mer information</a>.</span>',
-	'PST_DATABASE_FAIL' => '<span class="error"><strong>VARNING:</strong> Du bör inte installera detta mod! Din databas är inte MySQL.</span>',
+	'PST_FULLTEXT_PASS'	=> 'Din databas är förenlig med denna MOD.',
+	'PST_FULLTEXT_FAIL'	=> '<span class="error"><strong>VARNING:</strong> Du bör inte installera detta mod! Din databas stöder inte Fulltext index. Detta innebär vanligtvis din trådar bordet inte använder MyISAM lagring motorn som krävs för detta MOD ska fungera. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Mer information</a>.</span>',
+	'PST_DATABASE_FAIL'	=> '<span class="error"><strong>VARNING:</strong> Du bör inte installera detta mod! Din databas är inte MySQL.</span>',
 ));
 
 // For permissions
 $lang = array_merge($lang, array(
-	'acl_u_similar_topics'    => array('lang' => 'Kan se “Liknande trådar”', 'cat' => 'misc'),
+	'acl_u_similar_topics'	=> array('lang' => 'Kan se “Liknande trådar”', 'cat' => 'misc'),
 ));
 
 ?>

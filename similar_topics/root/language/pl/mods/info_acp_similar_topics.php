@@ -36,9 +36,9 @@ $lang = array_merge($lang, array(
 	'PST_CACHE'			=> 'Czas trwania cache',
 	'PST_CACHE_EXPLAIN'	=> 'Cache wygasa po upływie tego czasu, w sekundach. Ustaw na 0, jeśli chcesz wyłączyć cache dla podobnych tematów.',
 	'PST_LEGEND3'		=> 'Ustawienia forum',
-	'PST_NOSHOW_LIST' 	=> 'Nie wyświetlaj w',
+	'PST_NOSHOW_LIST'	=> 'Nie wyświetlaj w',
 	'PST_NOSHOW_TITLE'	=> 'Nie wyśiwetlaj podobnych tematów w',
-	'PST_IGNORE_SEARCH' => 'Nie szukaj w',
+	'PST_IGNORE_SEARCH'	=> 'Nie szukaj w',
 	'PST_IGNORE_TITLE'	=> 'Nie szukaj podobnych tematów w',
 	'PST_ADVANCED'		=> 'Zaawansowane',
 	'PST_ADVANCED_TITLE'=> 'Kliknij, aby ustawić zaawansowane ustawienia dla',
@@ -55,14 +55,14 @@ $lang = array_merge($lang, array(
 	//For UMIL Installer
 	'PST_FULLTEXT_ADD'	=> 'Dodawanie FULLTEXT index: topic_title',
 	'PST_FULLTEXT_DROP'	=> 'Usuwanie FULLTEXT index: topic_title',
-	'PST_FULLTEXT_PASS' => 'Baza danych jest zgodna z tego moda.',
-	'PST_FULLTEXT_FAIL' => '<span class="error"><strong>OSTRZEŻENIE:</strong> Nie należy instalować ten mod! Baza danych nie obsługuje FULLTEXT indeksy. To zazwyczaj oznacza, że ​​tabela tematy nie wykorzystuje silnik przechowywania MyISAM wymagane do tego moda do pracy. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Więcej informacji</a>.</span>',
-	'PST_DATABASE_FAIL' => '<span class="error"><strong>OSTRZEŻENIE:</strong> Nie należy instalować ten mod! Baza danych nie jest MySQL.</span>',
+	'PST_FULLTEXT_PASS'	=> 'Baza danych jest zgodna z tego moda.',
+	'PST_FULLTEXT_FAIL'	=> '<span class="error"><strong>OSTRZEŻENIE:</strong> Nie należy instalować ten mod! Baza danych nie obsługuje FULLTEXT indeksy. To zazwyczaj oznacza, że ​​tabela tematy nie wykorzystuje silnik przechowywania MyISAM wymagane do tego moda do pracy. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_737" onclick="window.open(this.href);return false;">Więcej informacji</a>.</span>',
+	'PST_DATABASE_FAIL'	=> '<span class="error"><strong>OSTRZEŻENIE:</strong> Nie należy instalować ten mod! Baza danych nie jest MySQL.</span>',
 ));
 
 // For permissions
 $lang = array_merge($lang, array(
-	'acl_u_similar_topics'    => array('lang' => 'Może widzieć podobne tematy', 'cat' => 'misc'),
+	'acl_u_similar_topics'	=> array('lang' => 'Może widzieć podobne tematy', 'cat' => 'misc'),
 ));
 
 ?>
