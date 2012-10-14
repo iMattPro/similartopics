@@ -60,7 +60,7 @@ $lang = array_merge($lang, array(
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the hilighted link above if you are using AutoMOD)
+		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the highlighted link above if you are using AutoMOD)
 * Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
 * Go to the ACP -> Permissions, and set up Group permissions to your liking.
 * Delete the PHP install file at yourboard/install_similar_topics.php
