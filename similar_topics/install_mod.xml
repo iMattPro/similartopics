@@ -48,9 +48,10 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</installation>
 		<history>
 			<entry>
-				<date>2012-09-29</date>
+				<date>2012-11-23</date>
 				<rev-version>X.X.X</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[Update UMIL package to 1.0.5.]]></change>
 					<change><![CDATA[Added Dutch language translation. Thanks to Theriddler1.]]></change>
 				</changelog>
 			</entry>
