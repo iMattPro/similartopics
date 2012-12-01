@@ -80,8 +80,8 @@ $versions = array(
 		'permission_set' => array(
 			array('ROLE_USER_FULL', 'u_similar_topics'),
 			array('ROLE_USER_STANDARD', 'u_similar_topics'),
-    		array('REGISTERED', 'u_similar_topics', 'group'),
-    		array('REGISTERED_COPPA', 'u_similar_topics', 'group'),
+			array('REGISTERED', 'u_similar_topics', 'group'),
+			array('REGISTERED_COPPA', 'u_similar_topics', 'group'),
 		),
 
 		// Lets add a config to store the cache length

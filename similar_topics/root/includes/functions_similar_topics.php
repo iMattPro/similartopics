@@ -73,14 +73,14 @@ class phpbb_similar_topics
 	{
 		global $config, $db, $forum_id;
 
-		$this->is_active		= (bool) $config['similar_topics'];
-		$this->topic_limit		= (int) $config['similar_topics_limit'];
-		$this->topic_age		= (int) $config['similar_topics_time'];
-		$this->cache_time		= (int) $config['similar_topics_cache'];
-		$this->ignore_words		= (string) $config['similar_topics_words'];
-		$this->ignore_forums	= (string) $config['similar_topics_ignore'];
-		$this->allowed_forum	= (!in_array($forum_id, explode(',', $config['similar_topics_hide']))) ? true : false;
-		$this->mysql_db			= (($db->sql_layer == 'mysql4') || ($db->sql_layer == 'mysqli')) ? true : false;
+		$this->is_active     = (bool) $config['similar_topics'];
+		$this->topic_limit   = (int) $config['similar_topics_limit'];
+		$this->topic_age     = (int) $config['similar_topics_time'];
+		$this->cache_time    = (int) $config['similar_topics_cache'];
+		$this->ignore_words  = (string) $config['similar_topics_words'];
+		$this->ignore_forums = (string) $config['similar_topics_ignore'];
+		$this->allowed_forum = (!in_array($forum_id, explode(',', $config['similar_topics_hide']))) ? true : false;
+		$this->mysql_db      = (($db->sql_layer == 'mysql4') || ($db->sql_layer == 'mysqli')) ? true : false;
 	}
 
 	/**
