@@ -38,7 +38,7 @@ function similar_topics_hook(&$hook, $handle)
 		return;
 	}
 
-	if (!function_exists('similar_topics'))
+	if (!class_exists('phpbb_similar_topics'))
 	{
 		include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
 	}
