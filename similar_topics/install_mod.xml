@@ -22,21 +22,21 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 				<username><![CDATA[VSE]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 				<contributions-group>
-					<contributions status="current" position="Added ACP settings, more options, updated SQL code &amp; styles"/>
+					<contributions status="current" position="Added ACP panel, more options, updated SQL code &amp; styles"/>
 				</contributions-group>
 			</author>
 			<author>
 				<username><![CDATA[tas2580]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/similar_topics]]></homepage>
 				<contributions-group>
-					<contributions status="past" position="Original author of SQL code"/>
+					<contributions status="past" position="Author of original SQL query"/>
 				</contributions-group>
 			</author>
 			<author>
 				<username><![CDATA[Xabi]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1492515]]></homepage>
 				<contributions-group>
-					<contributions status="past" position="Updated SQL code for precision and efficiency"/>
+					<contributions status="past" position="Updated SQL query for precision and efficiency"/>
 				</contributions-group>
 			</author>
 		</author-group>
@@ -48,11 +48,12 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</installation>
 		<history>
 			<entry>
-				<date>2012-11-23</date>
+				<date>2012-12-09</date>
 				<rev-version>1.2.1</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[Fixed a potential fatal error bug (Cannot redeclare class phpbb_similar_topics...).]]></change>
+					<change><![CDATA[Fixed a potential fatal error (cannot redeclare class phpbb_similar_topics...).]]></change>
 					<change><![CDATA[Update UMIL package to 1.0.5.]]></change>
+					<change><![CDATA[Corrections to German language translation.]]></change>
 					<change><![CDATA[Added Dutch language translation. Thanks to Theriddler1.]]></change>
 				</changelog>
 			</entry>
@@ -176,9 +177,9 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</history>
 		<link-group>
 			<link type="template" href="contrib/subsilver2.xml" lang="en">subsilver2</link>
-			<link type="template" href="contrib/aero.xml" lang="en">Aero v1.4.7</link>
-			<link type="template" href="contrib/we_clearblue.xml" lang="en">we_clearblue v1.0.1</link>
-			<link type="template" href="contrib/we_universal.xml" lang="en">we_universal v2.2.0</link>
+			<link type="template" href="contrib/aero.xml" lang="en">Aero</link>
+			<link type="template" href="contrib/we_clearblue.xml" lang="en">we_clearblue</link>
+			<link type="template" href="contrib/we_universal.xml" lang="en">we_universal</link>
 			<link type="language" href="contrib/nl.xml" lang="en">Dutch Language Pack</link>
 			<link type="language" href="contrib/de.xml" lang="en">German/Deutsch Language Pack</link>
 			<link type="language" href="contrib/pl.xml" lang="en">Polish Language Pack</link>
@@ -196,6 +197,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 			<link type="contrib" href="contrib/update_115-121.xml" lang="en">Update: from 1.1.5 to 1.2.1</link>
 			<link type="contrib" href="contrib/update_116-121.xml" lang="en">Update: from 1.1.6 to 1.2.1</link>
 			<link type="contrib" href="contrib/update_118-121.xml" lang="en">Update: from 1.1.8 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_120-121.xml" lang="en">Update: from 1.2.0 to 1.2.1</link>
 		</link-group>
 	</header>
 	<action-group>
@@ -217,8 +219,8 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the highlighted link above if you are using AutoMOD)
-* Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking.
-* Go to the ACP -> Permissions, and set up Group permissions to your liking.
+* Go to the ACP -> .MODS -> Precise Similar Topics, and adjust the settings to your liking
+* Go to the ACP -> Permissions, and set up Group permissions to your liking
 * Delete the PHP install file at yourboard/install_similar_topics.php]]></diy-instructions>
 	</action-group>
 </mod>
