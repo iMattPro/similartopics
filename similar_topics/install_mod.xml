@@ -40,7 +40,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.2.0</mod-version>
+		<mod-version>1.2.1</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>180</time>
@@ -49,8 +49,9 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		<history>
 			<entry>
 				<date>2012-11-23</date>
-				<rev-version>X.X.X</rev-version>
+				<rev-version>1.2.1</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[Fixed a potential fatal error bug (Cannot redeclare class phpbb_similar_topics...).]]></change>
 					<change><![CDATA[Update UMIL package to 1.0.5.]]></change>
 					<change><![CDATA[Added Dutch language translation. Thanks to Theriddler1.]]></change>
 				</changelog>
@@ -187,14 +188,14 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 			<link type="language" href="contrib/sv.xml" lang="en">Swedish Language Pack</link>
 			<link type="contrib" href="contrib/add_on_collapsible_similar_topics.xml" lang="en">Add-On: Collapsible Similar Topics</link>
 			<link type="contrib" href="contrib/add_on-topic_preview.xml" lang="en">Add-On: Compatibility with Topic Preview MOD</link>
-			<link type="contrib" href="contrib/update_110-120.xml" lang="en">Update: from 1.1.0 to 1.2.0</link>
-			<link type="contrib" href="contrib/update_111-120.xml" lang="en">Update: from 1.1.1 to 1.2.0</link>
-			<link type="contrib" href="contrib/update_112-120.xml" lang="en">Update: from 1.1.2 to 1.2.0</link>
-			<link type="contrib" href="contrib/update_113-120.xml" lang="en">Update: from 1.1.3 to 1.2.0</link>
-			<link type="contrib" href="contrib/update_114-120.xml" lang="en">Update: from 1.1.4 to 1.2.0</link>
-			<link type="contrib" href="contrib/update_115-120.xml" lang="en">Update: from 1.1.5 to 1.2.0</link>
-			<link type="contrib" href="contrib/update_116-120.xml" lang="en">Update: from 1.1.6 to 1.2.0</link>
-			<link type="contrib" href="contrib/update_118-120.xml" lang="en">Update: from 1.1.8 to 1.2.0</link>
+			<link type="contrib" href="contrib/update_110-121.xml" lang="en">Update: from 1.1.0 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_111-121.xml" lang="en">Update: from 1.1.1 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_112-121.xml" lang="en">Update: from 1.1.2 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_113-121.xml" lang="en">Update: from 1.1.3 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_114-121.xml" lang="en">Update: from 1.1.4 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_115-121.xml" lang="en">Update: from 1.1.5 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_116-121.xml" lang="en">Update: from 1.1.6 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_118-121.xml" lang="en">Update: from 1.1.8 to 1.2.1</link>
 		</link-group>
 	</header>
 	<action-group>
