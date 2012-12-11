@@ -11,14 +11,14 @@
 		<author-notes lang="en"><![CDATA[Note: This add-on uses jQuery. It will load jQuery from Google's CDN if it does not find jQuery has already been loaded. It is up to you to ensure that the inclusion of jQuery does not conflict with other MODs that may be including jQuery. This add-on only supports Prosilver and Prosilver-based styles.]]></author-notes>
 		<author-group>
 			<author>
-				<realname><![CDATA[Christian Bullock]]></realname>
-				<username><![CDATA[Christian 2.0]]></username>
-				<homepage><![CDATA[http://www.christianbullock.com/2011/phpbb-collapsible-categories-with-cookies]]></homepage>
-			</author>
-			<author>
 				<realname><![CDATA[Matt Friedman]]></realname>
 				<username><![CDATA[VSE]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
+			</author>
+			<author>
+				<realname><![CDATA[Christian Bullock]]></realname>
+				<username><![CDATA[Christian 2.0]]></username>
+				<homepage><![CDATA[http://www.christianbullock.com/2011/phpbb-collapsible-categories-with-cookies]]></homepage>
 			</author>
 		</author-group>
 		<mod-version>1.2.1</mod-version>

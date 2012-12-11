@@ -9,7 +9,7 @@
 		<title lang="en"><![CDATA[Precise Similar Topics II]]></title>
 		<description lang="en"><![CDATA[This MOD will display a list of similar/related topics at the bottom of your topic pages, based on finding the most relevant matching topic titles.
 
-		Based on a very old MOD written by tas2580 as 'Similar Topics' that was then modified by Xabi into 'Precise Similar Topics' with a lighter and more precise query, my 'Precise Similar Topics II' takes this MOD further for a complete, customizable, efficient and pretty implementation for your phpBB board.]]></description>
+		Based on a very old MOD written by tas2580 as 'Similar Topics' that was then modified by Xabi into 'Precise Similar Topics' with a lighter and more precise query, my 'Precise Similar Topics II' is a complete rewrite that takes this MOD all the way to a complete, customizable, efficient and pretty implementation for your phpBB board.]]></description>
 		<author-notes lang="en"><![CDATA[
 REQUIREMENTS: 
 Your database must be using MySQL 4.0.1 or higher. The phpbb_topics table storage engine must be MyISAM (this is the default table type for most MySQL databases). The install script will test your database to see if it meets these requirement and notify you if this MOD will be compatible with your phpBB board.
@@ -51,7 +51,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 				<date>2012-12-09</date>
 				<rev-version>1.2.1</rev-version>
 				<changelog lang="en">
-					<change><![CDATA[Fixed a potential fatal error (cannot redeclare class phpbb_similar_topics...).]]></change>
+					<change><![CDATA[Fixed a potential fatal PHP error ("cannot redeclare class phpbb_similar_topics...").]]></change>
 					<change><![CDATA[Update UMIL package to 1.0.5.]]></change>
 					<change><![CDATA[Corrections to German language translation.]]></change>
 					<change><![CDATA[Added Dutch language translation. Thanks to Theriddler1.]]></change>
@@ -189,15 +189,15 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 			<link type="language" href="contrib/sv.xml" lang="en">Swedish Language Pack</link>
 			<link type="contrib" href="contrib/add_on_collapsible_similar_topics.xml" lang="en">Add-On: Collapsible Similar Topics</link>
 			<link type="contrib" href="contrib/add_on-topic_preview.xml" lang="en">Add-On: Compatibility with Topic Preview MOD</link>
-			<link type="contrib" href="contrib/update_110-121.xml" lang="en">Update: from 1.1.0 to 1.2.1</link>
-			<link type="contrib" href="contrib/update_111-121.xml" lang="en">Update: from 1.1.1 to 1.2.1</link>
-			<link type="contrib" href="contrib/update_112-121.xml" lang="en">Update: from 1.1.2 to 1.2.1</link>
-			<link type="contrib" href="contrib/update_113-121.xml" lang="en">Update: from 1.1.3 to 1.2.1</link>
-			<link type="contrib" href="contrib/update_114-121.xml" lang="en">Update: from 1.1.4 to 1.2.1</link>
-			<link type="contrib" href="contrib/update_115-121.xml" lang="en">Update: from 1.1.5 to 1.2.1</link>
-			<link type="contrib" href="contrib/update_116-121.xml" lang="en">Update: from 1.1.6 to 1.2.1</link>
-			<link type="contrib" href="contrib/update_118-121.xml" lang="en">Update: from 1.1.8 to 1.2.1</link>
 			<link type="contrib" href="contrib/update_120-121.xml" lang="en">Update: from 1.2.0 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_118-121.xml" lang="en">Update: from 1.1.8 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_116-121.xml" lang="en">Update: from 1.1.6 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_115-121.xml" lang="en">Update: from 1.1.5 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_114-121.xml" lang="en">Update: from 1.1.4 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_113-121.xml" lang="en">Update: from 1.1.3 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_112-121.xml" lang="en">Update: from 1.1.2 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_111-121.xml" lang="en">Update: from 1.1.1 to 1.2.1</link>
+			<link type="contrib" href="contrib/update_110-121.xml" lang="en">Update: from 1.1.0 to 1.2.1</link>
 		</link-group>
 	</header>
 	<action-group>
