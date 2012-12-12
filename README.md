@@ -1,4 +1,5 @@
-= Precise Similar Topics II 
+Precise Similar Topics II
+==========================
 
 A Similar Topics MOD for phpBB3
 
@@ -6,10 +7,11 @@ This is a MOD for phpBB3 that will display a list of similar/related topics at t
 
 This MOD is written to provide the most precise similar topics it can find with minimal impact to your board's performance. It uses a MySQL FULLTEXT search that scans topic titles only, not posts, to quickly find matches. There are admin control panel settings available to fine tune the display and performance of the similar topics to best meet the needs of your phpBB board.
 
-Current valid release available from phpBB:
-* https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii
+Current valid release available from phpBB: 
+Version 1.2.0 ([Download it here](https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/)) 
 
-== FEATURES
+Features
+--------
 
 * Displays a list of the most similar/relevant topics at the bottom of the current topic page.
 * Uses a precise and light MySQL query to search topic titles for matches.
@@ -26,21 +28,25 @@ Current valid release available from phpBB:
 * Very fast and easy to install.
 * AutoMOD compatible.
 
-== AWARDS
+Awards
+------
 
 * Overall winner of the 2010 "Summer of MODs" competition at phpBB.com.
 * Featured MOD of the Week in the phpBB Weekly Podcast, episode #161.
 
-== SUPPORT
+Support
+-------
 
 * Report any bugs or problems you encounter to the issue tracker: http://github.com/VSEphpbb/precise-similar-topics-II/issues
 * Support is also available at phpBB: https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/support
 
-== REQUIREMENTS
+Requirements
+------------
 
 * MySQL 4.0.1 or later using MyISAM tables.
 * phpBB 3.0.7 or newer recommended.
 
-== LICENSE
+License
+-------
 
 GNU General Public License v2
