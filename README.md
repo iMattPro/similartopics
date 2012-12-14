@@ -3,7 +3,7 @@ Precise Similar Topics II
 
 A Similar Topics MOD for phpBB3
 
-This is a MOD for phpBB3 that will display a list of similar/related topics at the bottom of the current topic being viewed. It does this by matching keywords in the current topic's title with other topic titles in your forum and determining the most relevant and closely matched results.
+This is a MOD for phpBB3 that will display a list of similar/related topics at the bottom of the current topic being viewed. It does this by matching keywords in the current topic's title with other topic titles in your board's forums and determining the most relevant and closely matched results.
 
 This MOD is written to provide the most precise similar topics it can find with minimal impact to your board's performance. It uses a MySQL FULLTEXT search that scans topic titles only, not posts, to quickly find matches. There are admin control panel settings available to fine tune the display and performance of the similar topics to best meet the needs of your phpBB board.
 
