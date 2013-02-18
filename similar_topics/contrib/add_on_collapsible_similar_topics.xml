@@ -97,7 +97,6 @@ $("#similartopiclist").collapse({show: function(){
 	cursor: pointer;
 	float: right;
 	position: relative;
-	z-index: 9998;
 	margin-top: -21px;
 }
 
