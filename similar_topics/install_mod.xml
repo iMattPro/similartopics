@@ -52,6 +52,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 				<date>2013-02-18</date>
 				<rev-version>1.2.2</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[Fixed an issue that would generate a syntax error when installing to MySQL4 databases.]]></change>
 					<change><![CDATA[No longer prevent Bots from seeing similar topics.]]></change>
 					<change><![CDATA[Update MODX files to 1.2.6.]]></change>
 				</changelog>

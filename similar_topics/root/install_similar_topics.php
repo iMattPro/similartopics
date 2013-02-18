@@ -178,7 +178,7 @@ function check_database_requirements()
 
 	$engine = '';
 	$sql = "SHOW TABLE STATUS 
-			WHERE Name = '" . TOPICS_TABLE . "'";
+			LIKE '" . TOPICS_TABLE . "'";
 	$result = $db->sql_query($sql);
 	while ($row = $db->sql_fetchrow($result))
 	{
