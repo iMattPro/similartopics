@@ -16,7 +16,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.2.1</mod-version>
+		<mod-version>1.2.2</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>60</time>
@@ -33,7 +33,7 @@
 		<open src="styles/subsilver2/template/viewtopic_body.html">
 			<edit>
 				<find><![CDATA[<!-- INCLUDE breadcrumbs.html -->]]></find>
-				<action type="before-add"><![CDATA[<!-- IF .similar and not S_IS_BOT -->
+				<action type="before-add"><![CDATA[<!-- IF .similar -->
 	<!-- INCLUDE similar_topics.html -->
 <!-- ENDIF -->]]></action>
 			</edit>

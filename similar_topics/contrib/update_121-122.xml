@@ -6,7 +6,8 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Spanish Language Pack]]></title>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.2.1 to v1.2.2]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.2.1 to v1.2.2]]></description>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
@@ -25,7 +26,25 @@
 	</header>
 	<action-group>
 		<copy>
-			<file from="root/language/es/mods/info_acp_similar_topics.php" to="language/es/mods/info_acp_similar_topics.php"/>
+			<file from="root/includes/acp/info/acp_similar_topics.php" to="includes/acp/info/acp_similar_topics.php"/>
+			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
+			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
+		<open src="styles/prosilver/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
+				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/subsilver2/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
+				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
+			</edit>
+		</open>
+		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
+		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the highlighted link above if you are using AutoMOD)
+* Delete the PHP install file at yourboard/install_similar_topics.php
+* Go to the ACP to Purge the cache, refresh template files]]></diy-instructions>
 	</action-group>
 </mod>

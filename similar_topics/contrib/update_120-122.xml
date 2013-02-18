@@ -6,18 +6,18 @@
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.1.6 to v1.2.1]]></title>
-		<description lang="en"><![CDATA[Update instructions for v1.1.6 to v1.2.1]]></description>
+		<title lang="en"><![CDATA[Precise Similar Topics II - Update v1.2.0 to v1.2.2]]></title>
+		<description lang="en"><![CDATA[Update instructions for v1.2.0 to v1.2.2]]></description>
 		<author-group>
 			<author>
 				<username><![CDATA[VSE]]></username>
 				<homepage><![CDATA[http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/]]></homepage>
 			</author>
 		</author-group>
-		<mod-version>1.2.1</mod-version>
+		<mod-version>1.2.2</mod-version>
 		<installation>
 			<level>easy</level>
-			<time>180</time>
+			<time>60</time>
 			<target-version>3.0.11</target-version>
 		</installation>
 		<link-group>
@@ -29,29 +29,18 @@
 			<file from="root/includes/*.*" to="includes/*.*"/>
 			<file from="root/install_similar_topics.php" to="install_similar_topics.php"/>
 			<file from="root/language/en/mods/info_acp_similar_topics.php" to="language/en/mods/info_acp_similar_topics.php"/>
-			<file from="root/styles/prosilver/template/similar_topics.html" to="styles/prosilver/template/similar_topics.html"/>
-			<file from="root/styles/subsilver2/template/similar_topics.html" to="styles/subsilver2/template/similar_topics.html"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
-		<open src="viewtopic.php">
+		<open src="styles/prosilver/template/viewtopic_body.html">
 			<edit>
-				<remove><![CDATA[// BEGIN Precise Similar Topics
-if ($config['similar_topics'] && $auth->acl_get('u_similar_topics'))
-{
-	include($phpbb_root_path . 'includes/functions_similar_topics.' . $phpEx);
-	similar_topics($topic_data, $forum_id);
-}
-// END Precise Similar Topics]]></remove>
+				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
+				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
 			</edit>
 		</open>
-		<open src="language/en/viewtopic.php">
+		<open src="styles/subsilver2/template/viewtopic_body.html">
 			<edit>
-				<comment lang="en"><![CDATA[Note: This change should be made for all languages your board may be using.]]></comment>
-				<remove><![CDATA[// BEGIN Precise Similar Topics
-$lang = array_merge($lang, array(
-	'SIMILAR_TOPICS'			=> 'Similar topics',
-));
-// END Precise Similar Topics]]></remove>
+				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
+				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
 			</edit>
 		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>

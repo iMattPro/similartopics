@@ -122,7 +122,10 @@ $versions = array(
 	'1.2.0' => array(),
 
 	// Version 1.2.1
-	'1.2.1' => array(
+	'1.2.1' => array(),
+
+	// Version 1.2.2
+	'1.2.2' => array(
 		'cache_purge' => '',	
 	),
 );
