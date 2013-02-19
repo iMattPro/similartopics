@@ -49,11 +49,12 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</installation>
 		<history>
 			<entry>
-				<date>2013-02-18</date>
+				<date>2013-02-19</date>
 				<rev-version>1.2.2</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[Fixed an issue that would generate a syntax error when installing to MySQL4 databases.]]></change>
 					<change><![CDATA[No longer prevent Bots from seeing similar topics.]]></change>
+					<change><![CDATA[Added Serbian language pack. Thanks to arcsorgrs.]]></change>
 					<change><![CDATA[Update MODX files to 1.2.6.]]></change>
 				</changelog>
 			</entry>
@@ -195,6 +196,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 			<link type="language" href="contrib/pl.xml" lang="en">Polish Language Pack</link>
 			<link type="language" href="contrib/pt.xml" lang="en">Portuguese Language Pack</link>
 			<link type="language" href="contrib/ro.xml" lang="en">Romanian Language Pack</link>
+			<link type="language" href="contrib/sr.xml" lang="en">Serbian Language Pack</link>
 			<link type="language" href="contrib/es.xml" lang="en">Spanish Language Pack</link>
 			<link type="language" href="contrib/sv.xml" lang="en">Swedish Language Pack</link>
 			<link type="contrib" href="contrib/add_on_collapsible_similar_topics.xml" lang="en">Add-On: Collapsible Similar Topics</link>
