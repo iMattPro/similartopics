@@ -33,12 +33,7 @@
 		</copy>
 		<open src="styles/prosilver/template/viewtopic_body.html">
 			<edit>
-				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
-				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
-			</edit>
-		</open>
-		<open src="styles/subsilver2/template/viewtopic_body.html">
-			<edit>
+				<comment lang="en">This change should be applied to all styles installed on your forum.</comment>
 				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
 				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
 			</edit>
@@ -46,6 +41,7 @@
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the highlighted link above if you are using AutoMOD)
 * Delete the PHP install file at yourboard/install_similar_topics.php
+* If you have installed the "Compatibility with Topic Preview MOD" add-on, you will need to re-do the edits to includes/functions_similar_topics.php per the add-on's instructions.
 * Go to the ACP to Purge the cache, refresh template files]]></diy-instructions>
 	</action-group>
 </mod>

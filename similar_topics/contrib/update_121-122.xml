@@ -32,12 +32,7 @@
 		</copy>
 		<open src="styles/prosilver/template/viewtopic_body.html">
 			<edit>
-				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
-				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
-			</edit>
-		</open>
-		<open src="styles/subsilver2/template/viewtopic_body.html">
-			<edit>
+				<comment lang="en">This change should be applied to all styles installed on your forum.</comment>
 				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
 				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
 			</edit>
