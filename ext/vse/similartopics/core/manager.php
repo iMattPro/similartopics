@@ -204,21 +204,19 @@ class phpbb_ext_vse_similartopics_core_manager
 					'LAST_POST_TIME'		=> $user->format_date($row['topic_last_post_time']),
 					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 
-//					'PAGINATION'			=> topic_generate_pagination($row['topic_replies'], append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id)),
-					'PAGE_NUMBER'       	=> phpbb_on_page($template, $user, $base_url, $replies + 1, $config['posts_per_page'], 1), 
-					'TOPIC_REPLIES'			=> $row['topic_replies'],
+					'PAGE_NUMBER'			=> phpbb_on_page($template, $user, $base_url, $replies + 1, $config['posts_per_page'], 1), 
+					'TOPIC_REPLIES'			=> $replies,
 					'TOPIC_VIEWS'			=> $row['topic_views'],
 					'TOPIC_TITLE'			=> $row['topic_title'],
 					'FORUM_TITLE'			=> $row['forum_name'],
 
 					'TOPIC_IMG_STYLE'		=> $folder_img,
 					'TOPIC_FOLDER_IMG'		=> $user->img($folder_img, $folder_alt),
-//					'TOPIC_FOLDER_IMG_SRC'	=> $user->img($folder_img, $folder_alt, false, '', 'src'),
 
 					'TOPIC_ICON_IMG'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
 					'TOPIC_ICON_IMG_WIDTH'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
 					'TOPIC_ICON_IMG_HEIGHT'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
-					'ATTACH_ICON_IMG'		=> ($row['topic_attachment'] && $auth->acl_get('u_download')) ? $user->img('icon_topic_attach', $user->lang['TOTAL_ATTACHMENTS']) : '',
+					'ATTACH_ICON_IMG'		=> ($auth->acl_get('u_download') && $auth->acl_get('f_download', $similar_forum_id) && $row['topic_attachment']) ? $user->img('icon_topic_attach', $user->lang['TOTAL_ATTACHMENTS']) : '',
 					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $user->img('icon_topic_unapproved', ($topic_unapproved) ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 
 					'S_UNREAD_TOPIC'		=> $unread_topic,
