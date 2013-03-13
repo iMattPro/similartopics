@@ -9,8 +9,10 @@ STATUS
 ------
 * ACP Module is complete
 * Migrations is complete
-* Core events/listeners need to be figured out
-* Template events/listeners need to be figured out
+* To-do: Core events/listeners need to be figured out
+* To-do: Template events needed in prosilver and subsilver
+* To-do: contrib styles and add ons will need to be addressed
+* To-do: support non-mysql databases
 
 
 Requirements
