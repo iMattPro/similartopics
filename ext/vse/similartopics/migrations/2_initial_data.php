@@ -77,23 +77,6 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 	public function revert_data()
 	{
 		return array(
-			// Remove configs
-//			array('config.remove', array('similar_topics_version')),
-//			array('config.remove', array('similar_topics')),
-//			array('config.remove', array('similar_topics_limit')),
-//			array('config.remove', array('similar_topics_hide')),
-//			array('config.remove', array('similar_topics_ignore')),
-//			array('config.remove', array('similar_topics_type')),
-//			array('config.remove', array('similar_topics_time')),
-//			array('config.remove', array('similar_topics_cache')),
-//			array('config.remove', array('similar_topics_words')),
-//
-//			// Remove ACP module
-//			array('module.remove', array('acp', false, 'PST_TITLE_ACP')),
-//
-//			// Remove permissions
-//			array('permission.remove', array('u_similar_topics')),
- 
  			// Custom functions
 			array('custom', array(array($this, 'drop_topic_title_fulltext'))),   
 		);
