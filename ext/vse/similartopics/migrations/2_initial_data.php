@@ -74,6 +74,9 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 		);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function revert_data()
 	{
 		return array(
@@ -82,6 +85,9 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 		);
 	}
 
+	/**
+	 * Add a FULLTEXT index to phpbb_topics.topic_title
+	 */
 	public function add_topic_title_fulltext()
 	{
 		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
@@ -100,6 +106,9 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 
 	}
 
+	/**
+	 * Drop the FULLTEXT index on phpbb_topics.topic_title
+	 */
 	public function drop_topic_title_fulltext()
 	{
 		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
@@ -108,6 +117,7 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 		}
 
 		if (!$this->is_fulltext())
+		// Return if there is no FULLTEXT index to drop.
 		{
 			return;
 		}
@@ -118,6 +128,9 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 
 	// Check to see if topic_title is already a FULLTEXT index
 	public function is_fulltext()
+	/**
+	 * Check to see if $key is already a FULLTEXT index
+	 */
 	{
 		$sql = "SHOW INDEX 
 				FROM " . TOPICS_TABLE . "
