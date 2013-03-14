@@ -96,7 +96,7 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 		}
 
 		// Prevent adding extra indeces.
-		if ($this->is_fulltext())
+		if ($this->is_fulltext('topic_title'))
 		{
 			return;
 		}
@@ -116,8 +116,8 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 			return;
 		}
 
-		if (!$this->is_fulltext())
 		// Return if there is no FULLTEXT index to drop.
+		if (!$this->is_fulltext('topic_title'))
 		{
 			return;
 		}
@@ -126,23 +126,26 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 		$this->db->sql_query($sql);
 	}
 
-	// Check to see if topic_title is already a FULLTEXT index
-	public function is_fulltext()
 	/**
 	 * Check to see if $key is already a FULLTEXT index
 	 */
+	public function is_fulltext($key)
 	{
 		$sql = "SHOW INDEX 
-				FROM " . TOPICS_TABLE . "
-				WHERE Index_type = 'FULLTEXT'";
+			FROM " . TOPICS_TABLE;
 		$result = $this->db->sql_query($sql);
+
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			if ($row['Key_name'] == 'topic_title')
+			// deal with older MySQL versions which didn't use Index_type
+			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
+
+			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $key)
 			{
 				return true;
 			}
 		}
+
 		return false;
 	}
 
