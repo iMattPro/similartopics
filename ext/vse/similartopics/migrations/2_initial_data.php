@@ -103,7 +103,6 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 
 		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
 		$this->db->sql_query($sql);
-
 	}
 
 	/**
