@@ -41,7 +41,7 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 			)),
 
 			// Add configs
-			array('config.add', array('similar_topics_version', '1.3.0')),
+			array('config.add', array('similar_topics_version', '1.3.0b1')),
 			array('config.add', array('similar_topics', '0')),
 			array('config.add', array('similar_topics_limit', '5')),
 			array('config.add', array('similar_topics_hide', '')),
