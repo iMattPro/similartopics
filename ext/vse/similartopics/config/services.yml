@@ -1,4 +1,3 @@
 services:
     similartopics.manager:
         class: phpbb_ext_vse_similartopics_core_manager
-        arguments:
