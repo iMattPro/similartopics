@@ -87,9 +87,9 @@ class phpbb_ext_vse_similartopics_core_manager
 	* Get similar topics by matching topic titles
 	* @access public
 	*/
-	public function get_similar_topics()
+	public function get_similar_topics($event)
 	{
-		global $auth, $cache, $config, $user, $db, $topic_data, $template, $phpbb_root_path, $phpEx;
+		global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
 
 		// All reasons to bail out of the MOD
 		if (!$this->is_active || !$this->mysql_db || !$this->topic_limit || !$this->allowed_forum)
@@ -97,7 +97,7 @@ class phpbb_ext_vse_similartopics_core_manager
 			return;
 		}
 
-		$topic_title = $this->strip_topic_title($topic_data['topic_title']);
+		$topic_title = $this->strip_topic_title($event['topic_data']['topic_title']);
 
 		// If the stripped down topic_title is empty, no need to continue
 		if (empty($topic_title))
@@ -125,7 +125,7 @@ class phpbb_ext_vse_similartopics_core_manager
 				AND t.topic_status <> " . ITEM_MOVED . '
 				AND t.topic_approved = 1
 				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->topic_age . ')
-				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
+				AND t.topic_id <> ' . (int) $event['topic_data']['topic_id'],
 
 		//	'GROUP_BY'	=> 't.topic_id',
 		//	'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
@@ -146,9 +146,9 @@ class phpbb_ext_vse_similartopics_core_manager
 		}
 
 		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
-		if (!empty($topic_data['similar_topic_forums']))
+		if (!empty($event['topic_data']['similar_topic_forums']))
 		{
-			$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('f.forum_id', explode(',', $topic_data['similar_topic_forums']));
+			$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('f.forum_id', explode(',', $event['topic_data']['similar_topic_forums']));
 		}
 		// Otherwise, lets see what forums are not allowed to be searched, and ignore those
 		else if (!empty($this->ignore_forums))
