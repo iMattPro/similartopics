@@ -40,9 +40,8 @@ class phpbb_ext_vse_similartopics_event_listener implements EventSubscriberInter
 		{
 			return;
 		}
-		
-		$this->container = $phpbb_container;
-		$this->manager = $this->container->get('similartopics.manager');
-		$this->manager->get_similar_topics($event);
+
+		$similar = $phpbb_container->get('similartopics.manager');
+		$similar->get_similar_topics($event);
 	}
 }
