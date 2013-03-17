@@ -25,7 +25,7 @@ class phpbb_ext_vse_similartopics_acp_similar_topics_info
 		return array(
 			'filename'	=> 'similar_topics_module',
 			'title'		=> 'PST_TITLE',
-			'version'	=> '1.3.0b1',
+			'version'	=> '1.3.0',
 			'modes'		=> array(
 				'index'	=> array('title' => 'PST_TITLE', 'auth'	=> 'acl_a_board', 'cat'	=> array('PST_TITLE')),
 			),
