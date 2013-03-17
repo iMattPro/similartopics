@@ -7,41 +7,41 @@
  *
  */
 
-/**
- * @ignore
- */
-if (!defined('IN_PHPBB'))
+class phpbb_ext_vse_similartopics_migrations_initial extends phpbb_db_migration
 {
-	exit;
-}
 
-/**
- * Initial data changes needed for Extension installation
- */
-class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_migration
-{
-	/**
-	 * @inheritdoc
-	 */
-	static public function depends_on()
+	public function effectively_installed()
 	{
-		return array('phpbb_ext_vse_similartopics_migrations_1_initial_schema');
+		return isset($this->config['similar_topics_version']) && version_compare($this->config['similar_topics_version'], '1.1.6', '>=');
 	}
 
-	/**
-	 * @inheritdoc
-	 */
+	public function update_schema()
+	{
+		return array(
+			'add_columns'	=> array(
+				$this->table_prefix . 'forums'	=> array(
+					'similar_topic_forums'	=> array('VCHAR_UNI', ''),
+				),
+			),
+		);
+	}
+
+	public function revert_schema()
+	{
+		return array(
+			'drop_columns'	=> array(
+				$this->table_prefix . 'forums'	=> array(
+					'similar_topic_forums',
+				),
+			),
+		);
+	}
+
 	public function update_data()
 	{
 		return array(
-			// Remove previous versions if they exist
-			array('if', array(
-				($this->config['similar_topics_version']),
-				array('config.remove', array('similar_topics_version')),
-			)),
-
 			// Add configs
-			array('config.add', array('similar_topics_version', '1.3.0b1')),
+			array('config.add', array('similar_topics_version', '1.3.0')),
 			array('config.add', array('similar_topics', '0')),
 			array('config.add', array('similar_topics_limit', '5')),
 			array('config.add', array('similar_topics_hide', '')),
@@ -74,9 +74,6 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 		);
 	}
 
-	/**
-	 * @inheritdoc
-	 */
 	public function revert_data()
 	{
 		return array(
@@ -147,5 +144,4 @@ class phpbb_ext_vse_similartopics_migrations_2_initial_data extends phpbb_db_mig
 
 		return false;
 	}
-
 }
