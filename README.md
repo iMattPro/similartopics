@@ -1,4 +1,4 @@
-Precise Similar Topics II
+![PST II](http://orcamx.vlexofree.com/forum/images/binoc1.png "PST II") Precise Similar Topics II
 ==========================
 
 A Similar Topics Extension for phpBB 3.1
