@@ -9,10 +9,10 @@ STATUS
 ------
 * ACP Module is complete
 * Migrations is complete
-* To-do: Core events/listeners need to be figured out
-* To-do: Template events needed in prosilver and subsilver
+* To-do: Core events/listeners are working. Need to make sure they are coded to guidelines (once published)
+* To-do: Template events need to be added to prosilver and subsilver2 by phpBB (currently being requested)
 * To-do: contrib styles and add ons will need to be addressed
-* To-do: support non-mysql databases
+* To-do: support non-FULLTEXT searches?
 
 
 Requirements
