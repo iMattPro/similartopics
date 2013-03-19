@@ -4,7 +4,7 @@
  * info_acp_similiar_topics [Polish]
  * 
  * @package language
- * @copyright (c) 2010 Matt Friedman (Translated by liptonace http://zonewarez.pl/)
+ * @copyright (c) 2013 Matt Friedman (Translated by liptonace http://zonewarez.pl/)
  * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  *
  */

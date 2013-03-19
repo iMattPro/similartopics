@@ -4,7 +4,7 @@
  * info_acp_similiar_topics [Swedish]
  * 
  * @package language
- * @copyright (c) 2010 Matt Friedman (Translated by Aros via phpbb.com)
+ * @copyright (c) 2013 Matt Friedman (Translated by Aros via phpbb.com)
  * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  *
  */
