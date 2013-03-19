@@ -16,59 +16,51 @@ if (!defined('IN_PHPBB'))
     exit;
 }
 
-/**
-* Find similar topics based on matching topic titles. Currently requires MySQL 
-* due to the use of FULLTEXT indexes and MATCH and AGAINST and UNIX_TIMESTAMP.
-* MySQL FULLTEXT has built-in English ignore words. We'll use phpBB's ignore words
-* for non-English languages. We also remove any admin-defined special ignore words.
-*
-* @package Precise Similar Topics II
-*/
 class phpbb_ext_vse_similartopics_core_manager
 {
 	/**
-	* Is the MOD enabled?
-	*/
+	 * Are similar topics enabled?
+	 */
 	private $is_active		= false;
 
 	/**
-	* The maximum number of similar topics to display
-	*/
+	 * The maximum number of similar topics to display
+	 */
 	private $topic_limit	= 5;
 
 	/**
-	* The maximum age of similar topics to display (in days)
-	*/
+	 * The maximum age of similar topics to display (in days)
+	 */
 	private $topic_age		= 365;
 
 	/**
-	* Cache static SQL queries for similar topics
-	*/
+	 * Cache static SQL queries for similar topics
+	 */
 	private $cache_time		= 0;
 
 	/**
-	* String of words defined in ACP to be ignored in similar topic searches
-	*/
+	 * String of words defined in ACP to be ignored in similar topic searches
+	 */
 	private $ignore_words	= '';
 
 	/**
-	* String of forum IDs that are not to be searched for similar topics
-	*/
+	 * String of forum IDs that are not to be searched for similar topics
+	 */
 	private $ignore_forums	= '';
 
 	/**
-	* Is the current forum allowed to display similar topics?
-	*/
+	 * Is the current forum allowed to display similar topics?
+	 */
 	private $allowed_forum	= true;
 
 	/**
-	* Is the board using a MySQL database?
-	*/
+	 * Is the board using a MySQL database?
+	 */
 	private $mysql_db		= true;
 
 	/**
-	* Similar Topics MOD constructor
-	*/
+	 * Similar topics class constructor method
+	 */
 	public function __construct()
 	{
 		global $config, $db, $forum_id;
@@ -84,9 +76,16 @@ class phpbb_ext_vse_similartopics_core_manager
 	}
 
 	/**
-	* Get similar topics by matching topic titles
-	* @access public
-	*/
+	 * Get similar topics by matching topic titles
+	 *
+	 * NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
+	 * and MATCH and AGAINST and UNIX_TIMESTAMP. MySQL FULLTEXT has built-in
+	 * English ignore words. We'll use phpBB's ignore words for non-English
+	 * languages. We also remove any admin-defined special ignore words.
+	 *
+	 * @param Event $event Event object
+	 * @return null
+	 */
 	public function get_similar_topics($event)
 	{
 		global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
@@ -249,9 +248,12 @@ class phpbb_ext_vse_similartopics_core_manager
 	}
 
 	/**
-	* Remove problem characters (and if needed, ignore-words) from topic title
-	* @access private
-	*/
+	 * Remove problem characters (and if needed, ignore-words) from topic title
+	 *
+	 * @param	string	$text 	The topic title
+	 * @return	string	The topic title
+	 * @access	private
+	 */
 	private function strip_topic_title($text)
 	{
 		global $user;
@@ -271,9 +273,14 @@ class phpbb_ext_vse_similartopics_core_manager
 	}
 
 	/**
-	* Remove any non-english and/or custom defined ignore-words
-	* @access private
-	*/
+	 * Remove any non-english and/or custom defined ignore-words
+	 *
+	 * @param	string	$text 			The topic title
+	 * @param	bool	$english_lang 	False means use phpBB ignore words 
+	 * @param	bool	$ignore_words 	True means strip custom ignore words
+	 * @return	string	The topic title
+	 * @access	private
+	 */
 	private function strip_stop_words($text, $english_lang, $ignore_words)
 	{
 		global $user, $phpEx;
@@ -302,9 +309,12 @@ class phpbb_ext_vse_similartopics_core_manager
 	}
 
 	/**
-	* Split string into an array of words
-	* @access private
-	*/
+	 * Helper function to split string into an array of words
+	 *
+	 * @param	string	$text 	String of plain text words
+	 * @return	array	array of plaintext words
+	 * @access	private
+	 */
 	private function make_word_array($text)
 	{
 		// Strip out any non-alpha-numeric characters using PCRE regex syntax

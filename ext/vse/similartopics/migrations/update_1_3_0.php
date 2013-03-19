@@ -23,7 +23,6 @@ class phpbb_ext_vse_similartopics_migrations_update_1_3_0 extends phpbb_db_migra
 	public function update_data()
 	{
 		return array(
-			// Add configs
 			array('config.update', array('similar_topics_version', '1.3.0')),
 		);
 	}
