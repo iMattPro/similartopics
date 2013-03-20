@@ -16,7 +16,7 @@ if (!defined('IN_PHPBB'))
     exit;
 }
 
-class phpbb_ext_vse_similartopics_core_manager
+class phpbb_ext_vse_similartopics_core_similar_topics
 {
 	/**
 	 * Are similar topics enabled?
