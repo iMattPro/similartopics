@@ -123,9 +123,12 @@ class phpbb_ext_vse_similartopics_migrations_initial extends phpbb_db_migration
 	}
 
 	/**
-	 * Check to see if $key is already a FULLTEXT index
+	 * Check to see if a field is already a FULLTEXT index
+	 *
+	 * @param	string	$field 	name of a field
+	 * @return	bool	true means the field is a FULLTEXT index
 	 */
-	public function is_fulltext($key)
+	public function is_fulltext($field)
 	{
 		$sql = "SHOW INDEX 
 			FROM " . TOPICS_TABLE;
@@ -136,7 +139,7 @@ class phpbb_ext_vse_similartopics_migrations_initial extends phpbb_db_migration
 			// deal with older MySQL versions which didn't use Index_type
 			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
 
-			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $key)
+			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $field)
 			{
 				return true;
 			}
