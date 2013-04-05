@@ -59,6 +59,7 @@ $lang = array_merge($lang, array(
 	'PST_ADVANCED'		=> 'Avancé',
 	'PST_ADVANCED_TITLE'=> 'Cliquez pour configurer les paramètres avancés de sujet similaire',
 	'PST_ADVANCED_EXP'	=> 'Ici, vous pouvez sélectionner des forums spécifiques pour afficher les sujets similaires. Seuls les sujets similaires trouvés dans les forums que vous sélectionnez ici seront affiché dans <strong>%s</strong>. <br /> <br /> Ne sélectionnez aucun forum si vous souhaitez que les sujets similaires sois consultables depuis tout le forum.',
+	'PST_ADVANCED_FORUM'=> 'Paramètres avancés du forum',
 	'PST_DESELECT_ALL'	=> 'Tout dé-sélectionner ',
 	'PST_LEGEND4'		=> 'Paramètres optionnels',
 	'PST_WORDS'			=> 'Mots spéciaux à ignorer',

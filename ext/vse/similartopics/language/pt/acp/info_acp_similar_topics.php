@@ -59,6 +59,7 @@ $lang = array_merge($lang, array(
 	'PST_ADVANCED'		=> 'Avançado',
 	'PST_ADVANCED_TITLE'=> 'Clique para configurar definições avançadas de Tópicos Semelhantes para',
 	'PST_ADVANCED_EXP'	=> 'Aqui pode selecionar os Fóruns de onde serão extraidos os Tópicos Semelhantes. Apenas Tópicos Semelhantes encontrados nos Fóruns que selecionar aqui serão exibidos em <strong>%s</strong>.<br /><br />Não selecione nenhum se deseja Tópicos Semelhantes de todos os Fóruns pesquisáveis a serem exibidos neste Fórum.',
+	'PST_ADVANCED_FORUM'=> 'Configurações avançadas de fórum',
 	'PST_DESELECT_ALL'	=> 'Desmarcar todos',
 	'PST_LEGEND4'		=> 'Configurações opcionais',
 	'PST_WORDS'			=> 'Palavras especiais para ignorar',

@@ -59,6 +59,7 @@ $lang = array_merge($lang, array(
 	'PST_ADVANCED'		=> 'Napredna podešavanja',
 	'PST_ADVANCED_TITLE'=> 'Kliknite ukoliko želite da odredite napredna podešavanja za',
 	'PST_ADVANCED_EXP'	=> 'Ovde možete odrediti specifične forume iz kojih želite da se pretražuju slične teme. Jedino slične teme koje budu pronađene u forumu će biti prikazane u <strong>%s</strong>.<br /><br />Nemojte da selektujete nijedan forum ukoliko želite da se prikazuju slične teme iz svih foruma u kojima je uključena opcija Similar Topics.',
+	'PST_ADVANCED_FORUM'=> 'Advanced forum settings',
 	'PST_DESELECT_ALL'	=> 'Deselektuj sve',
 	'PST_LEGEND4'		=> 'Opciona podešavanja',
 	'PST_WORDS'			=> 'Specialne reči za ignorisanje',

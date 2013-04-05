@@ -59,6 +59,7 @@ $lang = array_merge($lang, array(
 	'PST_ADVANCED'		=> 'Erweiterte Einstellungen',
 	'PST_ADVANCED_TITLE'=> 'Klicken um erweiterte Einstellungen für Vergleichbare Themen vorzunehmen',
 	'PST_ADVANCED_EXP'	=> 'Hier kannst du spezifische Foren auswählen aus denen Vergleichbare Themen angezeigt werden sollen. Es werden nur Vergleichbare Themen in Foren, die du die hier einstellst, angezeigt <strong>%s</strong>.<br /><br />Wählen keine Foren, wenn Vergleichbare Themen aus allen durchsuchbaren Foren in diesem Forum angezeigt werden sollen.',
+	'PST_ADVANCED_FORUM'=> 'Erweiterte Foren Einstellungen',
 	'PST_DESELECT_ALL'	=> 'Alle abwählen',
 	'PST_LEGEND4'		=> 'Optionale Einstellungen',
 	'PST_WORDS'			=> 'Spezielle Wörter zu ignorieren',
