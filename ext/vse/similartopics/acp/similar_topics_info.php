@@ -23,7 +23,7 @@ class phpbb_ext_vse_similartopics_acp_similar_topics_info
 	function module()
 	{
 		return array(
-			'filename'	=> 'similar_topics_module',
+			'filename'	=> 'phpbb_ext_vse_similartopics_acp_similar_topics_module',
 			'title'		=> 'PST_TITLE',
 			'version'	=> '1.3.0',
 			'modes'		=> array(

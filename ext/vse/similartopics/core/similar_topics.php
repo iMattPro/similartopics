@@ -13,7 +13,7 @@
 
 if (!defined('IN_PHPBB'))
 {
-    exit;
+	exit;
 }
 
 class phpbb_ext_vse_similartopics_core_similar_topics
