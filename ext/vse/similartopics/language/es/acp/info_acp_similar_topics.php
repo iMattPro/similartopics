@@ -38,7 +38,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Hilos Parecidos',
 	'PST_TITLE'			=> 'Hilos Parecidos Precisos II',
-	'PST_LEGEND1'		=> 'Configuración General',
+	'PST_LEGEND1'		=> 'Configuración general',
 	'PST_ENABLE'		=> 'Habilitar Hilos Parecidos',
 	'PST_LEGEND2'		=> 'Cargar configuración',
 	'PST_LIMIT'			=> 'Número de Hilos Parecidos que deben mostrarse',
@@ -51,7 +51,7 @@ $lang = array_merge($lang, array(
 	'PST_DAYS'			=> 'Días',
 	'PST_CACHE'			=> 'Longitud de la caché de Hilos Parecidos',
 	'PST_CACHE_EXPLAIN'	=> 'La caché de hilos parecidos expirará después del tiempo indicado, en segundos. Ponlo a 0 si quieres deshabilitar la caché de hilos parecidos.',
-	'PST_LEGEND3'		=> 'Configuración de Foro',
+	'PST_LEGEND3'		=> 'Configuración de foro',
 	'PST_NOSHOW_LIST'	=> 'No mostrar en',
 	'PST_NOSHOW_TITLE'	=> 'No mostrar hilos parecidos en',
 	'PST_IGNORE_SEARCH'	=> 'No buscar en',
