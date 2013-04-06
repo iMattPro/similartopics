@@ -8,19 +8,9 @@
     "licence": "GPLv2",
     "authors": [
         {
-            "name": "Matt Friedman",
-            "username": "VSE",
+            "name": "Matt Friedman (VSE)",
+    		"homepage": "http://vsephpbb.github.io/precise-similar-topics-II/",
             "role": "Developer"
-        },
-        {
-            "name": "tas2580",
-            "username": "tas2580",
-            "role": "Author of original SQL query"
-        },
-        {
-            "name": "Xabi",
-            "username": "Xabi",
-            "role": "Updated original SQL query for precision and efficiency"
         }
     ],
     "require": {
