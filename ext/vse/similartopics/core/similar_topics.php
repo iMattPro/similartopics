@@ -10,7 +10,6 @@
 /**
  * @ignore
  */
-
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -51,7 +50,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	/**
 	 * Is the current forum allowed to display similar topics?
 	 */
-	private $allowed_forum	= true;
+	private $forum_allowed	= true;
 
 	/**
 	 * Is the board using a MySQL database?
@@ -71,7 +70,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 		$this->cache_time    = (int) $config['similar_topics_cache'];
 		$this->ignore_words  = (string) $config['similar_topics_words'];
 		$this->ignore_forums = (string) $config['similar_topics_ignore'];
-		$this->allowed_forum = (!in_array($forum_id, explode(',', $config['similar_topics_hide']))) ? true : false;
+		$this->forum_allowed = (!in_array($forum_id, explode(',', $config['similar_topics_hide']))) ? true : false;
 		$this->mysql_db      = (($db->sql_layer == 'mysql4') || ($db->sql_layer == 'mysqli')) ? true : false;
 	}
 
@@ -91,7 +90,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 		global $auth, $cache, $config, $user, $db, $template, $phpbb_root_path, $phpEx;
 
 		// All reasons to bail out of the MOD
-		if (!$this->is_active || !$this->mysql_db || !$this->topic_limit || !$this->allowed_forum)
+		if (!$this->is_active || !$this->mysql_db || !$this->topic_limit || !$this->forum_allowed)
 		{
 			return;
 		}
@@ -144,7 +143,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 		}
 
-		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
+		// Now lets see if the current forum is set to search only in specified forums
 		if (!empty($event['topic_data']['similar_topic_forums']))
 		{
 			$sql_array['WHERE'] .= ' AND ' . $db->sql_in_set('f.forum_id', explode(',', $event['topic_data']['similar_topic_forums']));
@@ -276,7 +275,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	 * Remove any non-english and/or custom defined ignore-words
 	 *
 	 * @param	string	$text 			The topic title
-	 * @param	bool	$english_lang 	False means use phpBB ignore words 
+	 * @param	bool	$english_lang 	False means use phpBB's ignore words 
 	 * @param	bool	$ignore_words 	True means strip custom ignore words
 	 * @return	string	The topic title
 	 * @access	private
