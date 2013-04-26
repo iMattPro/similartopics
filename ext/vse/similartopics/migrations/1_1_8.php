@@ -9,7 +9,6 @@
 
 class phpbb_ext_vse_similartopics_migrations_1_1_8 extends phpbb_db_migration
 {
-
 	public function effectively_installed()
 	{
 		return version_compare($this->config['similar_topics_version'], '1.1.8', '>=');

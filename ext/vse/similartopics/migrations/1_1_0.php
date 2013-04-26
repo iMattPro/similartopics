@@ -9,7 +9,6 @@
 
 class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 {
-
 	public function effectively_installed()
 	{
 		return isset($this->config['similar_topics_version']) && version_compare($this->config['similar_topics_version'], '1.1.0', '>=');
@@ -41,7 +40,6 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 	{
 		return array(
 			// Add configs
-			array('config.add', array('similar_topics_version', '1.1.0')),
 			array('config.add', array('similar_topics', '0')),
 			array('config.add', array('similar_topics_limit', '5')),
 			array('config.add', array('similar_topics_hide', '')),
@@ -50,18 +48,23 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 			array('config.add', array('similar_topics_time', '365')),
 
 			// Add ACP module
-			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'PST_TITLE_ACP')),
-			array('module.add', array('acp', 'PST_TITLE_ACP', array(
-				'module_basename'	=> 'phpbb_ext_vse_similartopics_acp_similar_topics_module',
+			array('module.add', array(
+				'acp',
+				'ACP_CAT_DOT_MODS',
+				'PST_TITLE_ACP'
+			)),
+			array('module.add', array(
+				'acp', 'PST_TITLE_ACP', array(
+					'module_basename'	=> 'phpbb_ext_vse_similartopics_acp_similar_topics_module',
+					'modes'				=> array('settings'),
 				),
 			)),
-//			array('module.add', array('acp', 'ACP_BOARD_CONFIGURATION', array(
-//				'module_basename'	=> 'phpbb_ext_vse_similartopics_acp_similar_topics_module',
-//				),
-//			)),
 
 			// Custom functions
 			array('custom', array(array($this, 'add_topic_title_fulltext'))),
+
+			// Keep track of version in the database
+			array('config.add', array('similar_topics_version', '1.1.0')),
 		);
 	}
 
