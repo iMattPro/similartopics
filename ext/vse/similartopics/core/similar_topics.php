@@ -210,6 +210,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 
 					'TOPIC_IMG_STYLE'		=> $folder_img,
 					'TOPIC_FOLDER_IMG'		=> $user->img($folder_img, $folder_alt),
+					'TOPIC_FOLDER_IMG_ALT'	=> $user->lang[$folder_alt],
 
 					'TOPIC_ICON_IMG'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
 					'TOPIC_ICON_IMG_WIDTH'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
