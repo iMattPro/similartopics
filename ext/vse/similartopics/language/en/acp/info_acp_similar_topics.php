@@ -65,12 +65,10 @@ $lang = array_merge($lang, array(
 	'PST_WORDS'			=> 'Special words to ignore',
 	'PST_WORDS_EXPLAIN'	=> 'Add special words unique to your forum that should be ignored when finding similar topics. (Note: Words that are currently regarded as common in your language are already ignored by default.) Separate each word with a space. Case insensitive. Max. 255 characters.',
 	'PST_SAVED'			=> 'Similar Topics settings updated',
-	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will not show similar topics in the selected forums.<br />“Do Not Search In” : Will not search the selected forums for similar topics.',
+	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will not show similar topics in the selected forums.<br />“Do Not Search In” : Will not search for similar topics in the selected forums.',
 	'PST_WARNING'		=> 'Similar Topics will not work with your forum. Similar Topics requires a MySQL 4 or MySQL 5 database.',
 	'PST_LOG_MSG'		=> '<strong>Altered similar topics settings</strong>',
-));
 
-// For permissions
-$lang = array_merge($lang, array(
+	// For permissions
 	'acl_u_similar_topics'	=> array('lang' => 'Can view similar topics', 'cat' => 'misc'),
 ));

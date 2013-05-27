@@ -68,9 +68,7 @@ $lang = array_merge($lang, array(
 	'PST_FORUM_INFO'	=> '“Nu afişa în”: Nu va afişa subiectele similare în forumurile alese.<br />“Nu căuta în” : Nu va căuta subiecte similare în forumurile alese.',
 	'PST_WARNING'		=> 'MODificarea Subiecte similare nu va funcţiona pe forumul dumneavoastr. MODificarea Subiecte similare necesită o bază de date cu MySQL 4 sau MySQL 5.',
 	'PST_LOG_MSG'		=> '<strong>Setările pentru subiectele similare au fost modificate</strong>',
-));
 
-// For permissions
-$lang = array_merge($lang, array(
+	// For permissions
 	'acl_u_similar_topics'	=> array('lang' => 'Poate vizualiza subiectele similare', 'cat' => 'misc'),
 ));

@@ -68,9 +68,7 @@ $lang = array_merge($lang, array(
 	'PST_FORUM_INFO'	=> '“Nicht anzeigen in”: Wird die Anzeige von Vergleichbaren Themen in den ausgewählten Foren deaktivieren.<br />“Nicht Suchen Nach in” : Wird die ausgewählten Foren bei der Suche nach Vergleichbaren Themen ignorieren.',
 	'PST_WARNING'		=> 'Vergleichbare Themen werden in diesem Forum nicht funktionieren. Vergleichbare Themen erfordert eine MySQL 4 oder MySQL 5 Datenbank.',
 	'PST_LOG_MSG'		=> '<strong>Vergleichbare Themen Einstellungen geändert</strong>',
-));
 
-// For permissions
-$lang = array_merge($lang, array(
+	// For permissions
 	'acl_u_similar_topics'	=> array('lang' => 'Kann Vergleichbare Themen sehen', 'cat' => 'misc'),
 ));

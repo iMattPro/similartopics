@@ -68,9 +68,7 @@ $lang = array_merge($lang, array(
 	'PST_FORUM_INFO'	=> '“No Mostrar En”: Deshabilitará la visualización de hilos parecidos en el foro seleccionado.<br />“No Buscar En” : Ignorará los foros seleccionados cuando se estén buscando hilos parecidos.',
 	'PST_WARNING'		=> 'Hilos Parecidos no va a funcionar en tu foro. Hilos Parecidos requiere una base de datos MySQL 4 o MySQL 5.',
 	'PST_LOG_MSG'		=> '<strong>Se modificó la configuración de hilos parecidos</strong>',
-));
 
-// For permissions
-$lang = array_merge($lang, array(
+	// For permissions
 	'acl_u_similar_topics'	=> array('lang' => 'Puede visualizar hilos parecidos', 'cat' => 'misc'),
 ));
