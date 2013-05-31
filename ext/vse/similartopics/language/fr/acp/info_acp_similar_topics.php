@@ -1,13 +1,13 @@
 <?php
 /**
- *
- * info_acp_similiar_topics [French]
- * 
- * @package language
- * @copyright (c) 2013 Matt Friedman - Geolim4.com (French Translation)
- * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
- *
- */
+*
+* info_acp_similiar_topics [French]
+* 
+* @package language
+* @copyright (c) 2013 Matt Friedman - Geolim4.com (French Translation)
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+*
+*/
 
 if (!defined('IN_PHPBB'))
 {

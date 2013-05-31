@@ -1,11 +1,11 @@
 <?php
 /**
- *
- * @package Precise Similar Topics II
- * @copyright (c) 2013 Matt Friedman
- * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
- *
- */
+*
+* @package Precise Similar Topics II
+* @copyright (c) 2013 Matt Friedman
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+*
+*/
 
 class phpbb_ext_vse_similartopics_migrations_1_1_5 extends phpbb_db_migration
 {

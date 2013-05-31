@@ -1,15 +1,15 @@
 <?php
 /**
- *
- * @package Precise Similar Topics II
- * @copyright (c) 2013 Matt Friedman
- * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
- *
- */
+*
+* @package Precise Similar Topics II
+* @copyright (c) 2013 Matt Friedman
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+*
+*/
 
 /**
- * @ignore
- */
+* @ignore
+*/
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -42,17 +42,17 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	protected $php_ext;
 	
 	/**
-	 * Similar topics constructor method
-	 * 
-	 * @param phpbb_auth $auth
-	 * @param phpbb_cache_service $cache
-	 * @param phpbb_config $config
-	 * @param phpbb_db_driver $db
-	 * @param phpbb_template $template
-	 * @param phpbb_user $user
-	 * @param string $root_path
-	 * @param string $php_ext
-	 */
+	* Similar topics constructor method
+	* 
+	* @param phpbb_auth $auth
+	* @param phpbb_cache_service $cache
+	* @param phpbb_config $config
+	* @param phpbb_db_driver $db
+	* @param phpbb_template $template
+	* @param phpbb_user $user
+	* @param string $root_path
+	* @param string $php_ext
+	*/
 	public function __construct(phpbb_auth $auth, phpbb_cache_service $cache, phpbb_config $config, phpbb_db_driver $db, phpbb_template $template, phpbb_user $user, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
@@ -66,16 +66,16 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	}
 
 	/**
-	 * Get similar topics by matching topic titles
-	 *
-	 * NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
-	 * and MATCH and AGAINST and UNIX_TIMESTAMP. MySQL FULLTEXT has built-in
-	 * English ignore words. We'll use phpBB's ignore words for non-English
-	 * languages. We also remove any admin-defined special ignore words.
-	 *
-	 * @param Event $event Event object
-	 * @return null
-	 */
+	* Get similar topics by matching topic titles
+	*
+	* NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
+	* and MATCH and AGAINST and UNIX_TIMESTAMP. MySQL FULLTEXT has built-in
+	* English ignore words. We'll use phpBB's ignore words for non-English
+	* languages. We also remove any admin-defined special ignore words.
+	*
+	* @param Event $event Event object
+	* @return null
+	*/
 	public function get_similar_topics($event)
 	{
 		// Potential reasons to stop execution
@@ -237,12 +237,12 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	}
 
 	/**
-	 * Remove problem characters (and if needed, ignore-words) from topic title
-	 *
-	 * @param	string	$text 	The topic title
-	 * @return	string	The topic title
-	 * @access	private
-	 */
+	* Remove problem characters (and if needed, ignore-words) from topic title
+	*
+	* @param	string	$text 	The topic title
+	* @return	string	The topic title
+	* @access	private
+	*/
 	private function strip_topic_title($text)
 	{
 		// Strip quotes, ampersands
@@ -260,14 +260,14 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	}
 
 	/**
-	 * Remove any non-english and/or custom defined ignore-words
-	 *
-	 * @param	string	$text 			The topic title
-	 * @param	bool	$english_lang 	False means use phpBB's ignore words 
-	 * @param	bool	$ignore_words 	True means strip custom ignore words
-	 * @return	string	The topic title
-	 * @access	private
-	 */
+	* Remove any non-english and/or custom defined ignore-words
+	*
+	* @param	string	$text 			The topic title
+	* @param	bool	$english_lang 	False means use phpBB's ignore words 
+	* @param	bool	$ignore_words 	True means strip custom ignore words
+	* @return	string	The topic title
+	* @access	private
+	*/
 	private function strip_stop_words($text, $english_lang, $ignore_words)
 	{
 		$words = array();
@@ -294,12 +294,12 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	}
 
 	/**
-	 * Helper function to split string into an array of words
-	 *
-	 * @param	string	$text 	String of plain text words
-	 * @return	array	array of plaintext words
-	 * @access	private
-	 */
+	* Helper function to split string into an array of words
+	*
+	* @param	string	$text 	String of plain text words
+	* @return	array	array of plaintext words
+	* @access	private
+	*/
 	private function make_word_array($text)
 	{
 		// Strip out any non-alpha-numeric characters using PCRE regex syntax

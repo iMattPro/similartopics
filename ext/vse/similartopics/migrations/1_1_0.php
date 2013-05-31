@@ -1,11 +1,11 @@
 <?php
 /**
- *
- * @package Precise Similar Topics II
- * @copyright (c) 2013 Matt Friedman
- * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
- *
- */
+*
+* @package Precise Similar Topics II
+* @copyright (c) 2013 Matt Friedman
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+*
+*/
 
 class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 {
@@ -77,8 +77,8 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 	}
 
 	/**
-	 * Add a FULLTEXT index to phpbb_topics.topic_title
-	 */
+	* Add a FULLTEXT index to phpbb_topics.topic_title
+	*/
 	public function add_topic_title_fulltext()
 	{
 		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
@@ -97,8 +97,8 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 	}
 
 	/**
-	 * Drop the FULLTEXT index on phpbb_topics.topic_title
-	 */
+	* Drop the FULLTEXT index on phpbb_topics.topic_title
+	*/
 	public function drop_topic_title_fulltext()
 	{
 		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
@@ -117,11 +117,11 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 	}
 
 	/**
-	 * Check to see if a field is already a FULLTEXT index
-	 *
-	 * @param	string	$field 	name of a field
-	 * @return	bool	true means the field is a FULLTEXT index
-	 */
+	* Check to see if a field is already a FULLTEXT index
+	*
+	* @param	string	$field 	name of a field
+	* @return	bool	true means the field is a FULLTEXT index
+	*/
 	public function is_fulltext($field)
 	{
 		$sql = "SHOW INDEX 
