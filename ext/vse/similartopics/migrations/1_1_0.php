@@ -81,7 +81,7 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 	*/
 	public function add_topic_title_fulltext()
 	{
-		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
+		if (!$this->fulltext_support())
 		{
 			return;
 		}
@@ -101,7 +101,7 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 	*/
 	public function drop_topic_title_fulltext()
 	{
-		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
+		if (!$this->fulltext_support())
 		{
 			return;
 		}
@@ -117,7 +117,41 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 	}
 
 	/**
-	* Check to see if a field is already a FULLTEXT index
+	* Check for FULLTEXT index support
+	*/
+	public function fulltext_support()
+	{
+		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
+		{
+			return false;
+		}
+
+		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
+		$info = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		$engine = '';
+		if (isset($info['Engine']))
+		{
+			$engine = strtolower($info['Engine']);
+		}
+		else if (isset($info['Type']))
+		{
+			$engine = strtolower($info['Type']);
+		}
+
+		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
+		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
+		if ($engine === 'myisam' || ($engine === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	* Check if a field is already a FULLTEXT index
 	*
 	* @param	string	$field 	name of a field
 	* @return	bool	true means the field is a FULLTEXT index
