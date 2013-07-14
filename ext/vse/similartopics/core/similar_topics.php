@@ -70,7 +70,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	*
 	* NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
 	* and MATCH and AGAINST and UNIX_TIMESTAMP. MySQL FULLTEXT has built-in
-	* English ignore words. We'll use phpBB's ignore words for non-English
+	* English ignore words. Use phpBB's ignore words for non-English
 	* languages. We also remove any admin-defined special ignore words.
 	*
 	* @param Event $event Event object
@@ -115,6 +115,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 				AND t.topic_id <> ' . (int) $event['topic_data']['topic_id'],
 
 		//	'GROUP_BY'	=> 't.topic_id',
+
 		//	'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
 

@@ -146,7 +146,7 @@ class phpbb_ext_vse_similartopics_acp_similar_topics_module
 					'PST_CACHE'			=> isset($config['similar_topics_cache']) ? $config['similar_topics_cache'] : '',
 					'PST_WORDS'			=> isset($config['similar_topics_words']) ? $config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
-					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : false,
+					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : '',
 					'U_ACTION'			=> $this->u_action,
 				));
 
