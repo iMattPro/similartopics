@@ -53,7 +53,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	* @param string $root_path
 	* @param string $php_ext
 	*/
-	public function __construct(phpbb_auth $auth, phpbb_cache_service $cache, phpbb_config $config, phpbb_db_driver $db, phpbb_template $template, phpbb_user $user, $root_path, $php_ext)
+	public function __construct(phpbb_auth $auth, phpbb_cache_service $cache, phpbb_config $config, phpbb_db_driver $db, phpbb_template $template, phpbb_user $user, phpbb_content_visibility $content_visibility, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -61,6 +61,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 		$this->db = $db;
 		$this->template = $template;
 		$this->user = $user;
+		$this->content_visibility = $content_visibility;
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
 	}
@@ -110,7 +111,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') >= 0.5
 				AND t.topic_status <> " . ITEM_MOVED . '
-				AND t.topic_approved = 1
+				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->config['similar_topics_time'] . ')
 				AND t.topic_id <> ' . (int) $event['topic_data']['topic_id'],
 
@@ -175,14 +176,17 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 					}
 				}
 
+				// Replies
+				$replies = $this->content_visibility->get_count('topic_posts', $row, $similar_forum_id) - 1;
+
+				// Get folder img, topic status/type related information
 				$folder_img = $folder_alt = $topic_type = '';
-				$replies = ($this->auth->acl_get('m_approve', $similar_forum_id)) ? $row['topic_replies_real'] : $row['topic_replies'];
 				$unread_topic = (isset($topic_tracking_info[$similar_topic_id]) && $row['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id]) ? true : false;
 				topic_status($row, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
 
-				$topic_unapproved = (!$row['topic_approved'] && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
-				$posts_unapproved = ($row['topic_approved'] && $row['topic_replies'] < $row['topic_replies_real'] && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
-				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->php_ext", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . '&amp;t=' . $similar_topic_id, true, $this->user->session_id) : '';
+				$topic_unapproved = ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
+				$posts_unapproved = ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
+				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->php_ext", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
 
 				$base_url = append_sid("{$this->root_path}viewtopic.$this->php_ext", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id);
 
