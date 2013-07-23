@@ -68,7 +68,4 @@ $lang = array_merge($lang, array(
 	'PST_FORUM_INFO'	=> '“Niet weergeven in”: Soortgelijke onderwerpen worden niet weergegeven in de geselecteerde forums.<br />“Niet zoeken in” : Zal niet zoeken in de geselecteerde forums voor vergelijkbare onderwerpen.',
 	'PST_WARNING'		=> 'Vergelijkbare onderwerpen zal niet werken op uw forum. Vergelijkbare onderwerpen vereist een MySQL 4 of 5 MySQL database.',
 	'PST_LOG_MSG'		=> '<strong>Vergelijkbare onderwerp instellingen gewijzigd</strong>',
-
-	// For permissions
-	'acl_u_similar_topics'	=> array('lang' => 'Kan vergelijkbare onderwerpen bekijken', 'cat' => 'misc'),
 ));

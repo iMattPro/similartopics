@@ -28,6 +28,7 @@ class phpbb_ext_vse_similartopics_event_listener implements EventSubscriberInter
 	{
 		return array(
 			'core.viewtopic_modify_page_title'		=> 'load_similar_topics',
+			'core.permissions'						=> 'similartopic_permissions',
 		);
 	}
 
@@ -44,4 +45,17 @@ class phpbb_ext_vse_similartopics_event_listener implements EventSubscriberInter
 		$similar = $phpbb_container->get('similartopics.manager');
 		$similar->get_similar_topics($event);
 	}
+
+	public function similartopic_permissions($event)
+	{
+		$event['permissions'] = array_merge($event['permissions'], array(
+
+			'u_similar_topics'	=> array(
+				'lang' => 'ACL_U_SIMILARTOPICS',
+				'cat' => 'misc',
+			),
+
+		));
+	}
+
 }

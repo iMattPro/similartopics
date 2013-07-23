@@ -68,7 +68,4 @@ $lang = array_merge($lang, array(
 	'PST_FORUM_INFO'	=> '“Visa inte i” :  Liknande trådar visas inte i valda kategorier.<br />“Sök inte i” :  Sökning efter liknande trådar sker inte i valda kategorier.',
 	'PST_WARNING'		=> 'Similar Topics fungerar inte på ditt forum. Similar Topics kräver MySQL 4 eller MySQL 5.',
 	'PST_LOG_MSG'		=> '<strong>Ändrade inställningar</strong>',
-
-	// For permissions
-	'acl_u_similar_topics'	=> array('lang' => 'Kan se “Liknande trådar”', 'cat' => 'misc'),
 ));

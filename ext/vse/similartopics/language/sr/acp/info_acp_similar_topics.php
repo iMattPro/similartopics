@@ -68,7 +68,4 @@ $lang = array_merge($lang, array(
 	'PST_FORUM_INFO'	=> '"Ne prikazuj u": Neće prikazati slične teme u izabranim forumima.<br />"Ne pretražuj u": Neće pretraživati slične teme u izabranim forumima.',
 	'PST_WARNING'		=> 'Similar Topics ne funkcioniše sa vašim forumom. Similar Topics zahteva MySQL 4 ili MySQL 5 bazu podataka.',
 	'PST_LOG_MSG'		=> '<strong>Izmenjena podešavanja sa Similar Topics</strong>',
-
-	// For permissions
-	'acl_u_similar_topics'	=> array('lang' => 'Možete videti slične teme', 'cat' => 'misc'),
 ));

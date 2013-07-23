@@ -68,7 +68,4 @@ $lang = array_merge($lang, array(
 	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will not show similar topics in the selected forums.<br />“Do Not Search In” : Will not search for similar topics in the selected forums.',
 	'PST_WARNING'		=> 'Similar Topics will not work with your forum. Similar Topics requires a MySQL 4 or MySQL 5 database.',
 	'PST_LOG_MSG'		=> '<strong>Altered similar topics settings</strong>',
-
-	// For permissions
-	'acl_u_similar_topics'	=> array('lang' => 'Can view similar topics', 'cat' => 'misc'),
 ));
