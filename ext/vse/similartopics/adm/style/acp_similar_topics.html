@@ -35,7 +35,7 @@
 	<fieldset>
 			<legend>{L_PST_ADVANCED_FORUM}</legend>
 		<dl>
-			<dt><label for="similar_forums">{L_FORUM}: {PST_FORUM_NAME}</label><br /><br /><span>{PST_ADVANCED_EXP}</span></dt>
+			<dt><label for="similar_forums">{L_FORUM}{L_COLON} {PST_FORUM_NAME}</label><br /><br /><span>{PST_ADVANCED_EXP}</span></dt>
 			<dd><select id="similar_forums" name="similar_forums_id[]" multiple="multiple" size="10">{SIMILAR_FORUMS_OPTIONS}</select></dd>
 			<dd><a href="#" onclick="selector(false); return false;">{L_PST_DESELECT_ALL}</a></dd>
 		</dl>
@@ -51,7 +51,7 @@
 	<fieldset>
 		<legend>{L_PST_LEGEND1}</legend>
 	<dl>
-		<dt><label>{L_PST_ENABLE}:</label></dt>
+		<dt><label>{L_PST_ENABLE}{L_COLON}</label></dt>
 		<dd>
 			<input type="radio" class="radio" name="pst_enable" value="1"<!-- IF S_PST_ENABLE --> checked="checked"<!-- ENDIF --> /><label> {L_YES}</label>
 			<input type="radio" class="radio" name="pst_enable" value="0"<!-- IF not S_PST_ENABLE --> checked="checked"<!-- ENDIF --> /><label> {L_NO}</label>
@@ -62,15 +62,15 @@
 	<fieldset>
 		<legend>{L_PST_LEGEND2}</legend>
 	<dl>
-		<dt><label>{L_PST_LIMIT}:</label><br /><span>{L_PST_LIMIT_EXPLAIN}</span></dt>
+		<dt><label>{L_PST_LIMIT}{L_COLON}</label><br /><span>{L_PST_LIMIT_EXPLAIN}</span></dt>
 		<dd><input name="pst_limit" type="text" size="4" maxlength="2" value="{PST_LIMIT}" /></dd>
 	</dl>
 	<dl>
-		<dt><label>{L_PST_TIME}:</label><br /><span>{L_PST_TIME_EXPLAIN}</span></dt>
+		<dt><label>{L_PST_TIME}{L_COLON}</label><br /><span>{L_PST_TIME_EXPLAIN}</span></dt>
 		<dd><input name="pst_time" type="text" size="4" maxlength="2" value="{PST_TIME}" /> <select name="pst_time_type">{S_TIME_OPTIONS}</select></dd>
 	</dl>
 	<dl>
-		<dt><label>{L_PST_CACHE}:</label><br /><span>{L_PST_CACHE_EXPLAIN}</span></dt>
+		<dt><label>{L_PST_CACHE}{L_COLON}</label><br /><span>{L_PST_CACHE_EXPLAIN}</span></dt>
 		<dd><input name="pst_cache" type="text" size="4" maxlength="6" value="{PST_CACHE}" /> {L_SECONDS}</dd>
 	</dl>
 	</fieldset>
@@ -116,7 +116,7 @@
 	<fieldset>
 		<legend>{L_PST_LEGEND4}</legend>
 	<dl>
-		<dt><label>{L_PST_WORDS}:</label><br /><span>{L_PST_WORDS_EXPLAIN}</span></dt>
+		<dt><label>{L_PST_WORDS}{L_COLON}</label><br /><span>{L_PST_WORDS_EXPLAIN}</span></dt>
 		<dd><input name="pst_words" type="text" class="text medium" maxlength="255" id="pst_words" value="{PST_WORDS}" /></dd>
 	</dl>
 	</fieldset>
