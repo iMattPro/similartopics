@@ -9,8 +9,8 @@ STATUS
 ------
 * ACP Module is complete
 * Migrations is complete
-* To-do: Core events/listeners are working. Need to make sure they are coded to guidelines (once published)
-* To-do: contrib styles and add ons will need to be addressed
+* To-do: Add a UCP option (requires UCP events be added to core)
+* To-do: Add support for my Topic Preview extension?
 * To-do: support non-FULLTEXT searches?
 
 
