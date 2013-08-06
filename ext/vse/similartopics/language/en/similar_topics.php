@@ -36,5 +36,6 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'SIMILAR_TOPICS'		=> 'Similar Topics',
+	'SIMILAR_TOPICS'			=> 'Similar Topics',
+	'DISPLAY_SIMILAR_TOPICS'	=> 'Display similar topics',
 ));

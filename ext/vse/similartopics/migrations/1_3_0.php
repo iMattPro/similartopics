@@ -19,6 +19,28 @@ class phpbb_ext_vse_similartopics_migrations_1_3_0 extends phpbb_db_migration
 		return array('phpbb_ext_vse_similartopics_migrations_1_2_1');
 	}
 
+	public function update_schema()
+	{
+		return array(
+			'add_columns'	=> array(
+				$this->table_prefix . 'users'	=> array(
+					'user_similar_topics'	=> array('BOOL', 1),
+				),
+			),
+		);
+	}
+
+	public function revert_schema()
+	{
+		return array(
+			'drop_columns'	=> array(
+				$this->table_prefix . 'users'	=> array(
+					'user_similar_topics',
+				),
+			),
+		);
+	}
+
 	public function update_data()
 	{
 		return array(

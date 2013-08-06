@@ -36,5 +36,6 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'SIMILAR_TOPICS'		=> '“Liknande Trådar”',
+	'SIMILAR_TOPICS'			=> '“Liknande Trådar”',
+	'DISPLAY_SIMILAR_TOPICS'	=> 'Aktivera liknande trådar',
 ));

@@ -36,5 +36,6 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'SIMILAR_TOPICS'		=> 'Slične teme',
+	'SIMILAR_TOPICS'			=> 'Slične teme',
+	'DISPLAY_SIMILAR_TOPICS'	=> 'Uključi similar topics',
 ));
