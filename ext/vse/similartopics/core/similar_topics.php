@@ -79,6 +79,8 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	*/
 	public function get_similar_topics($event)
 	{
+		global $phpbb_dispatcher;
+
 		// Potential reasons to stop execution
 		if (!$this->config['similar_topics_limit'] || (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli')) || (in_array($event['forum_id'], explode(',', $this->config['similar_topics_hide']))))
 		{
@@ -145,6 +147,9 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', explode(',', $this->config['similar_topics_ignore']), true);
 		}
 
+		$vars = array('sql_array');
+		extract($phpbb_dispatcher->trigger_event('similartopics.similar_topics_query', compact($vars)));
+
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, $this->config['similar_topics_limit'], 0, $this->config['similar_topics_cache']);
 
@@ -192,7 +197,7 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 
 				$base_url = append_sid("{$this->root_path}viewtopic.$this->php_ext", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id);
 
-				$this->template->assign_block_vars('similar', array(
+				$topic_row = array(
 					'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
 					'FIRST_POST_TIME'		=> $this->user->format_date($row['topic_time']),
 					'LAST_POST_TIME'		=> $this->user->format_date($row['topic_last_post_time']),
@@ -226,7 +231,12 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 					'U_VIEW_FORUM'			=> append_sid("{$this->root_path}viewforum.$this->php_ext", 'f=' . $similar_forum_id),
 					'U_MCP_REPORT'			=> append_sid("{$this->root_path}mcp.$this->php_ext", 'i=reports&amp;mode=reports&amp;f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id, true, $this->user->session_id),
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
-				));
+				);
+
+				$vars = array('row', 'topic_row');
+				extract($phpbb_dispatcher->trigger_event('similartopics.modify_topicrow', compact($vars)));
+
+				$this->template->assign_block_vars('similar', $topic_row);
 
 				phpbb_generate_template_pagination($this->template, $base_url, 'similar.pagination', 'start', $replies + 1, $this->config['posts_per_page'], 1, true, true);
 			}
