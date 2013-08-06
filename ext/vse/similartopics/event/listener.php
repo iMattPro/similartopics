@@ -48,14 +48,9 @@ class phpbb_ext_vse_similartopics_event_listener implements EventSubscriberInter
 
 	public function add_permissions($event)
 	{
-		$event['permissions'] = array_merge($event['permissions'], array(
-
-			'u_similar_topics'	=> array(
-				'lang' => 'ACL_U_SIMILARTOPICS',
-				'cat' => 'misc',
-			),
-
-		));
+		$permissions = $event['permissions'];
+		$permissions['u_similar_topics'] = array('lang' => 'ACL_U_SIMILARTOPICS', 'cat' => 'misc');
+		$event['permissions'] = $permissions;
 	}
 
 }
