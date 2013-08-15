@@ -49,11 +49,12 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</installation>
 		<history>
 			<entry>
-				<date>2013-02-22</date>
+				<date>2013-08-04</date>
 				<rev-version>1.2.2</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[Fixed an issue that would generate a syntax error when installing to MySQL4 databases.]]></change>
 					<change><![CDATA[No longer prevent Bots from seeing similar topics.]]></change>
+					<change><![CDATA[Update url for Mod Version Check add-on.]]></change>
 					<change><![CDATA[Added French language pack. Thanks to Geolim4.com.]]></change>
 					<change><![CDATA[Added Serbian language pack. Thanks to arcsorgrs.]]></change>
 					<change><![CDATA[Update MODX files to 1.2.6.]]></change>
