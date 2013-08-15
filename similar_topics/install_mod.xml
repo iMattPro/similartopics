@@ -203,7 +203,6 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 			<link type="language" href="contrib/es.xml" lang="en">Spanish Language Pack</link>
 			<link type="language" href="contrib/sv.xml" lang="en">Swedish Language Pack</link>
 			<link type="contrib" href="contrib/add_on_collapsible_similar_topics.xml" lang="en">Add-On: Collapsible Similar Topics</link>
-			<link type="contrib" href="contrib/add_on-topic_preview.xml" lang="en">Add-On: Compatibility with Topic Preview MOD</link>
 			<link type="contrib" href="contrib/update_121-122.xml" lang="en">Update: from 1.2.1 to 1.2.2</link>
 			<link type="contrib" href="contrib/update_120-122.xml" lang="en">Update: from 1.2.0 to 1.2.2</link>
 			<link type="contrib" href="contrib/update_118-122.xml" lang="en">Update: from 1.1.8 to 1.2.2</link>
