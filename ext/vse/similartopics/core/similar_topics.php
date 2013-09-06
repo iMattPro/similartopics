@@ -147,6 +147,13 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', explode(',', $this->config['similar_topics_ignore']), true);
 		}
 
+		/**
+		* You can use this event to modify the sql_array for similar topics
+		*
+		* @event similartopics.similar_topic_data
+		* @var	array	sql_array		Array with similar topics data
+		* @since 3.1-A1
+		*/
 		$vars = array('sql_array');
 		extract($phpbb_dispatcher->trigger_event('similartopics.similar_topic_data', compact($vars)));
 
@@ -233,6 +240,14 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
 				);
 
+				/**
+				* Modify the similar topics template block
+				*
+				* @event similartopics.modify_topicrow
+				* @var	array	row				Array with similar topic data
+				* @var	array	topic_row		Template block array
+				* @since 3.1-A1
+				*/
 				$vars = array('row', 'topic_row');
 				extract($phpbb_dispatcher->trigger_event('similartopics.modify_topicrow', compact($vars)));
 
