@@ -9,8 +9,8 @@ STATUS
 ------
 * ACP Module is complete
 * Migrations is complete
-* UCP option has been added (requires UCP events be added to core)
 * Support for my Topic Preview extension has been added
+* UCP events is complete
 * To-do: support non-FULLTEXT searches?
 
 

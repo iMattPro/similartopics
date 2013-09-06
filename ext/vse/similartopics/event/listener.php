@@ -30,8 +30,8 @@ class phpbb_ext_vse_similartopics_event_listener implements EventSubscriberInter
 			'core.viewtopic_modify_page_title'		=> 'load_similar_topics',
 			'core.permissions'						=> 'add_permissions',
 
-			'core.ucp_prefs_view_data'				=> 'ucp_prefs_get_data', // need to request
-			'core.ucp_prefs_view_update_data'		=> 'ucp_prefs_set_data', // need to request
+			'core.ucp_prefs_view_data'				=> 'ucp_prefs_get_data',
+			'core.ucp_prefs_view_update_data'		=> 'ucp_prefs_set_data',
 		);
 	}
 
