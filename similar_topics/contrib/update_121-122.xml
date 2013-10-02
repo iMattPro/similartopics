@@ -37,6 +37,12 @@
 				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
 			</edit>
 		</open>
+		<open src="styles/subsilver2/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[<!-- IF .similar and not S_IS_BOT -->]]></find>
+				<action type="replace-with"><![CDATA[<!-- IF .similar -->]]></action>
+			</edit>
+		</open>
 		<php-installer><![CDATA[install_similar_topics.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[* Go to yourboard/install_similar_topics.php and install (or click the highlighted link above if you are using AutoMOD)
 * Delete the PHP install file at yourboard/install_similar_topics.php
