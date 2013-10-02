@@ -66,6 +66,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Ajoutez des mots spéciaux uniques à votre forum qui doivent être ignorés lors de la recherche des sujets similaires. (Remarque: les mots qui sont actuellement considérés comme communs dans votre langue sont déjà ignorés par défaut.) Séparez chaque mot d’un espace. Insensible à la casse. Max. 255 caractères.',
 	'PST_SAVED'			=> 'Paramètres des sujets similaire mit à jour',
 	'PST_FORUM_INFO'	=> '"Ne pas afficher": N’afficheras pas de sujets similaires dans les forums sélectionnés <br /> "Ne pas rechercher dans":. Ne rechercheras pas de sujets similaires dans les forums sélectionnés.',
-	'PST_WARNING'		=> 'Les sujets similaires ne fonctionneront pas avec sur forum. Ils nécessitent une base de donnée MySQL 4 ou 5.',
+	'PST_WARNING'		=> 'Les sujets similaires ne fonctionneront pas avec sur forum. Ils nécessitent une base de donnée MySQL 4 ou 5. Votre base de données ne supporte pas les index FULLTEXT. Cela signifie généralement que votre table des sujets n’utilise pas le moteur de stockage MyISAM requis pour ce MOD. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Plus d’informations</a>.',
 	'PST_LOG_MSG'		=> '<strong>Modifications des paramètres de sujets similaires</strong>',
 ));

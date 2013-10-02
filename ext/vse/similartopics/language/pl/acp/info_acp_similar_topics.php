@@ -66,6 +66,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Dodaj specjalny słów, które powinny być ignorowane podczas szukania podobne tematy. (Uwaga: Często słowa w zapytaniu języku jest domyślnie ignorowany.) Oddzielania poszczególnych słowa spacją. Sprawa nie jest wrażliwa. Maksymalnie 255 znaków.',
 	'PST_SAVED'			=> 'Zaktualizowano ustawienia podobnych tematów',
 	'PST_FORUM_INFO'	=> '“Nie wyświetlaj w” : Wyłącza wyświetlanie podobnych tematów w wybranym forum.<br />“Nie szukaj w” : Będzie ignorować wybrane forum, szukając podobnych tematów.',
-	'PST_WARNING'		=> 'Similar Topics nie będą działać z forum. Similar Topics wymaga MySQL 4 lub MySQL 5 bazy danych.',
+	'PST_WARNING'		=> 'Similar Topics nie będą działać z forum. Similar Topics wymaga MySQL 4 lub MySQL 5 bazy danych. Baza danych nie obsługuje FULLTEXT indeksy. To zazwyczaj oznacza, że ​​tabela tematy nie wykorzystuje silnik przechowywania MyISAM wymagane do tego moda do pracy. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Więcej informacji</a>.',
 	'PST_LOG_MSG'		=> '<strong>Zmieniono ustawienia podobnych tematów</strong>',
 ));

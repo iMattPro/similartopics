@@ -66,6 +66,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Dodajte specijalne reči koje su unikatne za vaš forum koje bi trebalo da budu ignorisane kada se pretražuju slične teme. (Napomena: reči koje se inače smatraju za ustaljene će ionako biti ignorisane prilikom pretrage.) Reči razdvojte razmakom. Case insensitive. Maksimalno 255 karaktera.',
 	'PST_SAVED'			=> 'Podešavanja za Similar Topics su ažurirana',
 	'PST_FORUM_INFO'	=> '"Ne prikazuj u": Neće prikazati slične teme u izabranim forumima.<br />"Ne pretražuj u": Neće pretraživati slične teme u izabranim forumima.',
-	'PST_WARNING'		=> 'Similar Topics ne funkcioniše sa vašim forumom. Similar Topics zahteva MySQL 4 ili MySQL 5 bazu podataka.',
+	'PST_WARNING'		=> 'Similar Topics ne funkcioniše sa vašim forumom. Similar Topics zahteva MySQL 4 ili MySQL 5 bazu podataka. Vaša baza podataka ne podržava FULLTEXT indekse. Ovo najverovatnije znači da vaša tabela sa temama ne koristi MyISAM endžin za pohranjivanje podataka koji je neophodan za funkcionisanje ovog MOD-a. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Više informacija</a>.',
 	'PST_LOG_MSG'		=> '<strong>Izmenjena podešavanja sa Similar Topics</strong>',
 ));

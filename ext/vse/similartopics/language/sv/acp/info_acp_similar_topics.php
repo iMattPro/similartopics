@@ -66,6 +66,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Lägg till särskilda ord på forumet som skall ignoreras vid sökningen av liknande trådar. (Obs: Ord som betraktas som vanliga ord är redan undantagna). Separera varje ord med ett mellanslag. Ingen hänsyn tas till versaler eller gemenser. Max. 255 tecken.',
 	'PST_SAVED'			=> 'Inställningarna har uppdaterats',
 	'PST_FORUM_INFO'	=> '“Visa inte i” :  Liknande trådar visas inte i valda kategorier.<br />“Sök inte i” :  Sökning efter liknande trådar sker inte i valda kategorier.',
-	'PST_WARNING'		=> 'Similar Topics fungerar inte på ditt forum. Similar Topics kräver MySQL 4 eller MySQL 5.',
+	'PST_WARNING'		=> 'Similar Topics fungerar inte på ditt forum. Similar Topics kräver MySQL 4 eller MySQL 5. Din databas stöder inte Fulltext index. Detta innebär vanligtvis din trådar bordet inte använder MyISAM lagring motorn som krävs för detta MOD ska fungera. <a href="https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Mer information</a>.',
 	'PST_LOG_MSG'		=> '<strong>Ändrade inställningar</strong>',
 ));

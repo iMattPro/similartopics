@@ -66,6 +66,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Añadir palabras especiales exclusivas de su foro en el que deben ser ignoradas en hilos parecidos. (Nota: Las palabras comunes en su lengua son ignorados por defecto.) Separe cada palabra con un espacio. Mayúsculas no minúsculas. Un máximo de 255 caracteres.',
 	'PST_SAVED'			=> 'La configuración de Hilos Parecidos ha sido actualizada',
 	'PST_FORUM_INFO'	=> '“No Mostrar En”: Deshabilitará la visualización de hilos parecidos en el foro seleccionado.<br />“No Buscar En” : Ignorará los foros seleccionados cuando se estén buscando hilos parecidos.',
-	'PST_WARNING'		=> 'Hilos Parecidos no va a funcionar en tu foro. Hilos Parecidos requiere una base de datos MySQL 4 o MySQL 5.',
+	'PST_WARNING'		=> 'Hilos Parecidos no va a funcionar en tu foro. Hilos Parecidos requiere una base de datos MySQL 4 o MySQL 5. Su base de datos no es compatible con índices FULLTEXT. Esto generalmente significa que la mesa temas que no se está utilizando el motor de almacenamiento MyISAM se requiere para este MOD para trabajar. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Más información</a>.',
 	'PST_LOG_MSG'		=> '<strong>Se modificó la configuración de hilos parecidos</strong>',
 ));

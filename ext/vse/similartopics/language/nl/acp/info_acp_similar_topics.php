@@ -66,6 +66,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Voeg Speciale woorden toe welke uniek zijn aan uw forum dat moet worden genegeerd bij het vinden van vergelijkbare onderwerpen. (Note: Woorden die momenteel worden beschouwd als gemeenschappelijk in uw taal worden reeds standaard genegeerd.) Scheid elk woord met een spatie. Hoofdlettergevoelig. Max. 255 karakters.',
 	'PST_SAVED'			=> 'Vergelijkbare onderwerpen instellingen bijgewerkt',
 	'PST_FORUM_INFO'	=> '“Niet weergeven in”: Soortgelijke onderwerpen worden niet weergegeven in de geselecteerde forums.<br />“Niet zoeken in” : Zal niet zoeken in de geselecteerde forums voor vergelijkbare onderwerpen.',
-	'PST_WARNING'		=> 'Vergelijkbare onderwerpen zal niet werken op uw forum. Vergelijkbare onderwerpen vereist een MySQL 4 of 5 MySQL database.',
+	'PST_WARNING'		=> 'Vergelijkbare onderwerpen zal niet werken op uw forum. Vergelijkbare onderwerpen vereist een MySQL 4 of 5 MySQL database. Aangezien uw database geen FULLTEXT indexes ondersteunt . Dit betekent meestal dat uw topic tabel niet de MyISAM opslag engine gebruikt welke vereist is voor deze MOD om te werken. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116">Meer Informatie</a>.',
 	'PST_LOG_MSG'		=> '<strong>Vergelijkbare onderwerp instellingen gewijzigd</strong>',
 ));

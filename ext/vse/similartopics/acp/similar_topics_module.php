@@ -149,6 +149,7 @@ class similar_topics_module
 					'PST_WORDS'			=> isset($config['similar_topics_words']) ? $config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : '',
+					'S_PST_SUPPORTED'	=> $this->fulltext_support(),
 					'U_ACTION'			=> $this->u_action,
 				));
 
@@ -171,13 +172,6 @@ class similar_topics_module
 
 			break;
 		}
-
-		// Warn if database layer is not MySQL 4+
-		if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
-		{
-			$template->assign_var('S_PST_WARNING', true);
-		}
-
 	}
 
 	/**
@@ -260,6 +254,42 @@ class similar_topics_module
 			break;
 		}
 		return (int) $length;
+	}
+
+	/**
+	* Check for FULLTEXT index support
+	*/
+	function fulltext_support()
+	{
+		global $db;
+
+		if (($db->sql_layer != 'mysql4') && ($db->sql_layer != 'mysqli'))
+		{
+			return false;
+		}
+
+		$result = $db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
+		$info = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		$engine = '';
+		if (isset($info['Engine']))
+		{
+			$engine = strtolower($info['Engine']);
+		}
+		else if (isset($info['Type']))
+		{
+			$engine = strtolower($info['Type']);
+		}
+
+		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
+		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
+		if ($engine === 'myisam' || ($engine === 'innodb' && phpbb_version_compare($db->sql_server_info(true), '5.6.4', '>=')))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 }
