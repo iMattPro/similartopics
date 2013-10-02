@@ -9,7 +9,7 @@
 
 namespace vse\similartopics\migrations;
 
-class v1_3_0 extends \phpbb\db\migration\migration
+class release_1_3_0 extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
@@ -18,7 +18,7 @@ class v1_3_0 extends \phpbb\db\migration\migration
 
 	static public function depends_on()
 	{
-		return array('\vse\similartopics\migrations\v1_2_1');
+		return array('\vse\similartopics\migrations\release_1_2_1');
 	}
 
 	public function update_schema()

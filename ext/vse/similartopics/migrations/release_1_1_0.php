@@ -9,11 +9,16 @@
 
 namespace vse\similartopics\migrations;
 
-class v1_1_0 extends \phpbb\db\migration\migration
+class release_1_1_0 extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
 		return isset($this->config['similar_topics_version']) && version_compare($this->config['similar_topics_version'], '1.1.0', '>=');
+	}
+
+	static public function depends_on()
+	{
+		return array('\phpbb\db\migration\data\v310\dev');
 	}
 
 	public function update_schema()
