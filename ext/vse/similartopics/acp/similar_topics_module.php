@@ -7,6 +7,8 @@
 *
 */
 
+namespace vse\similartopics\acp;
+
 /**
 * @ignore
 */
@@ -18,7 +20,7 @@ if (!defined('IN_PHPBB'))
 /**
 * @package acp
 */
-class phpbb_ext_vse_similartopics_acp_similar_topics_module
+class similar_topics_module
 {
 	var $u_action;
 

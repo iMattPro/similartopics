@@ -7,6 +7,8 @@
 *
 */
 
+namespace vse\similartopics\core;
+
 /**
 * @ignore
 */
@@ -15,25 +17,28 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-class phpbb_ext_vse_similartopics_core_similar_topics
+class similar_topics
 {
-	/** @var phpbb_auth */
+	/** @var \phpbb\auth\auth */
 	protected $auth;
 
-	/** @var phpbb_cache_service */
+	/** @var \phpbb\cache\service */
 	protected $cache;
 
-	/** @var phpbb_config */
+	/** @var \phpbb\config\config */
 	protected $config;
 
-	/** @var phpbb_db_driver */
+	/** @var \phpbb\db\driver\driver */
 	protected $db;
 
-	/** @var phpbb_template */
+	/** @var \phpbb\template\template */
 	protected $template;
 
-	/** @var phpbb_user */
+	/** @var \phpbb\user */
 	protected $user;
+
+	/** @var \content\visibility */
+	protected $content_visibility;
 
 	/** @var string */
 	protected $root_path;
@@ -44,16 +49,17 @@ class phpbb_ext_vse_similartopics_core_similar_topics
 	/**
 	* Similar topics constructor method
 	* 
-	* @param phpbb_auth $auth
-	* @param phpbb_cache_service $cache
-	* @param phpbb_config $config
-	* @param phpbb_db_driver $db
-	* @param phpbb_template $template
-	* @param phpbb_user $user
+	* @param \phpbb\auth\auth $auth
+	* @param \phpbb\cache\service $cache
+	* @param \phpbb\config\config $config
+	* @param \phpbb\db\driver\driver $db
+	* @param \phpbb\template\template $template
+	* @param \phpbb\user $user
+	* @param \phpbb\content_visibility $content_visibility
 	* @param string $root_path
 	* @param string $php_ext
 	*/
-	public function __construct(phpbb_auth $auth, phpbb_cache_service $cache, phpbb_config $config, phpbb_db_driver $db, phpbb_template $template, phpbb_user $user, phpbb_content_visibility $content_visibility, $root_path, $php_ext)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;

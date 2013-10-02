@@ -7,6 +7,8 @@
 *
 */
 
+namespace vse\similartopics;
+
 /**
 * @ignore
 */
@@ -18,6 +20,6 @@ if (!defined('IN_PHPBB'))
 /**
 * Main extension class for this extension.
 */
-class phpbb_ext_vse_similartopics_ext extends phpbb_extension_base
+class ext extends \phpbb\extension\base
 {
 }

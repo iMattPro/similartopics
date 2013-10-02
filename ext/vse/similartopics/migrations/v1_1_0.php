@@ -7,7 +7,9 @@
 *
 */
 
-class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
+namespace vse\similartopics\migrations;
+
+class v1_1_0 extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
@@ -55,7 +57,7 @@ class phpbb_ext_vse_similartopics_migrations_1_1_0 extends phpbb_db_migration
 			)),
 			array('module.add', array(
 				'acp', 'PST_TITLE_ACP', array(
-					'module_basename'	=> 'phpbb_ext_vse_similartopics_acp_similar_topics_module',
+					'module_basename'	=> '\vse\similartopics\acp\similar_topics_module',
 					'modes'				=> array('settings'),
 				),
 			)),

@@ -7,7 +7,9 @@
 *
 */
 
-class phpbb_ext_vse_similartopics_migrations_1_3_0 extends phpbb_db_migration
+namespace vse\similartopics\migrations;
+
+class v1_3_0 extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
@@ -16,7 +18,7 @@ class phpbb_ext_vse_similartopics_migrations_1_3_0 extends phpbb_db_migration
 
 	static public function depends_on()
 	{
-		return array('phpbb_ext_vse_similartopics_migrations_1_2_1');
+		return array('\vse\similartopics\migrations\v1_2_1');
 	}
 
 	public function update_schema()
@@ -52,7 +54,7 @@ class phpbb_ext_vse_similartopics_migrations_1_3_0 extends phpbb_db_migration
 	public function update_module_basename()
 	{
 		$old_module_basename = 'acp_similar_topics';
-		$new_module_basename = 'phpbb_ext_vse_similartopics_acp_similar_topics_module';
+		$new_module_basename = '\vse\similartopics\acp\similar_topics_module';
 		
 		$sql = 'UPDATE ' . $this->table_prefix . "modules
 			SET module_basename = '$new_module_basename'

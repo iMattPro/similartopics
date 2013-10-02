@@ -7,7 +7,9 @@
 *
 */
 
-class phpbb_ext_vse_similartopics_migrations_1_1_1 extends phpbb_db_migration
+namespace vse\similartopics\migrations;
+
+class v1_1_1 extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
@@ -16,7 +18,7 @@ class phpbb_ext_vse_similartopics_migrations_1_1_1 extends phpbb_db_migration
 
 	static public function depends_on()
 	{
-		return array('phpbb_ext_vse_similartopics_migrations_1_1_0');
+		return array('\vse\similartopics\migrations\v1_1_0');
 	}
 
 	public function update_data()

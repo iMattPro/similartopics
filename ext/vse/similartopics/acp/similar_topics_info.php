@@ -7,6 +7,8 @@
 *
 */
 
+namespace vse\similartopics\acp;
+
 /**
 * @ignore
 */
@@ -18,12 +20,12 @@ if (!defined('IN_PHPBB'))
 /**
 * @package module_install
 */
-class phpbb_ext_vse_similartopics_acp_similar_topics_info
+class similar_topics_info
 {
 	function module()
 	{
 		return array(
-			'filename'	=> 'phpbb_ext_vse_similartopics_acp_similar_topics_module',
+			'filename'	=> '\vse\similartopics\acp\similar_topics_module',
 			'title'		=> 'PST_TITLE',
 			'version'	=> '1.3.0',
 			'modes'		=> array(
