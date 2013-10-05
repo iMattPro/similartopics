@@ -57,7 +57,7 @@ class release_1_3_0 extends \phpbb\db\migration\migration
 		$new_module_basename = '\vse\similartopics\acp\similar_topics_module';
 		
 		$sql = 'UPDATE ' . $this->table_prefix . "modules
-			SET module_basename = '$new_module_basename'
+			SET module_basename = '" . $this->db->sql_escape($new_module_basename) . "'
 			WHERE module_basename = '$old_module_basename'";
 		$this->db->sql_query($sql);
 	}
