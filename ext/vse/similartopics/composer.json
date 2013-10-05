@@ -1,11 +1,11 @@
 {
     "name": "vse/similartopics",
-    "type": "phpbb3-extension",
+    "type": "phpbb-extension",
     "description": "An extension for phpBB 3.1 that will find and display a list of similar (related) topics at the bottom of the current topic's page.",
     "homepage": "https://github.com/VSEphpbb/precise-similar-topics-II",
     "version": "1.3.0",
-    "time": "2013-03-11",
-    "licence": "GPLv2",
+    "time": "2013-10-04",
+    "licence": "GPL-2.0",
     "authors": [
         {
             "name": "Matt Friedman (VSE)",
@@ -14,8 +14,8 @@
         }
     ],
     "require": {
-        "phpbb": "3.1.0-dev",
-        "php": "5.3.0"
+        "php": ">=5.3",
+        "phpbb": "3.1.*@dev"
     },
     "extra": {
         "display-name": "Precise Similar Topics II"
