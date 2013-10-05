@@ -286,10 +286,37 @@ class similar_topics_module
 		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
 		if ($engine === 'myisam' || ($engine === 'innodb' && phpbb_version_compare($db->sql_server_info(true), '5.6.4', '>=')))
 		{
-			return true;
+			return $this->is_fulltext('topic_title');
 		}
 
 		return false;
 	}
 
+	/**
+	* Check if a field is a FULLTEXT index
+	*
+	* @param	string	$field 	name of a field
+	* @return	bool	true means the field is a FULLTEXT index
+	*/
+	function is_fulltext($field)
+	{
+		global $db;
+
+		$sql = "SHOW INDEX 
+			FROM " . TOPICS_TABLE;
+		$result = $db->sql_query($sql);
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			// deal with older MySQL versions which didn't use Index_type
+			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
+
+			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $field)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
