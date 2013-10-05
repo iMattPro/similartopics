@@ -66,6 +66,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Add special words unique to your forum that should be ignored when finding similar topics. (Note: Words that are currently regarded as common in your language are already ignored by default.) Separate each word with a space. Case insensitive. Max. 255 characters.',
 	'PST_SAVED'			=> 'Similar Topics settings updated',
 	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will not show similar topics in the selected forums.<br />“Do Not Search In” : Will not search for similar topics in the selected forums.',
-	'PST_WARNING'		=> 'Similar Topics will not work with your forum. Similar Topics requires a MySQL 4 or MySQL 5 database and that the phpbb_topics table be set to either MyISAM (or InnoDB MySQL 5.6.4 or later) storage engines. <a href="https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Click here</a> for more information.',
+	'PST_WARNING'		=> 'Similar Topics will not work with your forum. Similar Topics requires a MySQL 4 or MySQL 5 database and that the phpbb_topics table be set to either MyISAM or InnoDB storage engines (MySQL 5.6.4 or later required for InnoDB). <a href="https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Click here</a> for more information.',
 	'PST_LOG_MSG'		=> '<strong>Altered similar topics settings</strong>',
 ));
