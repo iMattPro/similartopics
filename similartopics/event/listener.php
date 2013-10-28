@@ -25,7 +25,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class listener implements EventSubscriberInterface
 {
-
+	/**
+	* Get subscribed events
+	*
+	* @return array
+	* @static
+	*/
 	static public function getSubscribedEvents()
 	{
 		return array(
@@ -37,6 +42,12 @@ class listener implements EventSubscriberInterface
 		);
 	}
 
+	/**
+	* Load Similar Topics manager
+	*
+	* @param object $event The event object
+	* @return null
+	*/
 	public function load_similar_topics($event)
 	{
 		global $config, $auth, $user, $phpbb_container;
@@ -51,6 +62,12 @@ class listener implements EventSubscriberInterface
 		$similar->get_similar_topics($event);
 	}
 
+	/**
+	* Add custom permissions language variables
+	*
+	* @param object $event The event object
+	* @return null
+	*/
 	public function add_permissions($event)
 	{
 		$permissions = $event['permissions'];
@@ -61,7 +78,7 @@ class listener implements EventSubscriberInterface
 	/**
 	* Get user's Similar Topics option and display it in UCP Prefs View page
 	*
-	* @param Event $event Event object
+	* @param object $event The event object
 	* @return null
 	*/
 	public function ucp_prefs_get_data($event)
@@ -88,7 +105,7 @@ class listener implements EventSubscriberInterface
 	/**
 	* Add user's Similar Topics option state into the sql_array
 	*
-	* @param Event $event Event object
+	* @param object $event The event object
 	* @return null
 	*/
 	public function ucp_prefs_set_data($event)
@@ -98,5 +115,4 @@ class listener implements EventSubscriberInterface
 			'user_similar_topics' => $data['similar_topics'],
 		));
 	}
-
 }
