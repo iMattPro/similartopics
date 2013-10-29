@@ -1,4 +1,4 @@
-Precise Similar Topics II
+![PST II](http://mattfriedman.me/forum/images/binoc1.png "PST II") Precise Similar Topics II
 ==========================
 
 A Similar Topics MOD for phpBB3
@@ -7,8 +7,7 @@ This is a MOD for phpBB3 that will display a list of similar/related topics at t
 
 This MOD is written to provide the most precise similar topics it can find with minimal impact to your board's performance. It uses a MySQL FULLTEXT search that scans topic titles only, not posts, to quickly find matches. There are admin control panel settings available to fine tune the display and performance of the similar topics to best meet the needs of your phpBB board.
 
-Current valid release available from phpBB: 
-Version 1.2.1 ([Download it here](https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/)) 
+Current valid release available from phpBB ([Download it here](https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/)) 
 
 Features
 --------
