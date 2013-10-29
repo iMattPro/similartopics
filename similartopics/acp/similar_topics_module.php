@@ -149,7 +149,7 @@ class similar_topics_module
 					'PST_WORDS'			=> isset($config['similar_topics_words']) ? $config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : '',
-					'S_PST_SUPPORTED'	=> $this->fulltext_support(),
+					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support(),
 					'U_ACTION'			=> $this->u_action,
 				));
 
