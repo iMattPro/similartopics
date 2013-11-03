@@ -32,8 +32,8 @@ class acp_similar_topics
 		$this->tpl_name = 'acp_similar_topics';
 		$this->page_title = $user->lang['PST_TITLE'];
 
-		$form_name = 'acp_similar_topics';
-		add_form_key($form_name);
+		$form_key = 'acp_similar_topics';
+		add_form_key($form_key);
 
 		$action = request_var('action', '');
 
@@ -46,7 +46,7 @@ class acp_similar_topics
 
 				if ($submit)
 				{
-					if (!check_form_key($form_name))
+					if (!check_form_key($form_key))
 					{
 						trigger_error('FORM_INVALID');
 					}
@@ -97,7 +97,7 @@ class acp_similar_topics
 
 				if ($submit)
 				{
-					if (!check_form_key($form_name))
+					if (!check_form_key($form_key))
 					{
 						trigger_error('FORM_INVALID');
 					}
