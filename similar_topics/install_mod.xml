@@ -49,6 +49,14 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</installation>
 		<history>
 			<entry>
+				<date>2013-11-03</date>
+				<rev-version>1.2.3</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Correct the link to the Advanced forum settings in the ACP.]]></change>
+					<change><![CDATA[Correctly use form labels in the ACP settings]]></change>
+				</changelog>
+			</entry>
+			<entry>
 				<date>2013-08-04</date>
 				<rev-version>1.2.2</rev-version>
 				<changelog lang="en">
