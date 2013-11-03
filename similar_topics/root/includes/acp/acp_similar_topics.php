@@ -163,7 +163,7 @@ class acp_similar_topics
 						'CHECKED_IGNORE_FORUM'	=> (in_array($row['forum_id'], $ignore_forums)) ? 'checked="checked"' : '',
 						'CHECKED_NOSHOW_FORUM'	=> (in_array($row['forum_id'], $noshow_forums)) ? 'checked="checked"' : '',
 						'S_IS_ADVANCED'			=> $row['similar_topic_forums'] ? true : false,
-						'U_ADVANCED'			=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=similar_topics&amp;action=advanced&amp;f=' . $row['forum_id']),
+						'U_ADVANCED'			=> $this->u_action . '&amp;action=advanced&amp;f=' . $row['forum_id'],
 						'U_FORUM'				=> "{$phpbb_root_path}viewforum.$phpEx?f=" . $row['forum_id'],
 					));
 				}
