@@ -82,7 +82,7 @@ class similar_topics_module
 
 				$template->assign_vars(array(
 					'S_ADVANCED_SETTINGS'		=> true,
-					'S_PST_VERSION'				=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : false,
+					'PST_VERSION'				=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : false,
 					'SIMILAR_FORUMS_OPTIONS'	=> make_forum_select($selected, false, false, true),
 					'PST_FORUM_NAME'			=> $forum_name,
 					'PST_ADVANCED_EXP'			=> sprintf($user->lang['PST_ADVANCED_EXP'], $forum_name),
@@ -148,7 +148,7 @@ class similar_topics_module
 					'PST_CACHE'			=> isset($config['similar_topics_cache']) ? $config['similar_topics_cache'] : '',
 					'PST_WORDS'			=> isset($config['similar_topics_words']) ? $config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
-					'S_PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : '',
+					'PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : '',
 					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support(),
 					'U_ACTION'			=> $this->u_action,
 				));
