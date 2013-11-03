@@ -25,7 +25,7 @@ class similar_topics_version
 			'author'	=> 'VSE',
 			'title'		=> 'Precise Similar Topics II',
 			'tag'		=> 'similar_topics',
-			'version'	=> '1.2.2',
+			'version'	=> '1.2.3',
 			'file'		=> array('mattfriedman.me', 'software', 'mods.xml'),
 		);
 	}
