@@ -10,14 +10,6 @@
 namespace vse\similartopics\acp;
 
 /**
-* @ignore
-*/
-if (!defined('IN_PHPBB'))
-{
-	exit;
-}
-
-/**
 * @package module_install
 */
 class similar_topics_info

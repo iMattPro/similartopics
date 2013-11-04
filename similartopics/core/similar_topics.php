@@ -10,13 +10,8 @@
 namespace vse\similartopics\core;
 
 /**
-* @ignore
+* Similar topics core class
 */
-if (!defined('IN_PHPBB'))
-{
-	exit;
-}
-
 class similar_topics
 {
 	/** @var \phpbb\auth\auth */
