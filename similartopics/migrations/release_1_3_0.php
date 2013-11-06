@@ -46,29 +46,24 @@ class release_1_3_0 extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('custom', array(array($this, 'update_module'))),
+			array('custom', array(array($this, 'update_module_data'))),
 			array('config.update', array('similar_topics_version', '1.3.0')),
 		);
 	}
 
-	public function update_module()
+	/*
+	* Update the ACP module nomenclature from previous installations
+	*/
+	public function update_module_data()
 	{
-		// Update the module basename if neccessary
-		$old_module_basename = 'acp_similar_topics';
-		$new_module_basename = '\vse\similartopics\acp\similar_topics_module';
-		
-		$sql = 'UPDATE ' . $this->table_prefix . "modules
-			SET module_basename = '" . $this->db->sql_escape($new_module_basename) . "'
-			WHERE module_basename = '$old_module_basename'";
-		$this->db->sql_query($sql);
+		$sql_ary = array(
+			'module_basename'	=> '\vse\similartopics\acp\similar_topics_module',
+			'module_mode'		=> 'settings',
+		);
 
-		// Update the module mode if neccessary
-		$old_module_mode = 'index';
-		$new_module_mode = 'settings';
-		
-		$sql = 'UPDATE ' . $this->table_prefix . "modules
-			SET module_mode = '" . $this->db->sql_escape($new_module_mode) . "'
-			WHERE module_basename = '" . $this->db->sql_escape($new_module_basename) . "' AND module_mode = '$old_module_mode'";
+		$sql = 'UPDATE ' . $this->table_prefix . 'modules
+			SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
+			WHERE module_basename = 'acp_similar_topics'";
 		$this->db->sql_query($sql);
 	}
 }
