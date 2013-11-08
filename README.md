@@ -61,7 +61,9 @@ Note: This extension is in development. Installation is only recommended for tes
 Uninstallation
 --------------
 
-Navigate in the ACP to `Customise -> Extension Management -> Extensions` and click `Purge`.
+Navigate in the ACP to `Customise -> Extension Management -> Extensions` and click `Disable`.
+
+To permanently uninstall, click `Delete Data` and then you can safely delete the `/ext/vse/similartopics` folder.
 
 License
 -------
