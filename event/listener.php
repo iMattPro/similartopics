@@ -74,11 +74,11 @@ class listener implements EventSubscriberInterface
 	*/
 	public function ucp_prefs_get_data($event)
 	{
-		global $auth, $config, $user, $template;
+		global $auth, $config, $request, $user, $template;
 
 		// Request the user option vars and add them to the data array
 		$event['data'] = array_merge($event['data'], array(
-			'similar_topics'	=> request_var('similar_topics', (int) $user->data['user_similar_topics']),
+			'similar_topics'	=> $request->variable('similar_topics', (int) $user->data['user_similar_topics']),
 		));
 
 		// Output the data vars to the template (except on form submit)
