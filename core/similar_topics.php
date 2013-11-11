@@ -153,7 +153,7 @@ class similar_topics
 		*
 		* @event similartopics.similar_topic_data
 		* @var	array	sql_array		Array with similar topics data
-		* @since 3.1-A1
+		* @since 1.3.0
 		*/
 		$vars = array('sql_array');
 		extract($phpbb_dispatcher->trigger_event('similartopics.similar_topic_data', compact($vars)));
@@ -247,7 +247,7 @@ class similar_topics
 				* @event similartopics.modify_topicrow
 				* @var	array	row				Array with similar topic data
 				* @var	array	topic_row		Template block array
-				* @since 3.1-A1
+				* @since 1.3.0
 				*/
 				$vars = array('row', 'topic_row');
 				extract($phpbb_dispatcher->trigger_event('similartopics.modify_topicrow', compact($vars)));
