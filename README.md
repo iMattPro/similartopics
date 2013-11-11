@@ -1,13 +1,10 @@
-![PST II](http://mattfriedman.me/forum/images/binoc1.png "PST II") Precise Similar Topics II
-==========================
+# ![PST II](http://mattfriedman.me/forum/images/binoc1.png "PST II") Precise Similar Topics II
 
 A Similar Topics Extension for phpBB 3.1
 
 This is an extension for phpBB 3.1 that will find and display a list of similar (related) topics at the bottom of the current topic's page.
 
-Features
---------
-
+## Features
 * Displays a list of the most similar/relevant topics at the bottom of the current topic page.
 * Uses a precise and light MySQL query to search topic titles for matches.
 * Similar topics are sorted in order of decreasing relevance.
@@ -22,7 +19,7 @@ Features
 * Attractive Prosilver and Subsilver2 integration.
 * Built-in support for integration with the "Topic Preview" extension
 
-###Languages supported:
+### Languages supported:
 * English
 * Dutch
 * French
@@ -34,40 +31,39 @@ Features
 * Spanish
 * Swedish
 
-Awards
-------
-
+## Awards
 * Overall winner of the 2010 "Summer of MODs" competition at phpBB.com.
 * Featured MOD of the Week in the phpBB Weekly Podcast, episode #161.
 
-Requirements
-------------
-
+## Requirements
 * phpBB 3.1-dev or higher
 * PHP 5.3.3 or higher
 * MySQL 4.0.1 or higher using MyISAM tables (InnoDB supported with MySQL 5.6.4 or higher).
 
-Installation
-------------
-
+## Installation
 You can install this on the latest copy of the develop branch ([phpBB 3.1-dev](https://github.com/phpbb/phpbb3)) by following the steps below:
 
-1. Copy the entire contents of this repo to `phpBB/ext/vse/similartopics/`
+**Manual:**
+
+1. Copy the entire contents of this repo to to `phpBB/ext/vse/similartopics/`
+2. Navigate in the ACP to `Customise -> Extension Management -> Extensions`.
+3. Click `Enable`.
+
+**Git CLI:**
+
+1. From the board root run the following git command:
+`git clone -b extension https://github.com/VSEphpbb/precise-similar-topics-II.git phpBB/ext/vse/similartopics`
 2. Navigate in the ACP to `Customise -> Extension Management -> Extensions`.
 3. Click `Enable`.
 
 Note: This extension is in development. Installation is only recommended for testing purposes and is not supported on live boards. This extension will be officially released following phpBB 3.1.0.
 
-Uninstallation
---------------
-
+## Uninstallation
 Navigate in the ACP to `Customise -> Extension Management -> Extensions` and click `Disable`.
 
 To permanently uninstall, click `Delete Data` and then you can safely delete the `/ext/vse/similartopics` folder.
 
-License
--------
-
+## License
 [GNU General Public License v2](http://opensource.org/licenses/GPL-2.0)
 
 © 2013 - Matt Friedman (VSE)
