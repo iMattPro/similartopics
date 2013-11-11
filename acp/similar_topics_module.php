@@ -14,47 +14,60 @@ namespace vse\similartopics\acp;
 */
 class similar_topics_module
 {
-	var $u_action;
+	public $u_action;
 
-	function main($id, $mode)
+	protected $db;
+	protected $user;
+	protected $template;
+	protected $request;
+	protected $config;
+	protected $phpbb_root_path;
+	protected $php_ext;
+
+	public function main($id, $mode)
 	{
-		global $db, $user, $auth, $template, $cache;
-		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
+		global $db, $user, $template, $request, $config, $phpbb_root_path, $phpEx;
 
-		$user->add_lang('acp/common');
+		$this->db = $db;
+		$this->user = $user;
+		$this->template = $template;
+		$this->request = $request;
+		$this->config = $config;
+		$this->phpbb_root_path = $phpbb_root_path;
+		$this->php_ext = $phpEx;
+
+		$this->user->add_lang('acp/common');
 		$this->tpl_name = 'acp_similar_topics';
-		$this->page_title = $user->lang['PST_TITLE'];
+		$this->page_title = $this->user->lang['PST_TITLE'];
 
 		$form_key = 'acp_similar_topics';
 		add_form_key($form_key);
 
-		$action = request_var('action', '');
+		$action = $this->request->variable('action', '');
 
 		switch ($action)
 		{
 			case 'advanced':
+				$forum_id = $this->request->variable('f', 0);
 
-				$submit = (isset($_POST['submit'])) ? true : false;
-				$forum_id = request_var('f', 0);
-
-				if ($submit)
+				if ($request->is_set_post('submit'))
 				{
 					if (!check_form_key($form_key))
 					{
 						trigger_error('FORM_INVALID');
 					}
 
-					$similar_forums	= request_var('similar_forums_id', array(0));
+					$similar_forums	= $this->request->variable('similar_forums_id', array(0));
 					$similar_forums_string = implode(',', $similar_forums);
 
 					$sql = 'UPDATE ' . FORUMS_TABLE . "
-						SET similar_topic_forums = '" . $db->sql_escape($similar_forums_string) . "'
+						SET similar_topic_forums = '" . $this->db->sql_escape($similar_forums_string) . "'
 						WHERE forum_id = $forum_id";
-					$db->sql_query($sql);
+					$this->db->sql_query($sql);
 
 					add_log('admin', 'PST_LOG_MSG');
 
-					trigger_error($user->lang['PST_SAVED'] . adm_back_link($this->u_action));
+					trigger_error($this->user->lang['PST_SAVED'] . adm_back_link($this->u_action));
 				}
 
 				$selected = array();
@@ -62,126 +75,122 @@ class similar_topics_module
 				{
 					$sql = 'SELECT forum_name, similar_topic_forums
 						FROM ' . FORUMS_TABLE . '
-						WHERE forum_id = ' . $db->sql_escape($forum_id);
-					$result = $db->sql_query($sql);
-					while ($fid = $db->sql_fetchrow($result))
+						WHERE forum_id = ' . $this->db->sql_escape($forum_id);
+					$result = $this->db->sql_query($sql);
+					while ($fid = $this->db->sql_fetchrow($result))
 					{
 						$selected = explode(',', trim($fid['similar_topic_forums']));
 						$forum_name = $fid['forum_name'];
 					}
-					$db->sql_freeresult($result);
+					$this->db->sql_freeresult($result);
 				}
 
-				$template->assign_vars(array(
+				$this->template->assign_vars(array(
 					'S_ADVANCED_SETTINGS'		=> true,
-					'PST_VERSION'				=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : false,
+					'PST_VERSION'				=> isset($this->config['similar_topics_version']) ? 'v' . $this->config['similar_topics_version'] : false,
 					'SIMILAR_FORUMS_OPTIONS'	=> make_forum_select($selected, false, false, true),
 					'PST_FORUM_NAME'			=> $forum_name,
-					'PST_ADVANCED_EXP'			=> sprintf($user->lang['PST_ADVANCED_EXP'], $forum_name),
+					'PST_ADVANCED_EXP'			=> sprintf($this->user->lang['PST_ADVANCED_EXP'], $forum_name),
 					'U_ACTION'					=> $this->u_action . '&amp;action=advanced&amp;f=' . $forum_id,
 					'U_BACK'					=> $this->u_action,
 				));
-
 			break;
 
 			default:
-
-				$submit = (isset($_POST['submit'])) ? true : false;
-
-				if ($submit)
+				if ($request->is_set_post('submit'))
 				{
 					if (!check_form_key($form_key))
 					{
 						trigger_error('FORM_INVALID');
 					}
 
-					$pst_enable = request_var('pst_enable', 0);
-					set_config('similar_topics', $pst_enable);
+					$pst_enable = $this->request->variable('pst_enable', 0);
+					$this->config->set('similar_topics', $pst_enable);
 
-					$pst_limit = request_var('pst_limit', 0);
-					set_config('similar_topics_limit', abs($pst_limit));
+					$pst_limit = $this->request->variable('pst_limit', 0);
+					$this->config->set('similar_topics_limit', abs($pst_limit));
 
-					$pst_time_type = request_var('pst_time_type', '');
-					set_config('similar_topics_type', $pst_time_type);
+					$pst_time_type = $this->request->variable('pst_time_type', '');
+					$this->config->set('similar_topics_type', $pst_time_type);
 
-					$pst_cache = request_var('pst_cache', 0);
-					set_config('similar_topics_cache', abs($pst_cache));
+					$pst_cache = $this->request->variable('pst_cache', 0);
+					$this->config->set('similar_topics_cache', abs($pst_cache));
 
-					$pst_ignore_forum = request_var('mark_ignore_forum', array(0), true);
-					set_config('similar_topics_ignore', (sizeof($pst_ignore_forum)) ? implode(',', $pst_ignore_forum) : '');
+					$pst_ignore_forum = $this->request->variable('mark_ignore_forum', array(0), true);
+					$this->config->set('similar_topics_ignore', (sizeof($pst_ignore_forum)) ? implode(',', $pst_ignore_forum) : '');
 
-					$pst_noshow_forum = request_var('mark_noshow_forum', array(0), true);
-					set_config('similar_topics_hide', (sizeof($pst_noshow_forum)) ? implode(',', $pst_noshow_forum) : '');
+					$pst_noshow_forum = $this->request->variable('mark_noshow_forum', array(0), true);
+					$this->config->set('similar_topics_hide', (sizeof($pst_noshow_forum)) ? implode(',', $pst_noshow_forum) : '');
 
-					$pst_time = request_var('pst_time', 0);
-					set_config('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
+					$pst_time = $this->request->variable('pst_time', 0);
+					$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
-					$pst_words = request_var('pst_words', '');
-					set_config('similar_topics_words', $pst_words);
+					$pst_words = $this->request->variable('pst_words', '');
+					$this->config->set('similar_topics_words', $pst_words);
 
 					add_log('admin', 'PST_LOG_MSG');
 
-					trigger_error($user->lang['PST_SAVED'] . adm_back_link($this->u_action));
+					trigger_error($this->user->lang['PST_SAVED'] . adm_back_link($this->u_action));
 				}
 
 				// Build the time options select menu
-				$time_options = array('d' => $user->lang['PST_DAYS'], 'w' => $user->lang['PST_WEEKS'], 'm' => $user->lang['PST_MONTHS'], 'y' => $user->lang['PST_YEARS']);
+				$time_options = array('d' => $this->user->lang['PST_DAYS'], 'w' => $this->user->lang['PST_WEEKS'], 'm' => $this->user->lang['PST_MONTHS'], 'y' => $this->user->lang['PST_YEARS']);
 				$s_time_options = '';
 				foreach ($time_options as $key => $value)
 				{
-					$selected = ($key == $config['similar_topics_type']) ? ' selected="selected"' : '';
+					$selected = ($key == $this->config['similar_topics_type']) ? ' selected="selected"' : '';
 					$s_time_options .= '<option value="' . $key . '"' . $selected . '>' . $value . '</option>';
 				}
 
-				$template->assign_vars(array(
-					'S_PST_ENABLE'		=> isset($config['similar_topics']) ? $config['similar_topics'] : false,
-					'PST_LIMIT'			=> isset($config['similar_topics_limit']) ? $config['similar_topics_limit'] : '',
-					'PST_TIME'			=> $this->get_pst_time($config['similar_topics_time'], $config['similar_topics_type']),
-					'PST_CACHE'			=> isset($config['similar_topics_cache']) ? $config['similar_topics_cache'] : '',
-					'PST_WORDS'			=> isset($config['similar_topics_words']) ? $config['similar_topics_words'] : '',
+				$this->template->assign_vars(array(
+					'S_PST_ENABLE'		=> isset($this->config['similar_topics']) ? $this->config['similar_topics'] : false,
+					'PST_LIMIT'			=> isset($this->config['similar_topics_limit']) ? $this->config['similar_topics_limit'] : '',
+					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
+					'PST_CACHE'			=> isset($this->config['similar_topics_cache']) ? $this->config['similar_topics_cache'] : '',
+					'PST_WORDS'			=> isset($this->config['similar_topics_words']) ? $this->config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
-					'PST_VERSION'		=> isset($config['similar_topics_version']) ? 'v' . $config['similar_topics_version'] : '',
+					'PST_VERSION'		=> isset($this->config['similar_topics_version']) ? 'v' . $this->config['similar_topics_version'] : '',
 					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support(),
 					'U_ACTION'			=> $this->u_action,
 				));
 
-				$ignore_forums = explode(',', trim($config['similar_topics_ignore']));
-				$noshow_forums = explode(',', trim($config['similar_topics_hide']));
+				$ignore_forums = explode(',', trim($this->config['similar_topics_ignore']));
+				$noshow_forums = explode(',', trim($this->config['similar_topics_hide']));
 
 				$forum_list = $this->get_forum_list();
 				foreach ($forum_list as $forum_id => $row)
 				{
-					$template->assign_block_vars('forums', array(
+					$this->template->assign_block_vars('forums', array(
 						'FORUM_NAME'			=> $row['forum_name'],
 						'FORUM_ID'				=> $row['forum_id'],
 						'CHECKED_IGNORE_FORUM'	=> (in_array($row['forum_id'], $ignore_forums)) ? 'checked="checked"' : '',
 						'CHECKED_NOSHOW_FORUM'	=> (in_array($row['forum_id'], $noshow_forums)) ? 'checked="checked"' : '',
 						'S_IS_ADVANCED'			=> $row['similar_topic_forums'] ? true : false,
 						'U_ADVANCED'			=> $this->u_action . '&amp;action=advanced&amp;f=' . $row['forum_id'],
-						'U_FORUM'				=> "{$phpbb_root_path}viewforum.$phpEx?f=" . $row['forum_id'],
+						'U_FORUM'				=> "{$this->phpbb_root_path}viewforum.$this->php_ext?f=" . $row['forum_id'],
 					));
 				}
-
 			break;
 		}
 	}
 
 	/**
 	* Get forums list
+	*
+	* @return array	forum data rows
+	* @access private
 	*/
-	function get_forum_list()
+	private function get_forum_list()
 	{
-		global $db;
-
 		$forum_list = array();
 
 		$sql = 'SELECT forum_id, forum_name, similar_topic_forums
 			FROM ' . FORUMS_TABLE . '
 			WHERE forum_type = ' .	FORUM_POST . '
 			ORDER BY left_id ASC';
-		$result = $db->sql_query($sql);
-		$forum_list = $db->sql_fetchrowset($result);
-		$db->sql_freeresult($result);
+		$result = $this->db->sql_query($sql);
+		$forum_list = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
 
 		return $forum_list;
 	}
@@ -191,8 +200,10 @@ class similar_topics_module
 	*
 	* @param int $length user entered value
 	* @param string $type years, months, weeks, days
+	* @return int time in seconds
+	* @access private
 	*/
-	function set_pst_time($length, $type = 'y')
+	private function set_pst_time($length, $type = 'y')
 	{
 		$length = abs($length);
 		switch ($type)
@@ -220,8 +231,10 @@ class similar_topics_module
 	*
 	* @param int $time as a timestamp
 	* @param string $type years, months, weeks, days
+	* @return int time converted to the given $type
+	* @access private
 	*/
-	function get_pst_time($time, $type)
+	private function get_pst_time($time, $type)
 	{
 		switch ($type)
 		{
@@ -250,19 +263,20 @@ class similar_topics_module
 
 	/**
 	* Check for FULLTEXT index support
+	*
+	* @return bool true means FULLTEXT is supported
+	* @access private
 	*/
-	function fulltext_support()
+	private function fulltext_support()
 	{
-		global $db;
-
-		if (($db->sql_layer != 'mysql4') && ($db->sql_layer != 'mysqli'))
+		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
 		{
 			return false;
 		}
 
-		$result = $db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
-		$info = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
+		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
+		$info = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
 
 		$engine = '';
 		if (isset($info['Engine']))
@@ -276,7 +290,7 @@ class similar_topics_module
 
 		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
 		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
-		if ($engine === 'myisam' || ($engine === 'innodb' && phpbb_version_compare($db->sql_server_info(true), '5.6.4', '>=')))
+		if ($engine === 'myisam' || ($engine === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')))
 		{
 			return $this->is_fulltext('topic_title');
 		}
@@ -287,18 +301,17 @@ class similar_topics_module
 	/**
 	* Check if a field is a FULLTEXT index
 	*
-	* @param	string	$field 	name of a field
-	* @return	bool	true means the field is a FULLTEXT index
+	* @param string $field name of a field
+	* @return bool true means the field is a FULLTEXT index
+	* @access private
 	*/
-	function is_fulltext($field)
+	private function is_fulltext($field)
 	{
-		global $db;
-
 		$sql = "SHOW INDEX 
 			FROM " . TOPICS_TABLE;
-		$result = $db->sql_query($sql);
+		$result = $this->db->sql_query($sql);
 
-		while ($row = $db->sql_fetchrow($result))
+		while ($row = $this->db->sql_fetchrow($result))
 		{
 			// deal with older MySQL versions which didn't use Index_type
 			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
