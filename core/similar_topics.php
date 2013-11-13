@@ -9,9 +9,6 @@
 
 namespace vse\similartopics\core;
 
-/**
-* Similar topics core class
-*/
 class similar_topics
 {
 	/** @var \phpbb\auth\auth */
@@ -35,14 +32,14 @@ class similar_topics
 	/** @var \content\visibility */
 	protected $content_visibility;
 
-	/** @var string */
+	/** @var string phpBB root path  */
 	protected $root_path;
 
-	/** @var string */
+	/** @var string PHP file extension */
 	protected $php_ext;
 	
 	/**
-	* Similar topics constructor method
+	* Constructor
 	* 
 	* @param \phpbb\auth\auth $auth
 	* @param \phpbb\cache\service $cache
@@ -104,23 +101,19 @@ class similar_topics
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
 			),
-
 			'LEFT_JOIN'	=> array(
 				array(
 					'FROM'	=>	array(FORUMS_TABLE	=> 'f'),
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') >= 0.5
 				AND t.topic_status <> " . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->config['similar_topics_time'] . ')
 				AND t.topic_id <> ' . (int) $event['topic_data']['topic_id'],
-
-		//	'GROUP_BY'	=> 't.topic_id',
-
-		//	'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
+			//'GROUP_BY'	=> 't.topic_id',
+			//'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
 
 		// Add topic tracking data to the query (only when query caching is off)
