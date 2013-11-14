@@ -46,24 +46,23 @@ class release_1_3_0 extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('custom', array(array($this, 'update_module_data'))),
+			// remove module if updating
+			array('if', array(
+				array('module.exists', array('acp', 'PST_TITLE_ACP', 'PST_TITLE')),
+				array('module.remove', array('acp', 'PST_TITLE_ACP', 'PST_TITLE')),
+			)),
+
+			// re-add module if updating
+			array('module.add', array(
+				'acp', 
+				'PST_TITLE_ACP',
+				array(
+					'module_basename'	=> '\vse\similartopics\acp\similar_topics_module',
+					'modes'				=> array('settings'),
+				),
+			)),
+
 			array('config.update', array('similar_topics_version', '1.3.0')),
 		);
-	}
-
-	/*
-	* Update the ACP module nomenclature from previous installations
-	*/
-	public function update_module_data()
-	{
-		$sql_ary = array(
-			'module_basename'	=> '\vse\similartopics\acp\similar_topics_module',
-			'module_mode'		=> 'settings',
-		);
-
-		$sql = 'UPDATE ' . $this->table_prefix . 'modules
-			SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . "
-			WHERE module_basename = 'acp_similar_topics'";
-		$this->db->sql_query($sql);
 	}
 }
