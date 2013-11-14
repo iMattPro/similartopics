@@ -49,7 +49,7 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
-		$similar = $phpbb_container->get('similartopics.manager');
+		$similar = $phpbb_container->get('vse.similartopics.manager');
 		$similar->get_similar_topics($event);
 	}
 

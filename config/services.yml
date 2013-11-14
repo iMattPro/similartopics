@@ -1,5 +1,5 @@
 services:
-    similartopics.manager:
+    vse.similartopics.manager:
         class: vse\similartopics\core\similar_topics
         arguments:
             - @auth
@@ -11,3 +11,7 @@ services:
             - @content.visibility
             - %core.root_path%
             - %core.php_ext%
+    vse.similartopics.listener:
+        class: vse\similartopics\event\listener
+        tags:
+            - { name: event.listener }
