@@ -50,7 +50,7 @@ class similar_topics_module
 			case 'advanced':
 				$forum_id = $this->request->variable('f', 0);
 
-				if ($request->is_set_post('submit'))
+				if ($this->request->is_set_post('submit'))
 				{
 					if (!check_form_key($form_key))
 					{
@@ -97,7 +97,7 @@ class similar_topics_module
 			break;
 
 			default:
-				if ($request->is_set_post('submit'))
+				if ($this->request->is_set_post('submit'))
 				{
 					if (!check_form_key($form_key))
 					{
