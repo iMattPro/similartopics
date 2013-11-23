@@ -130,15 +130,33 @@ class similar_topics
 			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 		}
 
-		// Now lets see if the current forum is set to search only in specified forums
+		// We need to exclude passworded forums so we do not leak the topic title
+		$passworded_forums = $this->user->get_passworded_forums();
+
+		// See if the admin set this forum to only search a specific group of other forums, and include them
 		if (!empty($event['topic_data']['similar_topic_forums']))
 		{
-			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', explode(',', $event['topic_data']['similar_topic_forums']));
+			// Remove any passworded forums from this group of forums we will be searching
+			$included_forums = array_diff(explode(',', $event['topic_data']['similar_topic_forums']), $passworded_forums);
+			// if there's nothing left to display (user has no access to the forums we want to search)
+			if (empty($included_forums))
+			{
+				return;
+			}
+
+			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $included_forums);
 		}
-		// Otherwise, lets see what forums are not allowed to be searched, and ignore those
+		// Otherwise, see what forums are not allowed to be searched, and exclude them
 		else if (!empty($this->config['similar_topics_ignore']))
 		{
-			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', explode(',', $this->config['similar_topics_ignore']), true);
+			// Add passworded forums to the exlude array
+			$excluded_forums = array_unique(array_merge(explode(',', $this->config['similar_topics_ignore']), $passworded_forums));
+			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $excluded_forums, true);
+		}
+		// In all other cases, exclude any passworded forums the user is not allowed to view
+		else if (!empty($passworded_forums))
+		{
+			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
 		}
 
 		/**
