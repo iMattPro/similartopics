@@ -38,6 +38,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Subiecte similare',
 	'PST_TITLE'			=> 'Subiecte similare precise II',
+	'PST_EXPLAIN'		=> 'Subiecte similare precise II afișează o listă de subiecte similare în partea de jos a paginii subiect curente.',
 	'PST_LEGEND1'		=> 'Setări generale',
 	'PST_ENABLE'		=> 'Activaţi subiectele similare',
 	'PST_LEGEND2'		=> 'Încarcă setări',

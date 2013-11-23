@@ -38,6 +38,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Slične teme',
 	'PST_TITLE'			=> 'Precise Similar Topics II',
+	'PST_EXPLAIN'		=> 'Precise Similar Topics II displays a list of similar (related) topics at the bottom of the current topic’s page.',
 	'PST_LEGEND1'		=> 'Generalna podešavanja',
 	'PST_ENABLE'		=> 'Uključi Similar Topics',
 	'PST_LEGEND2'		=> 'Učitaj podešavanja',

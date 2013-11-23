@@ -38,6 +38,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Podobne tematy',
 	'PST_TITLE'			=> 'Precise Similar Topics II',
+	'PST_EXPLAIN'		=> 'Precise Similar Topics II wyświetla listę podobnych tematów na dole bieżącego tematu w stronie.',
 	'PST_LEGEND1'		=> 'Ustawienia ogólne',
 	'PST_ENABLE'		=> 'Włącz podobne tematy',
 	'PST_LEGEND2'		=> 'Załaduj ustawienia',
