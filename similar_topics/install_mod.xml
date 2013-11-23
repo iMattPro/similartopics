@@ -49,9 +49,10 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</installation>
 		<history>
 			<entry>
-				<date>2013-11-03</date>
+				<date>2013-11-22</date>
 				<rev-version>1.2.3</rev-version>
 				<changelog lang="en">
+					<change><![CDATA[Do not display topics from password protected forums the user is not logged in to.]]></change>
 					<change><![CDATA[Correct the link to the Advanced forum settings in the ACP.]]></change>
 					<change><![CDATA[Correctly use form labels in the ACP settings]]></change>
 				</changelog>
