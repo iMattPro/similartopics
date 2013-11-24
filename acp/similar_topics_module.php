@@ -74,8 +74,8 @@ class similar_topics_module
 				if ($forum_id > 0)
 				{
 					$sql = 'SELECT forum_name, similar_topic_forums
-						FROM ' . FORUMS_TABLE . '
-						WHERE forum_id = ' . $this->db->sql_escape($forum_id);
+						FROM ' . FORUMS_TABLE . "
+						WHERE forum_id = $forum_id";
 					$result = $this->db->sql_query($sql);
 					while ($fid = $this->db->sql_fetchrow($result))
 					{
@@ -158,7 +158,7 @@ class similar_topics_module
 				$noshow_forums = explode(',', trim($this->config['similar_topics_hide']));
 
 				$forum_list = $this->get_forum_list();
-				foreach ($forum_list as $forum_id => $row)
+				foreach ($forum_list as $row)
 				{
 					$this->template->assign_block_vars('forums', array(
 						'FORUM_NAME'			=> $row['forum_name'],
