@@ -55,8 +55,8 @@
 	<dl>
 		<dt><label for="pst_enable">{L_PST_ENABLE}{L_COLON}</label></dt>
 		<dd>
-			<label><input type="radio" class="radio" id="pst_enable" name="pst_enable" value="1"<!-- IF S_PST_ENABLE --> checked="checked"<!-- ENDIF --> /> {L_YES}</label>
-			<label><input type="radio" class="radio" name="pst_enable" value="0"<!-- IF not S_PST_ENABLE --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+			<label><input type="radio" class="radio" id="pst_enable" name="pst_enable" value="1"<!-- IF S_PST_ENABLE --> checked="checked"<!-- ENDIF --><!-- IF S_PST_NO_SUPPORT --> disabled="disabled"<!-- ENDIF --> /> {L_YES}</label>
+			<label><input type="radio" class="radio" name="pst_enable" value="0"<!-- IF not S_PST_ENABLE --> checked="checked"<!-- ENDIF --><!-- IF S_PST_NO_SUPPORT and not S_PST_ENABLE --> disabled="disabled"<!-- ENDIF --> /> {L_NO}</label>
 		</dd>
 	</dl>
 	</fieldset>
