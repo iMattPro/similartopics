@@ -1,6 +1,6 @@
 <?php
 /**
-* acp_permissions_similar_topics (Precise Similar Topics II Permission Set) [Română]
+* acp_permissions_similar_topics (Precise Similar Topics Permission Set) [Română]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by Ionuţ Butnaru and corrected by Ivan Petre Paul, both from phpBB Romanian Community www.phpbb.ro)

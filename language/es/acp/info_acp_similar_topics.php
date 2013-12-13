@@ -37,8 +37,8 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Hilos Parecidos',
-	'PST_TITLE'			=> 'Hilos Parecidos Precisos II',
-	'PST_EXPLAIN'		=> 'Hilos Parecidos Precisos II muestra una lista de temas similares en la parte inferior de la página del tema actual.',
+	'PST_TITLE'			=> 'Hilos Parecidos Precisos',
+	'PST_EXPLAIN'		=> 'Hilos Parecidos Precisos muestra una lista de temas similares en la parte inferior de la página del tema actual.',
 	'PST_LEGEND1'		=> 'Configuración general',
 	'PST_ENABLE'		=> 'Habilitar Hilos Parecidos',
 	'PST_LEGEND2'		=> 'Cargar configuración',

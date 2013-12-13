@@ -1,6 +1,6 @@
 <?php
 /**
-* acp_permissions_similar_topics (Precise Similar Topics II Permission Set) [Portuguese]
+* acp_permissions_similar_topics (Precise Similar Topics Permission Set) [Portuguese]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman (Traduzido por The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico)

@@ -1,6 +1,6 @@
 <?php
 /**
-* acp_permissions_similar_topics (Precise Similar Topics II Permission Set) [Swedish]
+* acp_permissions_similar_topics (Precise Similar Topics Permission Set) [Swedish]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by Aros via phpbb.com)
