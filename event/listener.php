@@ -17,10 +17,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface
 {
 	/**
-	* Get subscribed events
+	* Assign functions defined in this class to event listeners in the core
 	*
 	* @return array
 	* @static
+	* @access public
 	*/
 	static public function getSubscribedEvents()
 	{
@@ -38,10 +39,11 @@ class listener implements EventSubscriberInterface
 	*
 	* @param object $event The event object
 	* @return null
+	* @access public
 	*/
 	public function load_similar_topics($event)
 	{
-		global $config, $auth, $user, $phpbb_container;
+		global $auth, $config, $user, $phpbb_container;
 
 		// Return early if not supposed to see similar topics
 		if (empty($config['similar_topics']) || empty($user->data['user_similar_topics']) || !$auth->acl_get('u_similar_topics'))
@@ -58,6 +60,7 @@ class listener implements EventSubscriberInterface
 	*
 	* @param object $event The event object
 	* @return null
+	* @access public
 	*/
 	public function add_permissions($event)
 	{
@@ -71,6 +74,7 @@ class listener implements EventSubscriberInterface
 	*
 	* @param object $event The event object
 	* @return null
+	* @access public
 	*/
 	public function ucp_prefs_get_data($event)
 	{
@@ -98,6 +102,7 @@ class listener implements EventSubscriberInterface
 	*
 	* @param object $event The event object
 	* @return null
+	* @access public
 	*/
 	public function ucp_prefs_set_data($event)
 	{
