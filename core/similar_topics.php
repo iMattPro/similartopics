@@ -77,7 +77,7 @@ class similar_topics
 	*/
 	public function get_similar_topics($event)
 	{
-		global $phpbb_dispatcher;
+		global $phpbb_container, $phpbb_dispatcher;
 
 		// Potential reasons to stop execution
 		if (!$this->config['similar_topics_limit'] || (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli')) || (in_array($event['forum_id'], explode(',', $this->config['similar_topics_hide']))))
@@ -172,6 +172,8 @@ class similar_topics
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, $this->config['similar_topics_limit'], 0, $this->config['similar_topics_cache']);
 
+		$pagination = $phpbb_container->get('pagination');
+		
 		// Grab icons
 		$icons = $this->cache->obtain_icons();
 
@@ -222,7 +224,7 @@ class similar_topics
 					'LAST_POST_TIME'		=> $this->user->format_date($row['topic_last_post_time']),
 					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 
-					'PAGE_NUMBER'			=> phpbb_on_page($this->template, $this->user, $base_url, $replies + 1, $this->config['posts_per_page'], 1), 
+					'PAGE_NUMBER'			=> $pagination->on_page($base_url, $replies + 1, $this->config['posts_per_page'], 1), 
 					'TOPIC_REPLIES'			=> $replies,
 					'TOPIC_VIEWS'			=> $row['topic_views'],
 					'TOPIC_TITLE'			=> $row['topic_title'],
@@ -265,7 +267,7 @@ class similar_topics
 
 				$this->template->assign_block_vars('similar', $topic_row);
 
-				phpbb_generate_template_pagination($this->template, $base_url, 'similar.pagination', 'start', $replies + 1, $this->config['posts_per_page'], 1, true, true);
+				$pagination->generate_template_pagination($base_url, 'similar.pagination', 'start', $replies + 1, $this->config['posts_per_page'], 1, true, true);
 			}
 		}
 
