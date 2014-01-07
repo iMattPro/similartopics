@@ -9,7 +9,7 @@
 
 namespace vse\similartopics\migrations;
 
-class release_1_1_6 extends \phpbb\db\migration\migration
+class release_1_1_6_data extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
@@ -18,13 +18,16 @@ class release_1_1_6 extends \phpbb\db\migration\migration
 
 	static public function depends_on()
 	{
-		return array('\vse\similartopics\migrations\release_1_1_5');
+		return array('\vse\similartopics\migrations\release_1_1_1_data');
 	}
 
 	public function update_data()
 	{
 		return array(
+			// Add new configs
 			array('config.add', array('similar_topics_words', '')),
+
+			// Update exisiting configs
 			array('config.update', array('similar_topics_version', '1.1.6')),
 		);
 	}

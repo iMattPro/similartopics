@@ -9,7 +9,7 @@
 
 namespace vse\similartopics\migrations;
 
-class release_1_1_0 extends \phpbb\db\migration\migration
+class release_1_1_0_data extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
@@ -18,29 +18,7 @@ class release_1_1_0 extends \phpbb\db\migration\migration
 
 	static public function depends_on()
 	{
-		return array('\phpbb\db\migration\data\v310\dev');
-	}
-
-	public function update_schema()
-	{
-		return array(
-			'add_columns'	=> array(
-				$this->table_prefix . 'forums'	=> array(
-					'similar_topic_forums'	=> array('VCHAR_UNI', ''),
-				),
-			),
-		);
-	}
-
-	public function revert_schema()
-	{
-		return array(
-			'drop_columns'	=> array(
-				$this->table_prefix . 'forums'	=> array(
-					'similar_topic_forums',
-				),
-			),
-		);
+		return array('\vse\similartopics\migrations\release_1_1_0_schema');
 	}
 
 	public function update_data()
