@@ -23,6 +23,9 @@ class similar_topics
 	/** @var \phpbb\db\driver\driver */
 	protected $db;
 
+	/** @var \phpbb\pagination */
+	protected $pagination;
+
 	/** @var \phpbb\template\template */
 	protected $template;
 
@@ -45,18 +48,20 @@ class similar_topics
 	* @param \phpbb\cache\service $cache
 	* @param \phpbb\config\config $config
 	* @param \phpbb\db\driver\driver $db
+	* @param \phpbb\pagination $pagination
 	* @param \phpbb\template\template $template
 	* @param \phpbb\user $user
 	* @param \phpbb\content_visibility $content_visibility
 	* @param string $root_path
 	* @param string $php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\pagination $pagination, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
 		$this->config = $config;
 		$this->db = $db;
+		$this->pagination = $pagination;
 		$this->template = $template;
 		$this->user = $user;
 		$this->content_visibility = $content_visibility;
@@ -77,7 +82,7 @@ class similar_topics
 	*/
 	public function get_similar_topics($event)
 	{
-		global $phpbb_container, $phpbb_dispatcher;
+		global $phpbb_dispatcher;
 
 		// Potential reasons to stop execution
 		if (!$this->config['similar_topics_limit'] || (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli')) || (in_array($event['forum_id'], explode(',', $this->config['similar_topics_hide']))))
@@ -172,8 +177,6 @@ class similar_topics
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, $this->config['similar_topics_limit'], 0, $this->config['similar_topics_cache']);
 
-		$pagination = $phpbb_container->get('pagination');
-		
 		// Grab icons
 		$icons = $this->cache->obtain_icons();
 
@@ -224,7 +227,7 @@ class similar_topics
 					'LAST_POST_TIME'		=> $this->user->format_date($row['topic_last_post_time']),
 					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 
-					'PAGE_NUMBER'			=> $pagination->on_page($base_url, $replies + 1, $this->config['posts_per_page'], 1), 
+					'PAGE_NUMBER'			=> $this->pagination->on_page($base_url, $replies + 1, $this->config['posts_per_page'], 1), 
 					'TOPIC_REPLIES'			=> $replies,
 					'TOPIC_VIEWS'			=> $row['topic_views'],
 					'TOPIC_TITLE'			=> $row['topic_title'],
@@ -267,7 +270,7 @@ class similar_topics
 
 				$this->template->assign_block_vars('similar', $topic_row);
 
-				$pagination->generate_template_pagination($base_url, 'similar.pagination', 'start', $replies + 1, $this->config['posts_per_page'], 1, true, true);
+				$this->pagination->generate_template_pagination($base_url, 'similar.pagination', 'start', $replies + 1, $this->config['posts_per_page'], 1, true, true);
 			}
 		}
 
