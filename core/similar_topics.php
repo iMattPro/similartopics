@@ -26,6 +26,9 @@ class similar_topics
 	/** @var \phpbb\pagination */
 	protected $pagination;
 
+	/** @var \phpbb\request\request */
+	protected $request;
+
 	/** @var \phpbb\template\template */
 	protected $template;
 
@@ -49,19 +52,21 @@ class similar_topics
 	* @param \phpbb\config\config $config
 	* @param \phpbb\db\driver\driver $db
 	* @param \phpbb\pagination $pagination
+	* @param \phpbb\request\request $request
 	* @param \phpbb\template\template $template
 	* @param \phpbb\user $user
 	* @param \phpbb\content_visibility $content_visibility
 	* @param string $root_path
 	* @param string $php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\pagination $pagination, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
 		$this->config = $config;
 		$this->db = $db;
 		$this->pagination = $pagination;
+		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
 		$this->content_visibility = $content_visibility;
@@ -131,7 +136,7 @@ class similar_topics
 		else if ($this->config['load_anon_lastread'] || $this->user->data['is_registered'])
 		{
 			// Cookie based tracking copied from search.php
-			$tracking_topics = (isset($_COOKIE[$this->config['cookie_name'] . '_track'])) ? ((STRIP) ? stripslashes($_COOKIE[$this->config['cookie_name'] . '_track']) : $_COOKIE[$this->config['cookie_name'] . '_track']) : '';
+			$tracking_topics = $this->request->variable($this->config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
 			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
 		}
 
