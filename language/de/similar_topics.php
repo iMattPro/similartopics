@@ -37,5 +37,5 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'SIMILAR_TOPICS'			=> 'Vergleichbare Themen',
-	'DISPLAY_SIMILAR_TOPICS'	=> 'Aktiviere Vergleichbare Theme',
+	'DISPLAY_SIMILAR_TOPICS'	=> 'Aktiviere Vergleichbare Themen',
 ));
