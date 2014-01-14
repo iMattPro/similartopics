@@ -79,10 +79,10 @@ class similar_topics
 	*
 	* NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
 	* and MATCH and AGAINST and UNIX_TIMESTAMP. MySQL FULLTEXT has built-in
-	* English ignore words. Use phpBB's ignore words for non-English
+	* English ignore words. We use phpBB's ignore words for non-English
 	* languages. We also remove any admin-defined special ignore words.
 	*
-	* @param Event $event Event object
+	* @param object $event The event object
 	* @return null
 	*/
 	public function get_similar_topics($event)
@@ -173,7 +173,7 @@ class similar_topics
 		* You can use this event to modify the sql_array for similar topics
 		*
 		* @event similartopics.similar_topic_data
-		* @var	array	sql_array		Array with similar topics data
+		* @var	array	sql_array	SQL array to get similar topics data
 		* @since 1.3.0
 		*/
 		$vars = array('sql_array');
@@ -263,11 +263,11 @@ class similar_topics
 				);
 
 				/**
-				* Modify the similar topics template block
+				* You can use this event to modify the similar topics template block
 				*
 				* @event similartopics.modify_topicrow
-				* @var	array	row				Array with similar topic data
-				* @var	array	topic_row		Template block array
+				* @var	array	row			Array with similar topic data
+				* @var	array	topic_row	Template block array
 				* @since 1.3.0
 				*/
 				$vars = array('row', 'topic_row');
