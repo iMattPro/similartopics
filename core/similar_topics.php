@@ -172,12 +172,12 @@ class similar_topics
 		/**
 		* You can use this event to modify the sql_array for similar topics
 		*
-		* @event similartopics.similar_topic_data
+		* @event similartopics.get_topic_data
 		* @var	array	sql_array	SQL array to get similar topics data
 		* @since 1.3.0
 		*/
 		$vars = array('sql_array');
-		extract($phpbb_dispatcher->trigger_event('similartopics.similar_topic_data', compact($vars)));
+		extract($phpbb_dispatcher->trigger_event('similartopics.get_topic_data', compact($vars)));
 
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, $this->config['similar_topics_limit'], 0, $this->config['similar_topics_cache']);
