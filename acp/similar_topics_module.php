@@ -38,7 +38,7 @@ class similar_topics_module
 
 		$this->user->add_lang('acp/common');
 		$this->tpl_name = 'acp_similar_topics';
-		$this->page_title = $this->user->lang['PST_TITLE'];
+		$this->page_title = $this->user->lang('PST_TITLE');
 
 		$form_key = 'acp_similar_topics';
 		add_form_key($form_key);
@@ -67,7 +67,7 @@ class similar_topics_module
 
 					add_log('admin', 'PST_LOG_MSG');
 
-					trigger_error($this->user->lang['PST_SAVED'] . adm_back_link($this->u_action));
+					trigger_error($this->user->lang('PST_SAVED') . adm_back_link($this->u_action));
 				}
 
 				$selected = array();
@@ -90,7 +90,7 @@ class similar_topics_module
 					'PST_VERSION'				=> isset($this->config['similar_topics_version']) ? 'v' . $this->config['similar_topics_version'] : false,
 					'SIMILAR_FORUMS_OPTIONS'	=> make_forum_select($selected, false, false, true),
 					'PST_FORUM_NAME'			=> $forum_name,
-					'PST_ADVANCED_EXP'			=> sprintf($this->user->lang['PST_ADVANCED_EXP'], $forum_name),
+					'PST_ADVANCED_EXP'			=> $this->user->lang('PST_ADVANCED_EXP', $forum_name),
 					'U_ACTION'					=> $this->u_action . '&amp;action=advanced&amp;f=' . $forum_id,
 					'U_BACK'					=> $this->u_action,
 				));
@@ -130,11 +130,11 @@ class similar_topics_module
 
 					add_log('admin', 'PST_LOG_MSG');
 
-					trigger_error($this->user->lang['PST_SAVED'] . adm_back_link($this->u_action));
+					trigger_error($this->user->lang('PST_SAVED') . adm_back_link($this->u_action));
 				}
 
 				// Build the time options select menu
-				$time_options = array('d' => $this->user->lang['PST_DAYS'], 'w' => $this->user->lang['PST_WEEKS'], 'm' => $this->user->lang['PST_MONTHS'], 'y' => $this->user->lang['PST_YEARS']);
+				$time_options = array('d' => $this->user->lang('PST_DAYS'), 'w' => $this->user->lang('PST_WEEKS'), 'm' => $this->user->lang('PST_MONTHS'), 'y' => $this->user->lang('PST_YEARS'));
 				$s_time_options = '';
 				foreach ($time_options as $key => $value)
 				{
