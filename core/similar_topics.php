@@ -23,6 +23,9 @@ class similar_topics
 	/** @var \phpbb\db\driver\driver */
 	protected $db;
 
+	/** @var \phpbb\event\dispatcher */
+	protected $dispatcher;
+
 	/** @var \phpbb\pagination */
 	protected $pagination;
 
@@ -59,12 +62,13 @@ class similar_topics
 	* @param string $root_path
 	* @param string $php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\event\dispatcher $phpbb_dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
 		$this->config = $config;
 		$this->db = $db;
+		$this->dispatcher = $phpbb_dispatcher;
 		$this->pagination = $pagination;
 		$this->request = $request;
 		$this->template = $template;
@@ -87,8 +91,6 @@ class similar_topics
 	*/
 	public function get_similar_topics($event)
 	{
-		global $phpbb_dispatcher;
-
 		// Potential reasons to stop execution
 		if (!$this->config['similar_topics_limit'] || (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli')) || (in_array($event['forum_id'], explode(',', $this->config['similar_topics_hide']))))
 		{
@@ -177,7 +179,7 @@ class similar_topics
 		* @since 1.3.0
 		*/
 		$vars = array('sql_array');
-		extract($phpbb_dispatcher->trigger_event('similartopics.get_topic_data', compact($vars)));
+		extract($this->dispatcher->trigger_event('similartopics.get_topic_data', compact($vars)));
 
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, $this->config['similar_topics_limit'], 0, $this->config['similar_topics_cache']);
@@ -271,7 +273,7 @@ class similar_topics
 				* @since 1.3.0
 				*/
 				$vars = array('row', 'topic_row');
-				extract($phpbb_dispatcher->trigger_event('similartopics.modify_topicrow', compact($vars)));
+				extract($this->dispatcher->trigger_event('similartopics.modify_topicrow', compact($vars)));
 
 				$this->template->assign_block_vars('similar', $topic_row);
 

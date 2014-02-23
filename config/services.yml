@@ -6,6 +6,7 @@ services:
             - @cache
             - @config
             - @dbal.conn
+            - @dispatcher
             - @pagination
             - @request
             - @template
