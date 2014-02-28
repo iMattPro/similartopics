@@ -234,7 +234,6 @@ class similar_topics
 					'LAST_POST_TIME'		=> $this->user->format_date($row['topic_last_post_time']),
 					'LAST_POST_AUTHOR_FULL'	=> get_username_string('full', $row['topic_last_poster_id'], $row['topic_last_poster_name'], $row['topic_last_poster_colour']),
 
-					'PAGE_NUMBER'			=> $this->pagination->on_page($base_url, $replies + 1, $this->config['posts_per_page'], 1), 
 					'TOPIC_REPLIES'			=> $replies,
 					'TOPIC_VIEWS'			=> $row['topic_views'],
 					'TOPIC_TITLE'			=> $row['topic_title'],
