@@ -2,7 +2,7 @@
 /**
 *
 * info_acp_similiar_topics [Dutch]
-* 
+*
 * @package language
 * @copyright (c) 2013 Matt Friedman
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'PST_LIMIT'			=> 'Aantal vergelijkbare onderwerpen weer te geven',
 	'PST_LIMIT_EXPLAIN'	=> 'Hier kunt u opgeven hoeveel soortgelijke onderwerpen weer te laten geven. Standaard is dit 5 onderwerpen.',
 	'PST_TIME'			=> 'Zoek periode',
-	'PST_TIME_EXPLAIN'	=> 'Met deze optie kunt u de zoek periode van vergelijkbare onderwerpen configureren. Bijvoorbeeld, indien ingesteld op "5 dagen" het systeem zal dan alleen soortgelijke onderwerpen van de laatste 5 dagen laten zien. De standaardwaarde is 1 jaar.',	
+	'PST_TIME_EXPLAIN'	=> 'Met deze optie kunt u de zoek periode van vergelijkbare onderwerpen configureren. Bijvoorbeeld, indien ingesteld op "5 dagen" het systeem zal dan alleen soortgelijke onderwerpen van de laatste 5 dagen laten zien. De standaardwaarde is 1 jaar.',
 	'PST_YEARS'			=> 'Jaren',
 	'PST_MONTHS'		=> 'Maanden',
 	'PST_WEEKS'			=> 'Weken',

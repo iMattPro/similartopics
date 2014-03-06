@@ -2,7 +2,7 @@
 /**
 *
 * info_acp_similiar_topics [Polish]
-* 
+*
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by liptonace http://zonewarez.pl/)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'PST_LIMIT'			=> 'Liczba wyświetlanych tematów',
 	'PST_LIMIT_EXPLAIN'	=> 'Tutaj możesz określić, ile podobnych tematów zostanie wyświetlonych. Domyślnie jest to 5 tematów.',
 	'PST_TIME'			=> 'Szukaj w okresie',
-	'PST_TIME_EXPLAIN'	=> 'Opcja ta pozwala skonfigurować wyszukiwanie podobnych tematów w danym okresie. Na przykład dla wartości "5 dni" system będzie pokazywać tylko podobne tematy z ostatnich 5 dni. Domyślnie jest to 1 rok.',	
+	'PST_TIME_EXPLAIN'	=> 'Opcja ta pozwala skonfigurować wyszukiwanie podobnych tematów w danym okresie. Na przykład dla wartości "5 dni" system będzie pokazywać tylko podobne tematy z ostatnich 5 dni. Domyślnie jest to 1 rok.',
 	'PST_YEARS'			=> 'Rok',
 	'PST_MONTHS'		=> 'Miesiąc',
 	'PST_WEEKS'			=> 'Tydzień',

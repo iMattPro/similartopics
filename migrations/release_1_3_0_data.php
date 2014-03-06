@@ -27,7 +27,7 @@ class release_1_3_0_data extends \phpbb\db\migration\migration
 
 			// add new ACP module
 			array('module.add', array(
-				'acp', 
+				'acp',
 				'PST_TITLE_ACP',
 				array(
 					'module_basename'	=> '\vse\similartopics\acp\similar_topics_module',

@@ -2,7 +2,7 @@
 /**
 *
 * info_acp_similiar_topics [Portuguese]
-* 
+*
 * @package language
 * @copyright (c) 2013 Matt Friedman (Traduzido por The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'PST_LIMIT'			=> 'Número de Tópicos Semelhantes a exibir',
 	'PST_LIMIT_EXPLAIN'	=> 'Indique o número de Tópicos Semelhantes a exibir. O padrão é 5 Tópicos.',
 	'PST_TIME'			=> 'Período de pesquisa',
-	'PST_TIME_EXPLAIN'	=> 'Indique período de pesquisa dos Tópicos Semelhantes. Por exemplo, se selecionar <strong>5 dias</strong>, serão exibidos os Tópicos Semelhantes dos últimos cinco dias. O padrão é 1 ano.',	
+	'PST_TIME_EXPLAIN'	=> 'Indique período de pesquisa dos Tópicos Semelhantes. Por exemplo, se selecionar <strong>5 dias</strong>, serão exibidos os Tópicos Semelhantes dos últimos cinco dias. O padrão é 1 ano.',
 	'PST_YEARS'			=> 'Anos',
 	'PST_MONTHS'		=> 'Meses',
 	'PST_WEEKS'			=> 'Semanas',

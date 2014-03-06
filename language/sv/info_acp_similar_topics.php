@@ -2,7 +2,7 @@
 /**
 *
 * info_acp_similiar_topics [Swedish]
-* 
+*
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by Aros via phpbb.com)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'PST_LIMIT'			=> 'Antal liknande trådar som ska visas',
 	'PST_LIMIT_EXPLAIN'	=> 'Här anger du antalet liknande trådar som skall visas. Förinställt värde är 5 st.',
 	'PST_TIME'			=> 'Sökperiod',
-	'PST_TIME_EXPLAIN'	=> 'Det här alternativet möjliggör inställning av sökperioden. Exempel, om du anger “5 dagar” kommer systemet endast att visa liknande trådar från de 5 senaste dagarna. Det förinställda värdet är 1 år.',	
+	'PST_TIME_EXPLAIN'	=> 'Det här alternativet möjliggör inställning av sökperioden. Exempel, om du anger “5 dagar” kommer systemet endast att visa liknande trådar från de 5 senaste dagarna. Det förinställda värdet är 1 år.',
 	'PST_YEARS'			=> 'År',
 	'PST_MONTHS'		=> 'Månader',
 	'PST_WEEKS'			=> 'Veckor',

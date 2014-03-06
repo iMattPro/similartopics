@@ -56,8 +56,8 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	public function revert_data()
 	{
 		return array(
- 			// Custom functions
-			array('custom', array(array($this, 'drop_topic_title_fulltext'))),   
+			// Custom functions
+			array('custom', array(array($this, 'drop_topic_title_fulltext'))),
 		);
 	}
 
@@ -138,12 +138,12 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	/**
 	* Check if a field is already a FULLTEXT index
 	*
-	* @param	string	$field 	name of a field
+	* @param	string	$field	name of a field
 	* @return	bool	true means the field is a FULLTEXT index
 	*/
 	public function is_fulltext($field)
 	{
-		$sql = "SHOW INDEX 
+		$sql = "SHOW INDEX
 			FROM " . TOPICS_TABLE;
 		$result = $this->db->sql_query($sql);
 

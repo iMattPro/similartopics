@@ -2,7 +2,7 @@
 /**
 *
 * info_acp_similiar_topics [English]
-* 
+*
 * @package language
 * @copyright (c) 2013 Matt Friedman
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'PST_LIMIT'			=> 'Number of Similar Topics to display',
 	'PST_LIMIT_EXPLAIN'	=> 'Here you can define how many similar topics to display. The default is 5 topics.',
 	'PST_TIME'			=> 'Search period',
-	'PST_TIME_EXPLAIN'	=> 'This option allows you to configure the Similar Topics search period. For example, if set to “5 days” the system will only show similar topics from within the last 5 days. The default is 1 year.',	
+	'PST_TIME_EXPLAIN'	=> 'This option allows you to configure the Similar Topics search period. For example, if set to “5 days” the system will only show similar topics from within the last 5 days. The default is 1 year.',
 	'PST_YEARS'			=> 'Years',
 	'PST_MONTHS'		=> 'Months',
 	'PST_WEEKS'			=> 'Weeks',

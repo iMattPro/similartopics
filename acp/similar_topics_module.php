@@ -307,7 +307,7 @@ class similar_topics_module
 	*/
 	private function is_fulltext($field)
 	{
-		$sql = "SHOW INDEX 
+		$sql = "SHOW INDEX
 			FROM " . TOPICS_TABLE;
 		$result = $this->db->sql_query($sql);
 

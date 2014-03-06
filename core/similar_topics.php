@@ -46,10 +46,10 @@ class similar_topics
 
 	/** @var string PHP file extension */
 	protected $php_ext;
-	
+
 	/**
 	* Constructor
-	* 
+	*
 	* @param \phpbb\auth\auth $auth
 	* @param \phpbb\cache\service $cache
 	* @param \phpbb\config\config $config
@@ -107,7 +107,7 @@ class similar_topics
 
 		// Similar Topics query
 		$sql_array = array(
-			'SELECT'	=> "f.forum_id, f.forum_name, t.*, 
+			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
 				MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') AS score",
 
 			'FROM'		=> array(
@@ -296,7 +296,7 @@ class similar_topics
 	/**
 	* Remove problem characters (and if needed, ignore-words) from topic title
 	*
-	* @param	string	$text 	The topic title
+	* @param	string	$text	The topic title
 	* @return	string	The topic title
 	* @access	private
 	*/
@@ -319,9 +319,9 @@ class similar_topics
 	/**
 	* Remove any non-english and/or custom defined ignore-words
 	*
-	* @param	string	$text 			The topic title
-	* @param	bool	$english_lang 	False means use phpBB's ignore words 
-	* @param	bool	$ignore_words 	True means strip custom ignore words
+	* @param	string	$text			The topic title
+	* @param	bool	$english_lang	False means use phpBB's ignore words
+	* @param	bool	$ignore_words	True means strip custom ignore words
 	* @return	string	The topic title
 	* @access	private
 	*/
@@ -353,7 +353,7 @@ class similar_topics
 	/**
 	* Helper function to split string into an array of words
 	*
-	* @param	string	$text 	String of plain text words
+	* @param	string	$text	String of plain text words
 	* @return	array	array of plaintext words
 	* @access	private
 	*/

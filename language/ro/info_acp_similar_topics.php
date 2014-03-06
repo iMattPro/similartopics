@@ -2,7 +2,7 @@
 /**
 *
 * info_acp_similiar_topics [Română]
-* 
+*
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by Ionuţ Butnaru and corrected by Ivan Petre Paul, both from phpBB Romanian Community www.phpbb.ro)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'PST_LIMIT'			=> 'Numărul de subiecte similare care să fie afişate',
 	'PST_LIMIT_EXPLAIN'	=> 'Aici puteţi preciza câte subiecte similare să fie afişate. Implicite sunt 5.',
 	'PST_TIME'			=> 'Perioada de căutare',
-	'PST_TIME_EXPLAIN'	=> 'Această opţiune vă permite să configuraţi perioada de căutare a subiectelor similare. De exemplu, dacă alegeţi “5 zile” sistemul ca afişa numai subiectele similare din ultimele 5 zile. Implicit este un an.',	
+	'PST_TIME_EXPLAIN'	=> 'Această opţiune vă permite să configuraţi perioada de căutare a subiectelor similare. De exemplu, dacă alegeţi “5 zile” sistemul ca afişa numai subiectele similare din ultimele 5 zile. Implicit este un an.',
 	'PST_YEARS'			=> 'Ani',
 	'PST_MONTHS'		=> 'Luni',
 	'PST_WEEKS'			=> 'Săptămâni',

@@ -2,7 +2,7 @@
 /**
 *
 * info_acp_similiar_topics [Spanish]
-* 
+*
 * @package language
 * @copyright (c) 2013 Matt Friedman
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
@@ -45,7 +45,7 @@ $lang = array_merge($lang, array(
 	'PST_LIMIT'			=> 'Número de Hilos Parecidos que deben mostrarse',
 	'PST_LIMIT_EXPLAIN'	=> 'Aquí puedes definir cuántos Hilos (mensajes) Parecidos deben mostrarse. El número por defecto es 5 hilos.',
 	'PST_TIME'			=> 'Período de búsqueda',
-	'PST_TIME_EXPLAIN'	=> 'Esta opción permite configurar el período de búsqueda de Hilos Parecidos. Por ejemplo, si se establece en "5 días" el sistema sólo mostrará hilos similares publicados en los últimos 5 días. Por defecto el período es de 1 año.',	
+	'PST_TIME_EXPLAIN'	=> 'Esta opción permite configurar el período de búsqueda de Hilos Parecidos. Por ejemplo, si se establece en "5 días" el sistema sólo mostrará hilos similares publicados en los últimos 5 días. Por defecto el período es de 1 año.',
 	'PST_YEARS'			=> 'Años',
 	'PST_MONTHS'		=> 'Meses',
 	'PST_WEEKS'			=> 'Semanas',

@@ -2,7 +2,7 @@
 /**
 *
 * info_acp_similiar_topics [Română]
-* 
+*
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by Ionuţ Butnaru and corrected by Ivan Petre Paul, both from phpBB Romanian Community www.phpbb.ro)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
