@@ -10,14 +10,14 @@
 /**
 * @group functional
 */
-class phpbb_functional_similartopics_acp_test extends extension_functional_test_case
+class phpbb_functional_similar_topics_acp_test extends extension_functional_test_case
 {
 	public function setUp()
 	{
 		parent::setUp();
 		$this->login();
 		$this->admin_login();
-		$this->set_extension('vse', 'similartopics', 'Precise Smilar Topics');
+		$this->set_extension('vse', 'similartopics', 'Precise Similar Topics');
 		$this->enable_extension();
 	}
 
