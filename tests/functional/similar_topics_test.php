@@ -47,7 +47,7 @@ class extension_functional_similar_topics_test extends extension_functional_test
 	{
 		$this->get_db();
 
-		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE phpbb_topics');
+		$result = $this->db->sql_query("SHOW TABLE STATUS LIKE 'phpbb_topics'");
 		$info = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
