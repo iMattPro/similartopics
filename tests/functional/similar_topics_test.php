@@ -15,11 +15,9 @@ class extension_functional_similar_topics_test extends extension_functional_test
 	public function setUp()
 	{
 		parent::setUp();
-
-		$this->alter_storage_engine();
-
 		$this->login();
 		$this->admin_login();
+		$this->alter_storage_engine();
 		$this->set_extension('vse', 'similartopics', 'Precise Similar Topics');
 		$this->enable_extension();
 		$this->enable_similar_topics();
@@ -43,6 +41,27 @@ class extension_functional_similar_topics_test extends extension_functional_test
 		$this->db->sql_query($sql);
 
 		$this->purge_cache();
+	}
+
+	public function test_storage_engine()
+	{
+		$this->get_db();
+
+		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE phpbb_topics');
+		$info = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		$engine = '';
+		if (isset($info['Engine']))
+		{
+			$engine = strtolower($info['Engine']);
+		}
+		else if (isset($info['Type']))
+		{
+			$engine = strtolower($info['Type']);
+		}
+
+		$this->assertTrue($engine === 'myisam');
 	}
 
 	public function test_similar_topics()
