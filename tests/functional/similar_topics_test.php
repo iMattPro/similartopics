@@ -64,7 +64,7 @@ class extension_functional_similar_topics_test extends extension_functional_test
 		$this->assertTrue($engine === 'myisam');
 	}
 
-	public function test_fulltext($field)
+	public function test_fulltext_topic_title()
 	{
 		$fulltext = false;
 
@@ -79,7 +79,7 @@ class extension_functional_similar_topics_test extends extension_functional_test
 			// deal with older MySQL versions which didn't use Index_type
 			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
 
-			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $field)
+			if ($index_type == 'FULLTEXT' && $row['Key_name'] == 'topic_title')
 			{
 				$fulltext = true;
 			}
