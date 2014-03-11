@@ -34,5 +34,8 @@ class phpbb_functional_similar_topics_acp_test extends extension_functional_test
 	public function test_acp_pages($mode)
 	{
 		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=' . $mode . '&sid=' . $this->sid);
+
+		$this->disable_extension();
+		$this->purge_extension();
 	}
 }
