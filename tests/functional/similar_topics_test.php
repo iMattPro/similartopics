@@ -43,51 +43,6 @@ class extension_functional_similar_topics_test extends extension_functional_test
 		$this->purge_cache();
 	}
 
-	public function test_storage_engine()
-	{
-		$this->get_db();
-
-		$result = $this->db->sql_query("SHOW TABLE STATUS LIKE 'phpbb_topics'");
-		$info = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
-
-		$engine = '';
-		if (isset($info['Engine']))
-		{
-			$engine = strtolower($info['Engine']);
-		}
-		else if (isset($info['Type']))
-		{
-			$engine = strtolower($info['Type']);
-		}
-
-		$this->assertTrue($engine === 'myisam');
-	}
-
-	public function test_fulltext_topic_title()
-	{
-		$fulltext = false;
-
-		$this->get_db();
-
-		$sql = "SHOW INDEX
-			FROM " . TOPICS_TABLE;
-		$result = $this->db->sql_query($sql);
-
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			// deal with older MySQL versions which didn't use Index_type
-			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
-
-			if ($index_type == 'FULLTEXT' && $row['Key_name'] == 'topic_title')
-			{
-				$fulltext = true;
-			}
-		}
-
-		$this->assertTrue($fulltext);
-	}
-
 	public function test_similar_topics()
 	{
 		// Create some basic topics
