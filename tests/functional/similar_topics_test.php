@@ -10,39 +10,8 @@
 /**
 * @group functional
 */
-class extension_functional_similar_topics_test extends extension_functional_test_case
+class extension_functional_similar_topics_test extends extension_functional_similar_topics_base
 {
-	public function setUp()
-	{
-		parent::setUp();
-		$this->login();
-		$this->admin_login();
-		$this->alter_storage_engine();
-		$this->set_extension('vse', 'similartopics', 'Precise Similar Topics');
-		$this->enable_extension();
-		$this->enable_similar_topics();
-	}
-
-	public function alter_storage_engine()
-	{
-		$this->get_db();
-
-		$this->db->sql_query('ALTER TABLE phpbb_topics ENGINE = MYISAM');
-	}
-
-	public function enable_similar_topics()
-	{
-		$this->get_db();
-
-		$sql = "UPDATE phpbb_config
-			SET config_value = 1
-			WHERE config_name = 'similar_topics'";
-
-		$this->db->sql_query($sql);
-
-		$this->purge_cache();
-	}
-
 	public function test_similar_topics()
 	{
 		// Create some basic topics
@@ -61,8 +30,5 @@ class extension_functional_similar_topics_test extends extension_functional_test
 		$crawler = self::request('GET', "viewtopic.php?t={$post4['topic_id']}&sid={$this->sid}");		
 		// Test that the title of topic #5 is found
 		$this->assertContains('Test Framework Topic 5', $crawler->filter('html')->text());
-
-		$this->disable_extension();
-		$this->purge_extension();
 	}
 }

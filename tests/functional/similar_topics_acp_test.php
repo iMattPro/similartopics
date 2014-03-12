@@ -10,17 +10,8 @@
 /**
 * @group functional
 */
-class extension_functional_similar_topics_acp_test extends extension_functional_test_case
+class extension_functional_similar_topics_acp_test extends extension_functional_similar_topics_base
 {
-	public function setUp()
-	{
-		parent::setUp();
-		$this->login();
-		$this->admin_login();
-		$this->set_extension('vse', 'similartopics', 'Precise Similar Topics');
-		$this->enable_extension();
-	}
-
 	public function test_acp_pages()
 	{
 		// Load the main ACP page
@@ -28,8 +19,5 @@ class extension_functional_similar_topics_acp_test extends extension_functional_
 
 		// Load the advanced forum settings ACP page
 		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=settings&action=advanced&f=2&sid=' . $this->sid);
-
-		$this->disable_extension();
-		$this->purge_extension();
 	}
 }
