@@ -43,6 +43,51 @@ class extension_functional_similar_topics_test extends extension_functional_test
 		$this->purge_cache();
 	}
 
+	public function test_storage_engine()
+	{
+		$this->get_db();
+
+		$result = $this->db->sql_query("SHOW TABLE STATUS LIKE 'phpbb_topics'");
+		$info = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		$engine = '';
+		if (isset($info['Engine']))
+		{
+			$engine = strtolower($info['Engine']);
+		}
+		else if (isset($info['Type']))
+		{
+			$engine = strtolower($info['Type']);
+		}
+
+		$this->assertTrue($engine === 'myisam');
+	}
+
+	public function test_fulltext_topic_title()
+	{
+		$fulltext = false;
+
+		$this->get_db();
+
+		$sql = "SHOW INDEX
+			FROM " . TOPICS_TABLE;
+		$result = $this->db->sql_query($sql);
+
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			// deal with older MySQL versions which didn't use Index_type
+			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
+
+			if ($index_type == 'FULLTEXT' && $row['Key_name'] == 'topic_title')
+			{
+				$fulltext = true;
+			}
+		}
+
+		$this->assertTrue($fulltext);
+	}
+
 	public function test_similar_topics()
 	{
 		// Create some basic topics
@@ -54,16 +99,8 @@ class extension_functional_similar_topics_test extends extension_functional_test
 
 		// Load topic #5
 		$crawler = self::request('GET', "viewtopic.php?t={$post5['topic_id']}&sid={$this->sid}");
-		// Test that the title of similar topic (#4) is found
+		
+		// Test that the title of topic #4 is found
 		$this->assertContains('Test Framework Topic 4', $crawler->filter('html')->text());
-
-		// Load topic #4
-		$crawler = self::request('GET', "viewtopic.php?t={$post4['topic_id']}&sid={$this->sid}");
-		// Test that the title of similar topic (#5) is found
-		$this->assertContains('Test Framework Topic 5', $crawler->filter('html')->text());
-
-		// Remove the extension
-		$this->disable_extension();
-		$this->purge_extension();
 	}
 }
