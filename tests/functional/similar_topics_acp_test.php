@@ -21,19 +21,13 @@ class phpbb_functional_similar_topics_acp_test extends extension_functional_test
 		$this->enable_extension();
 	}
 
-	public function acp_pages_data()
-	{
-		return array(
-			array('settings'),
-		);
-	}
-
-	/**
-	* @dataProvider acp_pages_data
-	*/
 	public function test_acp_pages($mode)
 	{
-		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=' . $mode . '&sid=' . $this->sid);
+		// Load the main ACP page
+		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=settings&sid=' . $this->sid);
+
+		// Load the advanced forum settings ACP page
+		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=settings&action=advanced&f=2&sid=' . $this->sid);
 
 		$this->disable_extension();
 		$this->purge_extension();
