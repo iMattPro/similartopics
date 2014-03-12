@@ -10,7 +10,7 @@
 /**
 * @group functional
 */
-class phpbb_functional_similar_topics_acp_test extends extension_functional_test_case
+class extension_functional_similar_topics_acp_test extends extension_functional_test_case
 {
 	public function setUp()
 	{
