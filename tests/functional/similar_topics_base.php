@@ -7,10 +7,12 @@
 *
 */
 
+namespace vse\similartopics\tests\functional;
+
 /**
 * @group functional
 */
-class extension_functional_similar_topics_base extends extension_functional_test_case
+class similar_topics_base extends \extension_functional_test_case
 {
 	public function setUp()
 	{

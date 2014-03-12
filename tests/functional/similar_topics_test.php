@@ -7,10 +7,12 @@
 *
 */
 
+namespace vse\similartopics\tests\functional;
+
 /**
 * @group functional
 */
-class extension_functional_similar_topics_test extends similar_topics_base
+class similar_topics_test extends similar_topics_base
 {
 	public function test_similar_topics()
 	{
