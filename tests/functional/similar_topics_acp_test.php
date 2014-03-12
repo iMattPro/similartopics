@@ -10,7 +10,7 @@
 /**
 * @group functional
 */
-class extension_functional_similar_topics_acp_test extends extension_functional_similar_topics_base
+class extension_functional_similar_topics_acp_test extends similar_topics_base
 {
 	public function test_acp_pages()
 	{
