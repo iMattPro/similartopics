@@ -21,7 +21,7 @@ class phpbb_functional_similar_topics_acp_test extends extension_functional_test
 		$this->enable_extension();
 	}
 
-	public function test_acp_pages($mode)
+	public function test_acp_pages()
 	{
 		// Load the main ACP page
 		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=settings&sid=' . $this->sid);
