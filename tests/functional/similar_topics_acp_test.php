@@ -14,12 +14,19 @@ namespace vse\similartopics\tests\functional;
 */
 class similar_topics_acp_test extends similar_topics_base
 {
-	public function test_acp_pages()
+	public function acp_pages_data()
 	{
-		// Load the main ACP page
-		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=settings&sid=' . $this->sid);
+		return array(
+			array('settings'), // Load the main ACP page
+			array('settings&action=advanced&f=2'), // Load the advanced forum settings ACP page
+		);
+	}
 
-		// Load the advanced forum settings ACP page
-		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=settings&action=advanced&f=2&sid=' . $this->sid);
+	/**
+	* @dataProvider acp_pages_data
+	*/
+	public function test_acp_pages($mode)
+	{
+		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=' . $mode . '&sid=' . $this->sid);
 	}
 }
