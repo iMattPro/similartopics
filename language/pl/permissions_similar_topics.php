@@ -1,6 +1,6 @@
 <?php
 /**
-* acp_permissions_similar_topics (Precise Similar Topics Permission Set) [Polish]
+* permissions_similar_topics (Precise Similar Topics Permission Set) [Polish]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by liptonace http://zonewarez.pl/)

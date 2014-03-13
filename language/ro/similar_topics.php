@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* info_acp_similiar_topics [Română]
+* similiar_topics [Română]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by Ionuţ Butnaru and corrected by Ivan Petre Paul, both from phpBB Romanian Community www.phpbb.ro)

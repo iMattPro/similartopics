@@ -1,6 +1,6 @@
 <?php
 /**
-* acp_permissions_similar_topics (Precise Similar Topics Permission Set) [French]
+* permissions_similar_topics (Precise Similar Topics Permission Set) [French]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman - Geolim4.com (French Translation)

@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* info_acp_similiar_topics [English]
+* similiar_topics [English]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman

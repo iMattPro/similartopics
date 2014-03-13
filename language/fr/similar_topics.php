@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* info_acp_similiar_topics [French]
+* similiar_topics [French]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman - Geolim4.com (French Translation)

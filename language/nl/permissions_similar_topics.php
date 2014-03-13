@@ -1,6 +1,6 @@
 <?php
 /**
-* acp_permissions_similar_topics (Precise Similar Topics Permission Set) [Dutch]
+* permissions_similar_topics (Precise Similar Topics Permission Set) [Dutch]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman

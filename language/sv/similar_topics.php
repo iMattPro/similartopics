@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* info_acp_similiar_topics [Swedish]
+* similiar_topics [Swedish]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman (Translated by Aros via phpbb.com)

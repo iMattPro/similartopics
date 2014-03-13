@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* info_acp_similiar_topics [Portuguese]
+* similiar_topics [Portuguese]
 *
 * @package language
 * @copyright (c) 2013 Matt Friedman (Traduzido por The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico)
