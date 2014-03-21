@@ -298,9 +298,9 @@ class similar_topics
 	*
 	* @param	string	$text	The topic title
 	* @return	string	The topic title
-	* @access	private
+	* @access	protected
 	*/
-	private function strip_topic_title($text)
+	protected function strip_topic_title($text)
 	{
 		// Strip quotes, ampersands
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);
@@ -323,9 +323,9 @@ class similar_topics
 	* @param	bool	$english_lang	False means use phpBB's ignore words
 	* @param	bool	$ignore_words	True means strip custom ignore words
 	* @return	string	The topic title
-	* @access	private
+	* @access	protected
 	*/
-	private function strip_stop_words($text, $english_lang, $ignore_words)
+	protected function strip_stop_words($text, $english_lang, $ignore_words)
 	{
 		$words = array();
 
@@ -355,9 +355,9 @@ class similar_topics
 	*
 	* @param	string	$text	String of plain text words
 	* @return	array	array of plaintext words
-	* @access	private
+	* @access	protected
 	*/
-	private function make_word_array($text)
+	protected function make_word_array($text)
 	{
 		// Strip out any non-alpha-numeric characters using PCRE regex syntax
 		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
