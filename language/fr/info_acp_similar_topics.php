@@ -36,9 +36,9 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PST_TITLE_ACP'		=> 'Sujets similaires',
-	'PST_TITLE'			=> 'Precise Similar Topics', //Do not rename, even as in French
+	'PST_TITLE_ACP'		=> 'Precise Similar Topics', //Do not rename, even as in French
 	'PST_EXPLAIN'		=> 'Precise Similar Topics affiche une liste de sujets similaires au bas de la page du courant sujet.',
+	'PST_SETTINGS'		=> 'Sujets similaires paramètres',
 	'PST_LEGEND1'		=> 'Paramètres généraux',
 	'PST_ENABLE'		=> 'Activer les sujets similaires',
 	'PST_LEGEND2'		=> 'Enregistrer les paramètres',

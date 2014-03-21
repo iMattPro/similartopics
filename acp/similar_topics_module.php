@@ -38,7 +38,7 @@ class similar_topics_module
 
 		$this->user->add_lang('acp/common');
 		$this->tpl_name = 'acp_similar_topics';
-		$this->page_title = $this->user->lang('PST_TITLE');
+		$this->page_title = $this->user->lang('PST_TITLE_ACP');
 
 		$form_key = 'acp_similar_topics';
 		add_form_key($form_key);

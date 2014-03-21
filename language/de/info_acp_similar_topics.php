@@ -36,9 +36,9 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PST_TITLE_ACP'		=> 'Vergleichbare Themen',
-	'PST_TITLE'			=> 'Präzise Vergleichbare Themen',
+	'PST_TITLE_ACP'		=> 'Präzise Vergleichbare Themen',
 	'PST_EXPLAIN'		=> 'Präzise Vergleichbare Themen zeigt eine Liste von ähnlichen Themen am unteren Rand des aktuellen Themas der Seite.',
+	'PST_SETTINGS'		=> 'Vergleichbare Themen Einstellungen',
 	'PST_LEGEND1'		=> 'Allgemeine Einstellungen',
 	'PST_ENABLE'		=> 'Aktiviere Vergleichbare Themne',
 	'PST_LEGEND2'		=> 'Lade Einstellungen',

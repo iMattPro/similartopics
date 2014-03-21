@@ -36,9 +36,9 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PST_TITLE_ACP'		=> 'Vergelijkbare Onderwerpen',
-	'PST_TITLE'			=> 'Precieze vergelijkbare onderwerpen',
+	'PST_TITLE_ACP'		=> 'Precieze vergelijkbare onderwerpen',
 	'PST_EXPLAIN'		=> 'Precise Similar Topics toont een lijst van soortgelijke onderwerpen aan de onderkant van de pagina van het huidige onderwerpen.',
+	'PST_SETTINGS'		=> 'Vergelijkbare onderwerpen instellingen',
 	'PST_LEGEND1'		=> 'Algemene instellingen',
 	'PST_ENABLE'		=> 'Vergelijkbare onderwerpen inschakelen',
 	'PST_LEGEND2'		=> 'Laad instellingen',

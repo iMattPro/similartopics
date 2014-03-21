@@ -25,6 +25,11 @@ class release_1_3_0_data extends \phpbb\db\migration\migration
 				array('module.remove', array('acp', 'PST_TITLE_ACP', 'PST_TITLE')),
 			)),
 
+			array('if', array(
+				array('module.exists', array('acp', 'PST_TITLE_ACP', 'PST_SETTINGS')),
+				array('module.remove', array('acp', 'PST_TITLE_ACP', 'PST_SETTINGS')),
+			)),
+
 			// add new ACP module
 			array('module.add', array(
 				'acp',
