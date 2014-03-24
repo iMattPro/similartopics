@@ -67,6 +67,10 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Adicionar palavras especiais exclusivas para o seu fórum que deve ser ignorado em topicos semelhantes. (Nota: Palavras comuns na sua língua são ignorados por padrão.) Separar cada palavra com um espaço. De caso não é sensível. Máximo 255 caracteres.',
 	'PST_SAVED'			=> 'As configurações de Tópicos Semelhantes foram atualizadas',
 	'PST_FORUM_INFO'	=> '<strong>Não exibir em</strong>: Desativa a exibição de Tópicos Semelhantes nos Fóruns selecionados.<br /><strong>Não pesquisar em</strong>: Ignora os Fóruns selecionados na pesquisa de Tópicos Semelhantes.',
-	'PST_WARNING'		=> 'Similar Topics não irá funcionar com seu Fórum. Similar Topics requer uma Base de Dados MySQL 4 ou MySQL 5. Seu banco de dados não suporta índices FULLTEXT. Isso geralmente significa que a sua tabela de tópicos não está usando o mecanismo de armazenamento MyISAM necessário para este MOD para trabalhar. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Mais informações</a>.',
+	'PST_NO_MYSQL'		=> 'Similar Topics não irá funcionar com seu Fórum. Similar Topics requer uma Base de Dados MySQL 4 ou MySQL 5.',
+	'PST_WARNING'		=> 'Similar Topics não irá funcionar com seu Fórum. Similar Topics usa índices FULLTEXT, que exigem um banco de dados MySQL 4 ou MySQL 5 ea tabela “phpbb_topics” deve ser definido como o mecanismo de armazenamento MyISAM (ou InnoDB também é permitido quando usado com MySQL 5.6.4 ou mais recente).<br /><br />Se você quiser usar Similar Topics, podemos seguramente atualizar seu banco de dados para suportar índices FULLTEXT. Todas as alterações feitas serão revertidas se você decidir que quer remover Similar Topics.',
+	'PST_ADD_FULLTEXT'	=> 'Sim, ativar o suporte para índices FULLTEXT',
+	'PST_SAVE_FULLTEXT'	=> 'Seu banco de dados foi atualizado. Agora você pode desfrutar usando Similar Topics.',
+	'PST_LOG_FULLTEXT'	=> '<strong>Banco de dados alterados para compatibilidade Similar Topics</strong><br />» Mudou a tabela “%s” para mecanismo de armazenamento MyISAM e acrescentou um índice FULLTEXT para a “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>As configurações de Tópicos Semelhantes foram alteradas</strong>',
 ));

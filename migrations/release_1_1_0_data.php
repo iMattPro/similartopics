@@ -66,13 +66,20 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	*/
 	public function add_topic_title_fulltext()
 	{
-		if (!$this->fulltext_support())
+		if (!function_exists('fulltext_support'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $phpEx);
+		}
+
+		// FULLTEXT is not supported
+		if (fulltext_support() !== true)
 		{
 			return;
 		}
 
 		// Prevent adding extra indeces.
-		if ($this->is_fulltext('topic_title'))
+		if (is_fulltext('topic_title'))
 		{
 			return;
 		}
@@ -86,78 +93,25 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	*/
 	public function drop_topic_title_fulltext()
 	{
-		if (!$this->fulltext_support())
+		if (!function_exists('fulltext_support'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $phpEx);
+		}
+
+		// FULLTEXT is not supported
+		if (fulltext_support() !== true)
 		{
 			return;
 		}
 
 		// Return if there is no FULLTEXT index to drop.
-		if (!$this->is_fulltext('topic_title'))
+		if (!is_fulltext('topic_title'))
 		{
 			return;
 		}
 
 		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
 		$this->db->sql_query($sql);
-	}
-
-	/**
-	* Check for FULLTEXT index support
-	*/
-	public function fulltext_support()
-	{
-		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
-		{
-			return false;
-		}
-
-		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
-		$info = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
-
-		$engine = '';
-		if (isset($info['Engine']))
-		{
-			$engine = strtolower($info['Engine']);
-		}
-		else if (isset($info['Type']))
-		{
-			$engine = strtolower($info['Type']);
-		}
-
-		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
-		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
-		if ($engine === 'myisam' || ($engine === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	* Check if a field is already a FULLTEXT index
-	*
-	* @param	string	$field	name of a field
-	* @return	bool	true means the field is a FULLTEXT index
-	*/
-	public function is_fulltext($field)
-	{
-		$sql = "SHOW INDEX
-			FROM " . TOPICS_TABLE;
-		$result = $this->db->sql_query($sql);
-
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			// deal with older MySQL versions which didn't use Index_type
-			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
-
-			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $field)
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 }

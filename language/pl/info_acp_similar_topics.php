@@ -67,6 +67,10 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Dodaj specjalny słów, które powinny być ignorowane podczas szukania podobne tematy. (Uwaga: Często słowa w zapytaniu języku jest domyślnie ignorowany.) Oddzielania poszczególnych słowa spacją. Sprawa nie jest wrażliwa. Maksymalnie 255 znaków.',
 	'PST_SAVED'			=> 'Zaktualizowano ustawienia podobnych tematów',
 	'PST_FORUM_INFO'	=> '“Nie wyświetlaj w” : Wyłącza wyświetlanie podobnych tematów w wybranym forum.<br />“Nie szukaj w” : Będzie ignorować wybrane forum, szukając podobnych tematów.',
-	'PST_WARNING'		=> 'Similar Topics nie będą działać z forum. Similar Topics wymaga MySQL 4 lub MySQL 5 bazy danych. Baza danych nie obsługuje FULLTEXT indeksy. To zazwyczaj oznacza, że ​​tabela tematy nie wykorzystuje silnik przechowywania MyISAM wymagane do tego moda do pracy. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Więcej informacji</a>.',
+	'PST_NO_MYSQL'		=> 'Similar Topics nie będą działać z forum. Similar Topics wymaga MySQL 4 lub MySQL 5 bazy danych.',
+	'PST_WARNING'		=> 'Similar Topics nie będą działać z forum. Similar Topics używa indeksów FULLTEXT, które wymagają bazy danych MySQL 4 lub MySQL 5 i “phpbb_topics” musi być ustawiony stół do silnika składowania MyISAM (lub InnoDB jest również dozwolone w przypadku korzystania z MySQL 5.6.4 lub nowszej).<br /><br />Jeśli chcesz użyć Similar Topics, możemy bezpiecznie zaktualizować bazę danych do obsługi indeksów FULLTEXT. Wszelkie zmiany wprowadzone zostaną przywrócone, jeśli kiedykolwiek zdecydujesz się usunąć Similar Topics.',
+	'PST_ADD_FULLTEXT'	=> 'Tak, włącz obsługę indeksów FULLTEXT',
+	'PST_SAVE_FULLTEXT'	=> 'Baza danych została zaktualizowana. Teraz możesz cieszyć się stosując Similar Topics.',
+	'PST_LOG_FULLTEXT'	=> '<strong>Zmieniane w bazie kompatybilności Similar Topics</strong><br />» Zmienił “%s” do silnika przechowywania tabeli MyISAM i dodaje indeks do “topic_title” FULLTEXT',
 	'PST_LOG_MSG'		=> '<strong>Zmieniono ustawienia podobnych tematów</strong>',
 ));

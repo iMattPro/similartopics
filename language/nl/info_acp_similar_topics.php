@@ -67,6 +67,10 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Voeg Speciale woorden toe welke uniek zijn aan uw forum dat moet worden genegeerd bij het vinden van vergelijkbare onderwerpen. (Note: Woorden die momenteel worden beschouwd als gemeenschappelijk in uw taal worden reeds standaard genegeerd.) Scheid elk woord met een spatie. Hoofdlettergevoelig. Max. 255 karakters.',
 	'PST_SAVED'			=> 'Vergelijkbare onderwerpen instellingen bijgewerkt',
 	'PST_FORUM_INFO'	=> '“Niet weergeven in”: Soortgelijke onderwerpen worden niet weergegeven in de geselecteerde forums.<br />“Niet zoeken in” : Zal niet zoeken in de geselecteerde forums voor vergelijkbare onderwerpen.',
-	'PST_WARNING'		=> 'Vergelijkbare onderwerpen zal niet werken op uw forum. Vergelijkbare onderwerpen vereist een MySQL 4 of 5 MySQL database. Aangezien uw database geen FULLTEXT indexes ondersteunt . Dit betekent meestal dat uw topic tabel niet de MyISAM opslag engine gebruikt welke vereist is voor deze MOD om te werken. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116">Meer Informatie</a>.',
+	'PST_NO_MYSQL'		=> 'Vergelijkbare onderwerpen zal niet werken op uw forum. Vergelijkbare onderwerpen vereist een MySQL 4 of 5 MySQL database.',
+	'PST_WARNING'		=> 'Vergelijkbare onderwerpen zal niet werken op uw forum. Vergelijkbare onderwerpen gebruikt FULLTEXT indexen die een MySQL 4 of MySQL 5 database en de “phpbb_topics” tabel nodig hebben, moet worden ingesteld op de MyISAM storage engine (of InnoDB is ook toegestaan ​​in combinatie met MySQL 5.6.4 of nieuwer).<br /><br />Als je wilt Vergelijkbare onderwerpen gebruiken, kunnen we gerust uw database te updaten naar FULLTEXT indexen ondersteunen. Eventuele wijzigingen zullen worden teruggedraaid als je ooit besluit om Vergelijkbare onderwerpen te verwijderen.',
+	'PST_ADD_FULLTEXT'	=> 'Ja, in staat ondersteuning voor FULLTEXT indexen',
+	'PST_SAVE_FULLTEXT'	=> 'De database is bijgewerkt. U kunt nu genieten van het gebruik Vergelijkbare onderwerpen.',
+	'PST_LOG_FULLTEXT'	=> '<strong>Veranderde databank voor Vergelijkbare onderwerpen compatibiliteit</strong><br />» Veranderd “%s” tabel MyISAM storage engine en een FULLTEXT index toegevoegd aan de “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Vergelijkbare onderwerp instellingen gewijzigd</strong>',
 ));

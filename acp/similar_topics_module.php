@@ -133,6 +133,29 @@ class similar_topics_module
 					trigger_error($this->user->lang('PST_SAVED') . adm_back_link($this->u_action));
 				}
 
+				// Allow option to update the database to enable FULLTEXT support
+				if ($this->request->is_set_post('fulltext'))
+				{
+					if (!check_form_key($form_key))
+					{
+						trigger_error('FORM_INVALID');
+					}
+
+					$storage_engine = $this->fulltext_support_enabled();
+					if ($storage_engine !== true)
+					{
+						// Alter the database to support FULLTEXT
+						$this->enable_fulltext_support();
+
+						// Store the original database storage engine in a config var
+						$this->config->set('similar_topics_fulltext', (string) $storage_engine);
+
+						add_log('admin', 'PST_LOG_FULLTEXT', TOPICS_TABLE);
+
+						trigger_error($this->user->lang('PST_SAVE_FULLTEXT') . adm_back_link($this->u_action));
+					}
+				}
+
 				// Build the time options select menu
 				$time_options = array('d' => $this->user->lang('PST_DAYS'), 'w' => $this->user->lang('PST_WEEKS'), 'm' => $this->user->lang('PST_MONTHS'), 'y' => $this->user->lang('PST_YEARS'));
 				$s_time_options = '';
@@ -150,7 +173,7 @@ class similar_topics_module
 					'PST_WORDS'			=> isset($this->config['similar_topics_words']) ? $this->config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'PST_VERSION'		=> isset($this->config['similar_topics_version']) ? 'v' . $this->config['similar_topics_version'] : '',
-					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support(),
+					'S_PST_NO_SUPPORT'	=> ($this->fulltext_support_enabled() !== true) ? true : false,
 					'U_ACTION'			=> $this->u_action,
 				));
 
@@ -264,64 +287,55 @@ class similar_topics_module
 	/**
 	* Check for FULLTEXT index support
 	*
-	* @return bool true means FULLTEXT is supported
+	* @return mixed True if FULLTEXT is supported, otherwise return name of unsupported engine
 	* @access private
 	*/
-	private function fulltext_support()
+	private function fulltext_support_enabled()
 	{
-		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
+		if (!function_exists('fulltext_support'))
 		{
-			return false;
+			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
 		}
 
-		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
-		$info = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
+		$storage_engine = fulltext_support();
 
-		$engine = '';
-		if (isset($info['Engine']))
+		if ($storage_engine === true)
 		{
-			$engine = strtolower($info['Engine']);
-		}
-		else if (isset($info['Type']))
-		{
-			$engine = strtolower($info['Type']);
+			return is_fulltext('topic_title');
 		}
 
-		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
-		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
-		if ($engine === 'myisam' || ($engine === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')))
-		{
-			return $this->is_fulltext('topic_title');
-		}
-
-		return false;
+		return $storage_engine;
 	}
 
 	/**
-	* Check if a field is a FULLTEXT index
+	* Enable FULLTEXT support for phpbb_topics.topic_title
 	*
-	* @param string $field name of a field
-	* @return bool true means the field is a FULLTEXT index
+	* @return null
 	* @access private
 	*/
-	private function is_fulltext($field)
+	private function enable_fulltext_support()
 	{
-		$sql = "SHOW INDEX
-			FROM " . TOPICS_TABLE;
-		$result = $this->db->sql_query($sql);
-
-		while ($row = $this->db->sql_fetchrow($result))
+		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
 		{
-			// deal with older MySQL versions which didn't use Index_type
-			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
-
-			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $field)
-			{
-				return true;
-			}
+			trigger_error($this->user->lang('PST_NO_MYSQL') . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 
-		return false;
+		if (!function_exists('is_fulltext'))
+		{
+			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
+		}
+
+		// Alter the storage engine
+		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = MYISAM';
+		$this->db->sql_query($sql);
+
+		// Prevent adding extra indeces.
+		if (is_fulltext('topic_title'))
+		{
+			return;
+		}
+
+		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
+		$this->db->sql_query($sql);
 	}
 }

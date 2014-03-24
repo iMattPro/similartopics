@@ -67,6 +67,10 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Añadir palabras especiales exclusivas de su foro en el que deben ser ignoradas en hilos parecidos. (Nota: Las palabras comunes en su lengua son ignorados por defecto.) Separe cada palabra con un espacio. Mayúsculas no minúsculas. Un máximo de 255 caracteres.',
 	'PST_SAVED'			=> 'La configuración de Hilos Parecidos ha sido actualizada',
 	'PST_FORUM_INFO'	=> '“No Mostrar En”: Deshabilitará la visualización de hilos parecidos en el foro seleccionado.<br />“No Buscar En” : Ignorará los foros seleccionados cuando se estén buscando hilos parecidos.',
-	'PST_WARNING'		=> 'Hilos Parecidos no va a funcionar en tu foro. Hilos Parecidos requiere una base de datos MySQL 4 o MySQL 5. Su base de datos no es compatible con índices FULLTEXT. Esto generalmente significa que la mesa temas que no se está utilizando el motor de almacenamiento MyISAM se requiere para este MOD para trabajar. <a href="http://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Más información</a>.',
+	'PST_NO_MYSQL'		=> 'Hilos Parecidos no va a funcionar en tu foro. Hilos Parecidos requiere una base de datos MySQL 4 o MySQL 5.',
+	'PST_WARNING'		=> 'Hilos Parecidos no va a funcionar en tu foro. Hilos Parecidos utiliza índices FULLTEXT que requieren una base de datos MySQL 4 o MySQL 5 y la tabla “phpbb_topics” se debe establecer en el motor de almacenamiento MyISAM (o InnoDB también se permite cuando se utiliza con MySQL 5.6.4 o posterior).<br /><br />Si desea utilizar Hilos Parecidos, que podemos actualizar con seguridad su base de datos para apoyar índices FULLTEXT. Cualquier cambio realizado se revertirán si alguna vez decide quitar Hilos Parecidos.',
+	'PST_ADD_FULLTEXT'	=> 'Sí, activar el soporte de índices FULLTEXT',
+	'PST_SAVE_FULLTEXT'	=> 'Su base de datos se ha actualizado. Ahora puede disfrutar con Hilos Parecidos.',
+	'PST_LOG_FULLTEXT'	=> '<strong>Base de datos de Alteración de Hilos Parecidos compatibilidad</strong><br />» Cambiado la tabla “%s” para el motor de almacenamiento MyISAM y añadió un índice FULLTEXT de la “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Se modificó la configuración de hilos parecidos</strong>',
 ));

@@ -67,6 +67,10 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Add special words unique to your forum that should be ignored when finding similar topics. (Note: Words that are currently regarded as common in your language are already ignored by default.) Separate each word with a space. Case insensitive. Max. 255 characters.',
 	'PST_SAVED'			=> 'Similar Topics settings updated',
 	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will not show similar topics in the selected forums.<br />“Do Not Search In” : Will not search for similar topics in the selected forums.',
-	'PST_WARNING'		=> 'Similar Topics will not work with your forum. Similar Topics requires a MySQL 4 or MySQL 5 database and the phpbb_topics table must be set to the MyISAM storage engine (InnoDB is only allowed with MySQL 5.6.4 or newer). <a href="https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/faq/f_1116" onclick="window.open(this.href);return false;">Click here</a> for more information.',
-	'PST_LOG_MSG'		=> '<strong>Altered similar topics settings</strong>',
+	'PST_NO_MYSQL'		=> 'Similar Topics is not compatible with your forum. Similar Topics will only run on a MySQL 4 or MySQL 5 database.',
+	'PST_WARNING'		=> 'Similar Topics is not compatible with your forum. Similar Topics uses FULLTEXT indexes which require a MySQL 4 or MySQL 5 database and the “phpbb_topics” table must be set to the MyISAM storage engine (or InnoDB is also allowed when used with MySQL 5.6.4 or newer).<br /><br />If you want to use Similar Topics, we can safely update your database to support FULLTEXT indexes. Any changes made will be reverted if you ever decide to remove Similar Topics.',
+	'PST_ADD_FULLTEXT'	=> 'Yes, enable support for FULLTEXT indexes',
+	'PST_SAVE_FULLTEXT'	=> 'Your database has been updated. You can now enjoy using Similar Topics.',
+	'PST_LOG_FULLTEXT'	=> '<strong>Altered database for Similar Topics compatibility</strong><br />» Changed “%s” table to MyISAM storage engine and added a FULLTEXT index to the “topic_title”',
+	'PST_LOG_MSG'		=> '<strong>Altered Similar Topics settings</strong>',
 ));

@@ -6,14 +6,17 @@
 
 <p>{L_PST_EXPLAIN}</p>
 
+<form id="select_victim" method="post" action="{U_ACTION}">
+
 <!-- IF S_PST_NO_SUPPORT -->
 	<div class="errorbox">
 		<h3>{L_WARNING}</h3>
 		<p>{L_PST_WARNING}</p>
+		<p class="submit-buttons">
+			<input class="button1" type="submit" id="fulltext" name="fulltext" value=" {L_PST_ADD_FULLTEXT} " />
+		</p>
 	</div>
 <!-- ENDIF -->
-
-<form id="select_victim" method="post" action="{U_ACTION}">
 
 <!-- IF S_ADVANCED_SETTINGS -->
 
