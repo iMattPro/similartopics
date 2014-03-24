@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'Não exibir Tópicos Semelhantes em',
 	'PST_IGNORE_SEARCH'	=> 'Não pesquisar em',
 	'PST_IGNORE_TITLE'	=> 'Não pesquisar Tópicos Semelhantes em',
+	'PST_STANDARD'		=> 'Norma',
 	'PST_ADVANCED'		=> 'Avançado',
 	'PST_ADVANCED_TITLE'=> 'Clique para configurar definições avançadas de Tópicos Semelhantes para',
 	'PST_ADVANCED_EXP'	=> 'Aqui pode selecionar os Fóruns de onde serão extraidos os Tópicos Semelhantes. Apenas Tópicos Semelhantes encontrados nos Fóruns que selecionar aqui serão exibidos em <strong>%s</strong>.<br /><br />Não selecione nenhum se deseja Tópicos Semelhantes de todos os Fóruns pesquisáveis a serem exibidos neste Fórum.<br /><br />Selecione/Desmarque múltiplos Fóruns clicando <code>CTRL</code> e clicando.',

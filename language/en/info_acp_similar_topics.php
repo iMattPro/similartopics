@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'Do not display similar topics in',
 	'PST_IGNORE_SEARCH'	=> 'Do Not Search In',
 	'PST_IGNORE_TITLE'	=> 'Do not search for similar topics in',
+	'PST_STANDARD'		=> 'Standard',
 	'PST_ADVANCED'		=> 'Advanced',
 	'PST_ADVANCED_TITLE'=> 'Click to set up advanced similar topic settings for',
 	'PST_ADVANCED_EXP'	=> 'Here you can select specific forums to pull similar topics from. Only similar topics found in the forums you select here will be displayed in <strong>%s</strong>.<br /><br />Do not select any forums if you want similar topics from all searchable forums to be displayed in this forum.<br /><br />Select/Deselect multiple forums by holding <code>CTRL</code> and clicking.',

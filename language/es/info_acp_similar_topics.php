@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'No mostrar hilos parecidos en',
 	'PST_IGNORE_SEARCH'	=> 'No buscar en',
 	'PST_IGNORE_TITLE'	=> 'No buscar hilos parecidos en',
+	'PST_STANDARD'		=> 'Estándar',
 	'PST_ADVANCED'		=> 'Avanzado',
 	'PST_ADVANCED_TITLE'=> 'Haz click para habilitar la configuración avanzada de hilos parecidos para',
 	'PST_ADVANCED_EXP'	=> 'Aquí puedes seleccionar foros específicos de donde extraer hilos parecidos. Sólo los hilos parecidos que se encuentren en los foros que selecciones aquí se mostrarán en <strong>%s</strong>.<br /><br />No selecciones ningún foro si quieres que todos los foros que tengan habilitado la búsqueda en ellos sean mostrados en este foro.<br /><br />Seleccione/Deseleccione multiples foros manteniendo pulsada la tecla <code>CTRL</code> y haciendo clic en los foros deseados.',

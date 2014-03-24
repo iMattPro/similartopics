@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'Vergelijkbare Onderwerpen Niet weergeven in',
 	'PST_IGNORE_SEARCH'	=> 'Niet zoeken In',
 	'PST_IGNORE_TITLE'	=> 'Niet zoeken naar vergelijkbare onderwerpen in',
+	'PST_STANDARD'		=> 'Standaard',
 	'PST_ADVANCED'		=> 'Geavanceerd',
 	'PST_ADVANCED_TITLE'=> 'Klik om Geavanceerde vergelijkbare onderwerpen in te stellen voor',
 	'PST_ADVANCED_EXP'	=> 'Hier kunt u specifieke forums selecteren om de soortgelijke onderwerpen uit te halen. Alleen vergelijkbare onderwerpen gevonden in de forums die u hier selecteert worden weergegeven in <strong>%s</strong>.<br /><br />Selecteer helemaal geen forum als u wilt dat vergelijkbare onderwerpen uit alle doorzoekbare forums worden weergegeven in dit forum.<br /><br />Selecteer/Deselecteer meerdere forums door <code>CTRL</code> ingedrukt te houden en forums aan te klikken.',

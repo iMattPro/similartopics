@@ -107,7 +107,7 @@
 			<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{forums.FORUM_ID}" {forums.CHECKED_IGNORE_FORUM} />
 			</td>
 			<td style="width:20%; text-align: center;" title="{L_PST_ADVANCED_TITLE} {forums.FORUM_NAME}">
-			<!-- IF forums.S_IS_ADVANCED --><b><i><!-- ENDIF --><a href="{forums.U_ADVANCED}">{L_PST_ADVANCED}</a><!-- IF forums.S_IS_ADVANCED --></i></b><!-- ENDIF -->
+			<a href="{forums.U_ADVANCED}"><!-- IF forums.S_IS_ADVANCED --><strong>{L_PST_ADVANCED}</strong><!-- ELSE -->{L_PST_STANDARD}</a><!-- ENDIF -->
 			</td>
 		</tr>
 		<!-- END forums -->

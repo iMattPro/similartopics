@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'Visa inte liknande trådar i',
 	'PST_IGNORE_SEARCH'	=> 'Sök inte i',
 	'PST_IGNORE_TITLE'	=> 'Sök inte efter liknande trådar i',
+	'PST_STANDARD'		=> 'Standard',
 	'PST_ADVANCED'		=> 'Avancerade',
 	'PST_ADVANCED_TITLE'=> 'Klicka för att ställa in avancerade inställningar',
 	'PST_ADVANCED_EXP'	=> 'Här kan du välja specifika kategorier att hämta liknande trådar från. Endast liknande trådar från de kategorier du väljer här kommer att visas i <strong>%s</strong>.<br /><br />Välj inga specifika kategorier om du vill visa liknande trådar från alla kategorier i detta forum.<br /><br />Använd t.ex. kombinationen <code>CTRL</code> + musklick för att markera och välja (avvälja) fler än en kategori.',

@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'Nu afişa subiecte similare în',
 	'PST_IGNORE_SEARCH'	=> 'Nu căuta în',
 	'PST_IGNORE_TITLE'	=> 'Nu căuta subiecte similare în',
+	'PST_STANDARD'		=> 'Standard',
 	'PST_ADVANCED'		=> 'Advanced',
 	'PST_ADVANCED_TITLE'=> 'Apăsaţi pentru a configura setările avansate ale subiectelor similare pentru',
 	'PST_ADVANCED_EXP'	=> 'Aici puteţi alege forumuri specifice din care să afişaţi subiecte similare. Numai subiectele similare găsite în forumurile pe care le-aţi ales aici vor fi afişate în <strong>%s</strong>.<br /><br />Nu alegeţi orice forumuri dacă doriţi ca toate subiectele similare din toate forumurile ce pot fi căutate să fie afişate în acest forum.<br /><br />Selectaţi/Deselectaţi mai multe forumuri ţinând apăsată tasta <code>CTRL</code> şi făcând click.',

@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'Nie wyśiwetlaj podobnych tematów w',
 	'PST_IGNORE_SEARCH'	=> 'Nie szukaj w',
 	'PST_IGNORE_TITLE'	=> 'Nie szukaj podobnych tematów w',
+	'PST_STANDARD'		=> 'Standard',
 	'PST_ADVANCED'		=> 'Zaawansowane',
 	'PST_ADVANCED_TITLE'=> 'Kliknij, aby ustawić zaawansowane ustawienia dla',
 	'PST_ADVANCED_EXP'	=> 'Tutaj możesz wybrać konkretne fora dla wyświetlania podobnych tematów. Tylko podobne tematy znalezione na wybranych forach będą wyświetlane w <strong>%s</strong>.<br /><br />Nie należy wybierać żadnych, jeśli chcesz aby podobne tematy były wyszukiwane we wszystkich forach.<br /><br />Zaznacz/odznacz wiele działów poprzez przytrzymanie klawisza <code>CTRL</code> i klikanie.',

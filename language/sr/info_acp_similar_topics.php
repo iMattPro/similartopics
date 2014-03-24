@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'PST_NOSHOW_TITLE'	=> 'Ne prikazuj slične teme u',
 	'PST_IGNORE_SEARCH'	=> 'Ne pretražuj',
 	'PST_IGNORE_TITLE'	=> 'Nemoj da pretražuješ slične teme u',
+	'PST_STANDARD'		=> 'Standard',
 	'PST_ADVANCED'		=> 'Napredna podešavanja',
 	'PST_ADVANCED_TITLE'=> 'Kliknite ukoliko želite da odredite napredna podešavanja za',
 	'PST_ADVANCED_EXP'	=> 'Ovde možete odrediti specifične forume iz kojih želite da se pretražuju slične teme. Jedino slične teme koje budu pronađene u forumu će biti prikazane u <strong>%s</strong>.<br /><br />Nemojte da selektujete nijedan forum ukoliko želite da se prikazuju slične teme iz svih foruma u kojima je uključena opcija Similar Topics.<br /><br />Možete izabrati više foruma tako što držite <code>CTRL</code> i kliknete.',
