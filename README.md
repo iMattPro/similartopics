@@ -1,4 +1,4 @@
-# ![PST II](http://mattfriedman.me/forum/images/binoc1.png "PST II") Precise Similar Topics II
+# ![Precise Similar Topics](http://mattfriedman.me/forum/images/binoc1.png "Precise Similar Topics") Precise Similar Topics
 
 A Similar Topics Extension for phpBB 3.1
 
