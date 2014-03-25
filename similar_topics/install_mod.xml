@@ -16,7 +16,7 @@ Your database must be using MySQL 4.0.1 or higher. The phpbb_topics table storag
 
 NOTE: 
 Similar Topics is off by default. Visit the ACP/.MODs section after installation to turn it on.]]></author-notes>
-		<github><![CDATA[https://github.com/VSEphpbb/precise-similar-topics-II]]></github>
+		<github><![CDATA[https://github.com/VSEphpbb/similartopics/tree/master]]></github>
 		<author-group>
 			<author>
 				<realname><![CDATA[Matt Friedman]]></realname>
@@ -49,7 +49,7 @@ Similar Topics is off by default. Visit the ACP/.MODs section after installation
 		</installation>
 		<history>
 			<entry>
-				<date>2013-11-22</date>
+				<date>2014-03-25</date>
 				<rev-version>1.2.3</rev-version>
 				<changelog lang="en">
 					<change><![CDATA[Do not display topics from password protected forums the user is not logged in to.]]></change>

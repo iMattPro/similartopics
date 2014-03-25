@@ -36,7 +36,7 @@ Awards
 Support
 -------
 
-* Report any bugs or problems you encounter to the issue tracker: http://github.com/VSEphpbb/precise-similar-topics-II/issues
+* Report any bugs or problems you encounter to the issue tracker: http://github.com/VSEphpbb/similartopics/issues
 * Support is also available at phpBB: https://www.phpbb.com/customise/db/mod/precise_similar_topics_ii/support
 
 Requirements
