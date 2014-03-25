@@ -148,7 +148,7 @@ class phpbb_similar_topics
 		// We need to exclude passworded forums so we do not leak the topic title
 		$passworded_forums = $user->get_passworded_forums();
 
-		// See if the admin set this forum to only search a specific group of other forums, and include them
+		// Now lets see if the current forum is set to search a specific forum search group, and search only those forums
 		if (!empty($topic_data['similar_topic_forums']))
 		{
 			// Remove any passworded forums from this group of forums we will be searching
