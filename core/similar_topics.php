@@ -130,7 +130,7 @@ class similar_topics
 			//'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
 
-		// Add topic tracking data to the query (only when query caching is off)
+		// Add topic tracking data to the query (only if query caching is off)
 		if ($this->user->data['is_registered'] && $this->config['load_db_lastread'] && !$this->config['similar_topics_cache'])
 		{
 			$sql_array['LEFT_JOIN'][] = array('FROM' => array(TOPICS_TRACK_TABLE => 'tt'), 'ON' => 'tt.topic_id = t.topic_id AND tt.user_id = ' . $this->user->data['user_id']);
@@ -174,7 +174,7 @@ class similar_topics
 		}
 
 		/**
-		* You can use this event to modify the sql_array for similar topics
+		* Event to modify the sql_array for similar topics
 		*
 		* @event similartopics.get_topic_data
 		* @var	array	sql_array	SQL array to get similar topics data
@@ -266,7 +266,7 @@ class similar_topics
 				);
 
 				/**
-				* You can use this event to modify the similar topics template block
+				* Event to modify the similar topics template block
 				*
 				* @event similartopics.modify_topicrow
 				* @var	array	row			Array with similar topic data
@@ -296,7 +296,7 @@ class similar_topics
 	}
 
 	/**
-	* Remove problem characters (and if needed, ignore-words) from topic title
+	* Clean topic title (and if needed, ignore-words)
 	*
 	* @param	string	$text	The topic title
 	* @return	string	The topic title
@@ -356,7 +356,7 @@ class similar_topics
 	* Helper function to split string into an array of words
 	*
 	* @param	string	$text	String of plain text words
-	* @return	array	array of plaintext words
+	* @return	array	Array of plaintext words
 	* @access	protected
 	*/
 	protected function make_word_array($text)
