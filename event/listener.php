@@ -51,7 +51,7 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
-		$phpbb_container->get('vse.similartopics.manager')->get_similar_topics($event);
+		$phpbb_container->get('vse.similartopics.manager')->get_similar_topics($event['topic_data'], $event['forum_id']);
 	}
 
 	/**

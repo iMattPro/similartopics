@@ -86,18 +86,20 @@ class similar_topics
 	* English ignore words. We use phpBB's ignore words for non-English
 	* languages. We also remove any admin-defined special ignore words.
 	*
-	* @param object $event The event object
-	* @return null
+	* @param	array	$topic_data	Array with topic data
+	* @param	int		$forum_id	Forum ID of the topic
+	* @return 	null
+	* @access	public
 	*/
-	public function get_similar_topics($event)
+	public function get_similar_topics($topic_data, $forum_id)
 	{
 		// Potential reasons to stop execution
-		if (!$this->config['similar_topics_limit'] || (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli')) || (in_array($event['forum_id'], explode(',', $this->config['similar_topics_hide']))))
+		if (!$this->config['similar_topics_limit'] || (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli')) || (in_array($forum_id, explode(',', $this->config['similar_topics_hide']))))
 		{
 			return;
 		}
 
-		$topic_title = $this->strip_topic_title($event['topic_data']['topic_title']);
+		$topic_title = $this->strip_topic_title($topic_data['topic_title']);
 
 		// If the stripped down topic_title is empty, no need to continue
 		if (empty($topic_title))
@@ -123,7 +125,7 @@ class similar_topics
 				AND t.topic_status <> " . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->config['similar_topics_time'] . ')
-				AND t.topic_id <> ' . (int) $event['topic_data']['topic_id'],
+				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
 			//'GROUP_BY'	=> 't.topic_id',
 			//'ORDER_BY'	=> 'score DESC', // this is done automatically by MySQL when not using IN BOOLEAN MODE
 		);
@@ -146,10 +148,10 @@ class similar_topics
 		$passworded_forums = $this->user->get_passworded_forums();
 
 		// See if the admin set this forum to only search a specific group of other forums, and include them
-		if (!empty($event['topic_data']['similar_topic_forums']))
+		if (!empty($topic_data['similar_topic_forums']))
 		{
 			// Remove any passworded forums from this group of forums we will be searching
-			$included_forums = array_diff(explode(',', $event['topic_data']['similar_topic_forums']), $passworded_forums);
+			$included_forums = array_diff(explode(',', $topic_data['similar_topic_forums']), $passworded_forums);
 			// if there's nothing left to display (user has no access to the forums we want to search)
 			if (empty($included_forums))
 			{
