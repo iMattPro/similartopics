@@ -1,7 +1,7 @@
 <?php
 /**
 *
-* @package testing
+* @package Precise Similar Topics testing
 * @copyright (c) 2014 Matt Friedman
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
