@@ -181,7 +181,7 @@ class similar_topics
 		* @since 1.3.0
 		*/
 		$vars = array('sql_array');
-		extract($this->dispatcher->trigger_event('similartopics.get_topic_data', compact($vars)));
+		extract($this->dispatcher->trigger_event('vse.similartopics.get_topic_data', compact($vars)));
 
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, $this->config['similar_topics_limit'], 0, $this->config['similar_topics_cache']);
@@ -274,7 +274,7 @@ class similar_topics
 				* @since 1.3.0
 				*/
 				$vars = array('row', 'topic_row');
-				extract($this->dispatcher->trigger_event('similartopics.modify_topicrow', compact($vars)));
+				extract($this->dispatcher->trigger_event('vse.similartopics.modify_topicrow', compact($vars)));
 
 				$this->template->assign_block_vars('similar', $topic_row);
 
