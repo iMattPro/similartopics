@@ -24,7 +24,7 @@ function fulltext_support()
 {
 	global $db;
 
-	if (($db->sql_layer != 'mysql4') && ($db->sql_layer != 'mysqli'))
+	if ($db->sql_layer != 'mysql4' && $db->sql_layer != 'mysqli')
 	{
 		return false;
 	}

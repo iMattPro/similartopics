@@ -94,7 +94,7 @@ class similar_topics
 	public function get_similar_topics($topic_data, $forum_id)
 	{
 		// Potential reasons to stop execution
-		if (!$this->config['similar_topics_limit'] || (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli')) || (in_array($forum_id, explode(',', $this->config['similar_topics_hide']))))
+		if (!$this->config['similar_topics_limit'] || in_array($forum_id, explode(',', $this->config['similar_topics_hide'])) || !$this->is_mysql())
 		{
 			return;
 		}
@@ -375,5 +375,16 @@ class similar_topics
 		}
 
 		return $words;
+	}
+
+	/**
+	* Check if the database layer is MySQL4 or later
+	*
+	* @return	bool	True is MySQL4 or later, false otherwise
+	* @access	protected
+	*/
+	protected function is_mysql()
+	{
+		return ($this->db->sql_layer == 'mysql4' || $this->db->sql_layer == 'mysqli');
 	}
 }

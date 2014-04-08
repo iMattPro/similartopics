@@ -315,7 +315,7 @@ class similar_topics_module
 	*/
 	private function enable_fulltext_support()
 	{
-		if (($this->db->sql_layer != 'mysql4') && ($this->db->sql_layer != 'mysqli'))
+		if ($this->db->sql_layer != 'mysql4' && $this->db->sql_layer != 'mysqli')
 		{
 			trigger_error($this->user->lang('PST_NO_MYSQL') . adm_back_link($this->u_action), E_USER_WARNING);
 		}
