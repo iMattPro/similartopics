@@ -172,7 +172,7 @@ class similar_topics_module
 					'PST_CACHE'			=> isset($this->config['similar_topics_cache']) ? $this->config['similar_topics_cache'] : '',
 					'PST_WORDS'			=> isset($this->config['similar_topics_words']) ? $this->config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
-					'PST_VERSION'		=> isset($this->config['similar_topics_version']) ? 'v' . $this->config['similar_topics_version'] : '',
+					'PST_VERSION'		=> isset($this->config['similar_topics_version']) ? $this->config['similar_topics_version'] : '',
 					'S_PST_NO_SUPPORT'	=> ($this->fulltext_support_enabled() !== true) ? true : false,
 					'U_ACTION'			=> $this->u_action,
 				));
