@@ -24,12 +24,12 @@ class similar_topics_test extends similar_topics_base
 		$post5 = $this->create_topic(2, 'Test Framework Topic 5', 'This is test topic 5 posted by the testing framework.');
 
 		// Load topic #5
-		$crawler = self::request('GET', "viewtopic.php?t={$post5['topic_id']}&sid={$this->sid}");		
+		$crawler = self::request('GET', "viewtopic.php?t={$post5['topic_id']}&sid={$this->sid}");
 		// Test that the title of topic #4 is found
 		$this->assertContains('Test Framework Topic 4', $crawler->filter('html')->text());
 
 		// Load topic #4
-		$crawler = self::request('GET', "viewtopic.php?t={$post4['topic_id']}&sid={$this->sid}");		
+		$crawler = self::request('GET', "viewtopic.php?t={$post4['topic_id']}&sid={$this->sid}");
 		// Test that the title of topic #5 is found
 		$this->assertContains('Test Framework Topic 5', $crawler->filter('html')->text());
 	}
