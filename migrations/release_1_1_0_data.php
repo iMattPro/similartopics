@@ -39,7 +39,9 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 				'PST_TITLE_ACP'
 			)),
 			array('module.add', array(
-				'acp', 'PST_TITLE_ACP', array(
+				'acp',
+				'PST_TITLE_ACP',
+				array(
 					'module_basename'	=> '\vse\similartopics\acp\similar_topics_module',
 					'modes'				=> array('settings'),
 				),
