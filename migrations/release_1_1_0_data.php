@@ -70,8 +70,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	{
 		if (!function_exists('fulltext_support'))
 		{
-			global $phpbb_root_path, $phpEx;
-			include($phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $phpEx);
+			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
 		}
 
 		// FULLTEXT is not supported
@@ -97,8 +96,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	{
 		if (!function_exists('fulltext_support'))
 		{
-			global $phpbb_root_path, $phpEx;
-			include($phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $phpEx);
+			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
 		}
 
 		// FULLTEXT is not supported

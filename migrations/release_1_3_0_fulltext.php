@@ -46,8 +46,7 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 	{
 		if (!function_exists('is_fulltext'))
 		{
-			global $phpbb_root_path, $phpEx;
-			include($phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $phpEx);
+			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
 		}
 
 		// Drop the FULLTEXT index
