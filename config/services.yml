@@ -16,5 +16,12 @@ services:
             - %core.php_ext%
     vse.similartopics.listener:
         class: vse\similartopics\event\listener
+        arguments:
+            - @auth
+            - @config
+            - @request
+            - @template
+            - @user
+            - @vse.similartopics.manager
         tags:
             - { name: event.listener }

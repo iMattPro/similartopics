@@ -16,6 +16,45 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 */
 class listener implements EventSubscriberInterface
 {
+	/** @var \phpbb\auth\auth */
+	protected $auth;
+
+	/** @var \phpbb\config\config */
+	protected $config;
+
+	/** @var \phpbb\request\request */
+	protected $request;
+
+	/** @var phpbb_template */
+	protected $template;
+
+	/** @var phpbb_user */
+	protected $user;
+
+	/** @var \vse\similartopics\core\similar_topics */
+	protected $similar_topics;
+
+	/**
+	* Constructor
+	*
+	* @param \phpbb\auth\auth $auth
+	* @param \phpbb\config\config $config
+	* @param \phpbb\request\request $request
+	* @param \phpbb\template\template $template
+	* @param \phpbb\user $user
+	* @return \vse\similartopics\event\listener
+	* @access public
+	*/
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \vse\similartopics\core\similar_topics $similar_topics)
+	{
+		$this->auth = $auth;
+		$this->config = $config;
+		$this->request = $request;
+		$this->template = $template;
+		$this->user = $user;
+		$this->similar_topics = $similar_topics;
+	}
+
 	/**
 	* Assign functions defined in this class to event listeners in the core
 	*
@@ -43,15 +82,13 @@ class listener implements EventSubscriberInterface
 	*/
 	public function load_similar_topics($event)
 	{
-		global $auth, $config, $user, $phpbb_container;
-
 		// Return early if not supposed to see similar topics
-		if (empty($config['similar_topics']) || empty($user->data['user_similar_topics']) || !$auth->acl_get('u_similar_topics'))
+		if (empty($this->config['similar_topics']) || empty($this->user->data['user_similar_topics']) || !$this->auth->acl_get('u_similar_topics'))
 		{
 			return;
 		}
 
-		$phpbb_container->get('vse.similartopics.manager')->get_similar_topics($event['topic_data'], $event['forum_id']);
+		$this->similar_topics->get_similar_topics($event['topic_data'], $event['forum_id']);
 	}
 
 	/**
@@ -77,20 +114,18 @@ class listener implements EventSubscriberInterface
 	*/
 	public function ucp_prefs_get_data($event)
 	{
-		global $auth, $config, $request, $user, $template;
-
 		// Request the user option vars and add them to the data array
 		$event['data'] = array_merge($event['data'], array(
-			'similar_topics'	=> $request->variable('similar_topics', (int) $user->data['user_similar_topics']),
+			'similar_topics'	=> $this->request->variable('similar_topics', (int) $this->user->data['user_similar_topics']),
 		));
 
 		// Output the data vars to the template (except on form submit)
 		if (!$event['submit'])
 		{
 			$data = $event['data'];
-			$user->add_lang_ext('vse/similartopics', 'similar_topics');
-			$template->assign_vars(array(
-				'S_SIMILAR_TOPICS'			=> $config['similar_topics'] && $auth->acl_get('u_similar_topics'),
+			$this->user->add_lang_ext('vse/similartopics', 'similar_topics');
+			$this->template->assign_vars(array(
+				'S_SIMILAR_TOPICS'			=> $this->config['similar_topics'] && $this->auth->acl_get('u_similar_topics'),
 				'S_DISPLAY_SIMILAR_TOPICS'	=> $data['similar_topics'],
 			));
 		}
