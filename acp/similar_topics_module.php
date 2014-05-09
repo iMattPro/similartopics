@@ -54,7 +54,7 @@ class similar_topics_module
 				{
 					if (!check_form_key($form_key))
 					{
-						trigger_error('FORM_INVALID');
+						trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
 					}
 
 					$similar_forums	= $this->request->variable('similar_forums_id', array(0));
@@ -101,7 +101,7 @@ class similar_topics_module
 				{
 					if (!check_form_key($form_key))
 					{
-						trigger_error('FORM_INVALID');
+						trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
 					}
 
 					$pst_enable = $this->request->variable('pst_enable', 0);
@@ -138,7 +138,7 @@ class similar_topics_module
 				{
 					if (!check_form_key($form_key))
 					{
-						trigger_error('FORM_INVALID');
+						trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
 					}
 
 					$storage_engine = $this->fulltext_support_enabled();
