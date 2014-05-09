@@ -201,9 +201,9 @@ class similar_topics_module
 	* Get forums list
 	*
 	* @return array	forum data rows
-	* @access private
+	* @access protected
 	*/
-	private function get_forum_list()
+	protected function get_forum_list()
 	{
 		$forum_list = array();
 
@@ -224,9 +224,9 @@ class similar_topics_module
 	* @param int $length user entered value
 	* @param string $type years, months, weeks, days
 	* @return int time in seconds
-	* @access private
+	* @access protected
 	*/
-	private function set_pst_time($length, $type = 'y')
+	protected function set_pst_time($length, $type = 'y')
 	{
 		$length = abs($length);
 		switch ($type)
@@ -255,9 +255,9 @@ class similar_topics_module
 	* @param int $time as a timestamp
 	* @param string $type years, months, weeks, days
 	* @return int time converted to the given $type
-	* @access private
+	* @access protected
 	*/
-	private function get_pst_time($time, $type)
+	protected function get_pst_time($time, $type)
 	{
 		switch ($type)
 		{
@@ -288,9 +288,9 @@ class similar_topics_module
 	* Check for FULLTEXT index support
 	*
 	* @return mixed True if FULLTEXT is supported, otherwise return name of unsupported engine
-	* @access private
+	* @access protected
 	*/
-	private function fulltext_support_enabled()
+	protected function fulltext_support_enabled()
 	{
 		if (!function_exists('fulltext_support'))
 		{
@@ -311,9 +311,9 @@ class similar_topics_module
 	* Enable FULLTEXT support for phpbb_topics.topic_title
 	*
 	* @return null
-	* @access private
+	* @access protected
 	*/
-	private function enable_fulltext_support()
+	protected function enable_fulltext_support()
 	{
 		if ($this->db->sql_layer != 'mysql4' && $this->db->sql_layer != 'mysqli')
 		{
