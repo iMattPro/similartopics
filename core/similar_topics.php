@@ -61,6 +61,8 @@ class similar_topics
 	* @param \phpbb\content_visibility $content_visibility
 	* @param string $root_path
 	* @param string $php_ext
+	* @return  \vse\similartopics\core\similar_topics
+	* @access public
 	*/
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\event\dispatcher $phpbb_dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
 	{
