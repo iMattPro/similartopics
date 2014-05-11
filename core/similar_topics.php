@@ -256,6 +256,7 @@ class similar_topics
 					'S_TOPIC_UNAPPROVED'	=> $topic_unapproved,
 					'S_POSTS_UNAPPROVED'	=> $posts_unapproved,
 					//'S_TOPIC_DELETED'		=> $topic_deleted,
+					'S_HAS_POLL'			=> ($row['poll_start']) ? true : false,
 
 					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.$this->php_ext", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
 					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.$this->php_ext", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
@@ -292,6 +293,7 @@ class similar_topics
 			'LAST_POST_IMG'		=> $this->user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
 			'REPORTED_IMG'		=> $this->user->img('icon_topic_reported', 'TOPIC_REPORTED'),
 			//'DELETED_IMG'		=> $this->user->img('icon_topic_deleted', 'TOPIC_DELETED'),
+			'POLL_IMG'			=> $this->user->img('icon_topic_poll', 'TOPIC_POLL'),
 		));
 	}
 
