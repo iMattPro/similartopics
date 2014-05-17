@@ -42,6 +42,7 @@ class listener implements EventSubscriberInterface
 	* @param \phpbb\request\request $request
 	* @param \phpbb\template\template $template
 	* @param \phpbb\user $user
+	* @param \vse\similartopics\core\similar_topics $similar_topics
 	* @return \vse\similartopics\event\listener
 	* @access public
 	*/

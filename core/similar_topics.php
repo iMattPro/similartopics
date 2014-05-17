@@ -54,6 +54,7 @@ class similar_topics
 	* @param \phpbb\cache\service $cache
 	* @param \phpbb\config\config $config
 	* @param \phpbb\db\driver\driver $db
+	* @param \phpbb\event\dispatcher $dispatcher
 	* @param \phpbb\pagination $pagination
 	* @param \phpbb\request\request $request
 	* @param \phpbb\template\template $template
