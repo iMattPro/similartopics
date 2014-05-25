@@ -19,7 +19,6 @@ class similar_topics_info
 		return array(
 			'filename'	=> '\vse\similartopics\acp\similar_topics_module',
 			'title'		=> 'PST_TITLE_ACP',
-			'version'	=> '1.3.0',
 			'modes'		=> array(
 				'settings'	=> array('title' => 'PST_SETTINGS', 'auth' => 'ext_vse/similartopics && acl_a_board', 'cat' => array('PST_TITLE_ACP')),
 			),
