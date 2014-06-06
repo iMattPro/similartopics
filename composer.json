@@ -18,6 +18,11 @@
         "phpbb/phpbb": "3.1.*@dev"
     },
     "extra": {
-        "display-name": "Precise Similar Topics"
+        "display-name": "Precise Similar Topics",
+        "version-check": {
+            "host": "vsephpbb.github.io",
+            "directory": "/similartopics",
+            "filename": "version.json"
+        }
     }
 }
