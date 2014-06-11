@@ -12,16 +12,17 @@ namespace vse\similartopics\tests\functional;
 /**
 * @group functional
 */
-class similar_topics_base extends \extension_functional_test_case
+class similar_topics_base extends \phpbb_functional_test_case
 {
+	static protected function setup_extensions()
+	{
+		return array('vse/similartopics');
+	}
+
 	public function setUp()
 	{
 		parent::setUp();
-		$this->login();
-		$this->admin_login();
 		$this->alter_storage_engine();
-		$this->set_extension('vse', 'similartopics', 'Precise Similar Topics');
-		$this->enable_extension();
 		$this->enable_similar_topics();
 	}
 

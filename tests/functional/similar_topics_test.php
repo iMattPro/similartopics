@@ -16,6 +16,8 @@ class similar_topics_test extends similar_topics_base
 {
 	public function test_similar_topics()
 	{
+		$this->login();
+
 		// Create some basic topics
 		$post1 = $this->create_topic(2, 'Test Topic 1', 'This is test topic 1 posted by the testing framework.');
 		$post2 = $this->create_topic(2, 'Test Topic 2', 'This is test topic 2 posted by the testing framework.');
