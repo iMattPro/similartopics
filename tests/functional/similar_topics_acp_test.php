@@ -27,6 +27,9 @@ class similar_topics_acp_test extends similar_topics_base
 	*/
 	public function test_acp_pages($mode)
 	{
-		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=' . $mode . '&sid=' . $this->sid);
+		$this->login();
+		$this->admin_login();
+
+		self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=' . $mode . '&sid=' . $this->sid);
 	}
 }
