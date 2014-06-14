@@ -22,18 +22,7 @@ class similar_topics_base extends \phpbb_functional_test_case
 	public function setUp()
 	{
 		parent::setUp();
-		$this->alter_storage_engine();
 		$this->enable_similar_topics();
-	}
-
-	/**
-	* Convert topics table storage engine to MyISAM
-	*/
-	public function alter_storage_engine()
-	{
-		$this->get_db();
-
-		$this->db->sql_query('ALTER TABLE phpbb_topics ENGINE = MYISAM');
 	}
 
 	/**
