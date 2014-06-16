@@ -1,10 +1,12 @@
 <?php
 /**
-* permissions_similar_topics (Precise Similar Topics Permission Set) [French]
 *
-* @package language
-* @copyright (c) 2013 Matt Friedman - Geolim4.com (French Translation)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* Precise Similar Topics [French]
+* Translated by Geolim4.com
+*
+* @copyright (c) 2013 Matt Friedman
+* @license GNU General Public License, version 2 (GPL-2.0)
+*
 */
 
 /**

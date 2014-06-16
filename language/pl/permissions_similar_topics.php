@@ -1,10 +1,12 @@
 <?php
 /**
-* permissions_similar_topics (Precise Similar Topics Permission Set) [Polish]
 *
-* @package language
-* @copyright (c) 2013 Matt Friedman (Translated by liptonace http://zonewarez.pl/)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* Precise Similar Topics [Polish]
+* Translated by liptonace http://zonewarez.pl/
+*
+* @copyright (c) 2013 Matt Friedman
+* @license GNU General Public License, version 2 (GPL-2.0)
+*
 */
 
 /**

@@ -1,12 +1,11 @@
 <?php
 /**
 *
-* info_acp_similiar_topics [Persian]
-* Persian Translator: Meisam Noubari from IRAN in php-bb.ir
+* Precise Similar Topics [Persian]
+* Translated by Meisam Noubari from IRAN in php-bb.ir
 *
-* @package language
 * @copyright (c) 2013 Matt Friedman
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* @license GNU General Public License, version 2 (GPL-2.0)
 *
 */
 

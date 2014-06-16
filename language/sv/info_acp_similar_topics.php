@@ -1,11 +1,11 @@
 <?php
 /**
 *
-* info_acp_similiar_topics [Swedish]
+* Precise Similar Topics [Swedish]
+* Translated by Aros via phpbb.com
 *
-* @package language
-* @copyright (c) 2013 Matt Friedman (Translated by Aros via phpbb.com)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* @copyright (c) 2013 Matt Friedman
+* @license GNU General Public License, version 2 (GPL-2.0)
 *
 */
 

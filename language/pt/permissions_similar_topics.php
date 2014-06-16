@@ -1,10 +1,12 @@
 <?php
 /**
-* permissions_similar_topics (Precise Similar Topics Permission Set) [Portuguese]
 *
-* @package language
-* @copyright (c) 2013 Matt Friedman (Traduzido por The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* Precise Similar Topics [Portuguese]
+* Translated by The Crow: http://phpbbportugal.com - segundo as normas do Acordo Ortográfico
+*
+* @copyright (c) 2013 Matt Friedman
+* @license GNU General Public License, version 2 (GPL-2.0)
+*
 */
 
 /**
