@@ -21,7 +21,7 @@ class similar_topics
 	/** @var \phpbb\config\config */
 	protected $config;
 
-	/** @var \phpbb\db\driver\driver */
+	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
 	/** @var \phpbb\event\dispatcher */
@@ -54,7 +54,7 @@ class similar_topics
 	* @param \phpbb\auth\auth $auth
 	* @param \phpbb\cache\service $cache
 	* @param \phpbb\config\config $config
-	* @param \phpbb\db\driver\driver $db
+	* @param \phpbb\db\driver\driver_interface $db
 	* @param \phpbb\event\dispatcher $dispatcher
 	* @param \phpbb\pagination $pagination
 	* @param \phpbb\request\request $request
@@ -66,7 +66,7 @@ class similar_topics
 	* @return  \vse\similartopics\core\similar_topics
 	* @access public
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver $db, \phpbb\event\dispatcher $dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher $dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
