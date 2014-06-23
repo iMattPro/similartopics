@@ -39,6 +39,9 @@ class similar_topics_module
 	/** @var string */
 	protected $php_ext;
 
+	/** @var string */
+	protected $fulltext;
+
 	public $u_action;
 
 	public function main($id, $mode)
@@ -53,6 +56,7 @@ class similar_topics_module
 		$this->phpbb_container = $phpbb_container;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
+		$this->fulltext = new \vse\similartopics\core\fulltext_support($this->db);
 
 		$this->user->add_lang('acp/common');
 		$this->tpl_name = 'acp_similar_topics';
@@ -161,14 +165,13 @@ class similar_topics_module
 						trigger_error($user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
 					}
 
-					$storage_engine = $this->fulltext_support_enabled();
-					if ($storage_engine !== true)
+					if (!$this->fulltext_support_enabled())
 					{
 						// Alter the database to support FULLTEXT
 						$this->enable_fulltext_support();
 
 						// Store the original database storage engine in a config var
-						$this->config->set('similar_topics_fulltext', (string) $storage_engine);
+						$this->config->set('similar_topics_fulltext', (string) $this->fulltext->engine);
 
 						$log = $this->phpbb_container->get('log');
 						$log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
@@ -194,7 +197,7 @@ class similar_topics_module
 					'PST_WORDS'			=> isset($this->config['similar_topics_words']) ? $this->config['similar_topics_words'] : '',
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'PST_VERSION'		=> isset($this->config['similar_topics_version']) ? $this->config['similar_topics_version'] : '',
-					'S_PST_NO_SUPPORT'	=> ($this->fulltext_support_enabled() !== true) ? true : false,
+					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
 					'U_ACTION'			=> $this->u_action,
 				));
 
@@ -308,42 +311,30 @@ class similar_topics_module
 	/**
 	* Check for FULLTEXT index support
 	*
-	* @return mixed True if FULLTEXT is supported, otherwise return name of unsupported engine
+	* @return bool True if FULLTEXT is fully supported, false otherwise
 	* @access protected
 	*/
 	protected function fulltext_support_enabled()
 	{
-		if (!function_exists('fulltext_support'))
+		if ($this->fulltext->engine()->supported())
 		{
-			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
+			return $this->fulltext->index('topic_title');
 		}
 
-		$storage_engine = fulltext_support();
-
-		if ($storage_engine === true)
-		{
-			return is_fulltext('topic_title');
-		}
-
-		return $storage_engine;
+		return false;
 	}
 
 	/**
-	* Enable FULLTEXT support for phpbb_topics.topic_title
+	* Enable FULLTEXT support for the topic_title
 	*
 	* @return null
 	* @access protected
 	*/
 	protected function enable_fulltext_support()
 	{
-		if ($this->db->sql_layer != 'mysql4' && $this->db->sql_layer != 'mysqli')
+		if (!$this->fulltext->is_mysql())
 		{
 			trigger_error($this->user->lang('PST_NO_MYSQL') . adm_back_link($this->u_action), E_USER_WARNING);
-		}
-
-		if (!function_exists('is_fulltext'))
-		{
-			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
 		}
 
 		// Alter the storage engine
@@ -351,7 +342,7 @@ class similar_topics_module
 		$this->db->sql_query($sql);
 
 		// Prevent adding extra indeces.
-		if (is_fulltext('topic_title'))
+		if ($this->fulltext->index('topic_title'))
 		{
 			return;
 		}

@@ -69,19 +69,16 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	*/
 	public function add_topic_title_fulltext()
 	{
-		if (!function_exists('fulltext_support'))
-		{
-			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
-		}
+		$fulltext = new \vse\similartopics\core\fulltext_support($this->db);
 
 		// FULLTEXT is not supported
-		if (fulltext_support() !== true)
+		if (!$fulltext->engine()->supported())
 		{
 			return;
 		}
 
-		// Prevent adding extra indeces.
-		if (is_fulltext('topic_title'))
+		// Prevent adding extra indeces
+		if ($fulltext->index('topic_title'))
 		{
 			return;
 		}
@@ -95,19 +92,16 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	*/
 	public function drop_topic_title_fulltext()
 	{
-		if (!function_exists('fulltext_support'))
-		{
-			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
-		}
+		$fulltext = new \vse\similartopics\core\fulltext_support($this->db);
 
 		// FULLTEXT is not supported
-		if (fulltext_support() !== true)
+		if (!$fulltext->engine()->supported())
 		{
 			return;
 		}
 
-		// Return if there is no FULLTEXT index to drop.
-		if (!is_fulltext('topic_title'))
+		// Return if there is no FULLTEXT index to drop
+		if (!$fulltext->index('topic_title'))
 		{
 			return;
 		}

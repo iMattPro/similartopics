@@ -45,13 +45,10 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 	*/
 	public function revert_fulltext_changes()
 	{
-		if (!function_exists('is_fulltext'))
-		{
-			include($this->phpbb_root_path . 'ext/vse/similartopics/includes/functions.' . $this->php_ext);
-		}
+		$fulltext = new \vse\similartopics\core\fulltext_support($this->db);
 
 		// Drop the FULLTEXT index
-		if (is_fulltext('topic_title'))
+		if ($fulltext->index('topic_title'))
 		{
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
 			$this->db->sql_query($sql);
