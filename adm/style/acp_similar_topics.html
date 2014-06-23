@@ -11,10 +11,14 @@
 <!-- IF S_PST_NO_SUPPORT -->
 	<div class="errorbox">
 		<h3>{L_WARNING}</h3>
-		<p>{L_PST_WARNING}</p>
-		<p class="submit-buttons">
-			<input class="button1" type="submit" id="fulltext" name="fulltext" value=" {L_PST_ADD_FULLTEXT} " />
-		</p>
+		<!-- IF S_PST_NO_MYSQL -->
+			<p>{L_PST_NO_MYSQL}</p>
+		<!-- ELSE -->
+			<p>{L_PST_WARN_FULLTEXT}</p>
+			<p class="submit-buttons">
+				<input class="button1" type="submit" id="fulltext" name="fulltext" value=" {L_PST_ADD_FULLTEXT} " />
+			</p>
+		<!-- ENDIF -->
 	</div>
 <!-- ENDIF -->
 

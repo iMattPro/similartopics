@@ -198,6 +198,7 @@ class similar_topics_module
 					'S_TIME_OPTIONS'	=> $s_time_options,
 					'PST_VERSION'		=> isset($this->config['similar_topics_version']) ? $this->config['similar_topics_version'] : '',
 					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
+					'S_PST_NO_MYSQL'	=> !$this->fulltext->is_mysql(),
 					'U_ACTION'			=> $this->u_action,
 				));
 
