@@ -37,7 +37,7 @@ class fulltext_support
 	*/
 	public function is_mysql()
 	{
-		if ($this->db->sql_layer == 'mysql4' || $this->db->sql_layer == 'mysqli')
+		if ($this->db->get_sql_layer() == 'mysql4' || $this->db->get_sql_layer() == 'mysqli')
 		{
 			return true;
 		}

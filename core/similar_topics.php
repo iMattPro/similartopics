@@ -391,6 +391,6 @@ class similar_topics
 	*/
 	protected function is_mysql()
 	{
-		return ($this->db->sql_layer == 'mysql4' || $this->db->sql_layer == 'mysqli');
+		return ($this->db->get_sql_layer() == 'mysql4' || $this->db->get_sql_layer() == 'mysqli');
 	}
 }
