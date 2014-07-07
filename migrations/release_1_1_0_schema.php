@@ -14,12 +14,7 @@ class release_1_1_0_schema extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return isset($this->config['similar_topics_version']) && version_compare($this->config['similar_topics_version'], '1.1.0', '>=');
-	}
-
-	static public function depends_on()
-	{
-		return array('\phpbb\db\migration\data\v310\beta4');
+		return $this->db_tools->sql_column_exists($this->table_prefix . 'forums', 'similar_topic_forums');
 	}
 
 	public function update_schema()
