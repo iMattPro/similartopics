@@ -39,7 +39,7 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * Featured MOD of the Week in the phpBB Weekly Podcast, episode #161.
 
 ## Requirements
-* phpBB 3.1.0-b4 or higher
+* phpBB 3.1.0-RC2 or higher
 * PHP 5.3.3 or higher
 * MySQL 4.0.1 or higher using MyISAM tables (InnoDB supported with MySQL 5.6.4 or higher).
 
