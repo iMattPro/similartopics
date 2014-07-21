@@ -59,6 +59,7 @@ class similar_topics_module
 		$this->fulltext = new \vse\similartopics\core\fulltext_support($this->db);
 
 		$this->user->add_lang('acp/common');
+		$this->user->add_lang_ext('vse/similartopics', 'acp_similar_topics');
 		$this->tpl_name = 'acp_similar_topics';
 		$this->page_title = $this->user->lang('PST_TITLE_ACP');
 
