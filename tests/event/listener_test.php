@@ -29,7 +29,7 @@ class ucp_listener_test extends \phpbb_test_case
 		$this->config = new \phpbb\config\config(array('similar_topics' => 1));
 		$this->request = $this->getMock('\phpbb\request\request');
 		$this->template = new \vse\similartopics\tests\mock\template();
-		$this->user = $this->getMock('\phpbb\user');
+		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 		$this->similar_topics = new \vse\similartopics\tests\mock\similar_topics();
 	}
 
