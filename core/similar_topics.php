@@ -180,7 +180,7 @@ class similar_topics
 		/**
 		* Event to modify the sql_array for similar topics
 		*
-		* @event similartopics.get_topic_data
+		* @event vse.similartopics.modify_topicrow
 		* @var	array	sql_array	SQL array to get similar topics data
 		* @since 1.3.0
 		*/
@@ -273,7 +273,7 @@ class similar_topics
 				/**
 				* Event to modify the similar topics template block
 				*
-				* @event similartopics.modify_topicrow
+				* @event vse.similartopics.modify_topicrow
 				* @var	array	row			Array with similar topic data
 				* @var	array	topic_row	Template block array
 				* @since 1.3.0
