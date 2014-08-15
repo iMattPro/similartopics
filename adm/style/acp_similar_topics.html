@@ -24,21 +24,17 @@
 
 <!-- IF S_ADVANCED_SETTINGS -->
 
-<script type="text/javascript">
-// <![CDATA[
-
-	function selector(bool)
-	{
-		var table = document.getElementById('similar_forums');
-
-		for (var i = 0; i < table.options.length; i++)
+	<script>
+		function selector(bool)
 		{
-			table.options[i].selected = bool;
-		}
-	}
+			var table = document.getElementById('similar_forums');
 
-// ]]>
-</script>
+			for (var i = 0; i < table.options.length; i++)
+			{
+				table.options[i].selected = bool;
+			}
+		}
+	</script>
 
 	<fieldset>
 			<legend>{L_PST_ADVANCED_FORUM}</legend>
