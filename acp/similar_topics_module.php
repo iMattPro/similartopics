@@ -30,7 +30,7 @@ class similar_topics_module
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var ContainerBuilder */
+	/** @var ContainerInterface */
 	protected $phpbb_container;
 
 	/** @var string */
@@ -39,7 +39,7 @@ class similar_topics_module
 	/** @var string */
 	protected $php_ext;
 
-	/** @var string */
+	/** @var \vse\similartopics\core\fulltext_support */
 	protected $fulltext;
 
 	public $u_action;

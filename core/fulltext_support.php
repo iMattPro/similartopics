@@ -48,7 +48,7 @@ class fulltext_support
 	/**
 	* Set the database storage engine name
 	*
-	* @return this object for chaining calls
+	* @return \vse\similartopics\core\fulltext_support object for chaining calls
 	*/
 	public function engine()
 	{

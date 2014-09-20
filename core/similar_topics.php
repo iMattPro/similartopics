@@ -39,7 +39,7 @@ class similar_topics
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var \content\visibility */
+	/** @var \phpbb\content_visibility */
 	protected $content_visibility;
 
 	/** @var string phpBB root path  */
