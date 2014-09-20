@@ -94,6 +94,7 @@ class similar_topics_module
 					trigger_error($this->user->lang('PST_SAVED') . adm_back_link($this->u_action));
 				}
 
+				$forum_name = '';
 				$selected = array();
 				if ($forum_id > 0)
 				{
@@ -257,22 +258,24 @@ class similar_topics_module
 		$length = abs($length);
 		switch ($type)
 		{
-			case 'y':
-				return ($length * 365 * 24 * 60 * 60);
-			break;
-
-			case 'm':
-				return (round($length * 30.4) * 24 * 60 * 60);
+			case 'd':
+				$time = ($length * 24 * 60 * 60);
 			break;
 
 			case 'w':
-				return ($length * 7 * 24 * 60 * 60);
+				$time = ($length * 7 * 24 * 60 * 60);
 			break;
 
-			case 'd':
-				return ($length * 24 * 60 * 60);
+			case 'm':
+				$time = (round($length * 30.4) * 24 * 60 * 60);
+			break;
+
+			case 'y':
+			default:
+				$time = ($length * 365 * 24 * 60 * 60);
 			break;
 		}
+		return (int) $time;
 	}
 
 	/**
