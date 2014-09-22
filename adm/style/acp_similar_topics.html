@@ -71,7 +71,13 @@
 	</dl>
 	<dl>
 		<dt><label for="pst_time">{L_PST_TIME}{L_COLON}</label><br /><span>{L_PST_TIME_EXPLAIN}</span></dt>
-		<dd><input name="pst_time" id="pst_time" type="text" size="4" maxlength="2" value="{PST_TIME}" /> <select name="pst_time_type">{S_TIME_OPTIONS}</select></dd>
+		<dd><input name="pst_time" id="pst_time" type="text" size="4" maxlength="2" value="{PST_TIME}" />
+			<select name="pst_time_type">
+				<!-- BEGIN similar_time_options -->
+					<option value="{similar_time_options.VALUE}"<!-- IF similar_time_options.S_SELECTED --> selected="selected"<!-- ENDIF -->>{similar_time_options.LABEL}</option>
+				<!-- END similar_time_options -->
+			</select>
+		</dd>
 	</dl>
 	<dl>
 		<dt><label for="pst_cache">{L_PST_CACHE}{L_COLON}</label><br /><span>{L_PST_CACHE_EXPLAIN}</span></dt>

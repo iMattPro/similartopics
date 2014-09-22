@@ -183,12 +183,19 @@ class similar_topics_module
 				}
 
 				// Build the time options select menu
-				$time_options = array('d' => $this->user->lang('PST_DAYS'), 'w' => $this->user->lang('PST_WEEKS'), 'm' => $this->user->lang('PST_MONTHS'), 'y' => $this->user->lang('PST_YEARS'));
-				$s_time_options = '';
-				foreach ($time_options as $key => $value)
+				$time_options = array(
+					'd' => $this->user->lang('PST_DAYS'),
+					'w' => $this->user->lang('PST_WEEKS'),
+					'm' => $this->user->lang('PST_MONTHS'),
+					'y' => $this->user->lang('PST_YEARS')
+				);
+				foreach ($time_options as $value => $label)
 				{
-					$selected = ($key == $this->config['similar_topics_type']) ? ' selected="selected"' : '';
-					$s_time_options .= '<option value="' . $key . '"' . $selected . '>' . $value . '</option>';
+					$this->template->assign_block_vars('similar_time_options', array(
+						'VALUE'			=> $value,
+						'LABEL'			=> $label,
+						'S_SELECTED'	=> ($value == $this->config['similar_topics_type']) ? true : false,
+					));
 				}
 
 				$this->template->assign_vars(array(
@@ -197,7 +204,6 @@ class similar_topics_module
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
 					'PST_CACHE'			=> isset($this->config['similar_topics_cache']) ? $this->config['similar_topics_cache'] : '',
 					'PST_WORDS'			=> isset($this->config['similar_topics_words']) ? $this->config['similar_topics_words'] : '',
-					'S_TIME_OPTIONS'	=> $s_time_options,
 					'PST_VERSION'		=> isset($this->config['similar_topics_version']) ? $this->config['similar_topics_version'] : '',
 					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
 					'S_PST_NO_MYSQL'	=> !$this->fulltext->is_mysql(),
