@@ -229,10 +229,10 @@ class similar_topics
 				$topic_unapproved = ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
 				$posts_unapproved = ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
 				//$topic_deleted = $row['topic_visibility'] == ITEM_DELETED;
-				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->php_ext", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
-				//$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$this->root_path}mcp.$this->php_ext", "i=queue&amp;mode=deleted_topics&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
+				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
+				//$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", "i=queue&amp;mode=deleted_topics&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
 
-				$base_url = append_sid("{$this->root_path}viewtopic.$this->php_ext", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id);
+				$base_url = append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id);
 
 				$topic_row = array(
 					'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
@@ -262,11 +262,11 @@ class similar_topics
 					//'S_TOPIC_DELETED'		=> $topic_deleted,
 					'S_HAS_POLL'			=> ($row['poll_start']) ? true : false,
 
-					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.$this->php_ext", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
-					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.$this->php_ext", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
-					'U_VIEW_TOPIC'			=> append_sid("{$this->root_path}viewtopic.$this->php_ext", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id),
-					'U_VIEW_FORUM'			=> append_sid("{$this->root_path}viewforum.$this->php_ext", 'f=' . $similar_forum_id),
-					'U_MCP_REPORT'			=> append_sid("{$this->root_path}mcp.$this->php_ext", 'i=reports&amp;mode=reports&amp;f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id, true, $this->user->session_id),
+					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
+					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
+					'U_VIEW_TOPIC'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id),
+					'U_VIEW_FORUM'			=> append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $similar_forum_id),
+					'U_MCP_REPORT'			=> append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=reports&amp;mode=reports&amp;f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id, true, $this->user->session_id),
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
 				);
 
