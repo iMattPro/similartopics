@@ -42,6 +42,7 @@ class similar_topics_module
 	/** @var \vse\similartopics\core\fulltext_support */
 	protected $fulltext;
 
+	/** @var string */
 	public $u_action;
 
 	public function main($id, $mode)
@@ -235,8 +236,6 @@ class similar_topics_module
 	*/
 	protected function get_forum_list()
 	{
-		$forum_list = array();
-
 		$sql = 'SELECT forum_id, forum_name, similar_topic_forums
 			FROM ' . FORUMS_TABLE . '
 			WHERE forum_type = ' .	FORUM_POST . '
