@@ -337,10 +337,10 @@ class similar_topics
 	{
 		$words = array();
 
-		if (!$english_lang && file_exists("{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.$this->php_ext"))
+		if (!$english_lang && file_exists("{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}"))
 		{
 			// Retrieve a language dependent list of words to be ignored (method copied from search.php)
-			include("{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.$this->php_ext");
+			include("{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}");
 		}
 
 		if ($ignore_words)
