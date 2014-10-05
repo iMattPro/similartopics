@@ -28,7 +28,7 @@ class release_1_1_6_data extends \phpbb\db\migration\migration
 			// Add new configs
 			array('config.add', array('similar_topics_words', '')),
 
-			// Update exisiting configs
+			// Update existing configs
 			array('config.update', array('similar_topics_version', '1.1.6')),
 		);
 	}

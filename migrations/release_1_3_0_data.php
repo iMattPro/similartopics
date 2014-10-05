@@ -46,7 +46,7 @@ class release_1_3_0_data extends \phpbb\db\migration\migration
 				),
 			)),
 
-			// Update exisiting configs
+			// Update existing configs
 			array('config.update', array('similar_topics_version', '1.3.0')),
 		);
 	}

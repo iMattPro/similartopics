@@ -35,7 +35,7 @@ class release_1_1_1_data extends \phpbb\db\migration\migration
 			// Add new configs
 			array('config.add', array('similar_topics_cache', '0')),
 
-			// Update exisiting configs
+			// Update existing configs
 			array('config.update', array('similar_topics_time', '31536000')),
 			array('config.update', array('similar_topics_version', '1.1.1')),
 		);
