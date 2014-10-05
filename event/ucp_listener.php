@@ -84,11 +84,10 @@ class ucp_listener implements EventSubscriberInterface
 		// Output the data vars to the template (except on form submit)
 		if (!$event['submit'])
 		{
-			$data = $event['data'];
 			$this->user->add_lang_ext('vse/similartopics', 'similar_topics');
 			$this->template->assign_vars(array(
 				'S_SIMILAR_TOPICS'			=> $this->config['similar_topics'] && $this->auth->acl_get('u_similar_topics'),
-				'S_DISPLAY_SIMILAR_TOPICS'	=> $data['similar_topics'],
+				'S_DISPLAY_SIMILAR_TOPICS'	=> $event['data']['similar_topics'],
 			));
 		}
 	}
@@ -102,9 +101,8 @@ class ucp_listener implements EventSubscriberInterface
 	*/
 	public function ucp_prefs_set_data($event)
 	{
-		$data = $event['data'];
 		$event['sql_ary'] = array_merge($event['sql_ary'], array(
-			'user_similar_topics' => $data['similar_topics'],
+			'user_similar_topics' => $event['data']['similar_topics'],
 		));
 	}
 }
