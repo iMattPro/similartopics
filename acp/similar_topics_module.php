@@ -30,11 +30,11 @@ class similar_topics_module
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var ContainerInterface */
-	protected $phpbb_container;
+	/** @var \phpbb\log\log */
+	protected $log;
 
 	/** @var string */
-	protected $phpbb_root_path;
+	protected $root_path;
 
 	/** @var string */
 	protected $php_ext;
@@ -46,15 +46,15 @@ class similar_topics_module
 
 	public function main($id, $mode)
 	{
-		global $config, $db, $request, $template, $user, $phpbb_container, $phpbb_root_path, $phpEx;
+		global $config, $db, $request, $template, $user, $phpbb_log, $phpbb_root_path, $phpEx;
 
 		$this->config = $config;
 		$this->db = $db;
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
-		$this->phpbb_container = $phpbb_container;
-		$this->phpbb_root_path = $phpbb_root_path;
+		$this->log = $phpbb_log;
+		$this->root_path = $phpbb_root_path;
 		$this->php_ext = $phpEx;
 		$this->fulltext = new \vse\similartopics\core\fulltext_support($this->db);
 
@@ -88,8 +88,7 @@ class similar_topics_module
 						WHERE forum_id = $forum_id";
 					$this->db->sql_query($sql);
 
-					$log = $this->phpbb_container->get('log');
-					$log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
 					trigger_error($this->user->lang('PST_SAVED') . adm_back_link($this->u_action));
 				}
@@ -153,8 +152,7 @@ class similar_topics_module
 					$pst_words = $this->request->variable('pst_words', '');
 					$this->config->set('similar_topics_words', $pst_words);
 
-					$log = $this->phpbb_container->get('log');
-					$log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
 					trigger_error($this->user->lang('PST_SAVED') . adm_back_link($this->u_action));
 				}
@@ -175,8 +173,7 @@ class similar_topics_module
 						// Store the original database storage engine in a config var
 						$this->config->set('similar_topics_fulltext', (string) $this->fulltext->engine);
 
-						$log = $this->phpbb_container->get('log');
-						$log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
+						$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
 
 						trigger_error($this->user->lang('PST_SAVE_FULLTEXT') . adm_back_link($this->u_action));
 					}
