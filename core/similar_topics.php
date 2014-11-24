@@ -230,7 +230,7 @@ class similar_topics
 				$posts_unapproved = ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
 				//$topic_deleted = $row['topic_visibility'] == ITEM_DELETED;
 				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
-				//$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", "i=queue&amp;mode=deleted_topics&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
+				//$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", "i=queue&amp;mode=deleted_topics&amp;t=$similar_topic_id", true, $this->user->session_id) : $u_mcp_queue;
 
 				$base_url = append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id);
 
@@ -314,7 +314,7 @@ class similar_topics
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
 		$english_lang = ($this->user->lang_name == 'en' || $this->user->lang_name == 'en_us') ? true : false;
-		$ignore_words = !empty($this->config['similar_topics_words']) ? true : false;
+		$ignore_words = (!empty($this->config['similar_topics_words'])) ? true : false;
 
 		if (!$english_lang || $ignore_words)
 		{
@@ -337,10 +337,11 @@ class similar_topics
 	{
 		$words = array();
 
-		if (!$english_lang && file_exists("{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}"))
+		$search_ignore_words = "{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}";
+		if (!$english_lang && file_exists($search_ignore_words))
 		{
 			// Retrieve a language dependent list of words to be ignored (method copied from search.php)
-			include("{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}");
+			include($search_ignore_words);
 		}
 
 		if ($ignore_words)
@@ -353,7 +354,7 @@ class similar_topics
 		$words = array_diff($this->make_word_array($text), $words);
 
 		// Convert our words array back to a string
-		$text = !empty($words) ? implode(' ', $words) : '';
+		$text = (!empty($words)) ? implode(' ', $words) : '';
 
 		return $text;
 	}
