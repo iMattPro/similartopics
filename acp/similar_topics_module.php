@@ -221,7 +221,7 @@ class similar_topics_module
 						'CHECKED_NOSHOW_FORUM'	=> (in_array($row['forum_id'], $noshow_forums)) ? 'checked="checked"' : '',
 						'S_IS_ADVANCED'			=> $row['similar_topic_forums'] ? true : false,
 						'U_ADVANCED'			=> "{$this->u_action}&amp;action=advanced&amp;f=" . $row['forum_id'],
-						'U_FORUM'				=> "{$this->root_path}viewforum.{$this->php_ext}?f=" . $row['forum_id'],
+						'U_FORUM'				=> append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $row['forum_id']),
 					));
 				}
 			break;
