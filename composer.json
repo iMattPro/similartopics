@@ -1,9 +1,9 @@
 {
 	"name": "vse/similartopics",
 	"type": "phpbb-extension",
-	"description": "Displays a list of similar (related) topics at the bottom of the current topic's page.",
+	"description": "A phpBB 3.1 extension that displays a list of similar (related) topics at the bottom of the current topic's page.",
 	"homepage": "https://github.com/VSEphpbb/similartopics",
-	"version": "1.3.0-b3",
+	"version": "1.3.0",
 	"keywords": ["phpbb", "extension", "similar", "topics"],
 	"license": "GPL-2.0",
 	"authors": [
@@ -26,9 +26,9 @@
 			"phpbb/phpbb": ">=3.1.0-RC2,<3.2.*@dev"
 		},
 		"version-check": {
-			"host": "vsephpbb.github.io",
-			"directory": "/version",
-			"filename": "similartopics.json"
+			"host": "www.phpbb.com",
+			"directory": "/customise/db/extension/precise_similar_topics",
+			"filename": "version_check"
 		}
 	}
 }

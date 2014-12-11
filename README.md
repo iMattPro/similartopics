@@ -18,8 +18,8 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * A query caching option reduces SQL overhead on large boards.
 * Permission settings for users and groups determine who can view similar topics.
 * Multi-lingual support for stop-words (common words that are ignored).
-* Attractive Prosilver and Subsilver2 integration.
-* Built-in support for integration with the "Topic Preview" extension
+* Prosilver and Subsilver2 styles compatibility.
+* Built-in compatibility with my "Topic Preview" extension.
 
 ### Languages supported:
 * English
@@ -42,8 +42,6 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * phpBB 3.1.0-RC2 or higher
 * PHP 5.3.3 or higher
 * MySQL 4.0.1 or higher using MyISAM tables (InnoDB supported with MySQL 5.6.4 or higher).
-
-Note: This extension is in development. Installation is only recommended for testing purposes and is not supported on live boards. This extension will be officially released following phpBB 3.1.0.
 
 ## Installation
 1. [Download the latest release](https://github.com/VSEphpbb/similartopics/releases) and unzip it.
