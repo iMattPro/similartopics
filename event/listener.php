@@ -71,13 +71,17 @@ class listener implements EventSubscriberInterface
 	*/
 	public function load_similar_topics($event)
 	{
-		// Return early if not supposed to see similar topics
-		if (empty($this->config['similar_topics']) || empty($this->user->data['user_similar_topics']) || !$this->auth->acl_get('u_similar_topics'))
+		// Return early if no reason to display similar topics
+		if (empty($this->config['similar_topics']) ||
+			empty($this->config['similar_topics_limit']) ||
+			empty($this->user->data['user_similar_topics']) ||
+			!$this->auth->acl_get('u_similar_topics') ||
+			in_array($event['forum_id'], explode(',', $this->config['similar_topics_hide'])))
 		{
 			return;
 		}
 
-		$this->similar_topics->get_similar_topics($event['topic_data'], $event['forum_id']);
+		$this->similar_topics->get_similar_topics($event['topic_data']);
 	}
 
 	/**

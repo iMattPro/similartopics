@@ -91,14 +91,13 @@ class similar_topics
 	* languages. We also remove any admin-defined special ignore words.
 	*
 	* @param	array	$topic_data	Array with topic data
-	* @param	int		$forum_id	Forum ID of the topic
 	* @return 	null
 	* @access	public
 	*/
-	public function get_similar_topics($topic_data, $forum_id)
+	public function get_similar_topics($topic_data)
 	{
-		// Potential reasons to stop execution
-		if (!$this->config['similar_topics_limit'] || in_array($forum_id, explode(',', $this->config['similar_topics_hide'])) || !$this->is_mysql())
+		// Do not continue if database is not MySQL
+		if (!$this->is_mysql())
 		{
 			return;
 		}
