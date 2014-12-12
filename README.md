@@ -21,7 +21,7 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * Prosilver and Subsilver2 styles compatibility.
 * Built-in compatibility with my "Topic Preview" extension.
 
-### Languages supported:
+## Languages supported:
 * English
 * Dutch
 * French
