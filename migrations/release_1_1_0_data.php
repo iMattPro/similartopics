@@ -72,7 +72,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 		$fulltext = new \vse\similartopics\core\fulltext_support($this->db);
 
 		// FULLTEXT is not supported
-		if (!$fulltext->engine()->supported())
+		if (!$fulltext->is_supported())
 		{
 			return;
 		}
@@ -95,7 +95,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 		$fulltext = new \vse\similartopics\core\fulltext_support($this->db);
 
 		// FULLTEXT is not supported
-		if (!$fulltext->engine()->supported())
+		if (!$fulltext->is_supported())
 		{
 			return;
 		}

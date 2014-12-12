@@ -70,4 +70,5 @@ $lang = array_merge($lang, array(
 	'PST_WARN_FULLTEXT'	=> 'Vergelijkbare onderwerpen zal niet werken op uw forum. Vergelijkbare onderwerpen gebruikt FULLTEXT indexen die een MySQL 4 of MySQL 5 database en de “phpbb_topics” tabel nodig hebben, moet worden ingesteld op de MyISAM storage engine (of InnoDB is ook toegestaan ​​in combinatie met MySQL 5.6.4 of nieuwer).<br /><br />Als je wilt Vergelijkbare onderwerpen gebruiken, kunnen we gerust uw database te updaten naar FULLTEXT indexen ondersteunen. Eventuele wijzigingen zullen worden teruggedraaid als je ooit besluit om Vergelijkbare onderwerpen te verwijderen.',
 	'PST_ADD_FULLTEXT'	=> 'Ja, in staat ondersteuning voor FULLTEXT indexen',
 	'PST_SAVE_FULLTEXT'	=> 'De database is bijgewerkt. U kunt nu genieten van het gebruik Vergelijkbare onderwerpen.',
+	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
 ));

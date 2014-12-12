@@ -64,14 +64,14 @@ class fulltext_test extends \phpbb_database_test_case
 	public function test_fulltext_support()
 	{
 		// Check for fulltext index support
-		$this->assertTrue($this->fulltext->engine()->supported());
+		$this->assertTrue($this->fulltext->is_supported());
 
 		// Check that the engine name is stored correctly
-		$this->assertEquals($this->fulltext->engine, 'myisam');
+		$this->assertEquals($this->fulltext->get_engine(), 'myisam');
 	}
 
 	/**
-	* Test that the a field is fulltext
+	* Test that the field is fulltext
 	*/
 	public function test_fulltext_index()
 	{

@@ -67,7 +67,8 @@ $lang = array_merge($lang, array(
 	'PST_SAVED'			=> 'Similar Topics settings updated',
 	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will not show similar topics in the selected forums.<br />“Do Not Search In” : Will not search for similar topics in the selected forums.',
 	'PST_NO_MYSQL'		=> 'Similar Topics is not compatible with your forum. Similar Topics will only run on a MySQL 4 or MySQL 5 database.',
-	'PST_WARN_FULLTEXT'	=> 'Similar Topics is not compatible with your forum. Similar Topics uses FULLTEXT indexes which require a MySQL 4 or MySQL 5 database and the “phpbb_topics” table must be set to the MyISAM storage engine (or InnoDB is also allowed when used with MySQL 5.6.4 or newer).<br /><br />If you want to use Similar Topics, your database can be safely updated to support FULLTEXT indexes. Any changes made will be reverted if you ever decide to remove Similar Topics.',
-	'PST_ADD_FULLTEXT'	=> 'Yes, enable support for FULLTEXT indexes',
+	'PST_WARN_FULLTEXT'	=> 'Similar Topics is not compatible with your forum.<br />Similar Topics uses MySQL fulltext indexes which can only be used with MyISAM or InnoDB tables. MySQL 5.6.4 or later is required for fulltext indexes on InnoDB tables.<br /><br />If you want to use Similar Topics, your database can be updated to support fulltext indexes. Any changes made will be reverted if you ever decide to remove Similar Topics.',
+	'PST_ADD_FULLTEXT'	=> 'Yes, enable support for fulltext indexes',
 	'PST_SAVE_FULLTEXT'	=> 'Your database has been updated. You can now enjoy using Similar Topics.',
+	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
 ));

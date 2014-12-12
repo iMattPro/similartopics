@@ -16,7 +16,7 @@ class fulltext_support
 	protected $db;
 
 	/** @var string */
-	public $engine;
+	protected $engine;
 
 	/**
 	* Constructor
@@ -37,20 +37,37 @@ class fulltext_support
 	*/
 	public function is_mysql()
 	{
-		if ($this->db->get_sql_layer() == 'mysql4' || $this->db->get_sql_layer() == 'mysqli')
-		{
-			return true;
-		}
+		return ($this->db->get_sql_layer() == 'mysql4' || $this->db->get_sql_layer() == 'mysqli');
+	}
 
-		return false;
+	/**
+	* Check for FULLTEXT index support
+	*
+	* @return bool True if FULLTEXT is supported, false otherwise
+	*/
+	public function is_supported()
+	{
+		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
+		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
+		return ($this->get_engine() === 'myisam' || ($this->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')));
+	}
+
+	/**
+	* Get the database storage engine name
+	*
+	* @return string The storage engine name
+	*/
+	public function get_engine()
+	{
+		return (isset($this->engine)) ? $this->engine : $this->set_engine();
 	}
 
 	/**
 	* Set the database storage engine name
 	*
-	* @return \vse\similartopics\core\fulltext_support object for chaining calls
+	* @return string The storage engine name
 	*/
-	public function engine()
+	public function set_engine()
 	{
 		$this->engine = '';
 
@@ -70,24 +87,7 @@ class fulltext_support
 			}
 		}
 
-		return $this;
-	}
-
-	/**
-	* Check for FULLTEXT index support
-	*
-	* @return bool True if FULLTEXT is supported, false otherwise
-	*/
-	public function supported()
-	{
-		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
-		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
-		if ($this->engine === 'myisam' || ($this->engine === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')))
-		{
-			return true;
-		}
-
-		return false;
+		return $this->engine;
 	}
 
 	/**

@@ -161,22 +161,31 @@ class similar_topics_module
 				// Allow option to update the database to enable FULLTEXT support
 				if ($this->request->is_set_post('fulltext'))
 				{
-					if (!check_form_key($form_key))
+					if (confirm_box(true))
 					{
-						trigger_error($user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+						// If FULLTEXT is not supported, lets make it so
+						if (!$this->fulltext_support_enabled())
+						{
+							// Alter the database to support FULLTEXT
+							$this->enable_fulltext_support();
+
+							// Store the original database storage engine in a config var for recovery on uninstall
+							$this->config->set('similar_topics_fulltext', (string) $this->fulltext->get_engine());
+
+							$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
+
+							trigger_error($this->user->lang('PST_SAVE_FULLTEXT') . adm_back_link($this->u_action));
+						}
+						else
+						{
+							trigger_error($this->user->lang('PST_ERR_FULLTEXT') . adm_back_link($this->u_action), E_USER_WARNING);
+						}
 					}
-
-					if (!$this->fulltext_support_enabled())
+					else
 					{
-						// Alter the database to support FULLTEXT
-						$this->enable_fulltext_support();
-
-						// Store the original database storage engine in a config var
-						$this->config->set('similar_topics_fulltext', (string) $this->fulltext->engine);
-
-						$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
-
-						trigger_error($this->user->lang('PST_SAVE_FULLTEXT') . adm_back_link($this->u_action));
+						confirm_box(false, $this->user->lang('CONFIRM_OPERATION'), build_hidden_fields(array(
+							'fulltext'		=> 1,
+						)));
 					}
 				}
 
@@ -323,7 +332,7 @@ class similar_topics_module
 	*/
 	protected function fulltext_support_enabled()
 	{
-		if ($this->fulltext->engine()->supported())
+		if ($this->fulltext->is_supported())
 		{
 			return $this->fulltext->index('topic_title');
 		}
