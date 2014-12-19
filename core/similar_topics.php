@@ -102,9 +102,9 @@ class similar_topics
 			return;
 		}
 
-		$topic_title = $this->strip_topic_title($topic_data['topic_title']);
+		$topic_title = $this->clean_topic_title($topic_data['topic_title']);
 
-		// If the stripped down topic_title is empty, no need to continue
+		// If the cleaned up topic_title is empty, no need to continue
 		if (empty($topic_title))
 		{
 			return;
@@ -307,17 +307,14 @@ class similar_topics
 	* @return	string	The topic title
 	* @access	protected
 	*/
-	protected function strip_topic_title($text)
+	protected function clean_topic_title($text)
 	{
 		// Strip quotes, ampersands
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
-		$english_lang = ($this->user->lang_name == 'en' || $this->user->lang_name == 'en_us') ? true : false;
-		$ignore_words = (!empty($this->config['similar_topics_words'])) ? true : false;
-
-		if (!$english_lang || $ignore_words)
+		if (!$this->english_lang() || $this->has_ignore_words())
 		{
-			$text = $this->strip_stop_words($text, $english_lang, $ignore_words);
+			$text = $this->strip_stop_words($text);
 		}
 
 		return $text;
@@ -327,23 +324,21 @@ class similar_topics
 	* Remove any non-english and/or custom defined ignore-words
 	*
 	* @param	string	$text			The topic title
-	* @param	bool	$english_lang	False means use phpBB's ignore words
-	* @param	bool	$ignore_words	True means strip custom ignore words
 	* @return	string	The topic title
 	* @access	protected
 	*/
-	protected function strip_stop_words($text, $english_lang, $ignore_words)
+	protected function strip_stop_words($text)
 	{
 		$words = array();
 
 		// Retrieve a language dependent list of words to be ignored (method copied from search.php)
 		$search_ignore_words = "{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}";
-		if (!$english_lang && file_exists($search_ignore_words))
+		if (!$this->english_lang() && file_exists($search_ignore_words))
 		{
 			include($search_ignore_words);
 		}
 
-		if ($ignore_words)
+		if ($this->has_ignore_words())
 		{
 			// Merge any custom defined ignore words from the ACP to the stop-words array
 			$words = array_merge($this->make_word_array($this->config['similar_topics_words']), $words);
@@ -381,6 +376,28 @@ class similar_topics
 		}
 
 		return $words;
+	}
+
+	/**
+	* Check if English is the current user's language
+	*
+	* @return	bool	True if lang is 'en' or 'en_us', false otherwise
+	* @access	protected
+	*/
+	protected function english_lang()
+	{
+		return ($this->user->lang_name == 'en' || $this->user->lang_name == 'en_us');
+	}
+
+	/**
+	* Check if custom ignore words have been defined for similar topics
+	*
+	* @return	bool	True or false
+	* @access	protected
+	*/
+	protected function has_ignore_words()
+	{
+		return !empty($this->config['similar_topics_words']);
 	}
 
 	/**
