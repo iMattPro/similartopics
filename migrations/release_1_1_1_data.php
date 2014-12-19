@@ -14,7 +14,7 @@ class release_1_1_1_data extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return version_compare($this->config['similar_topics_version'], '1.1.1', '>=');
+		return isset($this->config['similar_topics_cache']);
 	}
 
 	static public function depends_on()

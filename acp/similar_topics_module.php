@@ -112,7 +112,6 @@ class similar_topics_module
 
 				$this->template->assign_vars(array(
 					'S_ADVANCED_SETTINGS'		=> true,
-					'PST_VERSION'				=> isset($this->config['similar_topics_version']) ? 'v' . $this->config['similar_topics_version'] : false,
 					'SIMILAR_FORUMS_OPTIONS'	=> make_forum_select($selected, false, false, true),
 					'PST_FORUM_NAME'			=> $forum_name,
 					'PST_ADVANCED_EXP'			=> $this->user->lang('PST_ADVANCED_EXP', $forum_name),
@@ -211,7 +210,6 @@ class similar_topics_module
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
 					'PST_CACHE'			=> isset($this->config['similar_topics_cache']) ? $this->config['similar_topics_cache'] : '',
 					'PST_WORDS'			=> isset($this->config['similar_topics_words']) ? $this->config['similar_topics_words'] : '',
-					'PST_VERSION'		=> isset($this->config['similar_topics_version']) ? $this->config['similar_topics_version'] : '',
 					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
 					'S_PST_NO_MYSQL'	=> !$this->fulltext->is_mysql(),
 					'U_ACTION'			=> $this->u_action,

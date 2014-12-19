@@ -14,7 +14,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return isset($this->config['similar_topics_version']) && version_compare($this->config['similar_topics_version'], '1.1.0', '>=');
+		return isset($this->config['similar_topics']);
 	}
 
 	static public function depends_on()
@@ -32,6 +32,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 			array('config.add', array('similar_topics_ignore', '')),
 			array('config.add', array('similar_topics_type', 'y')),
 			array('config.add', array('similar_topics_time', '365')),
+			array('config.add', array('similar_topics_version', '1.1.0')),
 
 			// Add ACP module
 			array('module.add', array(
@@ -50,9 +51,6 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 
 			// Custom functions
 			array('custom', array(array($this, 'add_topic_title_fulltext'))),
-
-			// Keep track of version in the database
-			array('config.add', array('similar_topics_version', '1.1.0')),
 		);
 	}
 
