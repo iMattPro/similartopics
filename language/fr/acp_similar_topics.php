@@ -2,7 +2,7 @@
 /**
 *
 * Precise Similar Topics [French]
-* Translated by Geolim4.com
+* Translated by Geolim4.com & Galixte (http://www.galixte.com)
 *
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -36,40 +36,40 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PST_TITLE_ACP'		=> 'Precise Similar Topics', //Do not rename, even as in French
-	'PST_EXPLAIN'		=> 'Precise Similar Topics affiche une liste de sujets similaires au bas de la page du courant sujet.',
-	'PST_LEGEND1'		=> 'Paramètres généraux',
-	'PST_ENABLE'		=> 'Activer les sujets similaires',
-	'PST_LEGEND2'		=> 'Enregistrer les paramètres',
-	'PST_LIMIT'			=> 'Nom de sujets similaires a afficher',
-	'PST_LIMIT_EXPLAIN'	=> 'Ici vous pouvez sélectionner le nombre de sujet similaire à afficher. 5 par défaut',
+	'PST_TITLE_ACP'		=> 'Sujets similaires précis', //Do not rename, even as in French
+	'PST_EXPLAIN'		=> 'Affiche une liste des sujets similaires au bas de la page du sujet visionné.',
+	'PST_LEGEND1'		=> 'Paramètre général',
+	'PST_ENABLE'		=> 'Afficher les sujets similaires',
+	'PST_LEGEND2'		=> 'Paramètres principaux',
+	'PST_LIMIT'			=> 'Nombre de sujet(s) similaire(s) à afficher',
+	'PST_LIMIT_EXPLAIN'	=> 'Ici vous pouvez sélectionner le nombre de sujet(s) similaire(s) à afficher. La valeur par défaut est de 5 sujets.',
 	'PST_TIME'			=> 'Période de recherche',
-	'PST_TIME_EXPLAIN'	=> 'Cette option vous permet de choisir la periode de recherche des sujets similaires. Par exemple, si vous choisissez “5 jours” le système va seulement afficher les sujets créés depuis 5 jours. 1 an par défaut.',
-	'PST_YEARS'			=> 'Ans',
+	'PST_TIME_EXPLAIN'	=> 'Cette option vous permet de choisir la période de recherche des sujets similaires à afficher. Par exemple, si vous choisissez une période de “5 jours” le système affichera uniquement les sujets créés depuis 5 jours. La valeur par défaut est de 1 an.',
+	'PST_YEARS'			=> 'Année(s)',
 	'PST_MONTHS'		=> 'Mois',
-	'PST_WEEKS'			=> 'Semaines',
-	'PST_DAYS'			=> 'Jours',
+	'PST_WEEKS'			=> 'Semaine(s)',
+	'PST_DAYS'			=> 'Jour(s)',
 	'PST_CACHE'			=> 'Taille du cache des sujets similaires',
-	'PST_CACHE_EXPLAIN'	=> 'La mise en cache des sujets similaires expiereras après cette période. Réglez sur 0 pour désactiver la mise en cache des sujets similaires.',
-	'PST_LEGEND3'		=> 'Paramètres de forums',
+	'PST_CACHE_EXPLAIN'	=> 'La mise en cache des sujets similaires expirera après cette période. Paramétrez sur 0 pour désactiver la mise en cache des sujets similaires.',
+	'PST_LEGEND3'		=> 'Paramètres des forums',
 	'PST_NOSHOW_LIST'	=> 'Ne pas afficher dans',
-	'PST_NOSHOW_TITLE'	=> 'Ne pas afficher les sujet similaires dans',
+	'PST_NOSHOW_TITLE'	=> 'Ne pas afficher les sujets similaires dans le forum :',
 	'PST_IGNORE_SEARCH'	=> 'Ne pas rechercher dans',
-	'PST_IGNORE_TITLE'	=> 'Ne pas rechercher les sujet similaires dans',
+	'PST_IGNORE_TITLE'	=> 'Ne pas rechercher les sujets similaires dans le forum :',
 	'PST_STANDARD'		=> 'Standard',
 	'PST_ADVANCED'		=> 'Avancé',
-	'PST_ADVANCED_TITLE'=> 'Cliquez pour configurer les paramètres avancés de sujet similaire',
-	'PST_ADVANCED_EXP'	=> 'Ici, vous pouvez sélectionner des forums spécifiques pour afficher les sujets similaires. Seuls les sujets similaires trouvés dans les forums que vous sélectionnez ici seront affiché dans <strong>%s</strong>.<br /><br />Ne sélectionnez aucun forum si vous souhaitez que les sujets similaires sois consultables depuis tout le forum.<br /><br />Vous pouvez sélectionner ou désélectionner plusieurs forums en maintenant appuyé la touche <code>CTRL</code> du clavier de votre ordinateur et en cliquant.',
+	'PST_ADVANCED_TITLE'=> 'Cliquez ici pour configurer les paramètres avancés du forum :',
+	'PST_ADVANCED_EXP'	=> 'Ici vous pouvez sélectionner des forums spécifiques dont les sujets similaires proviendront. Seuls les sujets similaires trouvés dans les forums sélectionnés ici seront affichés dans le forum : <strong>%s</strong>.<br /><br />Ne sélectionnez aucun forum si vous souhaitez que tous les sujets similaires de tous les forums soient consultables dans ce forum.<br /><br />Vous pouvez sélectionner ou désélectionner plusieurs forums en maintenant appuyée la touche <code>CTRL</code> du clavier de votre ordinateur et en cliquant.',
 	'PST_ADVANCED_FORUM'=> 'Paramètres avancés du forum',
-	'PST_DESELECT_ALL'	=> 'Tout dé-sélectionner ',
+	'PST_DESELECT_ALL'	=> 'Tout désélectionner',
 	'PST_LEGEND4'		=> 'Paramètres optionnels',
-	'PST_WORDS'			=> 'Mots spéciaux à ignorer',
-	'PST_WORDS_EXPLAIN'	=> 'Ajoutez des mots spéciaux uniques à votre forum qui doivent être ignorés lors de la recherche des sujets similaires. (Remarque: les mots qui sont actuellement considérés comme communs dans votre langue sont déjà ignorés par défaut.) Séparez chaque mot d’un espace. Insensible à la casse. Max. 255 caractères.',
-	'PST_SAVED'			=> 'Paramètres des sujets similaire mit à jour',
-	'PST_FORUM_INFO'	=> '"Ne pas afficher": N’afficheras pas de sujets similaires dans les forums sélectionnés <br /> "Ne pas rechercher dans":. Ne rechercheras pas de sujets similaires dans les forums sélectionnés.',
-	'PST_NO_MYSQL'		=> 'Les sujets similaires ne fonctionneront pas avec sur forum. Ils nécessitent une base de donnée MySQL 4 ou 5.',
-	'PST_WARN_FULLTEXT'	=> 'Les sujets similaires ne fonctionneront pas avec sur forum. Les sujets similaires utilise les index FULLTEXT qui nécessitent une base de données MySQL 4 ou MySQL 5 et le “phpbb_topics” tableau doit être réglé sur le moteur de stockage MyISAM (ou InnoDB est également autorisé lorsqu’il est utilisé avec MySQL 5.6.4 ou plus récent).<br /><br />Si vous souhaitez utiliser Les sujets similaires, nous pouvons mettre à jour votre base de données en toute sécurité pour soutenir les index FULLTEXT. Toutes les modifications apportées sont rétablis si jamais vous décidez de supprimer Les sujets similaires.',
-	'PST_ADD_FULLTEXT'	=> 'Oui, activer le support pour les index FULLTEXT',
-	'PST_SAVE_FULLTEXT'	=> 'Votre base de données a été mise à jour. Vous pouvez maintenant profiter de l’aide de Les sujets similaires.',
-	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_WORDS'			=> 'Mots spécifiques à ignorer',
+	'PST_WORDS_EXPLAIN'	=> 'Ajoutez des mots spécifiques à votre forum qui doivent être ignorés lors de la recherche des sujets similaires. (Remarque : Les mots qui sont actuellement considérés comme communs dans votre langue sont déjà ignorés par défaut.) Séparez chaque mot par un espace. Insensible à la casse. 255 caractères maximum.',
+	'PST_SAVED'			=> 'Les paramètres des sujets similaires ont été mis à jour',
+	'PST_FORUM_INFO'	=> '“Ne pas afficher dans” : N’affiche pas de sujets similaires dans les forums sélectionnés.<br /> “Ne pas rechercher dans” : Ne recherche pas de sujets similaires dans les forums sélectionnés.<br /><br />',
+	'PST_NO_MYSQL'		=> 'L’extension “Sujets similaires précis” n’est pas compatible avec votre forum. Cette extension fonctionne uniquement avec une base de données MySQL 4 ou 5.',
+	'PST_WARN_FULLTEXT'	=> 'L’extension “Sujets similaires précis” n’est pas compatible avec votre forum. Cette extension utilise les index FULLTEXT de MySQL utilisés uniquement par les tables MyISAM ou InnoDB. La version de MySQL 5.6.4 ou une version plus récente est requise pour les index FULLTEXT fonctionnant avec des tables InnoDB.<br /><br />Si vous souhaitez utiliser l’extension “Sujets similaires précis”, votre base de données peut être mise à jour en toute sécurité pour supporter les index FULLTEXT. Toutes les modifications apportées seront rétablies si jamais vous décidez de supprimer l’extension “Sujets similaires précis”.',
+	'PST_ADD_FULLTEXT'	=> 'Oui, activer le support des index FULLTEXT',
+	'PST_SAVE_FULLTEXT'	=> 'Votre base de données a été mise à jour. Vous pouvez maintenant profiter de l’extension “Sujets similaires précis”.',
+	'PST_ERR_FULLTEXT'	=> 'Votre base de données ne peut être mise à jour.',
 ));
