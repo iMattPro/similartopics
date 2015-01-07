@@ -15,6 +15,10 @@ namespace vse\similartopics\acp;
 */
 class similar_topics_module
 {
+	const ONE_DAY = 86400;
+	const ONE_WEEK = 604800;
+	const ONE_YEAR = 31536000;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -268,20 +272,20 @@ class similar_topics_module
 		switch ($type)
 		{
 			case 'd':
-				$time = ($length * 24 * 60 * 60);
+				$time = $length * self::ONE_DAY;
 			break;
 
 			case 'w':
-				$time = ($length * 7 * 24 * 60 * 60);
+				$time = $length * self::ONE_WEEK;
 			break;
 
 			case 'm':
-				$time = (round($length * 30.4) * 24 * 60 * 60);
+				$time = round($length * 30.4) * self::ONE_DAY;
 			break;
 
 			case 'y':
 			default:
-				$time = ($length * 365 * 24 * 60 * 60);
+				$time = $length * self::ONE_YEAR;
 			break;
 		}
 		return (int) $time;
@@ -300,19 +304,19 @@ class similar_topics_module
 		switch ($type)
 		{
 			case 'y':
-				$length = $time / (365 * 24 * 60 * 60);
+				$length = $time / self::ONE_YEAR;
 			break;
 
 			case 'm':
-				$length = round($time / (30.4 * 24 * 60 * 60));
+				$length = round($time / (30.4 * self::ONE_DAY));
 			break;
 
 			case 'w':
-				$length = $time / (7 * 24 * 60 * 60);
+				$length = $time / self::ONE_WEEK;
 			break;
 
 			case 'd':
-				$length = $time / (24 * 60 * 60);
+				$length = $time / self::ONE_DAY;
 			break;
 
 			default:
