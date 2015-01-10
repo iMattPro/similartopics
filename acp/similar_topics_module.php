@@ -49,6 +49,13 @@ class similar_topics_module
 	/** @var string */
 	public $u_action;
 
+	/**
+	* Main ACP module
+	*
+	* @param int $id
+	* @param string $mode
+	* @access public
+	*/
 	public function main($id, $mode)
 	{
 		global $config, $db, $request, $template, $user, $phpbb_log, $phpbb_root_path, $phpEx;
@@ -141,6 +148,9 @@ class similar_topics_module
 					$pst_time_type = $this->request->variable('pst_time_type', '');
 					$this->config->set('similar_topics_type', $pst_time_type);
 
+					$pst_time = $this->request->variable('pst_time', 0);
+					$this->config->set('similar_topics_time', $this->set_pst_time(abs($pst_time), $pst_time_type));
+
 					$pst_cache = $this->request->variable('pst_cache', 0);
 					$this->config->set('similar_topics_cache', abs($pst_cache));
 
@@ -149,9 +159,6 @@ class similar_topics_module
 
 					$pst_noshow_forum = $this->request->variable('mark_noshow_forum', array(0), true);
 					$this->config->set('similar_topics_hide', (sizeof($pst_noshow_forum)) ? implode(',', $pst_noshow_forum) : '');
-
-					$pst_time = $this->request->variable('pst_time', 0);
-					$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
 					$pst_words = $this->request->variable('pst_words', '');
 					$this->config->set('similar_topics_words', $pst_words);
@@ -268,7 +275,6 @@ class similar_topics_module
 	*/
 	protected function set_pst_time($length, $type = 'y')
 	{
-		$length = abs($length);
 		switch ($type)
 		{
 			case 'd':
@@ -308,7 +314,7 @@ class similar_topics_module
 			break;
 
 			case 'm':
-				$length = round($time / (30.4 * self::ONE_DAY));
+				$length = round($time / 30.4 / self::ONE_DAY);
 			break;
 
 			case 'w':
