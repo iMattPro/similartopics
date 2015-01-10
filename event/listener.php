@@ -36,7 +36,6 @@ class listener implements EventSubscriberInterface
 	* @param \phpbb\config\config $config
 	* @param \phpbb\user $user
 	* @param \vse\similartopics\core\similar_topics $similar_topics
-	* @return \vse\similartopics\event\listener
 	* @access public
 	*/
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\user $user, \vse\similartopics\core\similar_topics $similar_topics)

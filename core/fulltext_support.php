@@ -22,7 +22,6 @@ class fulltext_support
 	* Constructor
 	*
 	* @param \phpbb\db\driver\driver_interface
-	* @return \vse\similartopics\core\fulltext_support
 	* @access public
 	*/
 	public function __construct(\phpbb\db\driver\driver_interface $db)
