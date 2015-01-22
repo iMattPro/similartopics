@@ -2,7 +2,7 @@
 /**
 *
 * Precise Similar Topics [French]
-* Translated by Geolim4.com
+* Translated by Geolim4.com & Galixte (http://www.galixte.com)
 *
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -36,8 +36,8 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PST_TITLE_ACP'		=> 'Precise Similar Topics', //Do not rename, even as in French
-	'PST_SETTINGS'		=> 'Sujets similaires paramètres',
-	'PST_LOG_FULLTEXT'	=> '<strong>Base de données modifié pour la compatibilité Les sujets similaires</strong><br />» Correction table “%s” à moteur de stockage MyISAM et ajouté un index FULLTEXT pour la “topic_title”',
-	'PST_LOG_MSG'		=> '<strong>Modifications des paramètres de sujets similaires</strong>',
+	'PST_TITLE_ACP'		=> 'Sujets similaires précis', //Do not rename, even as in French
+	'PST_SETTINGS'		=> 'Paramètres des sujets similaires',
+	'PST_LOG_FULLTEXT'	=> '<strong>Base de données modifiée pour la compatibilité avec l’extension “Sujets similaires précis”</strong><br />» Table “%s” corrigée dans le moteur de stockage MyISAM et ajout d’un index FULLTEXT pour le champ “topic_title”',
+	'PST_LOG_MSG'		=> '<strong>Modifications des paramètres des sujets similaires</strong>',
 ));

@@ -2,7 +2,7 @@
 /**
 *
 * Precise Similar Topics [French]
-* Translated by Geolim4.com
+* Translated by Geolim4.com & Galixte (http://www.galixte.com)
 *
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -47,5 +47,5 @@ if (empty($lang) || !is_array($lang))
 
 // User Permissions
 $lang = array_merge($lang, array(
-	'ACL_U_SIMILARTOPICS'	=> 'Peux voir les sujets similaires',
+	'ACL_U_SIMILARTOPICS'	=> 'Peut voir les sujets similaires',
 ));
