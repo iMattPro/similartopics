@@ -28,7 +28,9 @@ class listener_test extends \phpbb_test_case
 		$this->auth = $this->getMock('\phpbb\auth\auth');
 		$this->config = new \phpbb\config\config(array('similar_topics' => 1));
 		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
-		$this->similar_topics = new \vse\similartopics\tests\mock\similar_topics();
+		$this->similar_topics = $this->getMockBuilder('\vse\similartopics\core\similar_topics')
+			->disableOriginalConstructor()
+			->getMock();
 	}
 
 	/**
