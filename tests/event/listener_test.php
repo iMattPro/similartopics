@@ -17,8 +17,6 @@ class listener_test extends \phpbb_test_case
 
 	/**
 	* Setup test environment
-	*
-	* @access public
 	*/
 	public function setUp()
 	{
@@ -35,8 +33,6 @@ class listener_test extends \phpbb_test_case
 
 	/**
 	* Create our event listener
-	*
-	* @access protected
 	*/
 	protected function set_listener()
 	{
@@ -50,8 +46,6 @@ class listener_test extends \phpbb_test_case
 
 	/**
 	* Test the event listener is constructed correctly
-	*
-	* @access public
 	*/
 	public function test_construct()
 	{
@@ -61,8 +55,6 @@ class listener_test extends \phpbb_test_case
 
 	/**
 	* Test the event listener is subscribing events
-	*
-	* @access public
 	*/
 	public function test_getSubscribedEvents()
 	{
@@ -76,7 +68,6 @@ class listener_test extends \phpbb_test_case
 	* Data set for test_add_permissions
 	*
 	* @return array Array of test data
-	* @access public
 	*/
 	public function add_permissions_data()
 	{
@@ -115,7 +106,6 @@ class listener_test extends \phpbb_test_case
 	* Test the add_permissions event
 	*
 	* @dataProvider add_permissions_data
-	* @access public
 	*/
 	public function test_add_permissions($permissions, $expected_contains)
 	{

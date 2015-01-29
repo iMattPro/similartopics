@@ -17,8 +17,6 @@ class ucp_listener_test extends \phpbb_test_case
 
 	/**
 	* Setup test environment
-	*
-	* @access public
 	*/
 	public function setUp()
 	{
@@ -34,8 +32,6 @@ class ucp_listener_test extends \phpbb_test_case
 
 	/**
 	* Create our event listener
-	*
-	* @access protected
 	*/
 	protected function set_listener()
 	{
@@ -50,8 +46,6 @@ class ucp_listener_test extends \phpbb_test_case
 
 	/**
 	* Test the event listener is constructed correctly
-	*
-	* @access public
 	*/
 	public function test_construct()
 	{
@@ -61,8 +55,6 @@ class ucp_listener_test extends \phpbb_test_case
 
 	/**
 	* Test the event listener is subscribing events
-	*
-	* @access public
 	*/
 	public function test_getSubscribedEvents()
 	{
@@ -76,7 +68,6 @@ class ucp_listener_test extends \phpbb_test_case
 	* Data set for test_ucp_prefs_set_data
 	*
 	* @return array Array of test data
-	* @access public
 	*/
 	public function ucp_prefs_set_data_data()
 	{
@@ -119,7 +110,6 @@ class ucp_listener_test extends \phpbb_test_case
 	* Test the ucp_prefs_set_data event
 	*
 	* @dataProvider ucp_prefs_set_data_data
-	* @access public
 	*/
 	public function test_ucp_prefs_set_data($data, $sql_ary, $expected)
 	{
@@ -142,7 +132,6 @@ class ucp_listener_test extends \phpbb_test_case
 	* Data set for test_ucp_prefs_set_data
 	*
 	* @return array Array of test data
-	* @access public
 	*/
 	public function ucp_prefs_get_data_data()
 	{
@@ -263,7 +252,6 @@ class ucp_listener_test extends \phpbb_test_case
 	* Test the ucp_prefs_get_data event
 	*
 	* @dataProvider ucp_prefs_get_data_data
-	* @access public
 	*/
 	public function test_ucp_prefs_get_data($similar_topics, $submit, $u_similar_topics, $data, $expected)
 	{
