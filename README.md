@@ -24,6 +24,7 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 ## Languages supported:
 * English
 * Arabic
+* Croatian
 * Dutch
 * French
 * German
