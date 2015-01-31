@@ -14,6 +14,11 @@ class ucp_listener_test extends \phpbb_test_case
 {
 	/** @var \vse\similartopics\event\listener */
 	protected $listener;
+	protected $auth;
+	protected $config;
+	protected $request;
+	protected $template;
+	protected $user;
 
 	/**
 	* Setup test environment
@@ -26,7 +31,7 @@ class ucp_listener_test extends \phpbb_test_case
 		$this->auth = $this->getMock('\phpbb\auth\auth');
 		$this->config = new \phpbb\config\config(array('similar_topics' => 1));
 		$this->request = $this->getMock('\phpbb\request\request');
-		$this->template = new \vse\similartopics\tests\mock\template();
+		$this->template = $this->getMockBuilder('\phpbb\template\template')->getMock();
 		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 	}
 
@@ -267,6 +272,16 @@ class ucp_listener_test extends \phpbb_test_case
 
 		$this->set_listener();
 
+		if (!$submit)
+		{
+			$this->template->expects($this->once())
+				->method('assign_vars')
+				->with(array(
+					'S_SIMILAR_TOPICS'			=> $u_similar_topics,
+					'S_DISPLAY_SIMILAR_TOPICS'	=> $similar_topics,
+				));
+		}
+
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
 		$dispatcher->addListener('core.ucp_prefs_view_data', array($this->listener, 'ucp_prefs_get_data'));
 
@@ -278,13 +293,5 @@ class ucp_listener_test extends \phpbb_test_case
 		$data = $data['data'];
 
 		$this->assertEquals($expected, $data);
-
-		if (!$submit)
-		{
-			$this->assertEquals(array(
-				'S_SIMILAR_TOPICS'			=> $u_similar_topics,
-				'S_DISPLAY_SIMILAR_TOPICS'	=> $similar_topics,
-			), $this->template->get_template_vars());
-		}
 	}
 }
