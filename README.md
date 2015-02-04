@@ -35,6 +35,7 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * Serbian
 * Spanish
 * Swedish
+* Turkish
 
 ## Awards
 * Overall winner of the 2010 "Summer of MODs" competition at phpBB.com.
