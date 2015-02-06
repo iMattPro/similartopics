@@ -211,7 +211,7 @@ class similar_topics_module
 					$this->template->assign_block_vars('similar_time_options', array(
 						'VALUE'			=> $value,
 						'LABEL'			=> $label,
-						'S_SELECTED'	=> ($value == $this->config['similar_topics_type']) ? true : false,
+						'S_SELECTED'	=> $value == $this->config['similar_topics_type'],
 					));
 				}
 
