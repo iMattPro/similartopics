@@ -15,6 +15,9 @@ class listener_test extends \phpbb_test_case
 	/** @var \vse\similartopics\event\listener */
 	protected $listener;
 
+	/** @var \vse\similartopics\core\similar_topics */
+	protected $similar_topics;
+
 	/**
 	* Setup test environment
 	*/
@@ -23,9 +26,6 @@ class listener_test extends \phpbb_test_case
 		parent::setUp();
 
 		// Load/Mock classes required by the event listener class
-		$this->auth = $this->getMock('\phpbb\auth\auth');
-		$this->config = new \phpbb\config\config(array('similar_topics' => 1));
-		$this->user = $this->getMock('\phpbb\user', array(), array('\phpbb\datetime'));
 		$this->similar_topics = $this->getMockBuilder('\vse\similartopics\core\similar_topics')
 			->disableOriginalConstructor()
 			->getMock();
@@ -37,9 +37,6 @@ class listener_test extends \phpbb_test_case
 	protected function set_listener()
 	{
 		$this->listener = new \vse\similartopics\event\listener(
-			$this->auth,
-			$this->config,
-			$this->user,
 			$this->similar_topics
 		);
 	}

@@ -23,9 +23,6 @@ services:
     vse.similartopics.listener:
         class: vse\similartopics\event\listener
         arguments:
-            - @auth
-            - @config
-            - @user
             - @vse.similartopics.manager
         tags:
             - { name: event.listener }
