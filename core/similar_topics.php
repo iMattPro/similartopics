@@ -82,6 +82,34 @@ class similar_topics
 	}
 
 	/**
+	* Is similar topics available?
+	*
+	* @return bool True if available, false otherwise
+	* @access public
+	*/
+	public function is_available()
+	{
+		return !empty($this->config['similar_topics']) && // is enabled
+			!empty($this->config['similar_topics_limit']) && // num of topics to display > 0
+			!empty($this->user->data['user_similar_topics']) && // user view similar topics enabled
+			$this->auth->acl_get('u_similar_topics') && // user authorized to view similar topics
+			$this->is_mysql() // database is MySQL
+		;
+	}
+
+	/**
+	* Is the forum available for displaying similar topics
+	*
+	* @param int $forum_id A forum identifier
+	* @return bool True if available, false otherwise
+	* @access public
+	*/
+	public function forum_available($forum_id)
+	{
+		return !in_array($forum_id, explode(',', $this->config['similar_topics_hide']));
+	}
+
+	/**
 	* Get similar topics by matching topic titles
 	*
 	* NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
@@ -93,14 +121,8 @@ class similar_topics
 	* @return 	null
 	* @access	public
 	*/
-	public function get_similar_topics($topic_data)
+	public function display_similar_topics($topic_data)
 	{
-		// Do not continue if database is not MySQL
-		if (!$this->is_mysql())
-		{
-			return;
-		}
-
 		$topic_title = $this->clean_topic_title($topic_data['topic_title']);
 
 		// If the cleaned up topic_title is empty, no need to continue
@@ -304,9 +326,9 @@ class similar_topics
 	*
 	* @param	string	$text	The topic title
 	* @return	string	The topic title
-	* @access	protected
+	* @access	public
 	*/
-	protected function clean_topic_title($text)
+	public function clean_topic_title($text)
 	{
 		// Strip quotes, ampersands
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);

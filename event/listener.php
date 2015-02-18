@@ -17,32 +17,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 */
 class listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\auth\auth */
-	protected $auth;
-
-	/** @var \phpbb\config\config */
-	protected $config;
-
-	/** @var \phpbb\user */
-	protected $user;
-
 	/** @var \vse\similartopics\core\similar_topics */
 	protected $similar_topics;
 
 	/**
 	* Constructor
 	*
-	* @param \phpbb\auth\auth $auth
-	* @param \phpbb\config\config $config
-	* @param \phpbb\user $user
 	* @param \vse\similartopics\core\similar_topics $similar_topics
 	* @access public
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\user $user, \vse\similartopics\core\similar_topics $similar_topics)
+	public function __construct(\vse\similartopics\core\similar_topics $similar_topics)
 	{
-		$this->auth = $auth;
-		$this->config = $config;
-		$this->user = $user;
 		$this->similar_topics = $similar_topics;
 	}
 
@@ -56,31 +41,27 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.viewtopic_modify_page_title'		=> 'load_similar_topics',
+			'core.viewtopic_modify_page_title'		=> 'display_similar_topics',
 			'core.permissions'						=> 'add_permissions',
 		);
 	}
 
 	/**
-	* Load Similar Topics manager
+	* Display similar topics
 	*
 	* @param object $event The event object
 	* @return null
 	* @access public
 	*/
-	public function load_similar_topics($event)
+	public function display_similar_topics($event)
 	{
 		// Return early if no reason to display similar topics
-		if (empty($this->config['similar_topics']) ||
-			empty($this->config['similar_topics_limit']) ||
-			empty($this->user->data['user_similar_topics']) ||
-			!$this->auth->acl_get('u_similar_topics') ||
-			in_array($event['forum_id'], explode(',', $this->config['similar_topics_hide'])))
+		if (!$this->similar_topics->is_available() || !$this->similar_topics->forum_available($event['forum_id']))
 		{
 			return;
 		}
 
-		$this->similar_topics->get_similar_topics($event['topic_data']);
+		$this->similar_topics->display_similar_topics($event['topic_data']);
 	}
 
 	/**
