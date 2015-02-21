@@ -25,6 +25,12 @@ class similar_topics_module
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \vse\similartopics\core\fulltext_support */
+	protected $fulltext;
+
+	/** @var \phpbb\log\log */
+	protected $log;
+
 	/** @var \phpbb\request\request */
 	protected $request;
 
@@ -34,29 +40,27 @@ class similar_topics_module
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var \phpbb\log\log */
-	protected $log;
-
 	/** @var string */
 	protected $root_path;
 
 	/** @var string */
 	protected $php_ext;
 
-	/** @var \vse\similartopics\core\fulltext_support */
-	protected $fulltext;
+	/** @var string */
+	public $page_title;
+
+	/** @var string */
+	public $tpl_name;
 
 	/** @var string */
 	public $u_action;
 
 	/**
-	* Main ACP module
+	* ACP module constructor
 	*
-	* @param int $id
-	* @param string $mode
 	* @access public
 	*/
-	public function main($id, $mode)
+	public function __construct()
 	{
 		global $config, $db, $request, $template, $user, $phpbb_log, $phpbb_root_path, $phpEx;
 
@@ -72,9 +76,20 @@ class similar_topics_module
 
 		$this->user->add_lang('acp/common');
 		$this->user->add_lang_ext('vse/similartopics', 'acp_similar_topics');
+
 		$this->tpl_name = 'acp_similar_topics';
 		$this->page_title = $this->user->lang('PST_TITLE_ACP');
+	}
 
+	/**
+	* Main ACP module
+	*
+	* @param int $id
+	* @param string $mode
+	* @access public
+	*/
+	public function main($id, $mode)
+	{
 		$form_key = 'acp_similar_topics';
 		add_form_key($form_key);
 
@@ -87,16 +102,12 @@ class similar_topics_module
 
 				if ($this->request->is_set_post('submit'))
 				{
-					if (!check_form_key($form_key))
-					{
-						trigger_error($user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
-					}
+					$this->check_form_key($form_key);
 
-					$similar_forums	= $this->request->variable('similar_forums_id', array(0));
-					$similar_forums_string = implode(',', $similar_forums);
+					$similar_topic_forums = implode(',', $this->request->variable('similar_forums_id', array(0)));
 
 					$sql = 'UPDATE ' . FORUMS_TABLE . "
-						SET similar_topic_forums = '" . $this->db->sql_escape($similar_forums_string) . "'
+						SET similar_topic_forums = '" . $this->db->sql_escape($similar_topic_forums) . "'
 						WHERE forum_id = $forum_id";
 					$this->db->sql_query($sql);
 
@@ -134,34 +145,21 @@ class similar_topics_module
 			default:
 				if ($this->request->is_set_post('submit'))
 				{
-					if (!check_form_key($form_key))
-					{
-						trigger_error($user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
-					}
+					$this->check_form_key($form_key);
 
-					$pst_enable = $this->request->variable('pst_enable', 0);
-					$this->config->set('similar_topics', $pst_enable);
+					// Set basic config settings
+					$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
+					$this->config->set('similar_topics_limit', abs($this->request->variable('pst_limit', 0))); // use abs for positive values only
+					$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0))); // use abs for positive values only
+					$this->config->set('similar_topics_words', $this->request->variable('pst_words', ''));
+					$this->config->set('similar_topics_hide', implode(',', $this->request->variable('mark_noshow_forum', array(0), true)));
+					$this->config->set('similar_topics_ignore', implode(',', $this->request->variable('mark_ignore_forum', array(0), true)));
 
-					$pst_limit = $this->request->variable('pst_limit', 0);
-					$this->config->set('similar_topics_limit', abs($pst_limit));
-
+					// Set date/time config settings
+					$pst_time = abs($this->request->variable('pst_time', 0)); // use abs for positive values only
 					$pst_time_type = $this->request->variable('pst_time_type', '');
 					$this->config->set('similar_topics_type', $pst_time_type);
-
-					$pst_time = $this->request->variable('pst_time', 0);
-					$this->config->set('similar_topics_time', $this->set_pst_time(abs($pst_time), $pst_time_type));
-
-					$pst_cache = $this->request->variable('pst_cache', 0);
-					$this->config->set('similar_topics_cache', abs($pst_cache));
-
-					$pst_ignore_forum = $this->request->variable('mark_ignore_forum', array(0), true);
-					$this->config->set('similar_topics_ignore', (sizeof($pst_ignore_forum)) ? implode(',', $pst_ignore_forum) : '');
-
-					$pst_noshow_forum = $this->request->variable('mark_noshow_forum', array(0), true);
-					$this->config->set('similar_topics_hide', (sizeof($pst_noshow_forum)) ? implode(',', $pst_noshow_forum) : '');
-
-					$pst_words = $this->request->variable('pst_words', '');
-					$this->config->set('similar_topics_words', $pst_words);
+					$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
@@ -194,7 +192,7 @@ class similar_topics_module
 					else
 					{
 						confirm_box(false, $this->user->lang('CONFIRM_OPERATION'), build_hidden_fields(array(
-							'fulltext'		=> 1,
+							'fulltext' => 1,
 						)));
 					}
 				}
@@ -216,11 +214,11 @@ class similar_topics_module
 				}
 
 				$this->template->assign_vars(array(
-					'S_PST_ENABLE'		=> isset($this->config['similar_topics']) ? $this->config['similar_topics'] : false,
-					'PST_LIMIT'			=> isset($this->config['similar_topics_limit']) ? $this->config['similar_topics_limit'] : '',
+					'S_PST_ENABLE'		=> $this->isset_or_default($this->config['similar_topics'], false),
+					'PST_LIMIT'			=> $this->isset_or_default($this->config['similar_topics_limit'], ''),
+					'PST_CACHE'			=> $this->isset_or_default($this->config['similar_topics_cache'], ''),
+					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
-					'PST_CACHE'			=> isset($this->config['similar_topics_cache']) ? $this->config['similar_topics_cache'] : '',
-					'PST_WORDS'			=> isset($this->config['similar_topics_words']) ? $this->config['similar_topics_words'] : '',
 					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
 					'S_PST_NO_MYSQL'	=> !$this->fulltext->is_mysql(),
 					'U_ACTION'			=> $this->u_action,
@@ -237,12 +235,27 @@ class similar_topics_module
 						'FORUM_ID'				=> $row['forum_id'],
 						'CHECKED_IGNORE_FORUM'	=> (in_array($row['forum_id'], $ignore_forums)) ? 'checked="checked"' : '',
 						'CHECKED_NOSHOW_FORUM'	=> (in_array($row['forum_id'], $noshow_forums)) ? 'checked="checked"' : '',
-						'S_IS_ADVANCED'			=> $row['similar_topic_forums'] ? true : false,
+						'S_IS_ADVANCED'			=> (bool) $row['similar_topic_forums'],
 						'U_ADVANCED'			=> "{$this->u_action}&amp;action=advanced&amp;f=" . $row['forum_id'],
 						'U_FORUM'				=> append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $row['forum_id']),
 					));
 				}
 			break;
+		}
+	}
+
+	/**
+	* Check form key, trigger error if invalid
+	*
+	* @param string $form_key The form key value
+	* @return null
+	* @access protected
+	*/
+	protected function check_form_key($form_key)
+	{
+		if (!check_form_key($form_key))
+		{
+			trigger_error($this->user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
 		}
 	}
 
@@ -256,7 +269,7 @@ class similar_topics_module
 	{
 		$sql = 'SELECT forum_id, forum_name, similar_topic_forums
 			FROM ' . FORUMS_TABLE . '
-			WHERE forum_type = ' .	FORUM_POST . '
+			WHERE forum_type = ' . FORUM_POST . '
 			ORDER BY left_id ASC';
 		$result = $this->db->sql_query($sql);
 		$forum_list = $this->db->sql_fetchrowset($result);
@@ -326,7 +339,7 @@ class similar_topics_module
 			break;
 
 			default:
-				$length = '';
+				$length = 0;
 			break;
 		}
 		return (int) $length;
@@ -373,5 +386,18 @@ class similar_topics_module
 
 		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
 		$this->db->sql_query($sql);
+	}
+
+	/**
+	* Return a variable if it is set, otherwise default
+	*
+	* @param mixed $var The variable to test
+	* @param mixed $default The default value to use
+	* @return mixed The value of the variable if set, otherwise default value
+	* @access protected
+	*/
+	protected function isset_or_default($var, $default)
+	{
+		return (isset($var)) ? $var : $default;
 	}
 }
