@@ -71,5 +71,6 @@ $lang = array_merge($lang, array(
 	'PST_WARN_FULLTEXT'	=> 'افزونه موضوعات مشابه با سیستم انجمن شما سازگار نیست. افزونه موضوعات مشابه تنها با FULLTEXT و جدول “phpbb_topics” سازگار میباشد ',
 	'PST_ADD_FULLTEXT'	=> 'بله ،فعال سازی برای FULLTEXT انجام شد',
 	'PST_SAVE_FULLTEXT'	=> 'دیتابیس شما با موفقیت به روز رسانی شد. حالا میتوانید به راحتی از این افزونه لذت ببرید',
-	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_FULLTEXT'	=> 'پایگاه داده شما نمی تواند به روز شود.',
+	'PST_ERR_CONFIG'	=> 'بیش از حد بسیاری از انجمن ها در فهرست انجمن ها مشخص شد. لطفا دوباره با یک انتخاب کوچکتر امتحان کنید.',
 ));

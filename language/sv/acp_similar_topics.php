@@ -71,5 +71,6 @@ $lang = array_merge($lang, array(
 	'PST_WARN_FULLTEXT'	=> 'Similar Topics fungerar inte på ditt forum. Similar Topics använder FULLTEXT index som kräver en MySQL 4 eller MySQL 5 databas och “phpbb_topics” tabell måste vara inställd på MyISAM lagring motor (eller InnoDB är också tillåtet vid användning med MySQL 5.6.4 eller nyare).<br /><br />Om du vill använda Similar Topics, vi kan säkert uppdatera din databas för att stödja FULLTEXT index. Alla ändringar kommer att återställas om du någon gång bestämmer dig för att ta bort Similar Topics.',
 	'PST_ADD_FULLTEXT'	=> 'Ja, aktivera stöd för fulltext index',
 	'PST_SAVE_FULLTEXT'	=> 'Din databas har uppdaterats. Nu kan du njuta av att använda Similar Topics.',
-	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_FULLTEXT'	=> 'Din databas kunde inte uppdateras.',
+	'PST_ERR_CONFIG'	=> 'Alltför många forum märktes i listan över forum. Försök igen med ett mindre urval.',
 ));

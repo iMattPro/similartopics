@@ -70,5 +70,6 @@ $lang = array_merge($lang, array(
 	'PST_WARN_FULLTEXT'	=> 'Benzer Konular forumunuzla uyumlu değil. Benzer Konular MySQL 4 veya MySQL 5 veritabanı için gerekli olan FULLTEXT indekslemesini kullanır ve the “phpbb_topics” tablosu MyISAM depolama motoruna ayarlı olmalıdır (veya MySQL 5.6.4 veya daha yeni sürüm kullanıyorsanız InnoDB de izin verilenler arasındadır).<br /><br />Benzer Konuları kullanmak istiyorsanız veritabanınız güvenle FULLTEXT indeksi desteklemesine güncellenebilir. Benzer Konuları kaldırmaya karar verdiğinizde tüm değişiklikler geridöndürülebilir.',
 	'PST_ADD_FULLTEXT'	=> 'Evet, enable support for FULLTEXT indexes',
 	'PST_SAVE_FULLTEXT'	=> 'Veritabanınınz güncellendi. Benzer Konuları kullanarak eğlenebilirsiniz.',
-	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_FULLTEXT'	=> 'Sizin veritabanı güncellendi olamazdı.',
+	'PST_ERR_CONFIG'	=> 'Çok fazla forumlar forumlarda listesinde işaretlenmiştir. Küçük bir seçim ile tekrar deneyin.',
 ));

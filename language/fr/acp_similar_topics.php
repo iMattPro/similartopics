@@ -72,4 +72,5 @@ $lang = array_merge($lang, array(
 	'PST_ADD_FULLTEXT'	=> 'Oui, activer le support des index FULLTEXT',
 	'PST_SAVE_FULLTEXT'	=> 'Votre base de données a été mise à jour. Vous pouvez maintenant profiter de l’extension “Sujets similaires précis”.',
 	'PST_ERR_FULLTEXT'	=> 'Votre base de données ne peut être mise à jour.',
+	'PST_ERR_CONFIG'	=> 'Trop nombreux forums ont été marqués dans la liste des forums. Se il vous plaît essayer de nouveau avec une sélection plus petite.',
 ));

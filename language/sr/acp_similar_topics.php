@@ -70,5 +70,6 @@ $lang = array_merge($lang, array(
 	'PST_WARN_FULLTEXT'	=> 'Similar Topics ne funkcioniše sa vašim forumom. Similar Topics koristi Ceo FULLTEXT indekse koji zahtevaju MySQL 4 ili MySQL 5 bazu podataka i “phpbb_topics” tabelu mora biti postavljena na motor MyISAM skladištenja ( ili InnoDB je takođe dozvoljeno kada se koristi sa MySQL 5.6.4 ili noviju )<br /><br />Ako želite da koristite Similar Topics, možemo bezbedno ažurirati bazu podataka za podršku Ceo tekst indekse. Sve promene su biti vraćene ako ikada odlučite da uklonite Similar Topics.',
 	'PST_ADD_FULLTEXT'	=> 'Da, omogućite podršku za Ceo FULLTEXT indeksa',
 	'PST_SAVE_FULLTEXT'	=> 'Vaša baza podataka je ažurirana . Sada možete uživati koristeći Similar Topics.',
-	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_FULLTEXT'	=> 'Vaša baza podataka nije mogao biti ažuriran.',
+	'PST_ERR_CONFIG'	=> 'Previše forumi su označeni na listi forumima . Pokušajte ponovo sa manjim izborom.',
 ));
