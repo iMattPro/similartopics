@@ -70,6 +70,6 @@ $lang = array_merge($lang, array(
 	'PST_WARN_FULLTEXT'	=> 'Vergleichbare Themen werden in diesem Forum nicht funktionieren. Vergleichbare Themen verwendet FULLTEXT-Indizes, die eine MySQL 4 oder MySQL 5 Datenbank und die phpbb_topics-Tabelle benötigen, müssen sich an die MyISAM-Speicher-Engine gesetzt werden (oder InnoDB ist auch erlaubt, wenn sie mit MySQL 5.6.4 oder neuer verwendet wird). <br /> <br /> Wenn Sie Vergleichbare Themen verwenden möchten, können wir sicher aktualisieren Sie Ihre Datenbank, um FULLTEXT-Indizes unterstützt. Alle vorgenommenen Änderungen werden rückgängig gemacht werden, wenn Sie jemals entscheiden Vergleichbare Themen zu entfernen.',
 	'PST_ADD_FULLTEXT'	=> 'Ja, die Unterstützung für FULLTEXT-Indizes',
 	'PST_SAVE_FULLTEXT'	=> 'Ihre Datenbank wurde aktualisiert. Jetzt können Sie mit Vergleichbare Themen.',
-	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_FULLTEXT'	=> 'Die Datenbank konnte nicht aktualisiert werden.',
 	'PST_ERR_CONFIG'	=> 'Zu viele Foren wurden in die Liste der Foren markiert. Bitte versuchen Sie es mit einer kleineren Auswahl.',
 ));

@@ -71,6 +71,6 @@ $lang = array_merge($lang, array(
 	'PST_WARN_FULLTEXT'	=> 'MODificarea Subiecte similare nu va funcţiona pe forumul dumneavoastr. Subiecte similare utilizează indici FULLTEXT care necesită o bază de date MySQL 4 sau MySQL 5 și “phpbb_topics”, tabelul trebuie să fie setat la motorul de stocare MyISAM (sau InnoDB este, de asemenea, permisă atunci când este utilizat cu MySQL 5.6.4 sau mai nouă).<br /><br />Dacă doriți să utilizați Subiecte similare, se poate actualiza în siguranță a bazei de date pentru a sprijini indici text complet. Toate schimbarile vor fi revenit dacă vă decideți vreodată pentru a elimina Subiecte similare.',
 	'PST_ADD_FULLTEXT'	=> 'Da, activați suportul pentru indici FULLTEXT',
 	'PST_SAVE_FULLTEXT'	=> 'Baza de date a fost actualizat. Vă puteți bucura de acum, folosind Subiecte similare.',
-	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_FULLTEXT'	=> 'Baza de date nu a putut fi actualizate.',
 	'PST_ERR_CONFIG'	=> 'Prea multe forumuri au fost marcate în lista de forumuri. Vă rugăm să încercați din nou, cu o selecție mai mic.',
 ));
