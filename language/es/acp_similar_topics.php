@@ -71,4 +71,5 @@ $lang = array_merge($lang, array(
 	'PST_ADD_FULLTEXT'	=> 'Sí, activar el soporte de índices FULLTEXT',
 	'PST_SAVE_FULLTEXT'	=> 'Su base de datos se ha actualizado. Ahora puede disfrutar con Hilos Parecidos.',
 	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_CONFIG'	=> 'Demasiados foros fueron marcados en la lista de foros. Inténtalo de nuevo con una selección más pequeña.',
 ));

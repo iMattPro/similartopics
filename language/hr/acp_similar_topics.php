@@ -72,4 +72,5 @@ $lang = array_merge($lang, array(
 	'PST_ADD_FULLTEXT'	=> 'Da, omogući podršku za FULLTEXT indekse',
 	'PST_SAVE_FULLTEXT'	=> 'Baza podataka je ažurirana.<br />Možeš početi s korištenjem sličnih tema.',
 	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_CONFIG'	=> 'Previše forumi su označeni na popisu foruma. Pokušajte ponovno s manjim izborom.',
 ));

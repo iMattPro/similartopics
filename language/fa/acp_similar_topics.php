@@ -72,4 +72,5 @@ $lang = array_merge($lang, array(
 	'PST_ADD_FULLTEXT'	=> 'بله ،فعال سازی برای FULLTEXT انجام شد',
 	'PST_SAVE_FULLTEXT'	=> 'دیتابیس شما با موفقیت به روز رسانی شد. حالا میتوانید به راحتی از این افزونه لذت ببرید',
 	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_CONFIG'	=> 'بیش از حد بسیاری از انجمن ها در فهرست انجمن ها مشخص شد. لطفا دوباره با یک انتخاب کوچکتر امتحان کنید.',
 ));

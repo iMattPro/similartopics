@@ -71,4 +71,5 @@ $lang = array_merge($lang, array(
 	'PST_ADD_FULLTEXT'	=> 'Evet, enable support for FULLTEXT indexes',
 	'PST_SAVE_FULLTEXT'	=> 'Veritabanınınz güncellendi. Benzer Konuları kullanarak eğlenebilirsiniz.',
 	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_CONFIG'	=> 'Çok fazla forumlar forumlarda listesinde işaretlenmiştir. Küçük bir seçim ile tekrar deneyin.',
 ));

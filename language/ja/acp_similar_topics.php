@@ -71,4 +71,5 @@ $lang = array_merge($lang, array(
 	'PST_ADD_FULLTEXT'	=> 'はい、fulltextインデックスのサポートは有効です',
 	'PST_SAVE_FULLTEXT'	=> 'データベースを更新しました。類似トピックを使用可能です。',
 	'PST_ERR_FULLTEXT'	=> 'データベースを更新できませんでした。',
+	'PST_ERR_CONFIG'	=> 'あまりにも多くのフォーラムは、フォーラムのリストにマークされていた。小さい選択に再度お試しください。',
 ));

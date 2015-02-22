@@ -105,6 +105,7 @@ class similar_topics_module
 					$this->check_form_key($form_key);
 
 					$similar_topic_forums = implode(',', $this->request->variable('similar_forums_id', array(0)));
+					$this->validate_config_length($similar_topic_forums);
 
 					$sql = 'UPDATE ' . FORUMS_TABLE . "
 						SET similar_topic_forums = '" . $this->db->sql_escape($similar_topic_forums) . "'
@@ -147,13 +148,18 @@ class similar_topics_module
 				{
 					$this->check_form_key($form_key);
 
+					// Get checkbox array form data and check string length
+					$mark_noshow_forum = implode(',', $this->request->variable('mark_noshow_forum', array(0), true));
+					$mark_ignore_forum = implode(',', $this->request->variable('mark_ignore_forum', array(0), true));
+					$this->validate_config_length($mark_noshow_forum, $mark_ignore_forum);
+
 					// Set basic config settings
 					$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
 					$this->config->set('similar_topics_limit', abs($this->request->variable('pst_limit', 0))); // use abs for positive values only
 					$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0))); // use abs for positive values only
 					$this->config->set('similar_topics_words', $this->request->variable('pst_words', ''));
-					$this->config->set('similar_topics_hide', implode(',', $this->request->variable('mark_noshow_forum', array(0), true)));
-					$this->config->set('similar_topics_ignore', implode(',', $this->request->variable('mark_ignore_forum', array(0), true)));
+					$this->config->set('similar_topics_hide', $mark_noshow_forum);
+					$this->config->set('similar_topics_ignore', $mark_ignore_forum);
 
 					// Set date/time config settings
 					$pst_time = abs($this->request->variable('pst_time', 0)); // use abs for positive values only
@@ -241,6 +247,24 @@ class similar_topics_module
 					));
 				}
 			break;
+		}
+	}
+
+	/**
+	* Check if config field values exceed 255 chars
+	*
+	* @return null
+	* @access protected
+	*/
+	protected function validate_config_length()
+	{
+		$arg_list = func_get_args();
+		foreach ($arg_list as $arg)
+		{
+			if (strlen($arg) > 255)
+			{
+				trigger_error($this->user->lang('PST_ERR_CONFIG') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
 		}
 	}
 

@@ -71,4 +71,5 @@ $lang = array_merge($lang, array(
 	'PST_ADD_FULLTEXT'	=> 'Ja, in staat ondersteuning voor FULLTEXT indexen',
 	'PST_SAVE_FULLTEXT'	=> 'De database is bijgewerkt. U kunt nu genieten van het gebruik Vergelijkbare onderwerpen.',
 	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
+	'PST_ERR_CONFIG'	=> 'Te veel fora werden gemarkeerd in de lijst van forums. Probeer het opnieuw met een kleinere selectie.',
 ));
