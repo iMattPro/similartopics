@@ -38,6 +38,6 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Sujets similaires précis', //Do not rename, even as in French
 	'PST_SETTINGS'		=> 'Paramètres des sujets similaires',
-	'PST_LOG_FULLTEXT'	=> '<strong>Base de données modifiée pour la compatibilité avec l’extension “Sujets similaires précis”</strong><br />» Table “%s” corrigée dans le moteur de stockage MyISAM et ajout d’un index FULLTEXT pour le champ “topic_title”',
+	'PST_LOG_FULLTEXT'	=> '<strong>Base de données modifiée pour la compatibilité avec l’extension « Sujets similaires précis »</strong><br />» Table « %s » corrigée dans le moteur de stockage MyISAM et ajout d’un index FULLTEXT pour le champ « topic_title »',
 	'PST_LOG_MSG'		=> '<strong>Modifications des paramètres des sujets similaires</strong>',
 ));
