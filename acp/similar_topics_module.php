@@ -310,7 +310,7 @@ class similar_topics_module
 	* @return int time in seconds
 	* @access protected
 	*/
-	protected function set_pst_time($length, $type = 'y')
+	protected function set_pst_time($length, $type)
 	{
 		switch ($type)
 		{
