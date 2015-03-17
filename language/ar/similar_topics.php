@@ -9,6 +9,9 @@
 * Translated By : Basil Taha Alhitary - www.alhitary.net
 */
 
+/**
+* DO NOT CHANGE
+*/
 if (!defined('IN_PHPBB'))
 {
 	exit;
