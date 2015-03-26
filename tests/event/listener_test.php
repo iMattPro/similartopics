@@ -62,6 +62,53 @@ class listener_test extends \phpbb_test_case
 	}
 
 	/**
+	 * Data set for test_display_similar_topics
+	 *
+	 * @return array Array of test data
+	 */
+	public function display_similar_topics_data()
+	{
+		return array(
+			array(1, array(1), true, true, true),
+			array(2, array(2), false, true, false),
+			array(3, array(3), true, false, false),
+			array(4, array(4), false, false, false),
+		);
+	}
+
+	/**
+	 * Test display_similar_topics event is working as expected
+	 *
+	 * @dataProvider display_similar_topics_data
+	 */
+	public function test_display_similar_topics($forum_id, $topic_data, $is_available, $forum_available, $display)
+	{
+		$this->similar_topics->expects($this->any())
+			->method('is_available')
+			->will($this->returnValue($is_available));
+
+		$this->similar_topics->expects($this->any())
+			->method('forum_available')
+			->with($this->equalTo($forum_id))
+			->will($this->returnValue($forum_available));
+
+		$display = ($display) ? $this->once() : $this->never();
+
+		$this->similar_topics->expects($display)
+			->method('display_similar_topics')
+			->with($topic_data);
+
+		$this->set_listener();
+
+		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher->addListener('core.viewtopic_modify_page_title', array($this->listener, 'display_similar_topics'));
+
+		$event_data = array('forum_id', 'topic_data');
+		$event = new \phpbb\event\data(compact($event_data));
+		$dispatcher->dispatch('core.viewtopic_modify_page_title', $event);
+	}
+
+	/**
 	* Data set for test_add_permissions
 	*
 	* @return array Array of test data
