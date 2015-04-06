@@ -1,0 +1,38 @@
+<!-- IF .similar -->
+<div class="forumbg">
+<div class="header">{L_SIMILAR_TOPICS}</div>
+<!-- BEGIN similar -->
+<div class="small-icon row<!-- IF similar.S_ROW_COUNT is even --> bg1<!-- ELSE --> bg2<!-- ENDIF -->">
+	<div class="inner">
+	<!-- IF similar.S_UNREAD_TOPIC and not S_IS_BOT -->
+	<a href="{similar.U_NEWEST_POST}"><img src="{T_THEME_PATH}/images/icon_post_target_unread.gif" alt=""/></a>
+	<!-- ENDIF -->
+	<!-- EVENT topiclist_row_prepend -->
+	<!-- IF similar.S_HAS_POLL --><img src="{T_THEME_PATH}/images/icon_topic_poll.gif" alt=""/><!-- ENDIF -->
+	<!-- IF similar.ATTACH_ICON_IMG --><img src="{T_THEME_PATH}/images/icon_topic_attach.gif" alt=""/><!-- ENDIF -->
+	<!-- IF similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED -->
+	<a href="{similar.U_MCP_QUEUE}" class="rightside"><img src="{T_THEME_PATH}/images/icon_topic_unapproved.gif" alt=""/></a><!-- ENDIF -->
+	<!-- IF similar.S_TOPIC_REPORTED -->
+	<a href="{similar.U_MCP_REPORT}" class="rightside"><img src="{T_THEME_PATH}/images/icon_topic_reported.gif" alt=""/></a><!-- ENDIF -->
+	<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a> <span class="posts">[<!-- IF similar.REPLIES -->{similar.REPLIES}<!-- ELSE -->1<!-- ENDIF -->]</span>
+	<!-- IF not S_IS_BOT -->
+	<br />{similar.LAST_POST_AUTHOR_FULL} &laquo; <a href="{similar.U_LAST_POST}" title="{L_GOTO_LAST_POST}">{similar.LAST_POST_TIME}</a>
+	<!-- ENDIF -->
+	<!-- IF .similar.pagination -->
+	<div class="rightside pagination">
+		<!-- BEGIN pagination -->
+			<!-- IF similar.pagination.S_IS_PREV -->
+			<!-- ELSEIF similar.pagination.S_IS_CURRENT --><span class="active button">{similar.pagination.PAGE_NUMBER}</span>
+			<!-- ELSEIF similar.pagination.S_IS_ELLIPSIS --><span class="ellipsis button">{L_ELLIPSIS}</span>
+			<!-- ELSEIF similar.pagination.S_IS_NEXT -->
+			<!-- ELSE --><a href="{similar.pagination.PAGE_URL}" class="button">{similar.pagination.PAGE_NUMBER}</a> 
+			<!-- ENDIF -->
+		<!-- END pagination -->
+	</div>
+	<!-- ENDIF -->
+	<!-- EVENT topiclist_row_append -->
+	</div>
+</div>
+<!-- END similar -->
+</div>
+<!-- ENDIF -->
