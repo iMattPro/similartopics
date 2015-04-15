@@ -25,6 +25,7 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * English
 * Arabic
 * Croatian
+* Czech
 * Dutch
 * French
 * German
