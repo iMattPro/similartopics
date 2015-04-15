@@ -157,7 +157,7 @@ class similar_topics_module
 					$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
 					$this->config->set('similar_topics_limit', abs($this->request->variable('pst_limit', 0))); // use abs for positive values only
 					$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0))); // use abs for positive values only
-					$this->config->set('similar_topics_words', $this->request->variable('pst_words', ''));
+					$this->config->set('similar_topics_words', $this->request->variable('pst_words', '', true));
 					$this->config->set('similar_topics_hide', $mark_noshow_forum);
 					$this->config->set('similar_topics_ignore', $mark_ignore_forum);
 
