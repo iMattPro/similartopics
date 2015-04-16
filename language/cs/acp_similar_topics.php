@@ -73,6 +73,6 @@ $lang = array_merge($lang, array(
 	'PST_WARN_FULLTEXT'	=> 'Podobná témata nejsou kompatibilní s vašim fórem. Podobná témata používají FULLTEXT indexy, které vyžadují databázi MySQL 4 nebo MySQL 5 a tabulka “phpbb_topics” musí být nastavena jako MyISAM (případně InnoDB, to však jedině s MySQL 5.6.4 nebo novější).<br /><br />Pokud chcete používat podobná témata, vaše databáze může být bezpečně upgradována na podporu FULLTEXT indexů. Jakékoli provedené změny budou vráceny zpět, pokud se rozhodnete toto rozšíření odinstalovat.',
 	'PST_ADD_FULLTEXT'	=> 'Ano, povolit podporu pro FULLTEXT indexy',
 	'PST_SAVE_FULLTEXT'	=> 'Vaše databáze byla úspěšně upgradována. Nyní můžete používat rozšíření Podobná témata.',
-	'PST_ERR_FULLTEXT'	=> 'Your database could not be updated.',
-	'PST_ERR_CONFIG'	=> 'Too many forums were marked in the list of forums. Please try again with a smaller selection.',
+	'PST_ERR_FULLTEXT'	=> 'Vaši databázi se nepodařilo upgradovat.',
+	'PST_ERR_CONFIG'	=> 'Z hledání/zobrazení bylo vyřazeno příliš mnoho sekcí. Snižte prosím počet vybraných sekcí.',
 ));
