@@ -50,10 +50,10 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * MySQL 4.0.1 or higher using MyISAM tables (InnoDB supported with MySQL 5.6.4 or higher).
 
 ## Installation
-1. [Download the latest release](https://github.com/VSEphpbb/similartopics/releases) and unzip it.
-2. Copy the entire contents from the unzipped folder to `phpBB/ext/vse/similartopics/`.
+1. [Download the latest validated release](https://www.phpbb.com/customise/db/extension/precise_similar_topics/).
+2. Unzip the downloaded release and copy it to the `ext` directory of your phpBB board.
 3. Navigate in the ACP to `Customise -> Manage extensions`.
-4. Find Precise Similar Topics under "Disabled Extensions" and click `Enable`.
+4. Look for `Precise Similar Topics` under the Disabled Extensions list, and click its `Enable` link.
 
 ## Uninstallation
 1. Navigate in the ACP to `Customise -> Manage extensions`.
