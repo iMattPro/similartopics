@@ -262,7 +262,7 @@ class similar_topics
 
 					'TOPIC_REPLIES'			=> $replies,
 					'TOPIC_VIEWS'			=> $row['topic_views'],
-					'TOPIC_TITLE'			=> $row['topic_title'],
+					'TOPIC_TITLE'			=> censor_text($row['topic_title']),
 					'FORUM_TITLE'			=> $row['forum_name'],
 
 					'TOPIC_IMG_STYLE'		=> $folder_img,
