@@ -12,34 +12,34 @@ namespace vse\similartopics\tests\core;
 
 class similar_topics_test extends \phpbb_test_case
 {
-	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\auth\auth|\PHPUnit_Framework_MockObject_MockObject */
 	protected $auth;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\cache\service|\PHPUnit_Framework_MockObject_MockObject */
 	protected $cache;
 
 	/** @var \phpbb\config\config */
 	protected $config;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\db\driver\driver_interface|\PHPUnit_Framework_MockObject_MockObject */
 	protected $db;
 
 	/** @var \PHPUnit_Framework_MockObject_MockObject */
 	protected $dispatcher;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\pagination|\PHPUnit_Framework_MockObject_MockObject */
 	protected $pagination;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\request\request|\PHPUnit_Framework_MockObject_MockObject */
 	protected $request;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\template\template|\PHPUnit_Framework_MockObject_MockObject */
 	protected $template;
 
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\content_visibility|\PHPUnit_Framework_MockObject_MockObject */
 	protected $content_visibility;
 
 	/** @var string */

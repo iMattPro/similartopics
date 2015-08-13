@@ -12,6 +12,12 @@ namespace vse\similartopics\tests\core;
 
 class fulltext_test extends \phpbb_database_test_case
 {
+	/** @var \phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/** @var \vse\similartopics\core\fulltext_support */
+	protected $fulltext;
+
 	static protected function setup_extensions()
 	{
 		return array('vse/similartopics');
