@@ -59,9 +59,7 @@ class similar_topics_test extends \phpbb_test_case
 			->disableOriginalConstructor()
 			->getMock();
 		$this->db = $this->getMock('\phpbb\db\driver\driver_interface');
-		$this->dispatcher = $this->getMockBuilder('\phpbb\event\dispatcher')
-			->disableOriginalConstructor()
-			->getMock();
+		$this->dispatcher = $this->getMock('\phpbb\event\dispatcher_interface');
 		$this->pagination = $this->getMockBuilder('\phpbb\pagination')
 			->disableOriginalConstructor()
 			->getMock();
