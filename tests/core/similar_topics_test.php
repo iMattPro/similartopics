@@ -24,7 +24,7 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var \phpbb\db\driver\driver_interface|\PHPUnit_Framework_MockObject_MockObject */
 	protected $db;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\event\dispatcher|\PHPUnit_Framework_MockObject_MockObject */
 	protected $dispatcher;
 
 	/** @var \phpbb\pagination|\PHPUnit_Framework_MockObject_MockObject */
@@ -59,7 +59,9 @@ class similar_topics_test extends \phpbb_test_case
 			->disableOriginalConstructor()
 			->getMock();
 		$this->db = $this->getMock('\phpbb\db\driver\driver_interface');
-		$this->dispatcher = new \phpbb_mock_event_dispatcher();
+		$this->dispatcher = $this->getMockBuilder('\phpbb\event\dispatcher')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->pagination = $this->getMockBuilder('\phpbb\pagination')
 			->disableOriginalConstructor()
 			->getMock();
