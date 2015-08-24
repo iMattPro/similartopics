@@ -10,6 +10,8 @@
 
 namespace vse\similartopics\tests\core;
 
+require_once dirname(__FILE__) . '/../../../../../includes/functions.php';
+
 class fulltext_test extends \phpbb_database_test_case
 {
 	/** @var \phpbb\db\driver\driver_interface */
@@ -65,12 +67,12 @@ class fulltext_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Test that the db is supports fulltext indeces
+	* Test that the db supports fulltext indeces
 	*/
 	public function test_fulltext_support()
 	{
 		// Check for fulltext index support
-		$this->assertTrue($this->fulltext->is_supported());
+		$this->assertTrue($this->fulltext->is_supported(), 'Fulltext support failed.');
 
 		// Check that the engine name is stored correctly
 		$this->assertEquals($this->fulltext->get_engine(), 'myisam');
