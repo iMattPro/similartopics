@@ -40,7 +40,6 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Argomenti simili',
 	'PST_SETTINGS'		=> 'Impostazioni',
-	'PST_LOG_FULLTEXT'	=> '<strong>Database modificato per òa compatibilità con “Argomenti simili”
-	</strong><br />» Convertita la tavola “%s” al motore d’archivio MyISAM ed aggiunto un indice FULLTEXT a “topic_title”',
+	'PST_LOG_FULLTEXT'	=> '<strong>Database modificato per la compatibilità con “Argomenti simili”</strong><br />» Convertita la tavola “%s” al motore d’archivio MyISAM ed aggiunto un indice FULLTEXT a “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Impostazioni per “Argomenti simili” modificate</strong>',
 ));
