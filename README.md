@@ -30,6 +30,7 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * French
 * German
 * Greek
+* Italian
 * Japanese
 * Persian
 * Polish
