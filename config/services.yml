@@ -2,38 +2,38 @@ services:
     vse.similartopics.manager:
         class: vse\similartopics\core\similar_topics
         arguments:
-            - @auth
-            - @cache
-            - @config
-            - @dbal.conn
-            - @dispatcher
-            - @pagination
-            - @request
-            - @template
-            - @user
-            - @content.visibility
-            - %core.root_path%
-            - %core.php_ext%
+            - '@auth'
+            - '@cache'
+            - '@config'
+            - '@dbal.conn'
+            - '@dispatcher'
+            - '@pagination'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@content.visibility'
+            - '%core.root_path%'
+            - '%core.php_ext%'
 
     vse.similartopics.fulltext_support:
         class: vse\similartopics\core\fulltext_support
         arguments:
-            - @dbal.conn
+            - '@dbal.conn'
 
     vse.similartopics.listener:
         class: vse\similartopics\event\listener
         arguments:
-            - @vse.similartopics.manager
+            - '@vse.similartopics.manager'
         tags:
             - { name: event.listener }
 
     vse.similartopics.ucp_listener:
         class: vse\similartopics\event\ucp_listener
         arguments:
-            - @auth
-            - @config
-            - @request
-            - @template
-            - @user
+            - '@auth'
+            - '@config'
+            - '@request'
+            - '@template'
+            - '@user'
         tags:
             - { name: event.listener }
