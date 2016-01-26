@@ -1,7 +1,7 @@
 {
 	"name": "vse/similartopics",
 	"type": "phpbb-extension",
-	"description": "A phpBB 3.1 extension that displays a list of similar (related) topics at the bottom of the current topic's page.",
+	"description": "A phpBB extension that displays a list of similar (related) topics at the bottom of the current topic's page.",
 	"homepage": "https://github.com/VSEphpbb/similartopics",
 	"version": "1.3.2-dev",
 	"keywords": ["phpbb", "extension", "similar", "topics"],
