@@ -76,13 +76,14 @@ class fulltext_support
 			$info = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
 
-			if (isset($info['Engine']))
+			// Modern MySQL uses 'Engine', but older may still use 'Type'
+			foreach (array('Engine', 'Type') as $name)
 			{
-				$this->engine = strtolower($info['Engine']);
-			}
-			else if (isset($info['Type']))
-			{
-				$this->engine = strtolower($info['Type']);
+				if (isset($info[$name]))
+				{
+					$this->engine = strtolower($info[$name]);
+					break;
+				}
 			}
 		}
 
