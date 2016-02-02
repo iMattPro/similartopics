@@ -67,11 +67,11 @@
 		<legend>{L_PST_LEGEND2}</legend>
 		<dl>
 			<dt><label for="pst_limit">{L_PST_LIMIT}{L_COLON}</label><br /><span>{L_PST_LIMIT_EXPLAIN}</span></dt>
-			<dd><input name="pst_limit" id="pst_limit" type="text" size="4" maxlength="2" value="{PST_LIMIT}" /></dd>
+			<dd><input name="pst_limit" id="pst_limit" type="number" min="0" max="999" value="{PST_LIMIT}" /></dd>
 		</dl>
 		<dl>
 			<dt><label for="pst_time">{L_PST_TIME}{L_COLON}</label><br /><span>{L_PST_TIME_EXPLAIN}</span></dt>
-			<dd><input name="pst_time" id="pst_time" type="text" size="4" maxlength="2" value="{PST_TIME}" />
+			<dd><input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{PST_TIME}" />
 				<select name="pst_time_type">
 					<!-- BEGIN similar_time_options -->
 						<option value="{similar_time_options.VALUE}"<!-- IF similar_time_options.S_SELECTED --> selected="selected"<!-- ENDIF -->>{similar_time_options.LABEL}</option>
@@ -81,7 +81,7 @@
 		</dl>
 		<dl>
 			<dt><label for="pst_cache">{L_PST_CACHE}{L_COLON}</label><br /><span>{L_PST_CACHE_EXPLAIN}</span></dt>
-			<dd><input name="pst_cache" id="pst_cache" type="text" size="4" maxlength="6" value="{PST_CACHE}" /> {L_SECONDS}</dd>
+			<dd><input name="pst_cache" id="pst_cache" type="number" min="0" max="99999999" value="{PST_CACHE}" /> {L_SECONDS}</dd>
 		</dl>
 	</fieldset>
 
