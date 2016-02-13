@@ -18,28 +18,9 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * A query caching option reduces SQL overhead on large boards.
 * Permission settings for users and groups determine who can view similar topics.
 * Multi-lingual support for stop-words (common words that are ignored).
+* Multiple languages are supported. View the pre-installed [localizations](https://github.com/VSEphpbb/similartopics/tree/master/language).
 * Prosilver and Subsilver2 styles compatibility.
 * Built-in compatibility with my "Topic Preview" extension.
-
-## Languages supported:
-* English
-* Arabic
-* Croatian
-* Czech
-* Dutch
-* French
-* German
-* Greek
-* Italian
-* Japanese
-* Persian
-* Polish
-* Portuguese
-* Romanian
-* Serbian
-* Spanish
-* Swedish
-* Turkish
 
 ## Awards
 * Overall winner of the 2010 "Summer of MODs" competition at phpBB.com.
@@ -54,7 +35,7 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 1. [Download the latest validated release](https://www.phpbb.com/customise/db/extension/precise_similar_topics/).
 2. Unzip the downloaded release and copy it to the `ext` directory of your phpBB board.
 3. Navigate in the ACP to `Customise -> Manage extensions`.
-4. Look for `Precise Similar Topics` under the Disabled Extensions list, and click its `Enable` link.
+4. Look for `Precise Similar Topics` under the Disabled Extensions list and click its `Enable` link.
 
 ## Uninstallation
 1. Navigate in the ACP to `Customise -> Manage extensions`.
