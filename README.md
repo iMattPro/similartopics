@@ -31,13 +31,13 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * PHP 5.3.3 or higher
 * MySQL 4.0.1 or higher using MyISAM tables (InnoDB supported with MySQL 5.6.4 or higher).
 
-## Installation
+## Install
 1. [Download the latest validated release](https://www.phpbb.com/customise/db/extension/precise_similar_topics/).
 2. Unzip the downloaded release and copy it to the `ext` directory of your phpBB board.
 3. Navigate in the ACP to `Customise -> Manage extensions`.
 4. Look for `Precise Similar Topics` under the Disabled Extensions list and click its `Enable` link.
 
-## Uninstallation
+## Uninstall
 1. Navigate in the ACP to `Customise -> Manage extensions`.
 2. Click the `Disable` link for Precise Similar Topics.
 3. To permanently uninstall, click `Delete Data`, then delete the `similartopics` folder from `phpBB/ext/vse/`.
