@@ -15,9 +15,12 @@ namespace vse\similartopics\acp;
 */
 class similar_topics_module
 {
-	const ONE_DAY = 86400;
-	const ONE_WEEK = 604800;
-	const ONE_YEAR = 31536000;
+	const TIMES = array(
+		'd' => 86400, // one day
+		'w' => 604800, // one week
+		'm' => 2626560, // one month
+		'y' => 31536000, // one year
+	);
 
 	/** @var \phpbb\config\config */
 	protected $config;
@@ -306,67 +309,28 @@ class similar_topics_module
 	* Calculate the $pst_time based on user input
 	*
 	* @param int $length user entered value
-	* @param string $type years, months, weeks, days
+	* @param string $type years, months, weeks, days (y|m|w|d)
 	* @return int time in seconds
 	* @access protected
 	*/
-	protected function set_pst_time($length, $type)
+	protected function set_pst_time($length, $type = 'y')
 	{
-		switch ($type)
-		{
-			case 'd':
-				$time = $length * self::ONE_DAY;
-			break;
+		$type = array_key_exists($type, self::TIMES) ? $type : 'y';
 
-			case 'w':
-				$time = $length * self::ONE_WEEK;
-			break;
-
-			case 'm':
-				$time = round($length * 30.4) * self::ONE_DAY;
-			break;
-
-			case 'y':
-			default:
-				$time = $length * self::ONE_YEAR;
-			break;
-		}
-		return (int) $time;
+		return (int) $length * self::TIMES[$type];
 	}
 
 	/**
 	* Get the correct time $length value for the form
 	*
 	* @param int $time as a timestamp
-	* @param string $type years, months, weeks, days
+	* @param string $type years, months, weeks, days (y|m|w|d)
 	* @return int time converted to the given $type
 	* @access protected
 	*/
-	protected function get_pst_time($time, $type)
+	protected function get_pst_time($time, $type = '')
 	{
-		switch ($type)
-		{
-			case 'y':
-				$length = $time / self::ONE_YEAR;
-			break;
-
-			case 'm':
-				$length = round($time / 30.4 / self::ONE_DAY);
-			break;
-
-			case 'w':
-				$length = $time / self::ONE_WEEK;
-			break;
-
-			case 'd':
-				$length = $time / self::ONE_DAY;
-			break;
-
-			default:
-				$length = 0;
-			break;
-		}
-		return (int) $length;
+		return array_key_exists($type, self::TIMES) ? (int) round($time / self::TIMES[$type]) : 0;
 	}
 
 	/**
