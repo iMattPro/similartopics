@@ -5,6 +5,7 @@ A Similar Topics Extension for phpBB 3.1
 This is an extension for phpBB 3.1 that will find and display a list of similar (related) topics at the bottom of the current topic's page.
 
 [![Build Status](https://travis-ci.org/VSEphpbb/similartopics.svg?branch=master)](https://travis-ci.org/VSEphpbb/similartopics)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VSEphpbb/similartopics/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VSEphpbb/similartopics/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/vse/similartopics/v/stable)](https://www.phpbb.com/customise/db/extension/precise_similar_topics/)
 
 ## Features
