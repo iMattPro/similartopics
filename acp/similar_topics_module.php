@@ -114,7 +114,7 @@ class similar_topics_module
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
-					trigger_error($this->user->lang('PST_SAVED') . adm_back_link($this->u_action));
+					$this->end('PST_SAVED');
 				}
 
 				$forum_name = '';
@@ -169,7 +169,7 @@ class similar_topics_module
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
-					trigger_error($this->user->lang('PST_SAVED') . adm_back_link($this->u_action));
+					$this->end('PST_SAVED');
 				}
 
 				// Allow option to update the database to enable FULLTEXT support
@@ -188,11 +188,11 @@ class similar_topics_module
 
 							$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
 
-							trigger_error($this->user->lang('PST_SAVE_FULLTEXT') . adm_back_link($this->u_action));
+							$this->end('PST_SAVE_FULLTEXT');
 						}
 						else
 						{
-							trigger_error($this->user->lang('PST_ERR_FULLTEXT') . adm_back_link($this->u_action), E_USER_WARNING);
+							$this->end('PST_ERR_FULLTEXT', E_USER_WARNING);
 						}
 					}
 					else
@@ -263,7 +263,7 @@ class similar_topics_module
 		{
 			if (strlen($arg) > 255)
 			{
-				trigger_error($this->user->lang('PST_ERR_CONFIG') . adm_back_link($this->u_action), E_USER_WARNING);
+				$this->end('PST_ERR_CONFIG', E_USER_WARNING);
 			}
 		}
 	}
@@ -279,7 +279,7 @@ class similar_topics_module
 	{
 		if (!check_form_key($form_key))
 		{
-			trigger_error($this->user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+			$this->end('FORM_INVALID', E_USER_WARNING);
 		}
 	}
 
@@ -395,7 +395,7 @@ class similar_topics_module
 	{
 		if (!$this->fulltext->is_mysql())
 		{
-			trigger_error($this->user->lang('PST_NO_MYSQL') . adm_back_link($this->u_action), E_USER_WARNING);
+			$this->end('PST_NO_MYSQL', E_USER_WARNING);
 		}
 
 		// Alter the storage engine
@@ -423,5 +423,18 @@ class similar_topics_module
 	protected function isset_or_default($var, $default)
 	{
 		return (isset($var)) ? $var : $default;
+	}
+
+	/**
+	 * End script execution with a trigger_error message
+	 *
+	 * @param string $message Language key string
+	 * @param int    $code    E_USER_NOTICE|E_USER_WARNING
+	 * @return null
+	 * @access protected
+	 */
+	protected function end($message, $code = E_USER_NOTICE)
+	{
+		trigger_error($this->user->lang($message) . adm_back_link($this->u_action), $code);
 	}
 }
