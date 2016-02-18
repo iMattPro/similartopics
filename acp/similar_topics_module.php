@@ -317,7 +317,7 @@ class similar_topics_module
 	{
 		$type = array_key_exists($type, self::TIMES) ? $type : 'y';
 
-		return (int) $length * self::TIMES[$type];
+		return (int) ($length * self::TIMES[$type]);
 	}
 
 	/**
