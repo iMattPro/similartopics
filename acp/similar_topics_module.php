@@ -15,13 +15,6 @@ namespace vse\similartopics\acp;
 */
 class similar_topics_module
 {
-	const TIMES = array(
-		'd' => 86400, // one day
-		'w' => 604800, // one week
-		'm' => 2626560, // one month
-		'y' => 31536000, // one year
-	);
-
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -48,6 +41,9 @@ class similar_topics_module
 
 	/** @var string */
 	protected $php_ext;
+
+	/** @var array */
+	protected $times;
 
 	/** @var string */
 	public $page_title;
@@ -82,6 +78,12 @@ class similar_topics_module
 
 		$this->tpl_name = 'acp_similar_topics';
 		$this->page_title = $this->user->lang('PST_TITLE_ACP');
+		$this->times = array(
+			'd' => 86400, // one day
+			'w' => 604800, // one week
+			'm' => 2626560, // one month
+			'y' => 31536000, // one year
+		);
 	}
 
 	/**
@@ -315,9 +317,9 @@ class similar_topics_module
 	*/
 	protected function set_pst_time($length, $type = 'y')
 	{
-		$type = array_key_exists($type, self::TIMES) ? $type : 'y';
+		$type = isset($this->times[$type]) ? $type : 'y';
 
-		return (int) ($length * self::TIMES[$type]);
+		return (int) ($length * $this->times[$type]);
 	}
 
 	/**
@@ -330,7 +332,7 @@ class similar_topics_module
 	*/
 	protected function get_pst_time($time, $type = '')
 	{
-		return array_key_exists($type, self::TIMES) ? (int) round($time / self::TIMES[$type]) : 0;
+		return isset($this->times[$type]) ? (int) round($time / $this->times[$type]) : 0;
 	}
 
 	/**
