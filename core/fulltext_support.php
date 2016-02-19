@@ -72,9 +72,7 @@ class fulltext_support
 
 		if ($this->is_mysql())
 		{
-			$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
-			$info = $this->db->sql_fetchrow($result);
-			$this->db->sql_freeresult($result);
+			$info = $this->get_table_info();
 
 			// Modern MySQL uses 'Engine', but older may still use 'Type'
 			foreach (array('Engine', 'Type') as $name)
@@ -116,5 +114,19 @@ class fulltext_support
 		$this->db->sql_freeresult($result);
 
 		return false;
+	}
+
+	/**
+	 * Get topics table information
+	 *
+	 * @return mixed Array with the table info, false if the table does not exist
+	 */
+	protected function get_table_info()
+	{
+		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
+		$info = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return $info;
 	}
 }
