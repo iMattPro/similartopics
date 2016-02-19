@@ -30,22 +30,17 @@ class release_1_3_0_data extends \phpbb\db\migration\migration
 				array('module.exists', array('acp', 'PST_TITLE_ACP', 'PST_TITLE')),
 				array('module.remove', array('acp', 'PST_TITLE_ACP', 'PST_TITLE')),
 			)),
-
 			array('if', array(
 				array('module.exists', array('acp', 'PST_TITLE_ACP', 'PST_SETTINGS')),
 				array('module.remove', array('acp', 'PST_TITLE_ACP', 'PST_SETTINGS')),
 			)),
-
 			// add new ACP module
 			array('module.add', array(
-				'acp',
-				'PST_TITLE_ACP',
-				array(
+				'acp', 'PST_TITLE_ACP', array(
 					'module_basename'	=> '\vse\similartopics\acp\similar_topics_module',
 					'modes'				=> array('settings'),
 				),
 			)),
-
 			// Update existing configs
 			array('config.update', array('similar_topics_version', '1.3.0')),
 		);

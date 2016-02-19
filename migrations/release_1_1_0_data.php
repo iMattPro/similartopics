@@ -35,21 +35,14 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 			array('config.add', array('similar_topics_version', '1.1.0')),
 
 			// Add ACP module
-			array('module.add', array(
-				'acp',
-				'ACP_CAT_DOT_MODS',
-				'PST_TITLE_ACP'
-			)),
-			array('module.add', array(
-				'acp',
-				'PST_TITLE_ACP',
+			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'PST_TITLE_ACP')),
+			array('module.add', array('acp', 'PST_TITLE_ACP',
 				array(
 					'module_basename'	=> '\vse\similartopics\acp\similar_topics_module',
 					'modes'				=> array('settings'),
 				),
 			)),
 
-			// Custom functions
 			array('custom', array(array($this, 'add_topic_title_fulltext'))),
 		);
 	}
@@ -57,7 +50,6 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	public function revert_data()
 	{
 		return array(
-			// Custom functions
 			array('custom', array(array($this, 'drop_topic_title_fulltext'))),
 		);
 	}
