@@ -61,24 +61,18 @@ class similar_topics_module
 	*/
 	public function __construct()
 	{
-		global $config, $db, $request, $template, $user, $phpbb_log, $phpbb_root_path, $phpEx;
+		global $phpbb_container;
 
-		$this->config = $config;
-		$this->db = $db;
-		$this->request = $request;
-		$this->template = $template;
-		$this->user = $user;
-		$this->log = $phpbb_log;
-		$this->root_path = $phpbb_root_path;
-		$this->php_ext = $phpEx;
-		$this->fulltext = new \vse\similartopics\core\fulltext_support($this->db);
-
-		$this->user->add_lang('acp/common');
-		$this->user->add_lang_ext('vse/similartopics', 'acp_similar_topics');
-
-		$this->tpl_name = 'acp_similar_topics';
-		$this->page_title = $this->user->lang('PST_TITLE_ACP');
-		$this->times = array(
+		$this->config    = $phpbb_container->get('config');
+		$this->db        = $phpbb_container->get('dbal.conn');
+		$this->fulltext  = $phpbb_container->get('vse.similartopics.fulltext_support');
+		$this->log       = $phpbb_container->get('log');
+		$this->request   = $phpbb_container->get('request');
+		$this->template  = $phpbb_container->get('template');
+		$this->user      = $phpbb_container->get('user');
+		$this->root_path = $phpbb_container->getParameter('core.root_path');
+		$this->php_ext   = $phpbb_container->getParameter('core.php_ext');
+		$this->times     = array(
 			'd' => 86400, // one day
 			'w' => 604800, // one week
 			'm' => 2626560, // one month
@@ -95,6 +89,12 @@ class similar_topics_module
 	*/
 	public function main($id, $mode)
 	{
+		$this->user->add_lang('acp/common');
+		$this->user->add_lang_ext('vse/similartopics', 'acp_similar_topics');
+
+		$this->tpl_name = 'acp_similar_topics';
+		$this->page_title = $this->user->lang('PST_TITLE_ACP');
+
 		$form_key = 'acp_similar_topics';
 		add_form_key($form_key);
 
