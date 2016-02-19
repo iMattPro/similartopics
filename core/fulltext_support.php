@@ -72,7 +72,7 @@ class fulltext_support
 
 		if ($this->is_mysql())
 		{
-			$info = $this->get_topic_table_info();
+			$info = $this->get_table_info();
 
 			// Modern MySQL uses 'Engine', but older may still use 'Type'
 			foreach (array('Engine', 'Type') as $name)
@@ -96,16 +96,22 @@ class fulltext_support
 	*/
 	public function index($field = 'topic_title')
 	{
-		foreach ($this->get_topic_table_indices() as $index)
+		$sql = 'SHOW INDEX
+			FROM ' . TOPICS_TABLE;
+		$result = $this->db->sql_query($sql);
+
+		while ($row = $this->db->sql_fetchrow($result))
 		{
 			// deal with older MySQL versions which didn't use Index_type
-			$index_type = (isset($index['Index_type'])) ? $index['Index_type'] : $index['Comment'];
+			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
 
-			if ($index_type == 'FULLTEXT' && $index['Key_name'] == $field)
+			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $field)
 			{
 				return true;
 			}
 		}
+
+		$this->db->sql_freeresult($result);
 
 		return false;
 	}
@@ -115,26 +121,12 @@ class fulltext_support
 	 *
 	 * @return mixed Array with the table info, false if the table does not exist
 	 */
-	protected function get_topic_table_info()
+	protected function get_table_info()
 	{
 		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
 		$info = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
 		return $info;
-	}
-
-	/**
-	 * Get topics table indices
-	 *
-	 * @return array Array of table indices
-	 */
-	protected function get_topic_table_indices()
-	{
-		$result = $this->db->sql_query('SHOW INDEX FROM ' . TOPICS_TABLE);
-		$rows = $this->db->sql_fetchrowset($result);
-		$this->db->sql_freeresult($result);
-
-		return $rows ?: array();
 	}
 }
