@@ -89,12 +89,29 @@ class similar_topics
 	*/
 	public function is_available()
 	{
-		return !empty($this->config['similar_topics']) && // is enabled
-			!empty($this->config['similar_topics_limit']) && // num of topics to display > 0
-			!empty($this->user->data['user_similar_topics']) && // user view similar topics enabled
-			$this->auth->acl_get('u_similar_topics') && // user authorized to view similar topics
-			$this->is_mysql() // database is MySQL
-		;
+		return $this->is_enabled() && $this->is_viewable() && $this->is_mysql();
+	}
+
+	/**
+	 * Is similar topics configured?
+	 *
+	 * @return bool True if configured, false otherwise
+	 * @access public
+	 */
+	public function is_enabled()
+	{
+		return !empty($this->config['similar_topics']) && !empty($this->config['similar_topics_limit']);
+	}
+
+	/**
+	 * Is similar topics viewable bu the user?
+	 *
+	 * @return bool True if viewable, false otherwise
+	 * @access public
+	 */
+	public function is_viewable()
+	{
+		return !empty($this->user->data['user_similar_topics']) && $this->auth->acl_get('u_similar_topics');
 	}
 
 	/**
