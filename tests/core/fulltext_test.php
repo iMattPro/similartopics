@@ -67,7 +67,7 @@ class fulltext_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Test that the db supports fulltext indeces
+	* Test that the db supports fulltext index
 	*/
 	public function test_fulltext_support()
 	{
