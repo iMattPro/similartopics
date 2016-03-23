@@ -308,7 +308,7 @@ class similar_topics_module
 	}
 
 	/**
-	* Calculate the $pst_time based on user input
+	* Calculate the time in seconds based on requested time period length
 	*
 	* @param int $length user entered value
 	* @param string $type years, months, weeks, days (y|m|w|d)
@@ -323,7 +323,7 @@ class similar_topics_module
 	}
 
 	/**
-	* Get the correct time $length value for the form
+	* Get the correct time period length value for the form
 	*
 	* @param int $time as a timestamp
 	* @param string $type years, months, weeks, days (y|m|w|d)
