@@ -195,17 +195,11 @@ class similar_topics_module
 
 							$this->end('PST_SAVE_FULLTEXT');
 						}
-						else
-						{
-							$this->end('PST_ERR_FULLTEXT', E_USER_WARNING);
-						}
+						$this->end('PST_ERR_FULLTEXT', E_USER_WARNING);
 					}
-					else
-					{
-						confirm_box(false, $this->user->lang('CONFIRM_OPERATION'), build_hidden_fields(array(
-							'fulltext' => 1,
-						)));
-					}
+					confirm_box(false, $this->user->lang('CONFIRM_OPERATION'), build_hidden_fields(array(
+						'fulltext' => 1,
+					)));
 				}
 
 				// Build the time options select menu
