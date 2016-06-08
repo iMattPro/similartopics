@@ -89,7 +89,6 @@ class similar_topics_module
 	*/
 	public function main($id, $mode)
 	{
-		$this->user->add_lang('acp/common');
 		$this->user->add_lang_ext('vse/similartopics', 'acp_similar_topics');
 
 		$this->tpl_name = 'acp_similar_topics';
