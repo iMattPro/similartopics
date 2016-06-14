@@ -49,7 +49,7 @@ class listener implements EventSubscriberInterface
 	/**
 	* Display similar topics
 	*
-	* @param object $event The event object
+	* @param \phpbb\event\data $event The event object
 	* @return null
 	* @access public
 	*/
@@ -67,7 +67,7 @@ class listener implements EventSubscriberInterface
 	/**
 	* Add custom permissions language variables
 	*
-	* @param object $event The event object
+	* @param \phpbb\event\data $event The event object
 	* @return null
 	* @access public
 	*/

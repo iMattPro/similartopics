@@ -10,7 +10,7 @@
 
 namespace vse\similartopics\tests\core;
 
-require_once dirname(__FILE__) . '/../../../../../includes/functions.php';
+require_once __DIR__ . '/../../../../../includes/functions.php';
 
 class fulltext_test extends \phpbb_database_test_case
 {
@@ -27,7 +27,7 @@ class fulltext_test extends \phpbb_database_test_case
 
 	public function getDataSet()
 	{
-		return $this->createXMLDataSet(dirname(__FILE__) . '/fixtures/config.xml');
+		return $this->createXMLDataSet(__DIR__ . '/fixtures/config.xml');
 	}
 
 	public function setUp()
@@ -45,8 +45,8 @@ class fulltext_test extends \phpbb_database_test_case
 	*/
 	public function test_check()
 	{
-		$sql = "SELECT *
-			FROM phpbb_config";
+		$sql = 'SELECT *
+			FROM phpbb_config';
 		$result = $this->db->sql_query($sql);
 		$this->assertEquals(array(
 			array(

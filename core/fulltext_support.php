@@ -36,7 +36,7 @@ class fulltext_support
 	*/
 	public function is_mysql()
 	{
-		return ($this->db->get_sql_layer() == 'mysql4' || $this->db->get_sql_layer() == 'mysqli');
+		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');
 	}
 
 	/**
@@ -58,7 +58,7 @@ class fulltext_support
 	*/
 	public function get_engine()
 	{
-		return (isset($this->engine)) ? $this->engine : $this->set_engine();
+		return isset($this->engine) ? $this->engine : $this->set_engine();
 	}
 
 	/**
@@ -103,9 +103,9 @@ class fulltext_support
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			// deal with older MySQL versions which didn't use Index_type
-			$index_type = (isset($row['Index_type'])) ? $row['Index_type'] : $row['Comment'];
+			$index_type = isset($row['Index_type']) ? $row['Index_type'] : $row['Comment'];
 
-			if ($index_type == 'FULLTEXT' && $row['Key_name'] == $field)
+			if ($index_type === 'FULLTEXT' && $row['Key_name'] === $field)
 			{
 				return true;
 			}

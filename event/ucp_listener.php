@@ -69,7 +69,7 @@ class ucp_listener implements EventSubscriberInterface
 	/**
 	* Get user's Similar Topics option and display it in UCP Prefs View page
 	*
-	* @param object $event The event object
+	* @param \phpbb\event\data $event The event object
 	* @return null
 	* @access public
 	*/
@@ -94,7 +94,7 @@ class ucp_listener implements EventSubscriberInterface
 	/**
 	* Add user's Similar Topics option state into the sql_array
 	*
-	* @param object $event The event object
+	* @param \phpbb\event\data $event The event object
 	* @return null
 	* @access public
 	*/

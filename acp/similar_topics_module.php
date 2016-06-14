@@ -83,11 +83,9 @@ class similar_topics_module
 	/**
 	* Main ACP module
 	*
-	* @param int $id
-	* @param string $mode
 	* @access public
 	*/
-	public function main($id, $mode)
+	public function main()
 	{
 		$this->user->add_lang_ext('vse/similartopics', 'acp_similar_topics');
 
@@ -237,8 +235,8 @@ class similar_topics_module
 					$this->template->assign_block_vars('forums', array(
 						'FORUM_NAME'			=> $row['forum_name'],
 						'FORUM_ID'				=> $row['forum_id'],
-						'CHECKED_IGNORE_FORUM'	=> (in_array($row['forum_id'], $ignore_forums)) ? 'checked="checked"' : '',
-						'CHECKED_NOSHOW_FORUM'	=> (in_array($row['forum_id'], $noshow_forums)) ? 'checked="checked"' : '',
+						'CHECKED_IGNORE_FORUM'	=> in_array($row['forum_id'], $ignore_forums) ? 'checked="checked"' : '',
+						'CHECKED_NOSHOW_FORUM'	=> in_array($row['forum_id'], $noshow_forums) ? 'checked="checked"' : '',
 						'S_IS_ADVANCED'			=> (bool) $row['similar_topic_forums'],
 						'U_ADVANCED'			=> "{$this->u_action}&amp;action=advanced&amp;f=" . $row['forum_id'],
 						'U_FORUM'				=> append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $row['forum_id']),
@@ -381,7 +379,7 @@ class similar_topics_module
 	*/
 	protected function isset_or_default($var, $default)
 	{
-		return (isset($var)) ? $var : $default;
+		return isset($var) ? $var : $default;
 	}
 
 	/**

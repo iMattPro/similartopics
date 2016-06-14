@@ -182,7 +182,7 @@ class similar_topics
 		{
 			// Cookie based tracking copied from search.php
 			$tracking_topics = $this->request->variable($this->config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
-			$tracking_topics = ($tracking_topics) ? tracking_unserialize($tracking_topics) : array();
+			$tracking_topics = $tracking_topics ? tracking_unserialize($tracking_topics) : array();
 		}
 
 		// We need to exclude passworded forums so we do not leak the topic title
@@ -209,7 +209,7 @@ class similar_topics
 			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $excluded_forums, true);
 		}
 		// In all other cases, exclude any passworded forums the user is not allowed to view
-		else if (!empty($passworded_forums))
+		else if (count($passworded_forums))
 		{
 			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
 		}
@@ -251,7 +251,7 @@ class similar_topics
 
 					if (!$this->user->data['is_registered'])
 					{
-						$this->user->data['user_lastmark'] = (isset($tracking_topics['l'])) ? (int) (base_convert($tracking_topics['l'], 36, 10) + $this->config['board_startdate']) : 0;
+						$this->user->data['user_lastmark'] = isset($tracking_topics['l']) ? ((int) base_convert($tracking_topics['l'], 36, 10) + (int) $this->config['board_startdate']) : 0;
 					}
 				}
 
@@ -260,13 +260,13 @@ class similar_topics
 
 				// Get folder img, topic status/type related information
 				$folder_img = $folder_alt = $topic_type = '';
-				$unread_topic = (isset($topic_tracking_info[$similar_topic_id]) && $row['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id]) ? true : false;
+				$unread_topic = isset($topic_tracking_info[$similar_topic_id]) && $row['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id];
 				topic_status($row, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
 
-				$topic_unapproved = ($row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
-				$posts_unapproved = ($row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id)) ? true : false;
+				$topic_unapproved = $row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $similar_forum_id);
+				$posts_unapproved = $row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id);
 				//$topic_deleted = $row['topic_visibility'] == ITEM_DELETED;
-				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
+				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
 				//$u_mcp_queue = (!$u_mcp_queue && $topic_deleted) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", "i=queue&amp;mode=deleted_topics&amp;t=$similar_topic_id", true, $this->user->session_id) : $u_mcp_queue;
 
 				$base_url = append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id);
@@ -290,14 +290,14 @@ class similar_topics
 					'TOPIC_ICON_IMG_WIDTH'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
 					'TOPIC_ICON_IMG_HEIGHT'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
 					'ATTACH_ICON_IMG'		=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $similar_forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->user->lang('TOTAL_ATTACHMENTS')) : '',
-					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', ($topic_unapproved) ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
+					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', $topic_unapproved ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 
 					'S_UNREAD_TOPIC'		=> $unread_topic,
-					'S_TOPIC_REPORTED'		=> (!empty($row['topic_reported']) && $this->auth->acl_get('m_report', $similar_forum_id)) ? true : false,
+					'S_TOPIC_REPORTED'		=> !empty($row['topic_reported']) && $this->auth->acl_get('m_report', $similar_forum_id),
 					'S_TOPIC_UNAPPROVED'	=> $topic_unapproved,
 					'S_POSTS_UNAPPROVED'	=> $posts_unapproved,
 					//'S_TOPIC_DELETED'		=> $topic_deleted,
-					'S_HAS_POLL'			=> ($row['poll_start']) ? true : false,
+					'S_HAS_POLL'			=> (bool) $row['poll_start'],
 
 					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
 					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
@@ -386,9 +386,7 @@ class similar_topics
 		$words = array_diff($this->make_word_array($text), $words);
 
 		// Convert our words array back to a string
-		$text = (!empty($words)) ? implode(' ', $words) : '';
-
-		return $text;
+		return count($words) ? implode(' ', $words) : '';
 	}
 
 	/**
@@ -424,7 +422,7 @@ class similar_topics
 	*/
 	protected function english_lang()
 	{
-		return ($this->user->lang_name == 'en' || $this->user->lang_name == 'en_us');
+		return ($this->user->lang_name === 'en' || $this->user->lang_name === 'en_us');
 	}
 
 	/**
@@ -446,6 +444,6 @@ class similar_topics
 	*/
 	protected function is_mysql()
 	{
-		return ($this->db->get_sql_layer() == 'mysql4' || $this->db->get_sql_layer() == 'mysqli');
+		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');
 	}
 }
