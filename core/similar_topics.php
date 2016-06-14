@@ -386,7 +386,7 @@ class similar_topics
 		$words = array_diff($this->make_word_array($text), $words);
 
 		// Convert our words array back to a string
-		return count($words) ? implode(' ', $words) : '';
+		return implode(' ', $words);
 	}
 
 	/**
