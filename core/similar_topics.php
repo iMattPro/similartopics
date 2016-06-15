@@ -209,7 +209,7 @@ class similar_topics
 			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $excluded_forums, true);
 		}
 		// In all other cases, exclude any passworded forums the user is not allowed to view
-		else if (count($passworded_forums))
+		else if (sizeof($passworded_forums))
 		{
 			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
 		}
