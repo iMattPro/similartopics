@@ -1,12 +1,12 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2014 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2013 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\migrations;
 
@@ -40,9 +40,9 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 	}
 
 	/**
-	* Drop the FULLTEXT index on phpbb_topics.topic_title
-	* Convert phpbb_topics back to the original storage engine
-	*/
+	 * Drop the FULLTEXT index on phpbb_topics.topic_title
+	 * Convert phpbb_topics back to the original storage engine
+	 */
 	public function revert_fulltext_changes()
 	{
 		$fulltext = new \vse\similartopics\core\fulltext_support($this->db);

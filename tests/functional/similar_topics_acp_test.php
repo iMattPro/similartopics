@@ -1,18 +1,18 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2014 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2014 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\tests\functional;
 
 /**
-* @group functional
-*/
+ * @group functional
+ */
 class similar_topics_acp_test extends similar_topics_base
 {
 	public function setUp()
@@ -32,8 +32,8 @@ class similar_topics_acp_test extends similar_topics_base
 	}
 
 	/**
-	* @dataProvider acp_pages_data
-	*/
+	 * @dataProvider acp_pages_data
+	 */
 	public function test_acp_pages($mode)
 	{
 		$this->add_lang_ext('vse/similartopics', 'acp_similar_topics');

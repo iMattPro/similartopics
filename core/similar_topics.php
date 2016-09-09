@@ -1,12 +1,12 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2013 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2013 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\core;
 
@@ -49,22 +49,22 @@ class similar_topics
 	protected $php_ext;
 
 	/**
-	* Constructor
-	*
-	* @param \phpbb\auth\auth $auth
-	* @param \phpbb\cache\service $cache
-	* @param \phpbb\config\config $config
-	* @param \phpbb\db\driver\driver_interface $db
-	* @param \phpbb\event\dispatcher_interface $dispatcher
-	* @param \phpbb\pagination $pagination
-	* @param \phpbb\request\request $request
-	* @param \phpbb\template\template $template
-	* @param \phpbb\user $user
-	* @param \phpbb\content_visibility $content_visibility
-	* @param string $root_path
-	* @param string $php_ext
-	* @access public
-	*/
+	 * Constructor
+	 *
+	 * @access public
+	 * @param \phpbb\auth\auth                  $auth
+	 * @param \phpbb\cache\service              $cache
+	 * @param \phpbb\config\config              $config
+	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\event\dispatcher_interface $dispatcher
+	 * @param \phpbb\pagination                 $pagination
+	 * @param \phpbb\request\request            $request
+	 * @param \phpbb\template\template          $template
+	 * @param \phpbb\user                       $user
+	 * @param \phpbb\content_visibility         $content_visibility
+	 * @param string                            $root_path
+	 * @param string                            $php_ext
+	 */
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
@@ -82,11 +82,11 @@ class similar_topics
 	}
 
 	/**
-	* Is similar topics available?
-	*
-	* @return bool True if available, false otherwise
-	* @access public
-	*/
+	 * Is similar topics available?
+	 *
+	 * @access public
+	 * @return bool True if available, false otherwise
+	 */
 	public function is_available()
 	{
 		return $this->is_enabled() && $this->is_viewable() && $this->is_mysql();
@@ -95,8 +95,8 @@ class similar_topics
 	/**
 	 * Is similar topics configured?
 	 *
-	 * @return bool True if configured, false otherwise
 	 * @access public
+	 * @return bool True if configured, false otherwise
 	 */
 	public function is_enabled()
 	{
@@ -106,8 +106,8 @@ class similar_topics
 	/**
 	 * Is similar topics viewable bu the user?
 	 *
-	 * @return bool True if viewable, false otherwise
 	 * @access public
+	 * @return bool True if viewable, false otherwise
 	 */
 	public function is_viewable()
 	{
@@ -115,29 +115,28 @@ class similar_topics
 	}
 
 	/**
-	* Is the forum available for displaying similar topics
-	*
-	* @param int $forum_id A forum identifier
-	* @return bool True if available, false otherwise
-	* @access public
-	*/
+	 * Is the forum available for displaying similar topics
+	 *
+	 * @access public
+	 * @param int $forum_id A forum identifier
+	 * @return bool True if available, false otherwise
+	 */
 	public function forum_available($forum_id)
 	{
 		return !in_array($forum_id, explode(',', $this->config['similar_topics_hide']));
 	}
 
 	/**
-	* Get similar topics by matching topic titles
-	*
-	* NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
-	* and MATCH and AGAINST and UNIX_TIMESTAMP. MySQL FULLTEXT has built-in
-	* English ignore words. We use phpBB's ignore words for non-English
-	* languages. We also remove any admin-defined special ignore words.
-	*
-	* @param	array	$topic_data	Array with topic data
-	* @return 	null
-	* @access	public
-	*/
+	 * Get similar topics by matching topic titles
+	 *
+	 * NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
+	 * and MATCH and AGAINST and UNIX_TIMESTAMP. MySQL FULLTEXT has built-in
+	 * English ignore words. We use phpBB's ignore words for non-English
+	 * languages. We also remove any admin-defined special ignore words.
+	 *
+	 * @access public
+	 * @param array $topic_data Array with topic data
+	 */
 	public function display_similar_topics($topic_data)
 	{
 		$topic_title = $this->clean_topic_title($topic_data['topic_title']);
@@ -308,13 +307,13 @@ class similar_topics
 				);
 
 				/**
-				* Event to modify the similar topics template block
-				*
-				* @event vse.similartopics.modify_topicrow
-				* @var	array	row			Array with similar topic data
-				* @var	array	topic_row	Template block array
-				* @since 1.3.0
-				*/
+				 * Event to modify the similar topics template block
+				 *
+				 * @event vse.similartopics.modify_topicrow
+				 * @var array row       Array with similar topic data
+				 * @var array topic_row Template block array
+				 * @since 1.3.0
+				 */
 				$vars = array('row', 'topic_row');
 				extract($this->dispatcher->trigger_event('vse.similartopics.modify_topicrow', compact($vars)));
 
@@ -339,12 +338,12 @@ class similar_topics
 	}
 
 	/**
-	* Clean topic title (and if needed, ignore-words)
-	*
-	* @param	string	$text	The topic title
-	* @return	string	The topic title
-	* @access	public
-	*/
+	 * Clean topic title (and if needed, ignore-words)
+	 *
+	 * @access public
+	 * @param string $text The topic title
+	 * @return string The topic title
+	 */
 	public function clean_topic_title($text)
 	{
 		// Strip quotes, ampersands
@@ -359,12 +358,12 @@ class similar_topics
 	}
 
 	/**
-	* Remove any non-english and/or custom defined ignore-words
-	*
-	* @param	string	$text			The topic title
-	* @return	string	The topic title
-	* @access	protected
-	*/
+	 * Remove any non-english and/or custom defined ignore-words
+	 *
+	 * @access protected
+	 * @param string $text The topic title
+	 * @return string The topic title
+	 */
 	protected function strip_stop_words($text)
 	{
 		$words = array();
@@ -390,12 +389,12 @@ class similar_topics
 	}
 
 	/**
-	* Helper function to split string into an array of words
-	*
-	* @param	string	$text	String of plain text words
-	* @return	array	Array of plaintext words
-	* @access	protected
-	*/
+	 * Helper function to split string into an array of words
+	 *
+	 * @access protected
+	 * @param string $text String of plain text words
+	 * @return array Array of plaintext words
+	 */
 	protected function make_word_array($text)
 	{
 		// Strip out any non-alpha-numeric characters using PCRE regex syntax
@@ -415,33 +414,33 @@ class similar_topics
 	}
 
 	/**
-	* Check if English is the current user's language
-	*
-	* @return	bool	True if lang is 'en' or 'en_us', false otherwise
-	* @access	protected
-	*/
+	 * Check if English is the current user's language
+	 *
+	 * @access protected
+	 * @return bool True if lang is 'en' or 'en_us', false otherwise
+	 */
 	protected function english_lang()
 	{
 		return ($this->user->lang_name === 'en' || $this->user->lang_name === 'en_us');
 	}
 
 	/**
-	* Check if custom ignore words have been defined for similar topics
-	*
-	* @return	bool	True or false
-	* @access	protected
-	*/
+	 * Check if custom ignore words have been defined for similar topics
+	 *
+	 * @access protected
+	 * @return bool True or false
+	 */
 	protected function has_ignore_words()
 	{
 		return !empty($this->config['similar_topics_words']);
 	}
 
 	/**
-	* Check if the database layer is MySQL4 or later
-	*
-	* @return	bool	True is MySQL4 or later, false otherwise
-	* @access	protected
-	*/
+	 * Check if the database layer is MySQL4 or later
+	 *
+	 * @access protected
+	 * @return bool True is MySQL4 or later, false otherwise
+	 */
 	protected function is_mysql()
 	{
 		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');

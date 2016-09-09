@@ -1,18 +1,18 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2014 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2014 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\tests\functional;
 
 /**
-* @group functional
-*/
+ * @group functional
+ */
 class similar_topics_ucp_test extends similar_topics_base
 {
 	public function test_ucp_pages()

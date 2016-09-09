@@ -1,18 +1,18 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2014 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2014 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\tests\functional;
 
 /**
-* @group functional
-*/
+ * @group functional
+ */
 class similar_topics_base extends \phpbb_functional_test_case
 {
 	static protected function setup_extensions()
@@ -27,8 +27,8 @@ class similar_topics_base extends \phpbb_functional_test_case
 	}
 
 	/**
-	* Enable Similar Topics (it is disabled when installed) 
-	*/
+	 * Enable Similar Topics (it is disabled when installed)
+	 */
 	public function enable_similar_topics()
 	{
 		$this->get_db();

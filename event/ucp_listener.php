@@ -1,20 +1,20 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2014 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2014 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
-* Event listener
-*/
+ * Event listener
+ */
 class ucp_listener implements EventSubscriberInterface
 {
 	/** @var \phpbb\auth\auth */
@@ -33,15 +33,15 @@ class ucp_listener implements EventSubscriberInterface
 	protected $user;
 
 	/**
-	* Constructor
-	*
-	* @param \phpbb\auth\auth $auth
-	* @param \phpbb\config\config $config
-	* @param \phpbb\request\request $request
-	* @param \phpbb\template\template $template
-	* @param \phpbb\user $user
-	* @access public
-	*/
+	 * Constructor
+	 *
+	 * @access public
+	 * @param \phpbb\auth\auth         $auth
+	 * @param \phpbb\config\config     $config
+	 * @param \phpbb\request\request   $request
+	 * @param \phpbb\template\template $template
+	 * @param \phpbb\user              $user
+	 */
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
 	{
 		$this->auth = $auth;
@@ -52,12 +52,12 @@ class ucp_listener implements EventSubscriberInterface
 	}
 
 	/**
-	* Assign functions defined in this class to event listeners in the core
-	*
-	* @return array
-	* @static
-	* @access public
-	*/
+	 * Assign functions defined in this class to event listeners in the core
+	 *
+	 * @static
+	 * @access public
+	 * @return array
+	 */
 	static public function getSubscribedEvents()
 	{
 		return array(
@@ -67,12 +67,11 @@ class ucp_listener implements EventSubscriberInterface
 	}
 
 	/**
-	* Get user's Similar Topics option and display it in UCP Prefs View page
-	*
-	* @param \phpbb\event\data $event The event object
-	* @return null
-	* @access public
-	*/
+	 * Get user's Similar Topics option and display it in UCP Prefs View page
+	 *
+	 * @access public
+	 * @param \phpbb\event\data $event The event object
+	 */
 	public function ucp_prefs_get_data($event)
 	{
 		// Request the user option vars and add them to the data array
@@ -92,12 +91,11 @@ class ucp_listener implements EventSubscriberInterface
 	}
 
 	/**
-	* Add user's Similar Topics option state into the sql_array
-	*
-	* @param \phpbb\event\data $event The event object
-	* @return null
-	* @access public
-	*/
+	 * Add user's Similar Topics option state into the sql_array
+	 *
+	 * @access public
+	 * @param \phpbb\event\data $event The event object
+	 */
 	public function ucp_prefs_set_data($event)
 	{
 		$event['sql_ary'] = array_merge($event['sql_ary'], array(

@@ -1,12 +1,12 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2014 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2014 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\tests\core;
 
@@ -39,10 +39,10 @@ class fulltext_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Very basic test we're running here
-	*
-	* Mostly just to check that our test case is running
-	*/
+	 * Very basic test we're running here
+	 *
+	 * Mostly just to check that our test case is running
+	 */
 	public function test_check()
 	{
 		$sql = 'SELECT *
@@ -59,16 +59,16 @@ class fulltext_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Test that the db is MySQL
-	*/
+	 * Test that the db is MySQL
+	 */
 	public function test_is_mysql()
 	{
 		$this->assertTrue($this->fulltext->is_mysql());
 	}
 
 	/**
-	* Test that the db supports fulltext index
-	*/
+	 * Test that the db supports fulltext index
+	 */
 	public function test_fulltext_support()
 	{
 		// Check for fulltext index support
@@ -79,8 +79,8 @@ class fulltext_test extends \phpbb_database_test_case
 	}
 
 	/**
-	* Test that the field is fulltext
-	*/
+	 * Test that the field is fulltext
+	 */
 	public function test_fulltext_index()
 	{
 		$field = 'topic_title';

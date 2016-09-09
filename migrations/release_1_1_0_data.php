@@ -1,12 +1,12 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2013 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2013 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\migrations;
 
@@ -55,8 +55,8 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	}
 
 	/**
-	* Add a FULLTEXT index to phpbb_topics.topic_title
-	*/
+	 * Add a FULLTEXT index to phpbb_topics.topic_title
+	 */
 	public function add_topic_title_fulltext()
 	{
 		$fulltext = $this->get_fulltext();
@@ -70,8 +70,8 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	}
 
 	/**
-	* Drop the FULLTEXT index on phpbb_topics.topic_title
-	*/
+	 * Drop the FULLTEXT index on phpbb_topics.topic_title
+	 */
 	public function drop_topic_title_fulltext()
 	{
 		$fulltext = $this->get_fulltext();
@@ -85,10 +85,10 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	}
 
 	/**
-	* Get an instance of the fulltext class
-	*
-	* @return \vse\similartopics\core\fulltext_support
-	*/
+	 * Get an instance of the fulltext class
+	 *
+	 * @return \vse\similartopics\core\fulltext_support
+	 */
 	public function get_fulltext()
 	{
 		return new \vse\similartopics\core\fulltext_support($this->db);

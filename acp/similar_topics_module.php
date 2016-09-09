@@ -1,18 +1,18 @@
 <?php
 /**
-*
-* Precise Similar Topics
-*
-* @copyright (c) 2013 Matt Friedman
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2013 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 namespace vse\similartopics\acp;
 
 /**
-* @package acp
-*/
+ * @package acp
+ */
 class similar_topics_module
 {
 	/** @var \phpbb\config\config */
@@ -55,10 +55,10 @@ class similar_topics_module
 	public $u_action;
 
 	/**
-	* ACP module constructor
-	*
-	* @access public
-	*/
+	 * ACP module constructor
+	 *
+	 * @access public
+	 */
 	public function __construct()
 	{
 		global $phpbb_container;
@@ -81,10 +81,10 @@ class similar_topics_module
 	}
 
 	/**
-	* Main ACP module
-	*
-	* @access public
-	*/
+	 * Main ACP module
+	 *
+	 * @access public
+	 */
 	public function main()
 	{
 		$this->user->add_lang_ext('vse/similartopics', 'acp_similar_topics');
@@ -247,11 +247,10 @@ class similar_topics_module
 	}
 
 	/**
-	* Check if config field values exceed 255 chars
-	*
-	* @return null
-	* @access protected
-	*/
+	 * Check if config field values exceed 255 chars
+	 *
+	 * @access protected
+	 */
 	protected function validate_config_length()
 	{
 		$arg_list = func_get_args();
@@ -265,12 +264,11 @@ class similar_topics_module
 	}
 
 	/**
-	* Check form key, trigger error if invalid
-	*
-	* @param string $form_key The form key value
-	* @return null
-	* @access protected
-	*/
+	 * Check form key, trigger error if invalid
+	 *
+	 * @access protected
+	 * @param string $form_key The form key value
+	 */
 	protected function check_form_key($form_key)
 	{
 		if (!check_form_key($form_key))
@@ -280,11 +278,11 @@ class similar_topics_module
 	}
 
 	/**
-	* Get forums list
-	*
-	* @return array	forum data rows
-	* @access protected
-	*/
+	 * Get forums list
+	 *
+	 * @access protected
+	 * @return array forum data rows
+	 */
 	protected function get_forum_list()
 	{
 		$sql = 'SELECT forum_id, forum_name, similar_topic_forums
@@ -299,13 +297,13 @@ class similar_topics_module
 	}
 
 	/**
-	* Calculate the time in seconds based on requested time period length
-	*
-	* @param int $length user entered value
-	* @param string $type years, months, weeks, days (y|m|w|d)
-	* @return int time in seconds
-	* @access protected
-	*/
+	 * Calculate the time in seconds based on requested time period length
+	 *
+	 * @access protected
+	 * @param int    $length user entered value
+	 * @param string $type   years, months, weeks, days (y|m|w|d)
+	 * @return int time in seconds
+	 */
 	protected function set_pst_time($length, $type = 'y')
 	{
 		$type = isset($this->times[$type]) ? $type : 'y';
@@ -314,24 +312,24 @@ class similar_topics_module
 	}
 
 	/**
-	* Get the correct time period length value for the form
-	*
-	* @param int $time as a timestamp
-	* @param string $type years, months, weeks, days (y|m|w|d)
-	* @return int time converted to the given $type
-	* @access protected
-	*/
+	 * Get the correct time period length value for the form
+	 *
+	 * @access protected
+	 * @param int    $time as a timestamp
+	 * @param string $type years, months, weeks, days (y|m|w|d)
+	 * @return int time converted to the given $type
+	 */
 	protected function get_pst_time($time, $type = '')
 	{
 		return isset($this->times[$type]) ? (int) round($time / $this->times[$type]) : 0;
 	}
 
 	/**
-	* Check for FULLTEXT index support
-	*
-	* @return bool True if FULLTEXT is fully supported, false otherwise
-	* @access protected
-	*/
+	 * Check for FULLTEXT index support
+	 *
+	 * @access protected
+	 * @return bool True if FULLTEXT is fully supported, false otherwise
+	 */
 	protected function fulltext_support_enabled()
 	{
 		if ($this->fulltext->is_supported())
@@ -343,11 +341,10 @@ class similar_topics_module
 	}
 
 	/**
-	* Enable FULLTEXT support for the topic_title
-	*
-	* @return null
-	* @access protected
-	*/
+	 * Enable FULLTEXT support for the topic_title
+	 *
+	 * @access protected
+	 */
 	protected function enable_fulltext_support()
 	{
 		if (!$this->fulltext->is_mysql())
@@ -370,13 +367,13 @@ class similar_topics_module
 	}
 
 	/**
-	* Return a variable if it is set, otherwise default
-	*
-	* @param mixed $var The variable to test
-	* @param mixed $default The default value to use
-	* @return mixed The value of the variable if set, otherwise default value
-	* @access protected
-	*/
+	 * Return a variable if it is set, otherwise default
+	 *
+	 * @access protected
+	 * @param mixed $var     The variable to test
+	 * @param mixed $default The default value to use
+	 * @return mixed The value of the variable if set, otherwise default value
+	 */
 	protected function isset_or_default($var, $default)
 	{
 		return isset($var) ? $var : $default;
@@ -385,10 +382,10 @@ class similar_topics_module
 	/**
 	 * End script execution with a trigger_error message
 	 *
+	 * @access protected
 	 * @param string $message Language key string
 	 * @param int    $code    E_USER_NOTICE|E_USER_WARNING
-	 * @return null
-	 * @access protected
+	 * @return void
 	 */
 	protected function end($message, $code = E_USER_NOTICE)
 	{
