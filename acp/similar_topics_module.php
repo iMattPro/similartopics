@@ -334,7 +334,7 @@ class similar_topics_module
 	{
 		if ($this->fulltext->is_supported())
 		{
-			return $this->fulltext->index('topic_title');
+			return $this->fulltext->is_index('topic_title');
 		}
 
 		return false;
@@ -357,7 +357,7 @@ class similar_topics_module
 		$this->db->sql_query($sql);
 
 		// Prevent adding extra indeces.
-		if ($this->fulltext->index('topic_title'))
+		if ($this->fulltext->is_index('topic_title'))
 		{
 			return;
 		}

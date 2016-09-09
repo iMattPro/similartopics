@@ -86,13 +86,13 @@ class fulltext_test extends \phpbb_database_test_case
 		$field = 'topic_title';
 
 		// Check that the topic_title is NOT a fulltext index
-		$this->assertFalse($this->fulltext->index($field));
+		$this->assertFalse($this->fulltext->is_index($field));
 
 		// Make topic_title a fulltext index
 		$sql = "ALTER TABLE phpbb_topics ADD FULLTEXT ($field)";
 		$this->db->sql_query($sql);
 
 		// Check that the topic_title is a fulltext index
-		$this->assertTrue($this->fulltext->index($field));
+		$this->assertTrue($this->fulltext->is_index($field));
 	}
 }

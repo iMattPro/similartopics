@@ -93,32 +93,35 @@ class fulltext_support
 	}
 
 	/**
-	public function index($field = 'topic_title')
 	 * Check if a field is a FULLTEXT index
 	 *
 	 * @access public
 	 * @param string $field name of a field
 	 * @return bool True if field is a FULLTEXT index, false otherwise
 	 */
+	public function is_index($field = 'topic_title')
 	{
+		$is_index = false;
+
 		$sql = 'SHOW INDEX
 			FROM ' . TOPICS_TABLE;
 		$result = $this->db->sql_query($sql);
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			// deal with older MySQL versions which didn't use Index_type
+			// Older MySQL versions didn't use Index_type, so fallback to Comment
 			$index_type = isset($row['Index_type']) ? $row['Index_type'] : $row['Comment'];
 
 			if ($index_type === 'FULLTEXT' && $row['Key_name'] === $field)
 			{
-				return true;
+				$is_index = true;
+				break;
 			}
 		}
 
 		$this->db->sql_freeresult($result);
 
-		return false;
+		return $is_index;
 	}
 
 	/**
