@@ -214,12 +214,12 @@ class similar_topics
 		}
 
 		/**
-		* Event to modify the sql_array for similar topics
-		*
-		* @event vse.similartopics.get_topic_data
-		* @var	array	sql_array	SQL array to get similar topics data
-		* @since 1.3.0
-		*/
+		 * Event to modify the sql_array for similar topics
+		 *
+		 * @event vse.similartopics.get_topic_data
+		 * @var array sql_array SQL array to get similar topics data
+		 * @since 1.3.0
+		 */
 		$vars = array('sql_array');
 		extract($this->dispatcher->trigger_event('vse.similartopics.get_topic_data', compact($vars)));
 
