@@ -27,13 +27,13 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 		return array(
 			// Revert the storage engine back to the original setting if it was stored
 			array('if', array(
-				(!empty($this->config['similar_topics_fulltext'])),
+				!empty($this->config['similar_topics_fulltext']),
 				array('custom', array(array($this, 'revert_fulltext_changes'))),
 			)),
 
 			// Remove the config holding the original storage engine setting if it exists
 			array('if', array(
-				(isset($this->config['similar_topics_fulltext'])),
+				isset($this->config['similar_topics_fulltext']),
 				array('config.remove', array('similar_topics_fulltext')),
 			)),
 		);

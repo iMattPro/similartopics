@@ -376,7 +376,7 @@ class similar_topics_module
 	 */
 	protected function isset_or_default($var, $default)
 	{
-		return isset($var) ? $var : $default;
+		return null !== $var ? $var : $default;
 	}
 
 	/**
