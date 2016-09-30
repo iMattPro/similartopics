@@ -38,7 +38,7 @@ class listener implements EventSubscriberInterface
 	 * @access public
 	 * @return array
 	 */
-	static public function getSubscribedEvents()
+	public static function getSubscribedEvents()
 	{
 		return array(
 			'core.viewtopic_modify_page_title'		=> 'display_similar_topics',
