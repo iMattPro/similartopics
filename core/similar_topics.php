@@ -334,6 +334,7 @@ class similar_topics
 			'REPORTED_IMG'		=> $this->user->img('icon_topic_reported', 'TOPIC_REPORTED'),
 			//'DELETED_IMG'		=> $this->user->img('icon_topic_deleted', 'TOPIC_DELETED'),
 			'POLL_IMG'			=> $this->user->img('icon_topic_poll', 'TOPIC_POLL'),
+			'S_PST_BRANCH'		=> phpbb_version_compare(max($this->config['phpbb_version'], PHPBB_VERSION), '3.2.0-dev', '<') ? '31x' : '32x',
 		));
 	}
 
