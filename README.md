@@ -1,8 +1,8 @@
 # ![Precise Similar Topics](http://mattfriedman.me/forum/images/binoc1.png "Precise Similar Topics") Precise Similar Topics
 
-A Similar Topics Extension for phpBB 3.1
+A Similar Topics Extension for phpBB
 
-This is an extension for phpBB 3.1 that will find and display a list of similar (related) topics at the bottom of the current topic's page.
+This is an extension for phpBB that will find and display a list of similar (related) topics at the bottom of the current topic's page.
 
 [![Build Status](https://travis-ci.org/VSEphpbb/similartopics.svg?branch=master)](https://travis-ci.org/VSEphpbb/similartopics)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VSEphpbb/similartopics/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VSEphpbb/similartopics/?branch=master)
@@ -23,6 +23,7 @@ This is an extension for phpBB 3.1 that will find and display a list of similar 
 * Multiple languages are supported. View the pre-installed [localizations](https://github.com/VSEphpbb/similartopics/tree/master/language).
 * Prosilver and Subsilver2 styles compatibility.
 * Built-in compatibility with my "Topic Preview" extension.
+* phpBB 3.1 and 3.2 compatibility.
 
 ## Awards
 * Overall winner of the 2010 "Summer of MODs" competition at phpBB.com.
