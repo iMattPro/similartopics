@@ -115,18 +115,6 @@ class similar_topics
 	}
 
 	/**
-	 * Is the forum available for displaying similar topics
-	 *
-	 * @access public
-	 * @param int $forum_id A forum identifier
-	 * @return bool True if available, false otherwise
-	 */
-	public function forum_available($forum_id)
-	{
-		return !in_array($forum_id, explode(',', $this->config['similar_topics_hide']));
-	}
-
-	/**
 	 * Get similar topics by matching topic titles
 	 *
 	 * NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
@@ -139,6 +127,12 @@ class similar_topics
 	 */
 	public function display_similar_topics($topic_data)
 	{
+		// If the forum should not display similar topics, no need to continue
+		if ($topic_data['similar_topics_hide'])
+		{
+			return;
+		}
+
 		$topic_title = $this->clean_topic_title($topic_data['topic_title']);
 
 		// If the cleaned up topic_title is empty, no need to continue
@@ -191,7 +185,7 @@ class similar_topics
 		if (!empty($topic_data['similar_topic_forums']))
 		{
 			// Remove any passworded forums from this group of forums we will be searching
-			$included_forums = array_diff(explode(',', $topic_data['similar_topic_forums']), $passworded_forums);
+			$included_forums = array_diff(json_decode($topic_data['similar_topic_forums'], true), $passworded_forums);
 			// if there's nothing left to display (user has no access to the forums we want to search)
 			if (empty($included_forums))
 			{
@@ -200,17 +194,16 @@ class similar_topics
 
 			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $included_forums);
 		}
-		// Otherwise, see what forums are not allowed to be searched, and exclude them
-		else if (!empty($this->config['similar_topics_ignore']))
+		// Otherwise exclude any ignored forums
+		else
 		{
-			// Add passworded forums to the exlude array
-			$excluded_forums = array_unique(array_merge(explode(',', $this->config['similar_topics_ignore']), $passworded_forums));
-			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $excluded_forums, true);
-		}
-		// In all other cases, exclude any passworded forums the user is not allowed to view
-		else if (sizeof($passworded_forums))
-		{
-			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
+			// Remove any passworded forums
+			if (sizeof($passworded_forums))
+			{
+				$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
+			}
+
+			$sql_array['WHERE'] .= ' AND f.similar_topics_ignore = 0';
 		}
 
 		/**

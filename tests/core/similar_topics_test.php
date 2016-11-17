@@ -252,32 +252,6 @@ class similar_topics_test extends \phpbb_test_case
 		$this->assertEquals($expected, $similar_topics->is_available());
 	}
 
-	public function forum_available_test_data()
-	{
-		return array(
-			array(1, '1,2,3,4', false),
-			array(1, '2,3,4,5', true),
-			array(1, '1', false),
-			array(1, '2', true),
-			array(1, '', true),
-			array(1, null, true),
-			array(null, '', false),
-			array(null, null, false),
-		);
-	}
-
-	/**
-	 * @dataProvider forum_available_test_data
-	 */
-	public function test_forum_available($forum_id, $unavailable, $expected)
-	{
-		$this->config->offsetSet('similar_topics_hide', $unavailable);
-
-		$similar_topics = $this->get_similar_topics();
-
-		$this->assertEquals($expected, $similar_topics->forum_available($forum_id));
-	}
-
 	public function clean_topic_title_test_data()
 	{
 		return array(

@@ -54,8 +54,8 @@ class listener implements EventSubscriberInterface
 	 */
 	public function display_similar_topics($event)
 	{
-		// Return early if no reason to display similar topics
-		if (!$this->similar_topics->is_available() || !$this->similar_topics->forum_available($event['forum_id']))
+		// Return early if similar topics is disabled
+		if (!$this->similar_topics->is_available())
 		{
 			return;
 		}

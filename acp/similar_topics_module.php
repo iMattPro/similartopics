@@ -106,8 +106,8 @@ class similar_topics_module
 				{
 					$this->check_form_key($form_key);
 
-					$similar_topic_forums = implode(',', $this->request->variable('similar_forums_id', array(0)));
-					$this->validate_config_length($similar_topic_forums);
+					$similar_topic_forums = $this->request->variable('similar_forums_id', array(0));
+					$similar_topic_forums = !empty($similar_topic_forums) ? json_encode($similar_topic_forums) : '';
 
 					$sql = 'UPDATE ' . FORUMS_TABLE . "
 						SET similar_topic_forums = '" . $this->db->sql_escape($similar_topic_forums) . "'
@@ -129,7 +129,7 @@ class similar_topics_module
 					$result = $this->db->sql_query($sql);
 					while ($fid = $this->db->sql_fetchrow($result))
 					{
-						$selected = explode(',', trim($fid['similar_topic_forums']));
+						$selected = json_decode($fid['similar_topic_forums'], true);
 						$forum_name = $fid['forum_name'];
 					}
 					$this->db->sql_freeresult($result);
@@ -150,24 +150,21 @@ class similar_topics_module
 				{
 					$this->check_form_key($form_key);
 
-					// Get checkbox array form data and check string length
-					$mark_noshow_forum = implode(',', $this->request->variable('mark_noshow_forum', array(0), true));
-					$mark_ignore_forum = implode(',', $this->request->variable('mark_ignore_forum', array(0), true));
-					$this->validate_config_length($mark_noshow_forum, $mark_ignore_forum);
-
 					// Set basic config settings
 					$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
 					$this->config->set('similar_topics_limit', abs($this->request->variable('pst_limit', 0))); // use abs for positive values only
 					$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0))); // use abs for positive values only
 					$this->config->set('similar_topics_words', $this->request->variable('pst_words', '', true));
-					$this->config->set('similar_topics_hide', $mark_noshow_forum);
-					$this->config->set('similar_topics_ignore', $mark_ignore_forum);
 
 					// Set date/time config settings
 					$pst_time = abs($this->request->variable('pst_time', 0)); // use abs for positive values only
 					$pst_time_type = $this->request->variable('pst_time_type', '');
 					$this->config->set('similar_topics_type', $pst_time_type);
 					$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
+
+					// Set checkbox array form data
+					$this->update_forum('similar_topics_hide', $this->request->variable('mark_noshow_forum', array(0), true));
+					$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
@@ -226,40 +223,20 @@ class similar_topics_module
 					'U_ACTION'			=> $this->u_action,
 				));
 
-				$ignore_forums = explode(',', trim($this->config['similar_topics_ignore']));
-				$noshow_forums = explode(',', trim($this->config['similar_topics_hide']));
-
 				$forum_list = $this->get_forum_list();
 				foreach ($forum_list as $row)
 				{
 					$this->template->assign_block_vars('forums', array(
 						'FORUM_NAME'			=> $row['forum_name'],
 						'FORUM_ID'				=> $row['forum_id'],
-						'CHECKED_IGNORE_FORUM'	=> in_array($row['forum_id'], $ignore_forums) ? 'checked="checked"' : '',
-						'CHECKED_NOSHOW_FORUM'	=> in_array($row['forum_id'], $noshow_forums) ? 'checked="checked"' : '',
+						'CHECKED_IGNORE_FORUM'	=> $row['similar_topics_ignore'] ? 'checked="checked"' : '',
+						'CHECKED_NOSHOW_FORUM'	=> $row['similar_topics_hide'] ? 'checked="checked"' : '',
 						'S_IS_ADVANCED'			=> (bool) $row['similar_topic_forums'],
 						'U_ADVANCED'			=> "{$this->u_action}&amp;action=advanced&amp;f=" . $row['forum_id'],
 						'U_FORUM'				=> append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $row['forum_id']),
 					));
 				}
 			break;
-		}
-	}
-
-	/**
-	 * Check if config field values exceed 255 chars
-	 *
-	 * @access protected
-	 */
-	protected function validate_config_length()
-	{
-		$arg_list = func_get_args();
-		foreach ($arg_list as $arg)
-		{
-			if (strlen($arg) > 255)
-			{
-				$this->end('PST_ERR_CONFIG', E_USER_WARNING);
-			}
 		}
 	}
 
@@ -285,7 +262,7 @@ class similar_topics_module
 	 */
 	protected function get_forum_list()
 	{
-		$sql = 'SELECT forum_id, forum_name, similar_topic_forums
+		$sql = 'SELECT forum_id, forum_name, similar_topic_forums, similar_topics_hide, similar_topics_ignore
 			FROM ' . FORUMS_TABLE . '
 			WHERE forum_type = ' . FORUM_POST . '
 			ORDER BY left_id ASC';
@@ -294,6 +271,31 @@ class similar_topics_module
 		$this->db->sql_freeresult($result);
 
 		return $forum_list;
+	}
+
+	/**
+	 * Update the similar topics columns in the forums table
+	 *
+	 * @param string $column    The name of the column to update
+	 * @param array  $forum_ids An array of forum_ids
+	 */
+	protected function update_forum($column, $forum_ids)
+	{
+		$this->db->sql_transaction('begin');
+
+		// Set marked forums (in set) to 1
+		$sql = 'UPDATE ' . FORUMS_TABLE . "
+			SET $column = 1
+			WHERE " . $this->db->sql_in_set('forum_id', $forum_ids, false, true);
+		$this->db->sql_query($sql);
+
+		// Set unmarked forums (not in set) to 0
+		$sql = 'UPDATE ' . FORUMS_TABLE . "
+			SET $column = 0
+			WHERE " . $this->db->sql_in_set('forum_id', $forum_ids, true, true);
+		$this->db->sql_query($sql);
+
+		$this->db->sql_transaction('commit');
 	}
 
 	/**
