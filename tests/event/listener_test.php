@@ -69,10 +69,8 @@ class listener_test extends \phpbb_test_case
 	public function display_similar_topics_data()
 	{
 		return array(
-			array(1, array(1), true, true, true),
-			array(2, array(2), false, true, false),
-			array(3, array(3), true, false, false),
-			array(4, array(4), false, false, false),
+			array(array('forum_id' => 1), true, true),
+			array(array('forum_id' => 2), false, false),
 		);
 	}
 
@@ -81,20 +79,13 @@ class listener_test extends \phpbb_test_case
 	 *
 	 * @dataProvider display_similar_topics_data
 	 */
-	public function test_display_similar_topics($forum_id, $topic_data, $is_available, $forum_available, $display)
+	public function test_display_similar_topics($topic_data, $is_available, $display)
 	{
 		$this->similar_topics->expects($this->any())
 			->method('is_available')
 			->will($this->returnValue($is_available));
 
-		$this->similar_topics->expects($this->any())
-			->method('forum_available')
-			->with($this->equalTo($forum_id))
-			->will($this->returnValue($forum_available));
-
-		$display = ($display) ? $this->once() : $this->never();
-
-		$this->similar_topics->expects($display)
+		$this->similar_topics->expects(($is_available) ? $this->once() : $this->never())
 			->method('display_similar_topics')
 			->with($topic_data);
 
