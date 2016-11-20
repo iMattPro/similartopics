@@ -198,7 +198,7 @@ class similar_topics
 		else
 		{
 			// Remove any passworded forums
-			if (sizeof($passworded_forums))
+			if (count($passworded_forums))
 			{
 				$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
 			}
