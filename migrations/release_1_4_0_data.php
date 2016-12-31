@@ -74,7 +74,7 @@ class release_1_4_0_data extends \phpbb\db\migration\migration
 				$forum_ids = json_encode($forum_ids, JSON_NUMERIC_CHECK);
 
 				$sql = 'UPDATE ' . FORUMS_TABLE . "
-					SET similar_topic_forums = '{$forum_ids}'
+					SET similar_topic_forums = '" . $this->db->sql_escape($forum_ids) . "'
 					WHERE forum_id = " . (int) $row['forum_id'];
 				$this->db->sql_query($sql);
 			}
