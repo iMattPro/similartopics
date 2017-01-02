@@ -362,11 +362,18 @@ class similar_topics
 	{
 		$words = array();
 
-		// Retrieve a language dependent list of words to be ignored (method copied from search.php)
-		$search_ignore_words = "{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}";
-		if (!$this->english_lang() && file_exists($search_ignore_words))
+		// If non-English, look for a list of stop-words to be ignored
+		// in either the core or the extension (deprecated from core)
+		if (!$this->english_lang())
 		{
-			include($search_ignore_words);
+			if (file_exists($search_ignore_words = "{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}"))
+			{
+				include($search_ignore_words);
+			}
+			else if (file_exists($search_ignore_words = "{$this->root_path}ext/vse/similartopics/language/{$this->user->lang_name}/search_ignore_words.{$this->php_ext}"))
+			{
+				include($search_ignore_words);
+			}
 		}
 
 		if ($this->has_ignore_words())
