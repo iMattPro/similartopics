@@ -27,6 +27,9 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var \phpbb\event\dispatcher|\PHPUnit_Framework_MockObject_MockObject */
 	protected $dispatcher;
 
+	/** @var \phpbb\language\language */
+	protected $language;
+
 	/** @var \phpbb\pagination|\PHPUnit_Framework_MockObject_MockObject */
 	protected $pagination;
 
@@ -73,7 +76,9 @@ class similar_topics_test extends \phpbb_test_case
 		// Classes used in the tests
 		$this->auth = $this->getMock('\phpbb\auth\auth');
 		$this->config = new \phpbb\config\config(array());
-		$this->user = new \phpbb\user('\phpbb\datetime');
+		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
+		$this->language = new \phpbb\language\language($lang_loader);
+		$this->user = new \phpbb\user($this->language, '\phpbb\datetime');
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->phpEx = $phpEx;
 	}

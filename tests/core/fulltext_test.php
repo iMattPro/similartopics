@@ -10,8 +10,6 @@
 
 namespace vse\similartopics\tests\core;
 
-require_once __DIR__ . '/../../../../../includes/functions.php';
-
 class fulltext_test extends \phpbb_database_test_case
 {
 	/** @var \phpbb\db\driver\driver_interface */
