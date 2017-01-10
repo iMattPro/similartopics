@@ -48,11 +48,6 @@ class release_1_4_0_schema extends \phpbb\db\migration\migration
 					'similar_topics_ignore',
 				),
 			),
-			'change_columns'	=> array(
-				$this->table_prefix . 'forums'	=> array(
-					'similar_topic_forums'		=> array('VCHAR_UNI', ''),
-				),
-			),
 		);
 	}
 }
