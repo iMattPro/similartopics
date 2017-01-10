@@ -1,5 +1,10 @@
 ## Changelog
 
+### 1.4.1 - 2017-01-04
+
+- Fixed a bug introduced in 1.4.0 that caused fatal errors when creating/updating a forum
+- Integrated foreign language ignore-words directly into the extension since they are being removed from the phpBB core translations
+
 ### 1.4.0 - 2016-11-16
 
 - Support for larger forums (no more "Too many forums selected" error in PST settings)
