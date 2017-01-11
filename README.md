@@ -29,9 +29,9 @@ This is an extension for phpBB that will find and display a list of similar (rel
 * Overall winner of the 2010 "Summer of MODs" competition at phpBB.com.
 * Featured MOD of the Week in the phpBB Weekly Podcast, episode #161.
 
-## Requirements
-* phpBB 3.1.0 or higher
-* PHP 5.3.3 or higher
+## Minimum Requirements
+* phpBB 3.1.0 or phpBB 3.2.0
+* PHP 5.3.3
 * MySQL 4.0.1 or higher using MyISAM tables (InnoDB supported with MySQL 5.6.4 or higher).
 
 ## Install
