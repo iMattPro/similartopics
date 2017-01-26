@@ -366,11 +366,8 @@ class similar_topics
 		// in either the core or the extension (deprecated from core)
 		if (!$this->english_lang())
 		{
-			if (file_exists($search_ignore_words = "{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}"))
-			{
-				include($search_ignore_words);
-			}
-			else if (file_exists($search_ignore_words = "{$this->root_path}ext/vse/similartopics/language/{$this->user->lang_name}/search_ignore_words.{$this->php_ext}"))
+			if (file_exists($search_ignore_words = "{$this->user->lang_path}{$this->user->lang_name}/search_ignore_words.{$this->php_ext}") ||
+				file_exists($search_ignore_words = "{$this->root_path}ext/vse/similartopics/language/{$this->user->lang_name}/search_ignore_words.{$this->php_ext}"))
 			{
 				include($search_ignore_words);
 			}
