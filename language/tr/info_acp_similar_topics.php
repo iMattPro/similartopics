@@ -40,6 +40,6 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Benzer Konular',
 	'PST_SETTINGS'		=> 'Benzer Konular ayarları',
-	'PST_LOG_FULLTEXT'	=> '<strong>Benzer Konular uygunluğu için veritabanı değiştirildi</strong><br />» “%s” tablosu MyISAM depolama motoruna değiştirildi ve “topic_title”a FULLTEXT index eklendi.',
+	'PST_LOG_FULLTEXT'	=> '<strong>Benzer Konular uygunluğu için veritabanı değiştirildi</strong><br />» “%s” tablosu MyISAM depolama motoruna değiştirildi ve “topic_title”a FULLTEXT indeks eklendi.',
 	'PST_LOG_MSG'		=> '<strong>Benzer Konular ayarları değiştirildi</strong>',
 ));
