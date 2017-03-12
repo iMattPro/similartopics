@@ -6,9 +6,12 @@
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
-* Translated By : Basil Taha Alhitary - www.alhitary.net
+* Translated By : Bassel Taha Alhitary - www.alhitary.net
 */
 
+/**
+* DO NOT CHANGE
+*/
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -72,4 +75,5 @@ $lang = array_merge($lang, array(
 	'PST_ADD_FULLTEXT'	=> 'نعم, تفعيل الدعم لفهرسة النص الكامل FULLTEXT',
 	'PST_SAVE_FULLTEXT'	=> 'تم تحديث قاعدة البيانات لديك. تستطيع استخدام المواضيع المُتشابهه الآن.',
 	'PST_ERR_FULLTEXT'	=> 'لم يتم تحديث قاعدة البيانات لديك.',
+	'PST_ERR_CONFIG'	=> 'أيضا تميزت العديد من المنتديات في قائمة من المنتديات. يرجى المحاولة مرة أخرى مع مجموعة أصغر.',
 ));
