@@ -1,0 +1,103 @@
+<!-- IF .similar -->
+<div class="forumbg">
+
+	<div class="inner">
+		<ul class="topiclist">
+			<li class="header">
+				<dl class="row-item">
+					<dt><div class="list-inner">{L_SIMILAR_TOPICS}</div></dt>
+					<dd class="posts">{L_STATISTICS}</dd>
+					<dd class="lastpost"><span>{L_LAST_POST}</span></dd>
+				</dl>
+			</li>
+		</ul>
+		<ul class="topiclist topics">
+
+			<!-- BEGIN similar -->
+			<!-- EVENT search_results_topic_before -->
+			<li class="row<!-- IF similar.S_ROW_COUNT is even --> bg1<!-- ELSE --> bg2<!-- ENDIF -->">
+				<dl title="{similar.TOPIC_FOLDER_IMG_ALT}">
+					<dt class="icon {similar.TOPIC_IMG_STYLE}"><!-- IF similar.TOPIC_ICON_IMG --><img src="{T_ICONS_PATH}{similar.TOPIC_ICON_IMG}" alt="" title="" /><!-- ENDIF --></dt>
+					<dd>
+						<!-- IF similar.S_UNREAD_TOPIC and not S_IS_BOT --><a href="{similar.U_NEWEST_POST}" class="row-item-link"></a><!-- ENDIF -->
+						<div class="list-inner">
+
+							<!-- EVENT topiclist_row_prepend -->
+							<!-- IF similar.S_UNREAD_TOPIC and not S_IS_BOT -->
+							<a class="unread" href="{similar.U_NEWEST_POST}">
+								<i class="icon fa-file fa-fw icon-red icon-md" aria-hidden="true"></i><span class="sr-only">{L_NEW_POST}</span>
+							</a>
+							<!-- ENDIF -->
+							<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>
+							<!-- IF similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED -->
+							<a href="{similar.U_MCP_QUEUE}" title="{L_TOPIC_UNAPPROVED}">
+								<i class="icon fa-question fa-fw icon-blue" aria-hidden="true"></i><span class="sr-only">{L_TOPIC_UNAPPROVED}</span>
+							</a>
+							<!-- ENDIF -->
+							<!-- IF similar.S_TOPIC_DELETED -->
+							<a href="{similar.U_MCP_QUEUE}" title="{L_TOPIC_DELETED}">
+								<i class="icon fa-recycle fa-fw icon-green" aria-hidden="true"></i><span class="sr-only">{L_TOPIC_DELETED}</span>
+							</a>
+							<!-- ENDIF -->
+							<!-- IF similar.S_TOPIC_REPORTED -->
+							<a href="{similar.U_MCP_REPORT}" title="{L_TOPIC_REPORTED}">
+								<i class="icon fa-exclamation fa-fw icon-red" aria-hidden="true"></i><span class="sr-only">{L_TOPIC_REPORTED}</span>
+							</a>
+							<!-- ENDIF -->
+							<br />
+
+							<!-- IF not S_IS_BOT -->
+							<div class="responsive-show" style="display: none;">
+								{L_LAST_POST} {L_POST_BY_AUTHOR} {similar.LAST_POST_AUTHOR_FULL} &laquo; <a href="{similar.U_LAST_POST}" title="{L_GOTO_LAST_POST}">{similar.LAST_POST_TIME}</a>
+								<br />{L_POSTED} {L_IN} <a href="{similar.U_VIEW_FORUM}">{similar.FORUM_TITLE}</a>
+							</div>
+							<!-- IF similar.TOPIC_REPLIES --><span class="responsive-show left-box" style="display: none;">{L_REPLIES}{L_COLON} <strong>{similar.TOPIC_REPLIES}</strong></span><!-- ENDIF -->
+							<!-- ENDIF -->
+
+							<div class="responsive-hide">
+								<!-- IF similar.S_HAS_POLL --><i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i><!-- ENDIF -->
+								<!-- IF similar.ATTACH_ICON_IMG --><i class="icon fa-paperclip fa-fw" aria-hidden="true"></i><!-- ENDIF -->
+								{L_POST_BY_AUTHOR} {similar.TOPIC_AUTHOR_FULL} &raquo; {similar.FIRST_POST_TIME} &raquo; {L_IN} <a href="{similar.U_VIEW_FORUM}">{similar.FORUM_TITLE}</a>
+							</div>
+
+							<!-- IF .similar.pagination -->
+							<div class="pagination">
+								<span><i class="icon fa-clone fa-fw" aria-hidden="true"></i></span>
+								<ul>
+									<!-- BEGIN pagination -->
+									<!-- IF similar.pagination.S_IS_PREV -->
+									<!-- ELSEIF similar.pagination.S_IS_CURRENT --><li class="active"><span>{similar.pagination.PAGE_NUMBER}</span></li>
+									<!-- ELSEIF similar.pagination.S_IS_ELLIPSIS --><li class="ellipsis"><span>{L_ELLIPSIS}</span></li>
+									<!-- ELSEIF similar.pagination.S_IS_NEXT -->
+									<!-- ELSE --><li><a class="button" href="{similar.pagination.PAGE_URL}">{similar.pagination.PAGE_NUMBER}</a></li>
+									<!-- ENDIF -->
+									<!-- END pagination -->
+								</ul>
+							</div>
+							<!-- ENDIF -->
+							<!-- EVENT topiclist_row_topic_title_after -->
+
+							<!-- EVENT topiclist_row_append -->
+						</div>
+					</dd>
+					<dd class="posts">{similar.TOPIC_REPLIES} <dfn>{L_REPLIES}</dfn></dd>
+					<dd class="views">{similar.TOPIC_VIEWS} <dfn>{L_VIEWS}</dfn></dd>
+					<dd class="lastpost">
+						<span><dfn>{L_LAST_POST} </dfn>{L_POST_BY_AUTHOR} {similar.LAST_POST_AUTHOR_FULL}
+							<!-- IF not S_IS_BOT -->
+								<a href="{similar.U_LAST_POST}" title="{L_GOTO_LAST_POST}">
+									<i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{VIEW_LATEST_POST}</span>
+								</a>
+							<!-- ENDIF -->
+							<br />{similar.LAST_POST_TIME}
+						</span>
+					</dd>
+				</dl>
+			</li>
+			<!-- EVENT search_results_topic_after -->
+			<!-- END similar -->
+		</ul>
+
+	</div>
+</div>
+<!-- ENDIF -->
