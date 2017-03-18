@@ -1,5 +1,13 @@
 ## Changelog
 
+### 1.4.2 - 2017-03-18
+
+- Fix support for displaying topic icons
+- Added a new core event to allow extensions to modify the rowset data for similar topics
+- Styles support added:
+    - we_clearblue style (3.2.x)
+    - we_universal style (3.2.x)
+
 ### 1.4.1 - 2017-01-04
 
 - Fixed a bug introduced in 1.4.0 that caused fatal errors when creating/updating a forum
