@@ -1,6 +1,6 @@
-<!-- IF S_SIMILAR_TOPICS -->
-<div class="post bg1">{L_DISPLAY_SIMILAR_TOPICS}{L_COLON}<br />
-	<input type="radio" name="similar_topics" value="1"<!-- IF S_DISPLAY_SIMILAR_TOPICS --> checked="checked"<!-- ENDIF --> /> {L_YES}
-	<input type="radio" name="similar_topics" value="0"<!-- IF not S_DISPLAY_SIMILAR_TOPICS --> checked="checked"<!-- ENDIF --> /> {L_NO}
+{% if S_SIMILAR_TOPICS %}
+<div class="post bg1">{{ lang('DISPLAY_SIMILAR_TOPICS') ~ lang('COLON') }}<br />
+	<input type="radio" name="similar_topics" value="1"{% if S_DISPLAY_SIMILAR_TOPICS %} checked="checked"{% endif %} /> {{ lang('YES') }}
+	<input type="radio" name="similar_topics" value="0"{% if not S_DISPLAY_SIMILAR_TOPICS %} checked="checked"{% endif %} /> {{ lang('NO') }}
 </div>
-<!-- ENDIF -->
+{% endif %}

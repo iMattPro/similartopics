@@ -1,61 +1,61 @@
-<!-- IF .similar -->
+{% if loops.similar|length %}
 
 	<table class="tablebg" width="100%" cellspacing="1">
 	<tr>
 		<th width="4%" nowrap="nowrap">&nbsp;</th>
-		<th colspan="2" nowrap="nowrap">&nbsp;{L_SIMILAR_TOPICS}&nbsp;</th>
-		<th nowrap="nowrap">&nbsp;{L_AUTHOR}&nbsp;</th>
-		<th nowrap="nowrap">&nbsp;{L_REPLIES}&nbsp;</th>
-		<th nowrap="nowrap">&nbsp;{L_VIEWS}&nbsp;</th>
-		<th nowrap="nowrap">&nbsp;{L_LAST_POST}&nbsp;</th>
+		<th colspan="2" nowrap="nowrap">&nbsp;{{ lang('SIMILAR_TOPICS') }}&nbsp;</th>
+		<th nowrap="nowrap">&nbsp;{{ lang('AUTHOR') }}&nbsp;</th>
+		<th nowrap="nowrap">&nbsp;{{ lang('REPLIES') }}&nbsp;</th>
+		<th nowrap="nowrap">&nbsp;{{ lang('VIEWS') }}&nbsp;</th>
+		<th nowrap="nowrap">&nbsp;{{ lang('LAST_POST') }}&nbsp;</th>
 	</tr>
-	<!-- BEGIN similar -->
-		<!-- EVENT search_results_topic_before -->
+	{% for similar in loops.similar %}
+		{% EVENT search_results_topic_before %}
 		<tr valign="middle">
-			<td class="row1" width="25" align="center">{similar.TOPIC_FOLDER_IMG}</td>
+			<td class="row1" width="25" align="center">{{ similar.TOPIC_FOLDER_IMG }}</td>
 			<td class="row1" width="25" align="center">
-			<!-- IF similar.TOPIC_ICON_IMG -->
-				<img src="{T_ICONS_PATH}{similar.TOPIC_ICON_IMG}" width="{similar.TOPIC_ICON_IMG_WIDTH}" height="{similar.TOPIC_ICON_IMG_HEIGHT}" alt="" title="" />
-			<!-- ENDIF -->
+			{% if similar.TOPIC_ICON_IMG %}
+				<img src="{{ T_ICONS_PATH ~ similar.TOPIC_ICON_IMG }}" width="{{ similar.TOPIC_ICON_IMG_WIDTH }}" height="{{ similar.TOPIC_ICON_IMG_HEIGHT }}" alt="" title="" />
+			{% endif %}
 			</td>
 			<td class="row1">
-				<!-- EVENT topiclist_row_prepend -->
-				<!-- IF similar.S_UNREAD_TOPIC --><a href="{similar.U_NEWEST_POST}" class="imageset">{NEWEST_POST_IMG}</a><!-- ENDIF -->
-				{similar.ATTACH_ICON_IMG} <a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a>
-				<!-- IF similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED -->
-					<a href="{similar.U_MCP_QUEUE}" class="imageset">{similar.UNAPPROVED_IMG}</a>&nbsp;
-				<!-- ENDIF -->
-				<!-- IF similar.S_TOPIC_REPORTED -->
-					<a href="{similar.U_MCP_REPORT}" class="imageset">{REPORTED_IMG}</a>&nbsp;
-				<!-- ENDIF -->
-				<!-- IF .similar.pagination -->
-					<p class="gensmall"> [ {GOTO_PAGE_IMG}{L_GOTO_PAGE}{L_COLON}
-					<!-- BEGIN pagination -->
-						<!-- IF similar.pagination.S_IS_PREV -->
-						<!-- ELSEIF similar.pagination.S_IS_CURRENT --><strong>{similar.pagination.PAGE_NUMBER}</strong>
-						<!-- ELSEIF similar.pagination.S_IS_ELLIPSIS --> {L_ELLIPSIS}
-						<!-- ELSEIF similar.pagination.S_IS_NEXT -->
-						<!-- ELSE --><a href="{similar.pagination.PAGE_URL}">{similar.pagination.PAGE_NUMBER}</a>
-						<!-- ENDIF -->
-					<!-- END pagination -->
+				{% EVENT topiclist_row_prepend %}
+				{% if similar.S_UNREAD_TOPIC %}<a href="{{ similar.U_NEWEST_POST }}" class="imageset">{{ NEWEST_POST_IMG }}</a>{% endif %}
+				{{ similar.ATTACH_ICON_IMG }} <a href="{{ similar.U_VIEW_TOPIC }}" class="topictitle">{{ similar.TOPIC_TITLE }}</a>
+				{% if similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED %}
+					<a href="{{ similar.U_MCP_QUEUE }}" class="imageset">{{ similar.UNAPPROVED_IMG }}</a>&nbsp;
+				{% endif %}
+				{% if similar.S_TOPIC_REPORTED %}
+					<a href="{{ similar.U_MCP_REPORT }}" class="imageset">{{ REPORTED_IMG }}</a>&nbsp;
+				{% endif %}
+				{% if similar.pagination|length %}
+					<p class="gensmall"> [ {{ GOTO_PAGE_IMG ~ lang('GOTO_PAGE') ~ lang('COLON') }}
+					{% for pagination in similar.pagination %}
+						{% if pagination.S_IS_PREV %}
+						{% elseif pagination.S_IS_CURRENT %}<strong>{{ pagination.PAGE_NUMBER }}</strong>
+						{% elseif pagination.S_IS_ELLIPSIS %} {{ lang('ELLIPSIS') }}
+						{% elseif pagination.S_IS_NEXT %}
+						{% else %}<a href="{{ pagination.PAGE_URL }}">{{ pagination.PAGE_NUMBER }}</a>
+						{% endif %}
+					{% endfor %}
 					] </p>
-				<!-- ENDIF -->
-				<p class="gensmall">{L_IN} <a href="{similar.U_VIEW_FORUM}">{similar.FORUM_TITLE}</a></p>
-				<!-- EVENT topiclist_row_append -->
+				{% endif %}
+				<p class="gensmall">{{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a></p>
+				{% EVENT topiclist_row_append %}
 			</td>
-			<td class="row2" width="100" align="center"><p class="topicauthor">{similar.TOPIC_AUTHOR_FULL}</p></td>
-			<td class="row1" width="50" align="center"><p class="topicdetails">{similar.TOPIC_REPLIES}</p></td>
-			<td class="row2" width="50" align="center"><p class="topicdetails">{similar.TOPIC_VIEWS}</p></td>
+			<td class="row2" width="100" align="center"><p class="topicauthor">{{ similar.TOPIC_AUTHOR_FULL }}</p></td>
+			<td class="row1" width="50" align="center"><p class="topicdetails">{{ similar.TOPIC_REPLIES }}</p></td>
+			<td class="row2" width="50" align="center"><p class="topicdetails">{{ similar.TOPIC_VIEWS }}</p></td>
 			<td class="row1" width="120" align="center">
-				<p class="topicdetails">{similar.LAST_POST_TIME}</p>
-				<p class="topicdetails">{similar.LAST_POST_AUTHOR_FULL}
-					<a href="{similar.U_LAST_POST}" class="imageset">{LAST_POST_IMG}</a>
+				<p class="topicdetails">{{ similar.LAST_POST_TIME }}</p>
+				<p class="topicdetails">{{ similar.LAST_POST_AUTHOR_FULL }}
+					<a href="{{ similar.U_LAST_POST }}" class="imageset">{{ LAST_POST_IMG }}</a>
 				</p>
 			</td>
 		</tr>
-		<!-- EVENT search_results_topic_after -->
-	<!-- END similar -->
+		{% EVENT search_results_topic_after %}
+	{% endfor %}
 	</table>
 	<br clear="all" />
 
-<!-- ENDIF -->
+{% endif %}

@@ -1,65 +1,65 @@
-<!-- IF .similar -->
+{% if loops.similar|length %}
 <div class="forumbg">
 
 	<div class="inner">
 		<ul class="topiclist">
 			<li class="header">
 				<dl class="icon">
-					<dt><div class="list-inner">{L_SIMILAR_TOPICS}</div></dt>
-					<dd class="posts">{L_REPLIES}</dd>
-					<dd class="views">{L_VIEWS}</dd>
-					<dd class="lastpost"><span>{L_LAST_POST}</span></dd>
+					<dt><div class="list-inner">{{ lang('SIMILAR_TOPICS') }}</div></dt>
+					<dd class="posts">{{ lang('REPLIES') }}</dd>
+					<dd class="views">{{ lang('VIEWS') }}</dd>
+					<dd class="lastpost"><span>{{ lang('LAST_POST') }}</span></dd>
 				</dl>
 			</li>
 		</ul>
 		<ul class="topiclist topics">
 
-			<!-- BEGIN similar -->
-			<!-- EVENT search_results_topic_before -->
-			<li class="row<!-- IF similar.S_ROW_COUNT is even --> bg1<!-- ELSE --> bg2<!-- ENDIF -->">
-				<dl class="icon {similar.TOPIC_IMG_STYLE}">
-					<dt <!-- IF similar.TOPIC_ICON_IMG -->style="background-image: url({T_ICONS_PATH}{similar.TOPIC_ICON_IMG}); background-repeat: no-repeat;"<!-- ENDIF --> title="{similar.TOPIC_FOLDER_IMG_ALT}">
-					<!-- IF similar.S_UNREAD_TOPIC and not S_IS_BOT --><a href="{similar.U_NEWEST_POST}" class="icon-link"></a><!-- ENDIF -->
+			{% for similar in loops.similar %}
+			{% EVENT search_results_topic_before %}
+			<li class="row{% if similar.S_ROW_COUNT is even %} bg1{% else %} bg2{% endif %}">
+				<dl class="icon {{ similar.TOPIC_IMG_STYLE }}">
+					<dt {% if similar.TOPIC_ICON_IMG %}style="background-image: url({{ T_ICONS_PATH ~ similar.TOPIC_ICON_IMG }}); background-repeat: no-repeat;"{% endif %} title="{{ similar.TOPIC_FOLDER_IMG_ALT }}">
+					{% if similar.S_UNREAD_TOPIC and not S_IS_BOT %}<a href="{{ similar.U_NEWEST_POST }}" class="icon-link"></a>{% endif %}
 					<div class="list-inner">
 
-						<!-- EVENT topiclist_row_prepend -->
-						<!-- IF similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED --><a href="{similar.U_MCP_QUEUE}" class="posts-approve"><i class="fa fa-gavel"></i></a><!-- ENDIF -->
-						<!-- IF similar.S_TOPIC_DELETED --><a href="{similar.U_MCP_QUEUE}" class="posts-approve"><i class="fa fa-recycle"></i></a><!-- ENDIF -->
-						<!-- IF similar.S_TOPIC_REPORTED --><a href="{similar.U_MCP_REPORT}" class="posts-approve"><i class="fa fa-exclamation-triangle"></i></a><!-- ENDIF -->
-						<a href="{similar.U_VIEW_TOPIC}" class="topictitle">{similar.TOPIC_TITLE}</a><br />
-						<!-- IF .similar.pagination -->
+						{% EVENT topiclist_row_prepend %}
+						{% if similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED %}<a href="{{ similar.U_MCP_QUEUE }}" class="posts-approve"><i class="fa fa-gavel"></i></a>{% endif %}
+						{% if similar.S_TOPIC_DELETED %}<a href="{{ similar.U_MCP_QUEUE }}" class="posts-approve"><i class="fa fa-recycle"></i></a>{% endif %}
+						{% if similar.S_TOPIC_REPORTED %}<a href="{{ similar.U_MCP_REPORT }}" class="posts-approve"><i class="fa fa-exclamation-triangle"></i></a>{% endif %}
+						<a href="{{ similar.U_VIEW_TOPIC }}" class="topictitle">{{ similar.TOPIC_TITLE }}</a><br />
+						{% if similar.pagination|length %}
 						<div class="pagination">
 							<ul>
-								<!-- BEGIN pagination -->
-								<!-- IF similar.pagination.S_IS_PREV -->
-								<!-- ELSEIF similar.pagination.S_IS_CURRENT --><li class="active"><span>{similar.pagination.PAGE_NUMBER}</span></li>
-								<!-- ELSEIF similar.pagination.S_IS_ELLIPSIS --><li class="ellipsis"><span>{L_ELLIPSIS}</span></li>
-								<!-- ELSEIF similar.pagination.S_IS_NEXT -->
-								<!-- ELSE --><li><a href="{similar.pagination.PAGE_URL}">{similar.pagination.PAGE_NUMBER}</a></li>
-								<!-- ENDIF -->
-								<!-- END pagination -->
+								{% for pagination in similar.pagination %}
+								{% if pagination.S_IS_PREV %}
+								{% elseif pagination.S_IS_CURRENT %}<li class="active"><span>{{ pagination.PAGE_NUMBER }}</span></li>
+								{% elseif pagination.S_IS_ELLIPSIS %}<li class="ellipsis"><span>{{ lang('ELLIPSIS') }}</span></li>
+								{% elseif pagination.S_IS_NEXT %}
+								{% else %}<li><a href="{{ pagination.PAGE_URL }}">{{ pagination.PAGE_NUMBER }}</a></li>
+								{% endif %}
+								{% endfor %}
 							</ul>
 						</div>
-						<!-- ENDIF -->
-						<!-- IF similar.S_HAS_POLL --><span class="topic-ap"><i class="fa fa-tasks"></i></span><!-- ENDIF -->
-						<!-- IF similar.ATTACH_ICON_IMG --><span class="topic-ap"><i class="fa fa-floppy-o"></i></span><!-- ENDIF -->
-						{L_POST_BY_AUTHOR} {similar.TOPIC_AUTHOR_FULL} &raquo; {similar.FIRST_POST_TIME} &raquo; {L_IN} <a href="{similar.U_VIEW_FORUM}">{similar.FORUM_TITLE}</a>
-						<!-- EVENT topiclist_row_append -->
+						{% endif %}
+						{% if similar.S_HAS_POLL %}<span class="topic-ap"><i class="fa fa-tasks"></i></span>{% endif %}
+						{% if similar.ATTACH_ICON_IMG %}<span class="topic-ap"><i class="fa fa-floppy-o"></i></span>{% endif %}
+						{{ lang('POST_BY_AUTHOR') }} {{ similar.TOPIC_AUTHOR_FULL }} &raquo; {{ similar.FIRST_POST_TIME }} &raquo; {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
+						{% EVENT topiclist_row_append %}
 
 					</div>
 					</dt>
-					<dd class="posts">{similar.TOPIC_REPLIES}</dd>
-					<dd class="views">{similar.TOPIC_VIEWS}</dd>
+					<dd class="posts">{{ similar.TOPIC_REPLIES }}</dd>
+					<dd class="views">{{ similar.TOPIC_VIEWS }}</dd>
 					<dd class="lastpost"><span>
-						{L_POST_BY_AUTHOR} {similar.LAST_POST_AUTHOR_FULL}
-							<!-- IF not S_IS_BOT --><a href="{similar.U_LAST_POST}" title="{L_GOTO_LAST_POST}" class="lastpost-last"><i class="fa fa-arrow-right"></i></a> <!-- ENDIF --><br />{similar.LAST_POST_TIME}<br /> </span>
+						{{ lang('POST_BY_AUTHOR') }} {{ similar.LAST_POST_AUTHOR_FULL }}
+							{% if not S_IS_BOT %}<a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}" class="lastpost-last"><i class="fa fa-arrow-right"></i></a> {% endif %}<br />{{ similar.LAST_POST_TIME }}<br /> </span>
 					</dd>
 				</dl>
 			</li>
-			<!-- EVENT search_results_topic_after -->
-			<!-- END similar -->
+			{% EVENT search_results_topic_after %}
+			{% endfor %}
 		</ul>
 
 	</div>
 </div>
-<!-- ENDIF -->
+{% endif %}

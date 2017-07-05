@@ -1,28 +1,28 @@
-<!-- INCLUDE overall_header.html -->
+{% INCLUDE 'overall_header.html' %}
 
-<!-- IF S_ADVANCED_SETTINGS --><a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a><!-- ENDIF -->
+{% if S_ADVANCED_SETTINGS %}<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>{% endif %}
 
-<h1>{L_PST_TITLE_ACP}</h1>
+<h1>{{ lang('PST_TITLE_ACP') }}</h1>
 
-<p>{L_PST_EXPLAIN}</p>
+<p>{{ lang('PST_EXPLAIN') }}</p>
 
-<form id="select_victim" method="post" action="{U_ACTION}">
+<form id="select_victim" method="post" action="{{ U_ACTION }}">
 
-<!-- IF S_PST_NO_SUPPORT -->
+{% if S_PST_NO_SUPPORT %}
 	<div class="errorbox">
-		<h3>{L_WARNING}</h3>
-		<!-- IF S_PST_NO_MYSQL -->
-			<p>{L_PST_NO_MYSQL}</p>
-		<!-- ELSE -->
-			<p>{L_PST_WARN_FULLTEXT}</p>
+		<h3>{{ lang('WARNING') }}</h3>
+		{% if S_PST_NO_MYSQL %}
+			<p>{{ lang('PST_NO_MYSQL') }}</p>
+		{% else %}
+			<p>{{ lang('PST_WARN_FULLTEXT') }}</p>
 			<p class="submit-buttons">
-				<input class="button1" type="submit" id="fulltext" name="fulltext" value=" {L_PST_ADD_FULLTEXT} " />
+				<input class="button1" type="submit" id="fulltext" name="fulltext" value=" {{ lang('PST_ADD_FULLTEXT') }} " />
 			</p>
-		<!-- ENDIF -->
+		{% endif %}
 	</div>
-<!-- ENDIF -->
+{% endif %}
 
-<!-- IF S_ADVANCED_SETTINGS -->
+{% if S_ADVANCED_SETTINGS %}
 
 	<script>
 		function selector(bool)
@@ -37,111 +37,111 @@
 	</script>
 
 	<fieldset>
-		<legend>{L_PST_ADVANCED_FORUM}</legend>
+		<legend>{{ lang('PST_ADVANCED_FORUM') }}</legend>
 		<dl>
-			<dt><label for="similar_forums">{L_FORUM}{L_COLON} {PST_FORUM_NAME}</label><br /><br /><span>{PST_ADVANCED_EXP}</span></dt>
-			<dd><select id="similar_forums" name="similar_forums_id[]" multiple="multiple" size="10">{SIMILAR_FORUMS_OPTIONS}</select></dd>
-			<dd><a href="#" onclick="selector(false); return false;">{L_PST_DESELECT_ALL}</a></dd>
+			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br /><br /><span>{{ PST_ADVANCED_EXP }}</span></dt>
+			<dd><select id="similar_forums" name="similar_forums_id[]" multiple="multiple" size="10">{{ SIMILAR_FORUMS_OPTIONS }}</select></dd>
+			<dd><a href="#" onclick="selector(false); return false;">{{ lang('PST_DESELECT_ALL') }}</a></dd>
 		</dl>
 		<p class="submit-buttons">
-			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}" />
 		</p>
-		{S_FORM_TOKEN}
+		{{ S_FORM_TOKEN }}
 	</fieldset>
 
-<!-- ELSE -->
+{% else %}
 
 	<fieldset>
-		<legend>{L_PST_LEGEND1}</legend>
+		<legend>{{ lang('PST_LEGEND1') }}</legend>
 		<dl>
-			<dt><label for="pst_enable">{L_PST_ENABLE}{L_COLON}</label></dt>
+			<dt><label for="pst_enable">{{ lang('PST_ENABLE') ~ lang('COLON') }}</label></dt>
 			<dd>
-				<label><input type="radio" class="radio" id="pst_enable" name="pst_enable" value="1"<!-- IF S_PST_ENABLE --> checked="checked"<!-- ENDIF --><!-- IF S_PST_NO_SUPPORT --> disabled="disabled"<!-- ENDIF --> /> {L_YES}</label>
-				<label><input type="radio" class="radio" name="pst_enable" value="0"<!-- IF not S_PST_ENABLE --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+				<label><input type="radio" class="radio" id="pst_enable" name="pst_enable" value="1"{% if S_PST_ENABLE %} checked="checked"{% endif %}{% if S_PST_NO_SUPPORT %} disabled="disabled"{% endif %} /> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="pst_enable" value="0"{% if not S_PST_ENABLE %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
 			</dd>
 		</dl>
 	</fieldset>
 
 	<fieldset>
-		<legend>{L_PST_LEGEND2}</legend>
+		<legend>{{ lang('PST_LEGEND2') }}</legend>
 		<dl>
-			<dt><label for="pst_limit">{L_PST_LIMIT}{L_COLON}</label><br /><span>{L_PST_LIMIT_EXPLAIN}</span></dt>
-			<dd><input name="pst_limit" id="pst_limit" type="number" min="0" max="999" value="{PST_LIMIT}" /></dd>
+			<dt><label for="pst_limit">{{ lang('PST_LIMIT') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_LIMIT_EXPLAIN') }}</span></dt>
+			<dd><input name="pst_limit" id="pst_limit" type="number" min="0" max="999" value="{{ PST_LIMIT }}" /></dd>
 		</dl>
 		<dl>
-			<dt><label for="pst_time">{L_PST_TIME}{L_COLON}</label><br /><span>{L_PST_TIME_EXPLAIN}</span></dt>
-			<dd><input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{PST_TIME}" />
+			<dt><label for="pst_time">{{ lang('PST_TIME') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_TIME_EXPLAIN') }}</span></dt>
+			<dd><input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{{ PST_TIME }}" />
 				<select name="pst_time_type">
-					<!-- BEGIN similar_time_options -->
-						<option value="{similar_time_options.VALUE}"<!-- IF similar_time_options.S_SELECTED --> selected="selected"<!-- ENDIF -->>{similar_time_options.LABEL}</option>
-					<!-- END similar_time_options -->
+					{% for similar_time_options in loops.similar_time_options %}
+						<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ similar_time_options.LABEL }}</option>
+					{% endfor %}
 				</select>
 			</dd>
 		</dl>
 		<dl>
-			<dt><label for="pst_cache">{L_PST_CACHE}{L_COLON}</label><br /><span>{L_PST_CACHE_EXPLAIN}</span></dt>
-			<dd><input name="pst_cache" id="pst_cache" type="number" min="0" max="99999999" value="{PST_CACHE}" /> {L_SECONDS}</dd>
+			<dt><label for="pst_cache">{{ lang('PST_CACHE') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_CACHE_EXPLAIN') }}</span></dt>
+			<dd><input name="pst_cache" id="pst_cache" type="number" min="0" max="99999999" value="{{ PST_CACHE }}" /> {{ lang('SECONDS') }}</dd>
 		</dl>
 	</fieldset>
 
-	<!-- IF .forums -->
+	{% if loops.forums|length %}
 		<fieldset>
-			<legend>{L_PST_LEGEND3}</legend>
-			<span class="small">{L_PST_FORUM_INFO}</span>
+			<legend>{{ lang('PST_LEGEND3') }}</legend>
+			<span class="small">{{ lang('PST_FORUM_INFO') }}</span>
 			<div style="max-height:300px; overflow:auto;">
 				<table class="table1">
 					<col class="row1" /><col class="row2" /><col class="row1" /><col class="row2" />
 					<thead>
 						<tr>
-							<th>{L_FORUMS}</th>
-							<th style="text-align: center;">{L_PST_NOSHOW_LIST}</th>
-							<th style="text-align: center;">{L_PST_IGNORE_SEARCH}</th>
-							<th style="text-align: center;">{L_PST_ADVANCED_FORUM}</th>
+							<th>{{ lang('FORUMS') }}</th>
+							<th style="text-align: center;">{{ lang('PST_NOSHOW_LIST') }}</th>
+							<th style="text-align: center;">{{ lang('PST_IGNORE_SEARCH') }}</th>
+							<th style="text-align: center;">{{ lang('PST_ADVANCED_FORUM') }}</th>
 						</tr>
 					</thead>
 					<tbody>
-						<!-- BEGIN forums -->
+						{% for forums in loops.forums %}
 						<tr>
 							<td>
-								<strong><a href="{forums.U_FORUM}">{forums.FORUM_NAME}</a></strong>
+								<strong><a href="{{ forums.U_FORUM }}">{{ forums.FORUM_NAME }}</a></strong>
 							</td>
-							<td style="width:20%; text-align: center;" title="{L_PST_NOSHOW_TITLE} {forums.FORUM_NAME}">
-							<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{forums.FORUM_ID}" {forums.CHECKED_NOSHOW_FORUM} />
+							<td style="width:20%; text-align: center;" title="{{ lang('PST_NOSHOW_TITLE') }} {{ forums.FORUM_NAME }}">
+							<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_NOSHOW_FORUM }} />
 							</td>
-							<td style="width:20%; text-align: center;" title="{L_PST_IGNORE_TITLE} {forums.FORUM_NAME}">
-							<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{forums.FORUM_ID}" {forums.CHECKED_IGNORE_FORUM} />
+							<td style="width:20%; text-align: center;" title="{{ lang('PST_IGNORE_TITLE') }} {{ forums.FORUM_NAME }}">
+							<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_IGNORE_FORUM }} />
 							</td>
-							<td style="width:20%; text-align: center;" title="{L_PST_ADVANCED_TITLE} {forums.FORUM_NAME}">
-							<a href="{forums.U_ADVANCED}"><!-- IF forums.S_IS_ADVANCED --><strong>{L_PST_ADVANCED}</strong><!-- ELSE -->{L_PST_STANDARD}</a><!-- ENDIF -->
+							<td style="width:20%; text-align: center;" title="{{ lang('PST_ADVANCED_TITLE') }} {{ forums.FORUM_NAME }}">
+							<a href="{{ forums.U_ADVANCED }}">{% if forums.S_IS_ADVANCED %}<strong>{{ lang('PST_ADVANCED') }}</strong>{% else %}{{ lang('PST_STANDARD') }}</a>{% endif %}
 							</td>
 						</tr>
-						<!-- END forums -->
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>
 		</fieldset>
-	<!-- ENDIF -->
+	{% endif %}
 
 	<fieldset>
-		<legend>{L_PST_LEGEND4}</legend>
+		<legend>{{ lang('PST_LEGEND4') }}</legend>
 		<dl>
-			<dt><label for="pst_words">{L_PST_WORDS}{L_COLON}</label><br /><span>{L_PST_WORDS_EXPLAIN}</span></dt>
-			<dd><input name="pst_words" id="pst_words" type="text" class="text medium" maxlength="255" value="{PST_WORDS}" /></dd>
+			<dt><label for="pst_words">{{ lang('PST_WORDS') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_WORDS_EXPLAIN') }}</span></dt>
+			<dd><input name="pst_words" id="pst_words" type="text" class="text medium" maxlength="255" value="{{ PST_WORDS }}" /></dd>
 		</dl>
 	</fieldset>
 
 	<fieldset>
-		<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+		<legend>{{ lang('ACP_SUBMIT_CHANGES') }}</legend>
 		<p class="submit-buttons">
-			<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}" />
 		</p>
-		{S_FORM_TOKEN}
+		{{ S_FORM_TOKEN }}
 	</fieldset>
 
-<!-- ENDIF -->
+{% endif %}
 
 </form>
 
-<!-- INCLUDE overall_footer.html -->
+{% INCLUDE 'overall_footer.html' %}
