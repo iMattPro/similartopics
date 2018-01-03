@@ -73,7 +73,7 @@ class fulltext_test extends \phpbb_database_test_case
 		$this->assertTrue($this->fulltext->is_supported(), 'Fulltext support failed.');
 
 		// Check that the engine name is stored correctly
-		$this->assertEquals($this->fulltext->get_engine(), 'myisam');
+		$this->assertEquals('myisam', $this->fulltext->get_engine());
 	}
 
 	/**

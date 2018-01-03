@@ -141,6 +141,9 @@ class similar_topics
 			return;
 		}
 
+		// Get stored sensitivity value and divide by 10. In query it should be a number between 0.0 to 1.0.
+		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? $this->config['similar_topics_sense'] / 10 : '0.5';
+
 		// Similar Topics query
 		$sql_array = array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
@@ -155,8 +158,8 @@ class similar_topics
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') >= 0.5
-				AND t.topic_status <> " . ITEM_MOVED . '
+			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') >= " . (float) $sensitivity . '
+				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->config['similar_topics_time'] . ')
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],

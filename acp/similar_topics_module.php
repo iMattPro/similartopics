@@ -156,6 +156,10 @@ class similar_topics_module
 					$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0))); // use abs for positive values only
 					$this->config->set('similar_topics_words', $this->request->variable('pst_words', '', true));
 
+					// Set sensitivity
+					$pst_sense = min(abs($this->request->variable('pst_sense', 5)), 10); // use abs for positive values only
+					$this->config->set('similar_topics_sense', $pst_sense);
+
 					// Set date/time config settings
 					$pst_time = abs($this->request->variable('pst_time', 0)); // use abs for positive values only
 					$pst_time_type = $this->request->variable('pst_time_type', '');
@@ -216,6 +220,7 @@ class similar_topics_module
 					'S_PST_ENABLE'		=> $this->isset_or_default($this->config['similar_topics'], false),
 					'PST_LIMIT'			=> $this->isset_or_default($this->config['similar_topics_limit'], ''),
 					'PST_CACHE'			=> $this->isset_or_default($this->config['similar_topics_cache'], ''),
+					'PST_SENSE'			=> $this->isset_or_default($this->config['similar_topics_sense'], ''),
 					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
 					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
