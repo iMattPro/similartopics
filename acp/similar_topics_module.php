@@ -15,6 +15,9 @@ namespace vse\similartopics\acp;
  */
 class similar_topics_module
 {
+	/** @var \phpbb\cache\driver\driver_interface */
+	protected $cache;
+
 	/** @var \phpbb\config\config */
 	protected $config;
 
@@ -63,6 +66,7 @@ class similar_topics_module
 	{
 		global $phpbb_container;
 
+		$this->cache     = $phpbb_container->get('cache');
 		$this->config    = $phpbb_container->get('config');
 		$this->db        = $phpbb_container->get('dbal.conn');
 		$this->fulltext  = $phpbb_container->get('vse.similartopics.fulltext_support');
@@ -171,6 +175,8 @@ class similar_topics_module
 					$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
+
+					$this->cache->destroy('sql', TOPICS_TABLE);
 
 					$this->end('PST_SAVED');
 				}
