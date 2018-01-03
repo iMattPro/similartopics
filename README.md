@@ -1,4 +1,4 @@
-# ![Precise Similar Topics](http://mattfriedman.me/forum/images/binoc1.png "Precise Similar Topics") Precise Similar Topics
+# ![Precise Similar Topics](http://vsephpbb.github.io/logo/binoc1.png "Precise Similar Topics") Precise Similar Topics
 
 A Similar Topics Extension for phpBB
 
