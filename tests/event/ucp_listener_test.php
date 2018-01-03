@@ -43,12 +43,16 @@ class ucp_listener_test extends \phpbb_test_case
 		global $phpbb_root_path, $phpEx;
 
 		// Load/Mock classes required by the event listener class
-		$this->auth = $this->getMock('\phpbb\auth\auth');
+		$this->auth = $this->getMockBuilder('\phpbb\auth\auth')->getMock();
 		$this->config = new \phpbb\config\config(array('similar_topics' => 1));
-		$this->request = $this->getMock('\phpbb\request\request');
+		$this->request = $this->getMockBuilder('\phpbb\request\request')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->template = $this->getMockBuilder('\phpbb\template\template')->getMock();
 		$this->language = new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx));
-		$this->user = $this->getMock('\phpbb\user', array(), array($this->language, '\phpbb\datetime'));
+		$this->user = $this->getMockBuilder('\phpbb\user')
+			->disableOriginalConstructor()
+			->getMock();
 	}
 
 	/**

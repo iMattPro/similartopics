@@ -61,12 +61,16 @@ class similar_topics_test extends \phpbb_test_case
 		$this->cache = $this->getMockBuilder('\phpbb\cache\service')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->db = $this->getMock('\phpbb\db\driver\driver_interface');
-		$this->dispatcher = $this->getMock('\phpbb\event\dispatcher_interface');
+		$this->db = $this->getMockBuilder('\phpbb\db\driver\driver_interface')
+			->getMock();
+		$this->dispatcher = $this->getMockBuilder('\phpbb\event\dispatcher_interface')
+			->getMock();
 		$this->pagination = $this->getMockBuilder('\phpbb\pagination')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->request = $this->getMock('\phpbb\request\request');
+		$this->request = $this->getMockBuilder('\phpbb\request\request')
+			->disableOriginalConstructor()
+			->getMock();
 		$this->template = $this->getMockBuilder('\phpbb\template\template')
 			->getMock();
 		$this->content_visibility = $this->getMockBuilder('\phpbb\content_visibility')
@@ -74,7 +78,7 @@ class similar_topics_test extends \phpbb_test_case
 			->getMock();
 
 		// Classes used in the tests
-		$this->auth = $this->getMock('\phpbb\auth\auth');
+		$this->auth = $this->getMockBuilder('\phpbb\auth\auth')->getMock();
 		$this->config = new \phpbb\config\config(array());
 		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
 		$this->language = new \phpbb\language\language($lang_loader);
