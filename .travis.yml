@@ -24,10 +24,12 @@ matrix:
       env: DB=mysqli
     - php: 7.1
       env: DB=mysqli
-    - php: hhvm
+    - php: 7.2
+      env: DB=mysqli
+    - php: nightly
       env: DB=mysqli
   allow_failures:
-    - php: hhvm
+    - php: nightly
   fast_finish: true
 
 env:
@@ -44,12 +46,7 @@ branches:
     - master
     - develop
     - /^develop-.*$/
-
-# Tempory hack to address EPV failure
-# https://www.phpbb.com/community/viewtopic.php?f=461&t=2430651&start=15#p14881401
-before_install:
-  - composer self-update 1.5.2 --rollback
-# end temporary hack
+    - /^\d+(\.\d+)?\.x$/
 
 install:
   - travis/prepare-phpbb.sh $EXTNAME $PHPBB_BRANCH
