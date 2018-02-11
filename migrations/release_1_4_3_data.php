@@ -39,6 +39,6 @@ class release_1_4_3_data extends \phpbb\db\migration\migration
 	{
 		$fulltext_support = new \vse\similartopics\core\fulltext_support($this->db);
 
-		return $fulltext_support->get_engine() === 'innodb' ? 1 : 5;
+		return ($fulltext_support->get_engine() === 'innodb' || $fulltext_support->is_postgres()) ? 1 : 5;
 	}
 }

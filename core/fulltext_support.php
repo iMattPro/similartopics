@@ -41,6 +41,17 @@ class fulltext_support
 	}
 
 	/**
+	 * Check if the database is using PostgreSQL
+	 *
+	 * @access public
+	 * @return bool True if is postgresql, false otherwise
+	 */
+	public function is_postgres()
+	{
+		return ($this->db->get_sql_layer() === 'postgres');
+	}
+
+	/**
 	 * Check for FULLTEXT index support
 	 *
 	 * @access public
@@ -50,7 +61,7 @@ class fulltext_support
 	{
 		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
 		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
-		return ($this->get_engine() === 'myisam' || ($this->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')));
+		return ($this->is_postgres() || $this->get_engine() === 'myisam' || ($this->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')));
 	}
 
 	/**
@@ -103,23 +114,39 @@ class fulltext_support
 	{
 		$is_index = false;
 
-		$sql = 'SHOW INDEX
-			FROM ' . TOPICS_TABLE;
-		$result = $this->db->sql_query($sql);
-
-		while ($row = $this->db->sql_fetchrow($result))
+		if ($this->is_mysql())
 		{
-			// Older MySQL versions didn't use Index_type, so fallback to Comment
-			$index_type = isset($row['Index_type']) ? $row['Index_type'] : $row['Comment'];
+			$sql = 'SHOW INDEX
+				FROM ' . TOPICS_TABLE;
+			$result = $this->db->sql_query($sql);
 
-			if ($index_type === 'FULLTEXT' && $row['Key_name'] === $field)
+			while ($row = $this->db->sql_fetchrow($result))
 			{
-				$is_index = true;
-				break;
+				// Older MySQL versions didn't use Index_type, so fallback to Comment
+				$index_type = isset($row['Index_type']) ? $row['Index_type'] : $row['Comment'];
+
+				if ($index_type === 'FULLTEXT' && $row['Key_name'] === $field)
+				{
+					$is_index = true;
+					break;
+				}
+			}
+
+			$this->db->sql_freeresult($result);
+		}
+		else if ($this->is_postgres())
+		{
+			global $config;
+			$ts_name = $config['similar_topics_postgres_ts_name'];
+			foreach ($this->get_pg_indexes($field) AS $index)
+			{
+				if ($index == TOPICS_TABLE . '_' . $ts_name . '_' .$field)
+				{
+					$is_index = true;
+					break;
+				}
 			}
 		}
-
-		$this->db->sql_freeresult($result);
 
 		return $is_index;
 	}
@@ -137,5 +164,41 @@ class fulltext_support
 		$this->db->sql_freeresult($result);
 
 		return $info;
+	}
+	/**
+	 * get all PostgreSQL FULLTEXT indexes on field in topics table
+	 *
+	 * @access public
+	 * @param string $field name of a field
+	 * @return array contains index names
+	 */
+	public function get_pg_indexes($field = 'topic_title')
+	{
+		$indexes = array();
+		if (!$this->is_postgres())
+		{
+			return $indexes;
+		}
+		
+		$sql = "SELECT c2.relname
+		FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true) indexdef
+		WHERE c1.relname = '" . TOPICS_TABLE . "'
+				AND position('to_tsvector' in indexdef) > 0
+				AND pg_catalog.pg_table_is_visible(c1.oid)
+				AND c1.oid = i.indrelid
+				AND i.indexrelid = c2.oid;";
+		$result = $this->db->sql_query($sql);
+		
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			if (strpos($row['relname'], $field) !== false)
+			{
+				$indexes[] = $row['relname'];
+			}
+			
+		}
+		$this->db->sql_freeresult($result);
+		
+		return $indexes;
 	}
 }

@@ -11,8 +11,10 @@
 {% if S_PST_NO_SUPPORT %}
 	<div class="errorbox">
 		<h3>{{ lang('WARNING') }}</h3>
-		{% if S_PST_NO_MYSQL %}
+		{% if S_PST_NO_MYSQL and not S_PST_IS_POSTGRES %}
 			<p>{{ lang('PST_NO_MYSQL') }}</p>
+		{% elseif S_PST_IS_POSTGRES %}
+			<p>{{ lang('PST_NO_POSTGRES_INDEX') }}</p>
 		{% else %}
 			<p>{{ lang('PST_WARN_FULLTEXT') }}</p>
 			<p class="submit-buttons">
@@ -20,6 +22,16 @@
 			</p>
 		{% endif %}
 	</div>
+{% endif %}
+
+{% if S_PST_IS_POSTGRES %}
+	<fieldset>
+		<legend>{{ lang('PST_LEGEND_POSTGRES') }}</legend>
+		<dl>
+			<dt><label for="pst_postgres_ts_name">{{ lang('PST_POSTGRES_TS_NAME') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_POSTGRES_TS_NAME_EXPLAIN') }}</span></dt>
+			<dd><select name="pst_postgres_ts_name" id="pst_postgres_ts_name">{{ S_POSTGRES_TS_NAME_OPTIONS }}</select>
+		</dl>
+	</fieldset>
 {% endif %}
 
 {% if S_ADVANCED_SETTINGS %}
