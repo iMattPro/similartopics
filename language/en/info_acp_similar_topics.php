@@ -42,4 +42,7 @@ $lang = array_merge($lang, array(
 	'PST_SETTINGS'		=> 'Similar topics settings',
 	'PST_LOG_FULLTEXT'	=> '<strong>Altered database for Similar Topics compatibility</strong><br />» Changed “%s” table to MyISAM storage engine and added a FULLTEXT index to the “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Altered Similar Topics settings</strong>',
+	'PST_NOT_COMAPTIBLE'	=> 'Similar Topics is not compatible with your forum. Similar Topics will only run on a MySQL 4, MySQL 5 or PostgreSQL database.',
+	'PST_LOG_CREATE_INDEX'	=> 'Go to the Extension Settings to create index',
+
 ));

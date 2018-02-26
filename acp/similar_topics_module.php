@@ -170,6 +170,15 @@ class similar_topics_module
 					$this->config->set('similar_topics_type', $pst_time_type);
 					$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
+					// Set PostgreSQL TS Name
+					if ($this->fulltext->is_postgres())
+					{
+						$ts_name = $this->request->variable('pst_postgres_ts_name',
+								($this->config->offsetExists('fulltext_postgres_ts_name')? $this->config['fulltext_postgres_ts_name'] : 'simple'));
+						$this->config->set('similar_topics_postgres_ts_name', $ts_name);
+						$this->create_postgres_index($ts_name);
+					}
+
 					// Set checkbox array form data
 					$this->update_forum('similar_topics_hide', $this->request->variable('mark_noshow_forum', array(0), true));
 					$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
@@ -231,8 +240,27 @@ class similar_topics_module
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
 					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
 					'S_PST_NO_MYSQL'	=> !$this->fulltext->is_mysql(),
+					'S_PST_IS_POSTGRES'	=> $this->fulltext->is_postgres(),
 					'U_ACTION'			=> $this->u_action,
 				));
+
+				if ($this->fulltext->is_postgres())
+				{
+					$sql = 'SELECT cfgname AS ts_name
+					FROM pg_ts_config';
+					$result = $this->db->sql_query($sql);
+					$ts_options = '';
+
+					while ($row = $this->db->sql_fetchrow($result))
+					{
+						$ts_options .= '<option value="' . $row['ts_name'] . '"' . ($row['ts_name'] === $this->config['similar_topics_postgres_ts_name'] ? ' selected="selected"' : '') . '>' . $row['ts_name'] . '</option>';
+					}
+					$this->db->sql_freeresult($result);
+
+					$this->template->assign_vars(array(
+						'S_POSTGRES_TS_NAME_OPTIONS' => $ts_options,
+					));
+				}
 
 				$forum_list = $this->get_forum_list();
 				foreach ($forum_list as $row)
@@ -379,6 +407,39 @@ class similar_topics_module
 		$this->db->sql_query($sql);
 	}
 
+
+	/**
+	 * Enable FULLTEXT support for the topic_title
+	 *
+	 * @access protected
+	 */
+	protected function create_postgres_index($ts_name)
+	{
+		if (!$this->fulltext->is_postgres())
+		{
+			$this->end('PST_NO_MYSQL', E_USER_WARNING);
+		}
+
+		$indexed = false;
+		// Prevent adding extra indeces.
+
+		foreach($this->fulltext->get_pg_indexes() as $index)
+		{
+			if ($index == TOPICS_TABLE . '_' . $ts_name . '_topic_title')
+			{
+				$indexed = true;
+			} else {
+				$sql = 'DROP INDEX ' . $index;
+				$this->db->sql_query($sql);
+			}
+		}
+
+		if (!$indexed)
+		{
+			$sql = "CREATE INDEX " . TOPICS_TABLE . "_" . $ts_name . "_topic_title ON " . TOPICS_TABLE . " USING gin (to_tsvector ('" . $ts_name . "', topic_title))";
+			$this->db->sql_query($sql);
+		}
+	}
 	/**
 	 * Return a variable if it is set, otherwise default
 	 *

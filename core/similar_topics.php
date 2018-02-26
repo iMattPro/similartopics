@@ -89,7 +89,7 @@ class similar_topics
 	 */
 	public function is_available()
 	{
-		return $this->is_enabled() && $this->is_viewable() && $this->is_mysql();
+		return $this->is_enabled() && $this->is_viewable() && ($this->is_mysql() || $this->is_postgres());
 	}
 
 	/**
@@ -144,11 +144,25 @@ class similar_topics
 		// Get stored sensitivity value and divide by 10. In query it should be a number between 0.0 to 1.0.
 		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? $this->config['similar_topics_sense'] / 10 : '0.5';
 
+		$select = $where = $unix_ts = '';
+		if ($this->is_postgres())
+		{
+			$ts_query_text	= $this->db->sql_escape(str_replace(' ', '|',  $topic_title));
+			$ts_name		= $this->config['similar_topics_postgres_ts_name'];
+			$select			= "f.forum_id, f.forum_name, t.*,
+				ts_rank_cd(to_tsvector('$ts_name', t.topic_title), '$ts_query_text', 32) AS score";
+			$where			= "ts_rank_cd(to_tsvector('$ts_name', t.topic_title), '$ts_query_text', 32) >= " . (float) $sensitivity ;
+			$unix_ts		= 'extract(epoch from current_timestamp)::integer';
+		} else {
+			$select = "f.forum_id, f.forum_name, t.*,
+				MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') AS score";
+			$where = "MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') >= " . (float) $sensitivity;
+			$unix_ts		= 'UNIX_TIMESTAMP()';
+		}
+
 		// Similar Topics query
 		$sql_array = array(
-			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
-				MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') AS score",
-
+			'SELECT'	=> $select,
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
 			),
@@ -158,10 +172,10 @@ class similar_topics
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') >= " . (float) $sensitivity . '
+			'WHERE'		=> $where . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
-				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->config['similar_topics_time'] . ')
+				AND t.topic_time > (' . $unix_ts . ' - ' . $this->config['similar_topics_time'] . ')
 				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
 		);
 
@@ -206,6 +220,8 @@ class similar_topics
 
 			$sql_array['WHERE'] .= ' AND f.similar_topics_ignore = 0';
 		}
+
+		$sql_array['ORDER_BY'] = 'score DESC, t.topic_time DESC';
 
 		/**
 		 * Event to modify the sql_array for similar topics
@@ -352,7 +368,7 @@ class similar_topics
 		// Strip quotes, ampersands
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
-		if (!$this->english_lang() || $this->has_ignore_words())
+		if (($this->is_mysql() && !$this->english_lang()) || $this->has_ignore_words() || ($this->is_postgres() && $this->config['similar_topics_postgres_ts_name'] == 'simple'))
 		{
 			$text = $this->strip_stop_words($text);
 		}
@@ -451,5 +467,16 @@ class similar_topics
 	protected function is_mysql()
 	{
 		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');
+	}
+
+	/**
+	 * Check if the database is using PostgreSQL
+	 *
+	 * @access public
+	 * @return bool True if is postgresql, false otherwise
+	 */
+	protected function is_postgres()
+	{
+		return ($this->db->get_sql_layer() === 'postgres');
 	}
 }
