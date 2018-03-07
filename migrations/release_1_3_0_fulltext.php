@@ -40,15 +40,15 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Drop the FULLTEXT index on phpbb_topics.topic_title
+	 * Drop the MYSQLI FULLTEXT index on phpbb_topics.topic_title
 	 * Convert phpbb_topics back to the original storage engine
 	 */
 	public function revert_fulltext_changes()
 	{
-		$fulltext = new \vse\similartopics\core\fulltext_support($this->db);
+		$driver = new \vse\similartopics\driver\mysqli($this->db);
 
 		// Drop the FULLTEXT index
-		if ($fulltext->is_index('topic_title'))
+		if ($driver->is_index('topic_title'))
 		{
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
 			$this->db->sql_query($sql);
