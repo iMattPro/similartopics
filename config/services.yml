@@ -16,11 +16,6 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%'
 
-    vse.similartopics.fulltext_support:
-        class: vse\similartopics\core\fulltext_support
-        arguments:
-            - '@dbal.conn'
-
     vse.similartopics.listener:
         class: vse\similartopics\event\listener
         arguments:
