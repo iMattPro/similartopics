@@ -24,8 +24,8 @@ class similar_topics_module
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
-	/** @var \vse\similartopics\core\fulltext_support */
-	protected $fulltext;
+	/** @var \vse\similartopics\driver\mysqli|\vse\similartopics\driver\postgres */
+	protected $driver;
 
 	/** @var \phpbb\log\log */
 	protected $log;
@@ -69,7 +69,7 @@ class similar_topics_module
 		$this->cache     = $phpbb_container->get('cache');
 		$this->config    = $phpbb_container->get('config');
 		$this->db        = $phpbb_container->get('dbal.conn');
-		$this->fulltext  = $phpbb_container->get('vse.similartopics.fulltext_support');
+		$this->driver    = $phpbb_container->get('vse.similartopics.driver.manager')->get_driver($this->db->get_sql_layer());
 		$this->log       = $phpbb_container->get('log');
 		$this->request   = $phpbb_container->get('request');
 		$this->template  = $phpbb_container->get('template');
@@ -181,19 +181,19 @@ class similar_topics_module
 					$this->end('PST_SAVED');
 				}
 
-				// Allow option to update the database to enable FULLTEXT support
+				// Allow option to update the mysql database to enable FULLTEXT support
 				if ($this->request->is_set_post('fulltext'))
 				{
 					if (confirm_box(true))
 					{
 						// If FULLTEXT is not supported, lets make it so
-						if (!$this->fulltext_support_enabled())
+						if (strpos($this->driver->get_name(), 'mysql') === 0 && !$this->fulltext_support_enabled())
 						{
 							// Alter the database to support FULLTEXT
-							$this->enable_fulltext_support();
+							$this->enable_mysql_fulltext_support();
 
 							// Store the original database storage engine in a config var for recovery on uninstall
-							$this->config->set('similar_topics_fulltext', (string) $this->fulltext->get_engine());
+							$this->config->set('similar_topics_fulltext', (string) $this->driver->get_engine());
 
 							$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
 
@@ -229,8 +229,8 @@ class similar_topics_module
 					'PST_SENSE'			=> $this->isset_or_default($this->config['similar_topics_sense'], ''),
 					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
-					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
-					'S_PST_NO_MYSQL'	=> !$this->fulltext->is_mysql(),
+					'S_PST_NO_SUPPORT'	=> $this->driver === null || !$this->fulltext_support_enabled(),
+					'S_PST_NO_COMPAT'	=> $this->driver === null,
 					'U_ACTION'			=> $this->u_action,
 				));
 
@@ -345,9 +345,9 @@ class similar_topics_module
 	 */
 	protected function fulltext_support_enabled()
 	{
-		if ($this->fulltext->is_supported())
+		if ($this->driver->is_supported())
 		{
-			return $this->fulltext->is_index('topic_title');
+			return $this->driver->is_index('topic_title');
 		}
 
 		return false;
@@ -358,25 +358,13 @@ class similar_topics_module
 	 *
 	 * @access protected
 	 */
-	protected function enable_fulltext_support()
+	protected function enable_mysql_fulltext_support()
 	{
-		if (!$this->fulltext->is_mysql())
-		{
-			$this->end('PST_NO_MYSQL', E_USER_WARNING);
-		}
-
 		// Alter the storage engine
-		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = MYISAM';
-		$this->db->sql_query($sql);
+		$this->driver->alter_engine();
 
-		// Prevent adding extra indeces.
-		if ($this->fulltext->is_index('topic_title'))
-		{
-			return;
-		}
-
-		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
-		$this->db->sql_query($sql);
+		// Create the FULLTEXT index
+		$this->driver->create_fulltext_index('topic_title');
 	}
 
 	/**

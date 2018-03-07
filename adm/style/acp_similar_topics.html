@@ -11,8 +11,8 @@
 {% if S_PST_NO_SUPPORT %}
 	<div class="errorbox">
 		<h3>{{ lang('WARNING') }}</h3>
-		{% if S_PST_NO_MYSQL %}
-			<p>{{ lang('PST_NO_MYSQL') }}</p>
+		{% if S_PST_NO_COMPAT %}
+			<p>{{ lang('PST_NO_COMPAT') }}</p>
 		{% else %}
 			<p>{{ lang('PST_WARN_FULLTEXT') }}</p>
 			<p class="submit-buttons">
