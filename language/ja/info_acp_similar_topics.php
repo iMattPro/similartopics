@@ -40,6 +40,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> '正確な類似トピック',
 	'PST_SETTINGS'		=> '類似トピック設定',
-	'PST_LOG_FULLTEXT'	=> '<strong>類似トピックの互換性のためにデータベースを変更しました</strong><br />» Changed “%s” テーブルを MyISAM ストレージエンジンに変更し、“topic_title”へFULLTEXTインデックスを追加しました',
 	'PST_LOG_MSG'		=> '<strong>類似トピック設定が変更されました</strong>',
 ));

@@ -181,31 +181,6 @@ class similar_topics_module
 					$this->end('PST_SAVED');
 				}
 
-				// Allow option to update the mysql database to enable FULLTEXT support
-				if ($this->request->is_set_post('fulltext'))
-				{
-					if (confirm_box(true))
-					{
-						// If FULLTEXT is not supported, lets make it so
-						if ($this->driver->get_type() === 'mysql' && !$this->fulltext_support_enabled())
-						{
-							// Alter the database to support FULLTEXT
-							$this->enable_mysql_fulltext_support();
-
-							// Store the original database storage engine in a config var for recovery on uninstall
-							$this->config->set('similar_topics_fulltext', (string) $this->driver->get_engine());
-
-							$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
-
-							$this->end('PST_SAVE_FULLTEXT');
-						}
-						$this->end('PST_ERR_FULLTEXT', E_USER_WARNING);
-					}
-					confirm_box(false, $this->user->lang('CONFIRM_OPERATION'), build_hidden_fields(array(
-						'fulltext' => 1,
-					)));
-				}
-
 				// Build the time options select menu
 				$time_options = array(
 					'd' => $this->user->lang('PST_DAYS'),
@@ -218,7 +193,7 @@ class similar_topics_module
 					$this->template->assign_block_vars('similar_time_options', array(
 						'VALUE'			=> $value,
 						'LABEL'			=> $label,
-						'S_SELECTED'	=> $value == $this->config['similar_topics_type'],
+						'S_SELECTED'	=> $value === $this->config['similar_topics_type'],
 					));
 				}
 
@@ -229,8 +204,7 @@ class similar_topics_module
 					'PST_SENSE'			=> $this->isset_or_default($this->config['similar_topics_sense'], ''),
 					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
-					'S_PST_NO_SUPPORT'	=> $this->driver === null || !$this->fulltext_support_enabled(),
-					'S_PST_NO_COMPAT'	=> $this->driver === null,
+					'S_PST_NO_COMPAT'	=> $this->driver === null || !$this->fulltext_support_enabled(),
 					'U_ACTION'			=> $this->u_action,
 				));
 
@@ -351,20 +325,6 @@ class similar_topics_module
 		}
 
 		return false;
-	}
-
-	/**
-	 * Enable FULLTEXT support for the topic_title
-	 *
-	 * @access protected
-	 */
-	protected function enable_mysql_fulltext_support()
-	{
-		// Alter the storage engine
-		$this->driver->alter_engine();
-
-		// Create the FULLTEXT index
-		$this->driver->create_fulltext_index('topic_title');
 	}
 
 	/**

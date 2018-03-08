@@ -8,17 +8,10 @@
 
 <form id="select_victim" method="post" action="{{ U_ACTION }}">
 
-{% if S_PST_NO_SUPPORT %}
+{% if S_PST_NO_COMPAT %}
 	<div class="errorbox">
 		<h3>{{ lang('WARNING') }}</h3>
-		{% if S_PST_NO_COMPAT %}
-			<p>{{ lang('PST_NO_COMPAT') }}</p>
-		{% else %}
-			<p>{{ lang('PST_WARN_FULLTEXT') }}</p>
-			<p class="submit-buttons">
-				<input class="button1" type="submit" id="fulltext" name="fulltext" value=" {{ lang('PST_ADD_FULLTEXT') }} " />
-			</p>
-		{% endif %}
+		<p>{{ lang('PST_NO_COMPAT') }}</p>
 	</div>
 {% endif %}
 

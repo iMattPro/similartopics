@@ -41,6 +41,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Tópicos Semelhantes',
 	'PST_SETTINGS'		=> 'Configuração',
-	'PST_LOG_FULLTEXT'	=> '<strong>Banco de dados alterado para compatibilidade Tópicos Semelhantes</strong><br />» Mudou a tabela “%s” para mecanismo de armazenamento MyISAM e acrescentou um índice FULLTEXT para a “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>As configurações de Tópicos Semelhantes foram alteradas</strong>',
 ));

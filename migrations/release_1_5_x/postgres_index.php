@@ -8,9 +8,9 @@
  *
  */
 
-namespace vse\similartopics\migrations;
+namespace vse\similartopics\migrations\release_1_5_x;
 
-class release_1_5_0_postgres extends \phpbb\db\migration\migration
+class postgres_index extends \phpbb\db\migration\migration
 {
 	/**
 	 * Do not run this migration if the DB is not PostgreSQL
@@ -43,7 +43,7 @@ class release_1_5_0_postgres extends \phpbb\db\migration\migration
 		return array(
 			array('if', array(
 				$this->db->get_sql_layer() === 'postgres',
-				array('custom', array(array($this, 'revert_postgres_changes'))),
+				array('custom', array(array($this, 'drop_postgres_changes'))),
 			)),
 		);
 	}
@@ -60,7 +60,7 @@ class release_1_5_0_postgres extends \phpbb\db\migration\migration
 	/**
 	 * Drop the PostgreSQL FULLTEXT index on phpbb_topics.topic_title
 	 */
-	public function revert_postgres_changes()
+	public function drop_postgres_changes()
 	{
 		$driver = $this->get_driver();
 

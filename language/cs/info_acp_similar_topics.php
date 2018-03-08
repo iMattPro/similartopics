@@ -40,6 +40,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Podobná témata',
 	'PST_SETTINGS'		=> 'Nastavení',
-	'PST_LOG_FULLTEXT'	=> '<strong>Databáze upravena pro lepší kompatibilitu s rozšířením</strong><br />» Tabulka “%s” změněna na MyISAM a přidán FULLTEXT index k políčku “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Nastavení podobných témat upraveno</strong>',
 ));

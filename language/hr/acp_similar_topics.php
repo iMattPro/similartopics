@@ -73,9 +73,5 @@ $lang = array_merge($lang, array(
 	'PST_SAVED'			=> 'Postavke sličnih tema su ažurirane.',
 	'PST_FORUM_INFO'	=> '“Ne prikazuj u”: neće prikaz(iv)ati slične teme u odabranim forumima.<br />“Ne pretražuj u”: neće pretraž(iv)ati slične teme u odabranim forumima.',
 	'PST_NO_COMPAT'		=> 'Slične teme nisu kompatibilne s forumom.<br />Pokreću se samo na/u MySQL 4 ili MySQL 5 ili PostgreSQL bazi podataka.',
-	'PST_WARN_FULLTEXT'	=> 'Slične teme nisu kompatibilne s forumom.<br />Koriste FULLTEXT indekse koji zahtijevaju MySQL 4 ili MySQL 5 bazu podataka i “phpbb_topics” tablica mora biti postavljena za MyISAM storage engine [(ili) InnoDB je dopuštena uz MySQL 5.6.4 ili noviju].<br /><br />Ukoliko želiš koristiti slične teme, baza podataka može biti sigurno ažurirana na/za podržavanje FULLTEXT indeksa.<br />Ukoliko [ikad] odlučiš prestati s korištenjem sličnih tema, vraćanje u prijašnje stanje je moguće.',
-	'PST_ADD_FULLTEXT'	=> 'Da, omogući podršku za FULLTEXT indekse',
-	'PST_SAVE_FULLTEXT'	=> 'Baza podataka je ažurirana.<br />Možeš početi s korištenjem sličnih tema.',
-	'PST_ERR_FULLTEXT'	=> 'Vaš baze podataka ne može biti ažurirana.',
 	'PST_ERR_CONFIG'	=> 'Previše forumi su označeni na popisu foruma. Pokušajte ponovno s manjim izborom.',
 ));

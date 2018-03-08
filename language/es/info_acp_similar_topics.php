@@ -40,6 +40,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Hilos Parecidos Precisos',
 	'PST_SETTINGS'		=> 'Hilos parecidos configuración',
-	'PST_LOG_FULLTEXT'	=> '<strong>Base de datos de Alteración de Hilos Parecidos compatibilidad</strong><br />» Cambiado la tabla “%s” para el motor de almacenamiento MyISAM y añadió un índice FULLTEXT de la “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Se modificó la configuración de hilos parecidos</strong>',
 ));
