@@ -5,7 +5,7 @@
 	"homepage": "https://github.com/VSEphpbb/similartopics",
 	"version": "1.5.0-dev",
 	"keywords": ["phpbb", "extension", "similar", "topics"],
-	"license": "GPL-2.0",
+	"license": "GPL-2.0-only",
 	"authors": [
 		{
 			"name": "Matt Friedman (VSE)",
