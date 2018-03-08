@@ -78,6 +78,6 @@ class release_1_5_0_postgres extends \phpbb\db\migration\migration
 	 */
 	protected function get_driver()
 	{
-		return new \vse\similartopics\driver\postgres($this->db);
+		return new \vse\similartopics\driver\postgres($this->db, $this->config);
 	}
 }

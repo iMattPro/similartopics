@@ -12,22 +12,22 @@ namespace vse\similartopics\driver;
 
 class postgres implements driver_interface
 {
-	const TS_NAME = 'simple';
-
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
 	/** @var string */
-	protected $engine;
+	protected $ts_name;
 
 	/**
 	 * mysql constructor.
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config              $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config)
 	{
 		$this->db = $db;
+		$this->ts_name = $config['fulltext_postgres_ts_name'] ?: 'simple';
 	}
 
 	/**
@@ -44,11 +44,10 @@ class postgres implements driver_interface
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
 		$ts_query_text	= $this->db->sql_escape(str_replace(' ', '|',  $topic_title));
-		$ts_name		= self::TS_NAME;
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
-				ts_rank_cd(to_tsvector('$ts_name', t.topic_title), '$ts_query_text', 32) AS score",
+				ts_rank_cd(to_tsvector('{$this->ts_name}', t.topic_title), '$ts_query_text', 32) AS score",
 
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
@@ -59,7 +58,7 @@ class postgres implements driver_interface
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-			'WHERE'		=> "ts_rank_cd(to_tsvector('$ts_name', t.topic_title), '$ts_query_text', 32) >= " . (float) $sensitivity/10 . '
+			'WHERE'		=> "ts_rank_cd(to_tsvector('{$this->ts_name}', t.topic_title), '$ts_query_text', 32) >= " . (float) $sensitivity/10 . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_time > (extract(epoch from current_timestamp)::integer - ' . (int) $length . ')
@@ -93,11 +92,10 @@ class postgres implements driver_interface
 	public function is_index($field = 'topic_title')
 	{
 		$is_index = false;
-		$ts_name = self::TS_NAME;
 
 		foreach ($this->get_pg_indexes($field) as $index)
 		{
-			if ($index === TOPICS_TABLE . '_' . $ts_name . '_' . $field)
+			if ($index === TOPICS_TABLE . '_' . $this->ts_name . '_' . $field)
 			{
 				$is_index = true;
 				break;
@@ -112,13 +110,11 @@ class postgres implements driver_interface
 	 */
 	public function create_fulltext_index($field = 'topic_title')
 	{
-		$ts_name = self::TS_NAME;
-
-		$index = TOPICS_TABLE . '_' . $ts_name . '_' . $field;
+		$index = TOPICS_TABLE . '_' . $this->ts_name . '_' . $field;
 
 		if (!in_array($index, $this->get_pg_indexes()))
 		{
-			$sql = 'CREATE INDEX ' . $index . ' ON '  . TOPICS_TABLE . " USING gin (to_tsvector ('" . $ts_name . "', " . $field . '))';
+			$sql = 'CREATE INDEX ' . $index . ' ON '  . TOPICS_TABLE . " USING gin (to_tsvector ('" . $this->ts_name . "', " . $field . '))';
 			$this->db->sql_query($sql);
 		}
 	}

@@ -51,6 +51,7 @@ services:
         class: vse\similartopics\driver\postgres
         arguments:
             - '@dbal.conn'
+            - '@config'
         tags:
             - { name: vse.similartopcs.driver }
 
