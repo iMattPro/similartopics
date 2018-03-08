@@ -171,15 +171,16 @@ class mysqli implements driver_interface
 	}
 
 	/**
-	 * Alter the database storage engine name
+	 * Alter the database storage engine
 	 *
 	 * @access public
+	 * @param string $engine The storage engine, i.e.: MYISAM|INNODB
 	 * @return void
 	 */
-	public function alter_engine()
+	public function alter_engine($engine = 'MYISAM')
 	{
 		// Alter the storage engine
-		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = MYISAM';
+		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = ' . $this->db->sql_escape(strtoupper($engine));
 		$this->db->sql_query($sql);
 	}
 
