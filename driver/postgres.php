@@ -41,6 +41,14 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
+	public function get_type()
+	{
+		return 'postgres';
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
 		$ts_query_text	= $this->db->sql_escape(str_replace(' ', '|',  $topic_title));

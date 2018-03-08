@@ -21,6 +21,13 @@ interface driver_interface
 	public function get_name();
 
 	/**
+	 * Get the type of the driver, i.e.: mysql or postgres
+	 *
+	 * @return string
+	 */
+	public function get_type();
+
+	/**
 	 * Generate the basic SQL query for similar topic searches
 	 *
 	 * @param int    $topic_id    The ID of the main topic

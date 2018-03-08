@@ -39,6 +39,14 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
+	public function get_type()
+	{
+		return 'mysql';
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
 		return array(

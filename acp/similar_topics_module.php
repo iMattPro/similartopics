@@ -187,7 +187,7 @@ class similar_topics_module
 					if (confirm_box(true))
 					{
 						// If FULLTEXT is not supported, lets make it so
-						if (strpos($this->driver->get_name(), 'mysql') === 0 && !$this->fulltext_support_enabled())
+						if ($this->driver->get_type() === 'mysql' && !$this->fulltext_support_enabled())
 						{
 							// Alter the database to support FULLTEXT
 							$this->enable_mysql_fulltext_support();
