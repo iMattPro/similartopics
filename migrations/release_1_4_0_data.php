@@ -45,10 +45,10 @@ class release_1_4_0_data extends \phpbb\db\migration\migration
 
 		foreach ($old_configs as $column)
 		{
-			$forum_ids = explode(',', $this->config[$column]);
-
-			if (!empty($forum_ids))
+			if (!empty($this->config[$column]))
 			{
+				$forum_ids = explode(',', $this->config[$column]);
+
 				$sql = 'UPDATE ' . FORUMS_TABLE . "
 					SET $column = 1
 					WHERE " . $this->db->sql_in_set('forum_id', $forum_ids);
