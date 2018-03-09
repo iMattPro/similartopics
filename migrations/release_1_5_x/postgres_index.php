@@ -35,6 +35,7 @@ class postgres_index extends \phpbb\db\migration\migration
 				array('custom', array(array($this, 'create_postgres_index'))),
 			)),
 			array('config.update', array('similar_topics_sense', 1)),
+			array('config.add', array('pst_postgres_ts_name', $this->get_ts_name())),
 		);
 	}
 
@@ -54,7 +55,8 @@ class postgres_index extends \phpbb\db\migration\migration
 	public function create_postgres_index()
 	{
 		$driver = $this->get_driver();
-		$driver->create_fulltext_index();
+		$driver->set_ts_name($this->get_ts_name())
+			->create_fulltext_index();
 	}
 
 	/**
@@ -79,5 +81,10 @@ class postgres_index extends \phpbb\db\migration\migration
 	protected function get_driver()
 	{
 		return new \vse\similartopics\driver\postgres($this->db, $this->config);
+	}
+
+	protected function get_ts_name()
+	{
+		return $this->config->offsetExists('fulltext_postgres_ts_name') ? $this->config['fulltext_postgres_ts_name'] : 'simple';
 	}
 }

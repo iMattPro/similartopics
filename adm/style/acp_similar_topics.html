@@ -126,6 +126,18 @@
 			<dt><label for="pst_words">{{ lang('PST_WORDS') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_WORDS_EXPLAIN') }}</span></dt>
 			<dd><input name="pst_words" id="pst_words" type="text" class="text medium" maxlength="255" value="{{ PST_WORDS }}" /></dd>
 		</dl>
+		{% if loops.postgres_ts_names %}
+			<dl>
+				<dt><label for="pst_postgres_ts_name">{{ lang('FULLTEXT_POSTGRES_TS_NAME') ~ lang('COLON') }}</label><br /><span>{{ lang('FULLTEXT_POSTGRES_TS_NAME_EXPLAIN') }}</span></dt>
+				<dd>
+					<select name="pst_postgres_ts_name" id="pst_postgres_ts_name">
+						{% for ts_name in loops.postgres_ts_names %}
+							<option value="{{ ts_name.NAME }}"{% if ts_name.S_SELECTED %} selected="selected"{% endif %}>{{ ts_name.NAME }}</option>
+						{% endfor %}
+					</select>
+				</dd>
+			</dl>
+		{% endif %}
 	</fieldset>
 
 	<fieldset>

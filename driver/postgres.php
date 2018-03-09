@@ -27,7 +27,7 @@ class postgres implements driver_interface
 	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config)
 	{
 		$this->db = $db;
-		$this->ts_name = $config['fulltext_postgres_ts_name'] ?: 'simple';
+		$this->set_ts_name($config['pst_postgres_ts_name']);
 	}
 
 	/**
@@ -118,13 +118,43 @@ class postgres implements driver_interface
 	 */
 	public function create_fulltext_index($field = 'topic_title')
 	{
-		$index = TOPICS_TABLE . '_' . $this->ts_name . '_' . $field;
+		$new_index = TOPICS_TABLE . '_' . $this->ts_name . '_' . $field;
 
-		if (!in_array($index, $this->get_pg_indexes()))
+		$indexed = false;
+
+		foreach ($this->get_pg_indexes() as $index)
 		{
-			$sql = 'CREATE INDEX ' . $index . ' ON '  . TOPICS_TABLE . " USING gin (to_tsvector ('" . $this->ts_name . "', " . $field . '))';
+			if ($index === $new_index)
+			{
+				$indexed = true;
+			}
+			else
+			{
+				$sql = 'DROP INDEX ' . $index;
+				$this->db->sql_query($sql);
+			}
+		}
+
+		if (!$indexed)
+		{
+			$sql = 'CREATE INDEX ' . $this->db->sql_escape($new_index) . ' 
+				ON '  . TOPICS_TABLE . " 
+				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->db->sql_escape($field) . '))';
 			$this->db->sql_query($sql);
 		}
+	}
+
+	/**
+	 * Set the PostgreSQL Text Search name (dictionary)
+	 *
+	 * @param string $ts_name Dictionary name
+	 * @return \vse\similartopics\driver\postgres
+	 */
+	public function set_ts_name($ts_name)
+	{
+		$this->ts_name = $ts_name ?: 'simple';
+
+		return $this;
 	}
 
 	/**
@@ -162,5 +192,20 @@ class postgres implements driver_interface
 		$this->db->sql_freeresult($result);
 
 		return $indexes;
+	}
+
+	/**
+	 * Get list of PostgreSQL text search names
+	 *
+	 * @return array array of text search names
+	 */
+	public function get_cfgname_list()
+	{
+		$sql = 'SELECT cfgname AS ts_name FROM pg_ts_config';
+		$result = $this->db->sql_query($sql);
+		$ts_options = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		return $ts_options;
 	}
 }

@@ -170,6 +170,14 @@ class similar_topics_module
 					$this->config->set('similar_topics_type', $pst_time_type);
 					$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
+					// Set PostgreSQL TS Name
+					if ($this->driver->get_type() === 'postgres')
+					{
+						$ts_name = $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
+						$this->config->set('pst_postgres_ts_name', $ts_name);
+						$this->driver->set_ts_name($ts_name)->create_fulltext_index('topic_title');
+					}
+
 					// Set checkbox array form data
 					$this->update_forum('similar_topics_hide', $this->request->variable('mark_noshow_forum', array(0), true));
 					$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
@@ -207,6 +215,19 @@ class similar_topics_module
 					'S_PST_NO_COMPAT'	=> $this->driver === null || !$this->fulltext_support_enabled(),
 					'U_ACTION'			=> $this->u_action,
 				));
+
+				// If postgresql, we need to make an options list of text search names
+				if ($this->driver->get_type() === 'postgres')
+				{
+					$this->user->add_lang('acp/search');
+					foreach ($this->driver->get_cfgname_list() as $row)
+					{
+						$this->template->assign_block_vars('postgres_ts_names', array(
+							'NAME'			=> $row['ts_name'],
+							'S_SELECTED'	=> $row['ts_name'] === $this->config['pst_postgres_ts_name'],
+						));
+					}
+				}
 
 				$forum_list = $this->get_forum_list();
 				foreach ($forum_list as $row)
