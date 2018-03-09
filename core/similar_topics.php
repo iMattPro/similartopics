@@ -95,7 +95,6 @@ class similar_topics
 	 */
 	public function is_available()
 	{
-
 		return $this->is_enabled() && $this->is_viewable() && $this->similartopics_driver !== null;
 	}
 
