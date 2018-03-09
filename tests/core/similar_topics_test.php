@@ -45,6 +45,12 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var \phpbb\content_visibility|\PHPUnit_Framework_MockObject_MockObject */
 	protected $content_visibility;
 
+	/** @var \vse\similartopics\driver\manager|\PHPUnit_Framework_MockObject_MockObject */
+	protected $manager;
+
+	/** @var \vse\similartopics\driver\driver_interface|\PHPUnit_Framework_MockObject_MockObject */
+	protected $driver;
+
 	/** @var string */
 	protected $phpbb_root_path;
 
@@ -76,6 +82,11 @@ class similar_topics_test extends \phpbb_test_case
 		$this->content_visibility = $this->getMockBuilder('\phpbb\content_visibility')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->manager = $this->getMockBuilder('\vse\similartopics\driver\manager')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->driver = $this->getMockBuilder('\vse\similartopics\driver\driver_interface')
+			->getMock();
 
 		// Classes used in the tests
 		$this->auth = $this->getMockBuilder('\phpbb\auth\auth')->getMock();
@@ -100,6 +111,7 @@ class similar_topics_test extends \phpbb_test_case
 			$this->template,
 			$this->user,
 			$this->content_visibility,
+			$this->manager,
 			$this->phpbb_root_path,
 			$this->phpEx
 		);
@@ -255,6 +267,10 @@ class similar_topics_test extends \phpbb_test_case
 		$this->db->expects($this->any())
 			->method('get_sql_layer')
 			->will($this->returnValue($sql_layer));
+		$this->manager->expects($this->any())
+			->method('get_driver')
+			->with($sql_layer)
+			->will($this->returnValue((in_array($sql_layer, array('mysqli', 'mysql', 'mysql4', 'postgres')) ? $this->driver : null)));
 
 		$similar_topics = $this->get_similar_topics();
 
