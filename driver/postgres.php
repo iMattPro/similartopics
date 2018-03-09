@@ -51,11 +51,12 @@ class postgres implements driver_interface
 	 */
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
-		$ts_query_text	= $this->db->sql_escape(str_replace(' ', '|',  $topic_title));
+		$ts_query_text = $this->db->sql_escape(str_replace(' ', '|', $topic_title));
+		$ts_name = $this->db->sql_escape($this->ts_name);
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
-				ts_rank_cd(to_tsvector('{$this->ts_name}', t.topic_title), '$ts_query_text', 32) AS score",
+				ts_rank_cd(to_tsvector('$ts_name', t.topic_title), '$ts_query_text', 32) AS score",
 
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
@@ -66,7 +67,7 @@ class postgres implements driver_interface
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-			'WHERE'		=> "ts_rank_cd(to_tsvector('{$this->ts_name}', t.topic_title), '$ts_query_text', 32) >= " . (float) $sensitivity/10 . '
+			'WHERE'		=> "ts_rank_cd(to_tsvector('$ts_name', t.topic_title), '$ts_query_text', 32) >= " . (float) $sensitivity . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_time > (extract(epoch from current_timestamp)::integer - ' . (int) $length . ')
