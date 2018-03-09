@@ -173,13 +173,12 @@ class postgres implements driver_interface
 			return $indexes;
 		}
 
-		$sql = "SELECT c2.relname
-		FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true) indexdef
-		WHERE c1.relname = '" . TOPICS_TABLE . "'
-				AND position('to_tsvector' in indexdef) > 0
+		$sql = "SELECT c2.relname, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true) AS indexdef
+			FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2
+			WHERE c1.relname = '" . TOPICS_TABLE . "'
 				AND pg_catalog.pg_table_is_visible(c1.oid)
 				AND c1.oid = i.indrelid
-				AND i.indexrelid = c2.oid;";
+				AND i.indexrelid = c2.oid";
 		$result = $this->db->sql_query($sql);
 
 		while ($row = $this->db->sql_fetchrow($result))
