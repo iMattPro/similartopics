@@ -71,17 +71,6 @@ class mysqli implements driver_interface
 	}
 
 	/**
-	 * Check if the database is using MySQL
-	 *
-	 * @access public
-	 * @return bool True if is mysql, false otherwise
-	 */
-	public function is_mysql()
-	{
-		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');
-	}
-
-	/**
 	 * {@inheritdoc}
 	 */
 	public function is_supported()
@@ -94,7 +83,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_index($field = 'topic_title')
+	public function is_index($column = 'topic_title')
 	{
 		$is_index = false;
 
@@ -107,7 +96,7 @@ class mysqli implements driver_interface
 			// Older MySQL versions didn't use Index_type, so fallback to Comment
 			$index_type = isset($row['Index_type']) ? $row['Index_type'] : $row['Comment'];
 
-			if ($index_type === 'FULLTEXT' && $row['Key_name'] === $field)
+			if ($index_type === 'FULLTEXT' && $row['Key_name'] === $column)
 			{
 				$is_index = true;
 				break;
@@ -122,11 +111,11 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($field = 'topic_title')
+	public function create_fulltext_index($column = 'topic_title')
 	{
-		if (!$this->is_index($field))
+		if (!$this->is_index($column))
 		{
-			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (' . $field . ')';
+			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (' . $column . ')';
 			$this->db->sql_query($sql);
 		}
 	}
@@ -139,7 +128,7 @@ class mysqli implements driver_interface
 	 */
 	public function get_engine()
 	{
-		return isset($this->engine) ? $this->engine : $this->set_engine();
+		return $this->engine !== null ? $this->engine : $this->set_engine();
 	}
 
 	/**
@@ -179,9 +168,9 @@ class mysqli implements driver_interface
 	 */
 	public function alter_engine($engine = 'MYISAM')
 	{
-		// Alter the storage engine
 		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = ' . $this->db->sql_escape(strtoupper($engine));
 		$this->db->sql_query($sql);
+		$this->set_engine();
 	}
 
 	/**
@@ -197,5 +186,16 @@ class mysqli implements driver_interface
 		$this->db->sql_freeresult($result);
 
 		return $info;
+	}
+
+	/**
+	 * Check if the database is using MySQL
+	 *
+	 * @access public
+	 * @return bool True if is mysql, false otherwise
+	 */
+	protected function is_mysql()
+	{
+		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');
 	}
 }

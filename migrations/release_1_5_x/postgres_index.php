@@ -19,7 +19,7 @@ class postgres_index extends \phpbb\db\migration\migration
 	 */
 	public function effectively_installed()
 	{
-		return $this->db->get_sql_layer() !== 'postgres';
+		return $this->db->get_sql_layer() !== 'postgres' || $this->config->offsetExists('pst_postgres_ts_name');
 	}
 
 	public static function depends_on()

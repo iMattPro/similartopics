@@ -1,12 +1,11 @@
 <?php
-/*
- * This file is part of myCloud.
+/**
  *
- * (c) 2018 Matt Friedman
+ * Precise Similar Topics
  *
- * This work is licensed under a Creative Commons
- * Attribution-NonCommercial-NoDerivs 3.0 Unported License.
- * http://creativecommons.org/licenses/by-nc-nd/3.0/
+ * @copyright (c) 2018 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
  */
 
 namespace vse\similartopics\driver;
@@ -50,18 +49,17 @@ interface driver_interface
 	 * Check if a field is a FULLTEXT index
 	 *
 	 * @access public
-	 * @param string $field name of a field
+	 * @param string $column Name of the field
 	 * @return bool True if field is a FULLTEXT index, false otherwise
 	 */
-	public function is_index($field = 'topic_title');
-
+	public function is_index($column = 'topic_title');
 
 	/**
 	 * Make a field into a FULLTEXT index
 	 *
 	 * @access public
-	 * @param string $field name of a field
+	 * @param string $column Name of the field
 	 * @return void
 	 */
-	public function create_fulltext_index($field = 'topic_title');
+	public function create_fulltext_index($column = 'topic_title');
 }

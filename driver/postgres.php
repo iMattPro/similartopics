@@ -77,12 +77,9 @@ class postgres implements driver_interface
 	}
 
 	/**
-	 * Check if the database is using PostgreSQL
-	 *
-	 * @access public
-	 * @return bool True if is postgresql, false otherwise
+	 * {@inheritdoc}
 	 */
-	public function is_postgres()
+	public function is_supported()
 	{
 		return ($this->db->get_sql_layer() === 'postgres');
 	}
@@ -90,21 +87,13 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_supported()
-	{
-		return $this->is_postgres();
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function is_index($field = 'topic_title')
+	public function is_index($column = 'topic_title')
 	{
 		$is_index = false;
 
-		foreach ($this->get_pg_indexes($field) as $index)
+		foreach ($this->get_pg_indexes($column) as $index)
 		{
-			if ($index === TOPICS_TABLE . '_' . $this->ts_name . '_' . $field)
+			if ($index === TOPICS_TABLE . '_' . $this->ts_name . '_' . $column)
 			{
 				$is_index = true;
 				break;
@@ -117,9 +106,9 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($field = 'topic_title')
+	public function create_fulltext_index($column = 'topic_title')
 	{
-		$new_index = TOPICS_TABLE . '_' . $this->ts_name . '_' . $field;
+		$new_index = TOPICS_TABLE . '_' . $this->ts_name . '_' . $column;
 
 		$indexed = false;
 
@@ -140,7 +129,7 @@ class postgres implements driver_interface
 		{
 			$sql = 'CREATE INDEX ' . $this->db->sql_escape($new_index) . ' 
 				ON '  . TOPICS_TABLE . " 
-				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->db->sql_escape($field) . '))';
+				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->db->sql_escape($column) . '))';
 			$this->db->sql_query($sql);
 		}
 	}
@@ -162,14 +151,14 @@ class postgres implements driver_interface
 	 * get all PostgreSQL FULLTEXT indexes on field in topics table
 	 *
 	 * @access public
-	 * @param string $field name of a field
+	 * @param string $column name of a field
 	 * @return array contains index names
 	 */
-	public function get_pg_indexes($field = 'topic_title')
+	public function get_pg_indexes($column = 'topic_title')
 	{
 		$indexes = array();
 
-		if (!$this->is_postgres())
+		if (!$this->is_supported())
 		{
 			return $indexes;
 		}
@@ -184,7 +173,7 @@ class postgres implements driver_interface
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			if (strpos($row['relname'], $field) !== false)
+			if (strpos($row['relname'], $column) !== false)
 			{
 				$indexes[] = $row['relname'];
 			}

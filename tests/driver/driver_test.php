@@ -62,12 +62,17 @@ class driver_test extends \phpbb_database_test_case
 
 	public function get_driver()
 	{
-		return  $this->manager->get_driver($this->db->get_sql_layer());
+		return $this->manager->get_driver($this->db->get_sql_layer());
 	}
 
 	public function test_get_driver()
 	{
 		$this->assertInstanceOf('\\vse\\similartopics\\driver\\' . $this->db->get_sql_layer(), $this->get_driver());
+	}
+
+	public function test_get_driver_fails()
+	{
+		$this->assertNull($this->manager->get_driver('foo'));
 	}
 
 	public function test_get_name()
@@ -77,37 +82,7 @@ class driver_test extends \phpbb_database_test_case
 
 	public function test_get_type()
 	{
-		$driver = $this->get_driver();
-
-		if ($this->db->get_sql_layer() === 'postgres')
-		{
-			$this->assertEquals('postgres', $driver->get_type());
-		}
-		else
-		{
-			$this->assertEquals('mysql', $driver->get_type());
-		}
-	}
-
-	public function test_is_supported()
-	{
-		$this->assertTrue($this->get_driver()->is_supported(), 'Fulltext support failed.');
-	}
-
-	public function test_index()
-	{
-		$driver = $this->get_driver();
-
-		$field = 'topic_title';
-
-		// Check that the topic_title is NOT a fulltext index
-		$this->assertFalse($driver->is_index($field));
-
-		// Make topic_title a fulltext index
-		$driver->create_fulltext_index($field);
-
-		// No check that the topic_title is a fulltext index
-		$this->assertTrue($driver->is_index($field));
+		$this->assertSame(0, strpos($this->db->get_sql_layer(), $this->get_driver()->get_type()));
 	}
 
 	public function test_get_query()
@@ -129,5 +104,26 @@ class driver_test extends \phpbb_database_test_case
 		$this->assertArrayHasKey('FROM', $sql);
 		$this->assertArrayHasKey('LEFT_JOIN', $sql);
 		$this->assertEquals($where, preg_replace('#\s\s+#', ' ', $sql['WHERE']));
+	}
+
+	public function test_is_supported()
+	{
+		$this->assertTrue($this->get_driver()->is_supported(), 'Fulltext support failed.');
+	}
+
+	public function test_index()
+	{
+		$driver = $this->get_driver();
+
+		$column = 'topic_title';
+
+		// Check that the topic_title is NOT a fulltext index
+		$this->assertFalse($driver->is_index($column));
+
+		// Make topic_title a fulltext index
+		$driver->create_fulltext_index($column);
+
+		// No check that the topic_title is a fulltext index
+		$this->assertTrue($driver->is_index($column));
 	}
 }

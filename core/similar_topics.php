@@ -110,7 +110,7 @@ class similar_topics
 	}
 
 	/**
-	 * Is similar topics viewable bu the user?
+	 * Is similar topics viewable by the user?
 	 *
 	 * @access public
 	 * @return bool True if viewable, false otherwise

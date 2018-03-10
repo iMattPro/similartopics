@@ -42,30 +42,32 @@ class mysql_index extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Add a MYSQLI FULLTEXT index to phpbb_topics.topic_title
+	 * Add a MYSQLI FULLTEXT index to phpbb_topics.topic_title (if needed).
 	 *
-	 * This is a retry if the same action in release_1_1_0_data failed.
-	 * The first attempt could fail if the table was InnoDB and not
-	 * supporting FULLTEXT, in which case we will convert the table to
+	 * This is a retry of the similar action in release_1_1_0_data.
+	 * The first attempt could miss older InnoDB tables that do not support
+	 * FULLTEXT. If that happened, then this will convert the table to
 	 * MyISAM so we can then create the fulltext index. The old storage
 	 * engine will be stored so it can be reverted on uninstall.
-	 * Data is reverted in release_1_3_0_fulltext.
+	 * Data is reverted in the release_1_3_0_fulltext migration.
 	 */
 	public function add_topic_title_fulltext()
 	{
 		$driver = $this->get_driver();
 
-		if ($driver->get_type() === 'mysql' && !$driver->is_index('topic_title'))
+		if ($driver->is_supported() && $driver->is_index('topic_title'))
 		{
-			// Store the original database storage engine in a config var for recovery on uninstall
-			$this->config->set('similar_topics_fulltext', (string) $driver->get_engine());
-
-			// Alter the storage engine to support FULLTEXT
-			$driver->alter_engine('MYISAM');
-
-			// Create the FULLTEXT index
-			$driver->create_fulltext_index('topic_title');
+			return; // topic title is already a full text index
 		}
+
+		// Store the original database storage engine in a config var for recovery on uninstall
+		$this->config->set('similar_topics_fulltext', (string) $driver->get_engine());
+
+		// Alter the storage engine to support FULLTEXT
+		$driver->alter_engine('MYISAM');
+
+		// Create the FULLTEXT index
+		$driver->create_fulltext_index('topic_title');
 	}
 
 	/**

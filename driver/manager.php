@@ -30,14 +30,15 @@ class manager
 	}
 
 	/**
-	 * Get the driver object specified by the database sql layer
+	 * Get the driver object specified by the database sql layer. Drivers
+	 * will only be loaded for database that support fulltext indexes.
 	 *
 	 * @param string $sql_layer The database sql layer
 	 * @return \vse\similartopics\driver\driver_interface Similar topics driver
 	 */
 	public function get_driver($sql_layer)
 	{
-		if (isset($this->similartopics_drivers[$sql_layer]))
+		if (isset($this->similartopics_drivers[$sql_layer]) && $this->similartopics_drivers[$sql_layer]->is_supported())
 		{
 			return $this->similartopics_drivers[$sql_layer];
 		}

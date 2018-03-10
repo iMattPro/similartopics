@@ -170,17 +170,17 @@ class similar_topics_module
 					$this->config->set('similar_topics_type', $pst_time_type);
 					$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
+					// Set checkbox array form data
+					$this->update_forum('similar_topics_hide', $this->request->variable('mark_noshow_forum', array(0), true));
+					$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
+
 					// Set PostgreSQL TS Name
-					if ($this->driver->get_type() === 'postgres')
+					if ($this->driver && $this->driver->get_type() === 'postgres')
 					{
 						$ts_name = $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
 						$this->config->set('pst_postgres_ts_name', $ts_name);
 						$this->driver->set_ts_name($ts_name)->create_fulltext_index('topic_title');
 					}
-
-					// Set checkbox array form data
-					$this->update_forum('similar_topics_hide', $this->request->variable('mark_noshow_forum', array(0), true));
-					$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
@@ -212,12 +212,12 @@ class similar_topics_module
 					'PST_SENSE'			=> $this->isset_or_default($this->config['similar_topics_sense'], ''),
 					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
-					'S_PST_NO_COMPAT'	=> $this->driver === null || !$this->fulltext_support_enabled(),
+					'S_PST_NO_COMPAT'	=> $this->driver === null || !$this->driver->is_index('topic_title'),
 					'U_ACTION'			=> $this->u_action,
 				));
 
 				// If postgresql, we need to make an options list of text search names
-				if ($this->driver->get_type() === 'postgres')
+				if ($this->driver && $this->driver->get_type() === 'postgres')
 				{
 					$this->user->add_lang('acp/search');
 					foreach ($this->driver->get_cfgname_list() as $row)
@@ -330,22 +330,6 @@ class similar_topics_module
 	protected function get_pst_time($time, $type = '')
 	{
 		return isset($this->times[$type]) ? (int) round($time / $this->times[$type]) : 0;
-	}
-
-	/**
-	 * Check for FULLTEXT index support
-	 *
-	 * @access protected
-	 * @return bool True if FULLTEXT is fully supported, false otherwise
-	 */
-	protected function fulltext_support_enabled()
-	{
-		if ($this->driver->is_supported())
-		{
-			return $this->driver->is_index('topic_title');
-		}
-
-		return false;
 	}
 
 	/**

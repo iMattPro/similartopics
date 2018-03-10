@@ -15,6 +15,6 @@ class ext extends \phpbb\extension\base
 	public function is_enableable()
 	{
 		$db = $this->container->get('dbal.conn');
-		return ($db->get_sql_layer() === 'mysql4' || $db->get_sql_layer() === 'mysqli' || $db->get_sql_layer() === 'postgres');
+		return in_array($db->get_sql_layer(), array('mysql', 'mysqli', 'mysql4', 'postgres'));
 	}
 }
