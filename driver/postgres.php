@@ -56,7 +56,7 @@ class postgres implements driver_interface
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
-				ts_rank_cd(to_tsvector('$ts_name', t.topic_title), '$ts_query_text', 32) AS score",
+				ts_rank_cd(to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_query_text'), 32) AS score",
 
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
@@ -67,7 +67,7 @@ class postgres implements driver_interface
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-			'WHERE'		=> "ts_rank_cd(to_tsvector('$ts_name', t.topic_title), '$ts_query_text', 32) >= " . (float) $sensitivity . '
+			'WHERE'		=> "ts_rank_cd(to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_query_text'), 32) >= " . (float) $sensitivity . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_time > (extract(epoch from current_timestamp)::integer - ' . (int) $length . ')
