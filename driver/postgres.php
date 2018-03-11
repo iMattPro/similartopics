@@ -15,6 +15,9 @@ class postgres implements driver_interface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\config\config */
+	protected $config;
+
 	/** @var string */
 	protected $ts_name;
 
@@ -27,6 +30,8 @@ class postgres implements driver_interface
 	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config)
 	{
 		$this->db = $db;
+		$this->config = $config;
+
 		$this->set_ts_name($config['pst_postgres_ts_name']);
 	}
 
@@ -51,8 +56,8 @@ class postgres implements driver_interface
 	 */
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
-		$ts_query_text = $this->db->sql_escape(str_replace(' ', '|', $topic_title));
 		$ts_name = $this->db->sql_escape($this->ts_name);
+		$ts_query_text = $this->db->sql_escape(str_replace(' ', '|', $topic_title));
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
@@ -89,18 +94,46 @@ class postgres implements driver_interface
 	 */
 	public function is_index($column = 'topic_title')
 	{
-		$is_index = false;
-
-		foreach ($this->get_pg_indexes($column) as $index)
+		foreach ($this->get_fulltext_indexes($column) as $index)
 		{
 			if ($index === TOPICS_TABLE . '_' . $this->ts_name . '_' . $column)
 			{
-				$is_index = true;
-				break;
+				return true;
 			}
 		}
 
-		return $is_index;
+		return false;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_fulltext_indexes($column = 'topic_title')
+	{
+		$indexes = array();
+
+		if (!$this->is_supported())
+		{
+			return $indexes;
+		}
+
+		$sql = "SELECT c2.relname, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true) AS indexdef
+			FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2
+			WHERE c1.relname = '" . TOPICS_TABLE . "'
+				AND pg_catalog.pg_table_is_visible(c1.oid)
+				AND c1.oid = i.indrelid
+				AND i.indexrelid = c2.oid";
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			if (strpos($row['relname'], $column) !== false)
+			{
+				$indexes[] = $row['relname'];
+			}
+		}
+		$this->db->sql_freeresult($result);
+
+		return $indexes;
 	}
 
 	/**
@@ -108,11 +141,14 @@ class postgres implements driver_interface
 	 */
 	public function create_fulltext_index($column = 'topic_title')
 	{
+		// Make sure ts_name is current
+		$this->set_ts_name($this->config['pst_postgres_ts_name']);
+
 		$new_index = TOPICS_TABLE . '_' . $this->ts_name . '_' . $column;
 
 		$indexed = false;
 
-		foreach ($this->get_pg_indexes() as $index)
+		foreach ($this->get_fulltext_indexes() as $index)
 		{
 			if ($index === $new_index)
 			{
@@ -135,66 +171,20 @@ class postgres implements driver_interface
 	}
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function get_engine()
+	{
+		return '';
+	}
+
+	/**
 	 * Set the PostgreSQL Text Search name (dictionary)
 	 *
 	 * @param string $ts_name Dictionary name
-	 * @return \vse\similartopics\driver\postgres
 	 */
-	public function set_ts_name($ts_name)
+	protected function set_ts_name($ts_name)
 	{
 		$this->ts_name = $ts_name ?: 'simple';
-
-		return $this;
-	}
-
-	/**
-	 * get all PostgreSQL FULLTEXT indexes on field in topics table
-	 *
-	 * @access public
-	 * @param string $column name of a field
-	 * @return array contains index names
-	 */
-	public function get_pg_indexes($column = 'topic_title')
-	{
-		$indexes = array();
-
-		if (!$this->is_supported())
-		{
-			return $indexes;
-		}
-
-		$sql = "SELECT c2.relname, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true) AS indexdef
-			FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2
-			WHERE c1.relname = '" . TOPICS_TABLE . "'
-				AND pg_catalog.pg_table_is_visible(c1.oid)
-				AND c1.oid = i.indrelid
-				AND i.indexrelid = c2.oid";
-		$result = $this->db->sql_query($sql);
-
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			if (strpos($row['relname'], $column) !== false)
-			{
-				$indexes[] = $row['relname'];
-			}
-		}
-		$this->db->sql_freeresult($result);
-
-		return $indexes;
-	}
-
-	/**
-	 * Get list of PostgreSQL text search names
-	 *
-	 * @return array array of text search names
-	 */
-	public function get_cfgname_list()
-	{
-		$sql = 'SELECT cfgname AS ts_name FROM pg_ts_config';
-		$result = $this->db->sql_query($sql);
-		$ts_options = $this->db->sql_fetchrowset($result);
-		$this->db->sql_freeresult($result);
-
-		return $ts_options;
 	}
 }

@@ -30,12 +30,12 @@ class postgres_index extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
+			array('config.update', array('similar_topics_sense', 1)),
+			array('config.add', array('pst_postgres_ts_name', $this->get_ts_name())),
 			array('if', array(
 				$this->db->get_sql_layer() === 'postgres',
 				array('custom', array(array($this, 'create_postgres_index'))),
 			)),
-			array('config.update', array('similar_topics_sense', 1)),
-			array('config.add', array('pst_postgres_ts_name', $this->get_ts_name())),
 		);
 	}
 
@@ -55,8 +55,7 @@ class postgres_index extends \phpbb\db\migration\migration
 	public function create_postgres_index()
 	{
 		$driver = $this->get_driver();
-		$driver->set_ts_name($this->get_ts_name())
-			->create_fulltext_index();
+		$driver->create_fulltext_index();
 	}
 
 	/**
@@ -66,7 +65,7 @@ class postgres_index extends \phpbb\db\migration\migration
 	{
 		$driver = $this->get_driver();
 
-		foreach ($driver->get_pg_indexes() as $index)
+		foreach ($driver->get_fulltext_indexes() as $index)
 		{
 			$sql = 'DROP INDEX ' . $index;
 			$this->db->sql_query($sql);

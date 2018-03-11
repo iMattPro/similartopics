@@ -46,20 +46,37 @@ interface driver_interface
 	public function is_supported();
 
 	/**
-	 * Check if a field is a FULLTEXT index
+	 * Check if a column is a FULLTEXT index in topics table
 	 *
 	 * @access public
-	 * @param string $column Name of the field
-	 * @return bool True if field is a FULLTEXT index, false otherwise
+	 * @param string $column Name of the column
+	 * @return bool True if column is a FULLTEXT index, false otherwise
 	 */
 	public function is_index($column = 'topic_title');
 
 	/**
-	 * Make a field into a FULLTEXT index
+	 * Get all FULLTEXT indexes for a column in topics table
 	 *
 	 * @access public
-	 * @param string $column Name of the field
+	 * @param string $column name of a column
+	 * @return array contains index names
+	 */
+	public function get_fulltext_indexes($column = 'topic_title');
+
+	/**
+	 * Make a column into a FULLTEXT index in topics table
+	 *
+	 * @access public
+	 * @param string $column Name of the column
 	 * @return void
 	 */
 	public function create_fulltext_index($column = 'topic_title');
+
+	/**
+	 * Get the database storage engine name
+	 *
+	 * @access public
+	 * @return string The storage engine name
+	 */
+	public function get_engine();
 }

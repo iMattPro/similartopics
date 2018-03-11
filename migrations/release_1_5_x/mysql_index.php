@@ -63,9 +63,6 @@ class mysql_index extends \phpbb\db\migration\migration
 		// Store the original database storage engine in a config var for recovery on uninstall
 		$this->config->set('similar_topics_fulltext', (string) $driver->get_engine());
 
-		// Alter the storage engine to support FULLTEXT
-		$driver->alter_engine('MYISAM');
-
 		// Create the FULLTEXT index
 		$driver->create_fulltext_index('topic_title');
 	}

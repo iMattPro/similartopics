@@ -85,7 +85,28 @@ class mysqli implements driver_interface
 	 */
 	public function is_index($column = 'topic_title')
 	{
-		$is_index = false;
+		foreach ($this->get_fulltext_indexes($column) as $index)
+		{
+			if ($index === $column)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_fulltext_indexes($column = 'topic_title')
+	{
+		$indexes = array();
+
+		if (!$this->is_supported())
+		{
+			return $indexes;
+		}
 
 		$sql = 'SHOW INDEX
 			FROM ' . TOPICS_TABLE;
@@ -98,14 +119,13 @@ class mysqli implements driver_interface
 
 			if ($index_type === 'FULLTEXT' && $row['Key_name'] === $column)
 			{
-				$is_index = true;
-				break;
+				$indexes[] = $row['Key_name'];
 			}
 		}
 
 		$this->db->sql_freeresult($result);
 
-		return $is_index;
+		return $indexes;
 	}
 
 	/**
@@ -115,16 +135,21 @@ class mysqli implements driver_interface
 	{
 		if (!$this->is_index($column))
 		{
+			// First see if we need to update the table engine to support fulltext indexes
+			if (!$this->is_supported())
+			{
+				$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = ' . $this->db->sql_escape(strtoupper('MYISAM'));
+				$this->db->sql_query($sql);
+				$this->set_engine();
+			}
+
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (' . $column . ')';
 			$this->db->sql_query($sql);
 		}
 	}
 
 	/**
-	 * Get the database storage engine name
-	 *
-	 * @access public
-	 * @return string The storage engine name
+	 * {@inheritdoc}
 	 */
 	public function get_engine()
 	{
@@ -134,10 +159,10 @@ class mysqli implements driver_interface
 	/**
 	 * Set the database storage engine name
 	 *
-	 * @access public
+	 * @access protected
 	 * @return string The storage engine name
 	 */
-	public function set_engine()
+	protected function set_engine()
 	{
 		$this->engine = '';
 
@@ -157,20 +182,6 @@ class mysqli implements driver_interface
 		}
 
 		return $this->engine;
-	}
-
-	/**
-	 * Alter the database storage engine
-	 *
-	 * @access public
-	 * @param string $engine The storage engine, i.e.: MYISAM|INNODB
-	 * @return void
-	 */
-	public function alter_engine($engine = 'MYISAM')
-	{
-		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = ' . $this->db->sql_escape(strtoupper($engine));
-		$this->db->sql_query($sql);
-		$this->set_engine();
 	}
 
 	/**

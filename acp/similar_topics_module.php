@@ -179,7 +179,7 @@ class similar_topics_module
 					{
 						$ts_name = $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
 						$this->config->set('pst_postgres_ts_name', $ts_name);
-						$this->driver->set_ts_name($ts_name)->create_fulltext_index('topic_title');
+						$this->driver->create_fulltext_index('topic_title');
 					}
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
@@ -220,7 +220,7 @@ class similar_topics_module
 				if ($this->driver && $this->driver->get_type() === 'postgres')
 				{
 					$this->user->add_lang('acp/search');
-					foreach ($this->driver->get_cfgname_list() as $row)
+					foreach ($this->get_cfgname_list() as $row)
 					{
 						$this->template->assign_block_vars('postgres_ts_names', array(
 							'NAME'			=> $row['ts_name'],
@@ -258,6 +258,21 @@ class similar_topics_module
 		{
 			$this->end('FORM_INVALID', E_USER_WARNING);
 		}
+	}
+
+	/**
+	 * Get list of PostgreSQL text search names
+	 *
+	 * @return array array of text search names
+	 */
+	protected function get_cfgname_list()
+	{
+		$sql = 'SELECT cfgname AS ts_name FROM pg_ts_config';
+		$result = $this->db->sql_query($sql);
+		$ts_options = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		return $ts_options;
 	}
 
 	/**
