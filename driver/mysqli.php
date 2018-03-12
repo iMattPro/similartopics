@@ -19,7 +19,7 @@ class mysqli implements driver_interface
 	protected $engine;
 
 	/**
-	 * mysql constructor.
+	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
 	 */

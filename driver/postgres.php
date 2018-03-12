@@ -22,7 +22,7 @@ class postgres implements driver_interface
 	protected $ts_name;
 
 	/**
-	 * mysql constructor.
+	 * Cnstructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
 	 * @param \phpbb\config\config              $config

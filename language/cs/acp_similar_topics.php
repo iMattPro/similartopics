@@ -71,6 +71,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Zde můžete uvést seznam slov, u kterých si přejete, aby se při vyhledávání podobných témat ignorovala. (Pozn.: Slova, která jsou ve vašem jazyce považována za běžná, uvádět nemusíte (jsou ignorována automaticky). Jednotlivá slova oddělte mezerou. Nezáleží na velikosti písmen. Maximální délka 255 znaků.',
 	'PST_SAVED'			=> 'Nastavení podobných témat bylo úspěšně změněno',
 	'PST_FORUM_INFO'	=> '“Nezobrazovat”: Nebude ve vybraných fórech zobrazovat podobná témata.<br />“Nevyhledávat” : Ve vybraných fórech se nebudou vyhledávat podobná témata.',
-	' أو MySQL 5'		=> 'Podobná témata nejsou kompatibilní s vašim fórem. Jsou vyžadovány technologie MySQL 4 nebo MySQL 5 nebo PostgreSQL.',
+	'PST_NO_COMPAT'		=> 'Podobná témata nejsou kompatibilní s vašim fórem. Jsou vyžadovány technologie MySQL 4 nebo MySQL 5 nebo PostgreSQL.',
 	'PST_ERR_CONFIG'	=> 'Z hledání/zobrazení bylo vyřazeno příliš mnoho sekcí. Snižte prosím počet vybraných sekcí.',
 ));
