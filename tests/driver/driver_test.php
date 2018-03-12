@@ -40,7 +40,6 @@ class driver_test extends \phpbb_database_test_case
 		$drivers = array(
 			'postgres',
 			'mysql4',
-			'mysql',
 			'mysqli',
 		);
 		$services = array();

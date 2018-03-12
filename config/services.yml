@@ -64,12 +64,6 @@ services:
 
     vse.similartopics.driver.mysql4:
         class: vse\similartopics\driver\mysql4
-        parent: vse.similartopics.driver.mysql
-        tags:
-            - { name: vse.similartopcs.driver }
-
-    vse.similartopics.driver.mysql:
-        class: vse\similartopics\driver\mysql
         parent: vse.similartopics.driver.mysqli
         tags:
             - { name: vse.similartopcs.driver }

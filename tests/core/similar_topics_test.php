@@ -270,7 +270,7 @@ class similar_topics_test extends \phpbb_test_case
 		$this->manager->expects($this->any())
 			->method('get_driver')
 			->with($sql_layer)
-			->will($this->returnValue((in_array($sql_layer, array('mysqli', 'mysql', 'mysql4', 'postgres')) ? $this->driver : null)));
+			->will($this->returnValue((in_array($sql_layer, array('mysqli', 'mysql4', 'postgres')) ? $this->driver : null)));
 
 		$similar_topics = $this->get_similar_topics();
 
