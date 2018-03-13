@@ -55,14 +55,14 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Add a MYSQLI FULLTEXT index to phpbb_topics.topic_title
+	 * Add a FULLTEXT index to phpbb_topics.topic_title
 	 */
 	public function add_topic_title_fulltext()
 	{
-		$driver = $this->get_driver();
+		$fulltext = $this->get_fulltext();
 
 		// FULLTEXT is supported and topic_title IS NOT an index
-		if ($driver->is_supported() && !$driver->is_fulltext('topic_title'))
+		if ($fulltext->is_supported() && !$fulltext->is_index('topic_title'))
 		{
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
 			$this->db->sql_query($sql);
@@ -70,14 +70,14 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Drop the MYSQLI FULLTEXT index on phpbb_topics.topic_title
+	 * Drop the FULLTEXT index on phpbb_topics.topic_title
 	 */
 	public function drop_topic_title_fulltext()
 	{
-		$driver = $this->get_driver();
+		$fulltext = $this->get_fulltext();
 
 		// FULLTEXT is supported and topic_title IS an index
-		if ($driver->is_supported() && $driver->is_fulltext('topic_title'))
+		if ($fulltext->is_supported() && $fulltext->is_index('topic_title'))
 		{
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
 			$this->db->sql_query($sql);
@@ -85,12 +85,12 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Get an instance of the similartopics MYSQLI driver
+	 * Get an instance of the fulltext class
 	 *
-	 * @return \vse\similartopics\driver\mysqli
+	 * @return \vse\similartopics\core\fulltext_support
 	 */
-	public function get_driver()
+	public function get_fulltext()
 	{
-		return new \vse\similartopics\driver\mysqli($this->db);
+		return new \vse\similartopics\core\fulltext_support($this->db);
 	}
 }
