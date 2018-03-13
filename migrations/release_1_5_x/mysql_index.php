@@ -55,7 +55,7 @@ class mysql_index extends \phpbb\db\migration\migration
 	{
 		$driver = $this->get_driver();
 
-		if ($driver->is_supported() && $driver->is_index('topic_title'))
+		if ($driver->is_supported() && $driver->is_fulltext('topic_title'))
 		{
 			return; // topic title is already a full text index
 		}

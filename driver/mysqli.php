@@ -83,7 +83,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_index($column = 'topic_title')
+	public function is_fulltext($column = 'topic_title')
 	{
 		foreach ($this->get_fulltext_indexes($column) as $index)
 		{
@@ -133,7 +133,7 @@ class mysqli implements driver_interface
 	 */
 	public function create_fulltext_index($column = 'topic_title')
 	{
-		if (!$this->is_index($column))
+		if (!$this->is_fulltext($column))
 		{
 			// First see if we need to update the table engine to support fulltext indexes
 			if (!$this->is_supported())

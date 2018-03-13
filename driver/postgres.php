@@ -92,7 +92,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_index($column = 'topic_title')
+	public function is_fulltext($column = 'topic_title')
 	{
 		foreach ($this->get_fulltext_indexes($column) as $index)
 		{

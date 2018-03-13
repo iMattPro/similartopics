@@ -52,7 +52,7 @@ interface driver_interface
 	 * @param string $column Name of the column
 	 * @return bool True if column is a FULLTEXT index, false otherwise
 	 */
-	public function is_index($column = 'topic_title');
+	public function is_fulltext($column = 'topic_title');
 
 	/**
 	 * Get all FULLTEXT indexes for a column in topics table

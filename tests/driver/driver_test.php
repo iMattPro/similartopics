@@ -117,12 +117,12 @@ class driver_test extends \phpbb_database_test_case
 		$column = 'topic_title';
 
 		// Check that the topic_title is NOT a fulltext index
-		$this->assertFalse($driver->is_index($column));
+		$this->assertFalse($driver->is_fulltext($column));
 
 		// Make topic_title a fulltext index
 		$driver->create_fulltext_index($column);
 
 		// No check that the topic_title is a fulltext index
-		$this->assertTrue($driver->is_index($column));
+		$this->assertTrue($driver->is_fulltext($column));
 	}
 }

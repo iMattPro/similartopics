@@ -62,7 +62,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 		$driver = $this->get_driver();
 
 		// FULLTEXT is supported and topic_title IS NOT an index
-		if ($driver->is_supported() && !$driver->is_index('topic_title'))
+		if ($driver->is_supported() && !$driver->is_fulltext('topic_title'))
 		{
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
 			$this->db->sql_query($sql);
@@ -77,7 +77,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 		$driver = $this->get_driver();
 
 		// FULLTEXT is supported and topic_title IS an index
-		if ($driver->is_supported() && $driver->is_index('topic_title'))
+		if ($driver->is_supported() && $driver->is_fulltext('topic_title'))
 		{
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
 			$this->db->sql_query($sql);

@@ -48,7 +48,7 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 		$driver = new \vse\similartopics\driver\mysqli($this->db);
 
 		// Drop the FULLTEXT index
-		if ($driver->is_index('topic_title'))
+		if ($driver->is_fulltext('topic_title'))
 		{
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
 			$this->db->sql_query($sql);

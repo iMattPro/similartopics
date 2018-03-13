@@ -212,7 +212,7 @@ class similar_topics_module
 					'PST_SENSE'			=> $this->isset_or_default($this->config['similar_topics_sense'], ''),
 					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
-					'S_PST_NO_COMPAT'	=> $this->driver === null || !$this->driver->is_index('topic_title'),
+					'S_PST_NO_COMPAT'	=> $this->driver === null || !$this->driver->is_fulltext('topic_title'),
 					'U_ACTION'			=> $this->u_action,
 				));
 
