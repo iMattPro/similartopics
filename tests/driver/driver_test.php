@@ -90,8 +90,8 @@ class driver_test extends \phpbb_database_test_case
 
 		if ($this->db->get_sql_layer() === 'postgres')
 		{
-			$select = "f.forum_id, f.forum_name, t.*, ts_rank_cd(to_tsvector('simple', t.topic_title), to_tsquery('foo|bar'), 32) AS score";
-			$where = "ts_rank_cd(to_tsvector('simple', t.topic_title), to_tsquery('foo|bar'), 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (extract(epoch from current_timestamp)::integer - 0) AND t.topic_id <> 1";
+			$select = "f.forum_id, f.forum_name, t.*, ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) AS score";
+			$where = "to_tsquery('simple', 'foo|bar') @@ to_tsvector('simple', t.topic_title) AND ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (extract(epoch from current_timestamp)::integer - 0) AND t.topic_id <> 1";
 		}
 		else
 		{

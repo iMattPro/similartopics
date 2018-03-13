@@ -30,7 +30,6 @@ class postgres_index extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('config.update', array('similar_topics_sense', 1)),
 			array('config.add', array('pst_postgres_ts_name', $this->get_ts_name())),
 			array('if', array(
 				$this->db->get_sql_layer() === 'postgres',

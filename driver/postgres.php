@@ -57,11 +57,11 @@ class postgres implements driver_interface
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
 		$ts_name = $this->db->sql_escape($this->ts_name);
-		$ts_query_text = $this->db->sql_escape(str_replace(' ', '|', $topic_title));
+		$ts_query_text = $this->db->sql_escape(preg_replace('/\s+/', '|', $topic_title));
+		$ts_rank_cd = "ts_rank_cd('{1,1,1,1}', to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_name', '$ts_query_text'), 32)";
 
 		return array(
-			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
-				ts_rank_cd(to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_query_text'), 32) AS score",
+			'SELECT'	=> "f.forum_id, f.forum_name, t.*, $ts_rank_cd AS score",
 
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
@@ -72,7 +72,7 @@ class postgres implements driver_interface
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-			'WHERE'		=> "ts_rank_cd(to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_query_text'), 32) >= " . (float) $sensitivity . '
+			'WHERE'		=> "to_tsquery('$ts_name', '$ts_query_text') @@ to_tsvector('$ts_name', t.topic_title) AND $ts_rank_cd >= " . (float) $sensitivity . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_time > (extract(epoch from current_timestamp)::integer - ' . (int) $length . ')
@@ -117,9 +117,10 @@ class postgres implements driver_interface
 			return $indexes;
 		}
 
-		$sql = "SELECT c2.relname, pg_catalog.pg_get_indexdef(i.indexrelid, 0, true) AS indexdef
+		$sql = "SELECT c2.relname
 			FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2
 			WHERE c1.relname = '" . TOPICS_TABLE . "'
+				AND position('to_tsvector' in pg_catalog.pg_get_indexdef(i.indexrelid, 0, true)) > 0
 				AND pg_catalog.pg_table_is_visible(c1.oid)
 				AND c1.oid = i.indrelid
 				AND i.indexrelid = c2.oid";
