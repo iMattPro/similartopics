@@ -250,6 +250,36 @@ class similar_topics_test extends \phpbb_test_case
 				'',
 				false,
 			),
+			array(
+				array(
+					'similar_topics' => true,
+					'similar_topics_limit' => true,
+				),
+				array('user_similar_topics' => true),
+				array('u_similar_topics', 0, true),
+				'postgres',
+				true,
+			),
+			array(
+				array(
+					'similar_topics' => true,
+					'similar_topics_limit' => true,
+				),
+				array('user_similar_topics' => true),
+				array('u_similar_topics', 0, true),
+				'sqlite',
+				false,
+			),
+			array(
+				array(
+					'similar_topics' => true,
+					'similar_topics_limit' => true,
+				),
+				array('user_similar_topics' => true),
+				array('u_similar_topics', 0, true),
+				'sqlite3',
+				false,
+			),
 		);
 	}
 

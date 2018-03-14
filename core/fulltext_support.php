@@ -25,6 +25,6 @@ class fulltext_support extends \vse\similartopics\driver\mysqli
 	 */
 	public function is_index($column = 'topic_title')
 	{
-		return $this->is_fulltext($column);
+		return $this->is_fulltext($column, TOPICS_TABLE);
 	}
 }

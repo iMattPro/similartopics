@@ -83,9 +83,9 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_fulltext($column = 'topic_title')
+	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		foreach ($this->get_fulltext_indexes($column) as $index)
+		foreach ($this->get_fulltext_indexes($column, $table) as $index)
 		{
 			if ($index === $column)
 			{
@@ -99,7 +99,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_fulltext_indexes($column = 'topic_title')
+	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
 	{
 		$indexes = array();
 
@@ -109,7 +109,7 @@ class mysqli implements driver_interface
 		}
 
 		$sql = 'SHOW INDEX
-			FROM ' . TOPICS_TABLE;
+			FROM ' . $this->db->sql_escape($table);
 		$result = $this->db->sql_query($sql);
 
 		while ($row = $this->db->sql_fetchrow($result))
@@ -131,19 +131,20 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($column = 'topic_title')
+	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		if (!$this->is_fulltext($column))
+		if (!$this->is_fulltext($column, $table))
 		{
 			// First see if we need to update the table engine to support fulltext indexes
 			if (!$this->is_supported())
 			{
-				$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = ' . $this->db->sql_escape(strtoupper('MYISAM'));
+				$sql = 'ALTER TABLE ' . $this->db->sql_escape($table) . ' ENGINE = MYISAM';
 				$this->db->sql_query($sql);
 				$this->set_engine();
 			}
 
-			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (' . $column . ')';
+			$sql = 'ALTER TABLE ' . $this->db->sql_escape($table) . ' 
+				ADD FULLTEXT (' . $this->db->sql_escape($column) . ')';
 			$this->db->sql_query($sql);
 		}
 	}
@@ -188,11 +189,12 @@ class mysqli implements driver_interface
 	 * Get topics table information
 	 *
 	 * @access protected
+	 * @param string $table Name of the table
 	 * @return mixed Array with the table info, false if the table does not exist
 	 */
-	protected function get_table_info()
+	protected function get_table_info($table = TOPICS_TABLE)
 	{
-		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . TOPICS_TABLE . '\'');
+		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . $this->db->sql_escape($table) . '\'');
 		$info = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 

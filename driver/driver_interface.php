@@ -50,27 +50,30 @@ interface driver_interface
 	 *
 	 * @access public
 	 * @param string $column Name of the column
+	 * @param string $table  Name of the table
 	 * @return bool True if column is a FULLTEXT index, false otherwise
 	 */
-	public function is_fulltext($column = 'topic_title');
+	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE);
 
 	/**
 	 * Get all FULLTEXT indexes for a column in topics table
 	 *
 	 * @access public
-	 * @param string $column name of a column
+	 * @param string $column Name of the column
+	 * @param string $table  Name of the table
 	 * @return array contains index names
 	 */
-	public function get_fulltext_indexes($column = 'topic_title');
+	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE);
 
 	/**
 	 * Make a column into a FULLTEXT index in topics table
 	 *
 	 * @access public
 	 * @param string $column Name of the column
+	 * @param string $table  Name of the table
 	 * @return void
 	 */
-	public function create_fulltext_index($column = 'topic_title');
+	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
 
 	/**
 	 * Get the database storage engine name

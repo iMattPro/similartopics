@@ -92,11 +92,11 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_fulltext($column = 'topic_title')
+	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		foreach ($this->get_fulltext_indexes($column) as $index)
+		foreach ($this->get_fulltext_indexes($column, $table) as $index)
 		{
-			if ($index === TOPICS_TABLE . '_' . $this->ts_name . '_' . $column)
+			if ($index === $table . '_' . $this->ts_name . '_' . $column)
 			{
 				return true;
 			}
@@ -108,7 +108,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_fulltext_indexes($column = 'topic_title')
+	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
 	{
 		$indexes = array();
 
@@ -119,7 +119,7 @@ class postgres implements driver_interface
 
 		$sql = "SELECT c2.relname
 			FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2
-			WHERE c1.relname = '" . TOPICS_TABLE . "'
+			WHERE c1.relname = '" . $this->db->sql_escape($table) . "'
 				AND position('to_tsvector' in pg_catalog.pg_get_indexdef(i.indexrelid, 0, true)) > 0
 				AND pg_catalog.pg_table_is_visible(c1.oid)
 				AND c1.oid = i.indrelid
@@ -140,16 +140,16 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($column = 'topic_title')
+	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
 	{
 		// Make sure ts_name is current
 		$this->set_ts_name($this->config['pst_postgres_ts_name']);
 
-		$new_index = TOPICS_TABLE . '_' . $this->ts_name . '_' . $column;
+		$new_index = $table . '_' . $this->ts_name . '_' . $column;
 
 		$indexed = false;
 
-		foreach ($this->get_fulltext_indexes() as $index)
+		foreach ($this->get_fulltext_indexes($column, $table) as $index)
 		{
 			if ($index === $new_index)
 			{
@@ -165,7 +165,7 @@ class postgres implements driver_interface
 		if (!$indexed)
 		{
 			$sql = 'CREATE INDEX ' . $this->db->sql_escape($new_index) . ' 
-				ON '  . TOPICS_TABLE . " 
+				ON '  . $this->db->sql_escape($table) . " 
 				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->db->sql_escape($column) . '))';
 			$this->db->sql_query($sql);
 		}

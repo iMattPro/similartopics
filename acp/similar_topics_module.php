@@ -24,14 +24,14 @@ class similar_topics_module
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
-	/** @var \vse\similartopics\driver\mysqli|\vse\similartopics\driver\postgres */
-	protected $driver;
-
 	/** @var \phpbb\log\log */
 	protected $log;
 
 	/** @var \phpbb\request\request */
 	protected $request;
+
+	/** @var \vse\similartopics\driver\driver_interface */
+	protected $similartopics;
 
 	/** @var \phpbb\template\template */
 	protected $template;
@@ -66,17 +66,17 @@ class similar_topics_module
 	{
 		global $phpbb_container;
 
-		$this->cache     = $phpbb_container->get('cache');
-		$this->config    = $phpbb_container->get('config');
-		$this->db        = $phpbb_container->get('dbal.conn');
-		$this->driver    = $phpbb_container->get('vse.similartopics.driver.manager')->get_driver($this->db->get_sql_layer());
-		$this->log       = $phpbb_container->get('log');
-		$this->request   = $phpbb_container->get('request');
-		$this->template  = $phpbb_container->get('template');
-		$this->user      = $phpbb_container->get('user');
-		$this->root_path = $phpbb_container->getParameter('core.root_path');
-		$this->php_ext   = $phpbb_container->getParameter('core.php_ext');
-		$this->times     = array(
+		$this->cache         = $phpbb_container->get('cache');
+		$this->config        = $phpbb_container->get('config');
+		$this->db            = $phpbb_container->get('dbal.conn');
+		$this->similartopics = $phpbb_container->get('vse.similartopics.driver.manager')->get_driver($this->db->get_sql_layer());
+		$this->log           = $phpbb_container->get('log');
+		$this->request       = $phpbb_container->get('request');
+		$this->template      = $phpbb_container->get('template');
+		$this->user          = $phpbb_container->get('user');
+		$this->root_path     = $phpbb_container->getParameter('core.root_path');
+		$this->php_ext       = $phpbb_container->getParameter('core.php_ext');
+		$this->times         = array(
 			'd' => 86400, // one day
 			'w' => 604800, // one week
 			'm' => 2626560, // one month
@@ -175,11 +175,11 @@ class similar_topics_module
 					$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
 
 					// Set PostgreSQL TS Name
-					if ($this->driver && $this->driver->get_type() === 'postgres')
+					if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
 					{
 						$ts_name = $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
 						$this->config->set('pst_postgres_ts_name', $ts_name);
-						$this->driver->create_fulltext_index('topic_title');
+						$this->similartopics->create_fulltext_index('topic_title');
 					}
 
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
@@ -212,12 +212,12 @@ class similar_topics_module
 					'PST_SENSE'			=> $this->isset_or_default($this->config['similar_topics_sense'], ''),
 					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
-					'S_PST_NO_COMPAT'	=> $this->driver === null || !$this->driver->is_fulltext('topic_title'),
+					'S_PST_NO_COMPAT'	=> $this->similartopics === null || !$this->similartopics->is_fulltext('topic_title'),
 					'U_ACTION'			=> $this->u_action,
 				));
 
 				// If postgresql, we need to make an options list of text search names
-				if ($this->driver && $this->driver->get_type() === 'postgres')
+				if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
 				{
 					$this->user->add_lang('acp/search');
 					foreach ($this->get_cfgname_list() as $row)

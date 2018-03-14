@@ -43,7 +43,7 @@ class similar_topics
 	protected $content_visibility;
 
 	/** @var \vse\similartopics\driver\driver_interface */
-	protected $similartopics_driver;
+	protected $similartopics;
 
 	/** @var string phpBB root path  */
 	protected $root_path;
@@ -84,7 +84,7 @@ class similar_topics
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
 
-		$this->similartopics_driver = $similartopics_manager->get_driver($db->get_sql_layer());
+		$this->similartopics = $similartopics_manager->get_driver($db->get_sql_layer());
 	}
 
 	/**
@@ -95,7 +95,7 @@ class similar_topics
 	 */
 	public function is_available()
 	{
-		return $this->is_enabled() && $this->is_viewable() && $this->similartopics_driver !== null;
+		return $this->is_enabled() && $this->is_viewable() && $this->similartopics !== null;
 	}
 
 	/**
@@ -150,7 +150,7 @@ class similar_topics
 		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? $this->config['similar_topics_sense'] / 10 : '0.5';
 
 		// Similar Topics SQL query is generated in similar topics driver
-		$sql_array = $this->similartopics_driver->get_query($topic_data['topic_id'], $topic_title, $this->config['similar_topics_time'], $sensitivity);
+		$sql_array = $this->similartopics->get_query($topic_data['topic_id'], $topic_title, $this->config['similar_topics_time'], $sensitivity);
 
 		// Add topic tracking data to the query (only if query caching is off)
 		if ($this->user->data['is_registered'] && $this->config['load_db_lastread'] && !$this->config['similar_topics_cache'])
