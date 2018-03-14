@@ -107,7 +107,11 @@ class driver_test extends \phpbb_database_test_case
 
 	public function test_is_supported()
 	{
-		$this->assertTrue($this->get_driver()->is_supported(), 'Fulltext support failed.');
+		$driver = $this->get_driver();
+
+		$unsupported = $driver->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '<');
+
+		$this->assertSame(!$unsupported, $this->get_driver()->is_supported());
 	}
 
 	public function test_index()
@@ -122,7 +126,7 @@ class driver_test extends \phpbb_database_test_case
 		// Make topic_title a fulltext index
 		$driver->create_fulltext_index($column);
 
-		// No check that the topic_title is a fulltext index
+		// Now check that the topic_title is a fulltext index
 		$this->assertTrue($driver->is_fulltext($column));
 	}
 }
