@@ -10,6 +10,9 @@
 
 namespace vse\similartopics\driver;
 
+/**
+ * This class handles similar topics queries for MySQLi dbms
+ */
 class mysqli implements driver_interface
 {
 	/** @var \phpbb\db\driver\driver_interface */

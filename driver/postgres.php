@@ -10,6 +10,9 @@
 
 namespace vse\similartopics\driver;
 
+/**
+ * This class handles similar topics queries for PostgreSQL dbms
+ */
 class postgres implements driver_interface
 {
 	/** @var \phpbb\db\driver\driver_interface */
@@ -22,7 +25,7 @@ class postgres implements driver_interface
 	protected $ts_name;
 
 	/**
-	 * Cnstructor
+	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
 	 * @param \phpbb\config\config              $config

@@ -10,6 +10,9 @@
 
 namespace vse\similartopics\driver;
 
+/**
+ * This class handles similar topics queries for MySQL dbms
+ */
 class mysql4 extends mysqli
 {
 	/**
