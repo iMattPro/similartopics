@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1.5.0 - 2018-03-14
+
+- Added support for forums using PostgreSQL databases (with thanks to hubaishan).
+- Fixed a layout bug with the pagination buttons introduced in phpBB 3.2.2.
+- Fixed potential SQL error bug when installing.
+
 ### 1.4.3 - 2018-01-03
 
 - Added a new setting: Search Sensitivity. Allows users to adjust the weighting of similar topics matches. This was added because InnoDB which is now supported, weights results differently than MyISAM. This will allow users with InnoDB tables to improve their similar topics results by lowering the weighting/sensitivity.
