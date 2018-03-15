@@ -42,6 +42,9 @@ class similar_topics
 	/** @var \phpbb\content_visibility */
 	protected $content_visibility;
 
+	/** @var \vse\similartopics\driver\driver_interface */
+	protected $similartopics;
+
 	/** @var string phpBB root path  */
 	protected $root_path;
 
@@ -62,10 +65,11 @@ class similar_topics
 	 * @param \phpbb\template\template          $template
 	 * @param \phpbb\user                       $user
 	 * @param \phpbb\content_visibility         $content_visibility
+	 * @param \vse\similartopics\driver\manager $similartopics_manager
 	 * @param string                            $root_path
 	 * @param string                            $php_ext
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, $root_path, $php_ext)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, \vse\similartopics\driver\manager $similartopics_manager, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -79,6 +83,8 @@ class similar_topics
 		$this->content_visibility = $content_visibility;
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
+
+		$this->similartopics = $similartopics_manager->get_driver($db->get_sql_layer());
 	}
 
 	/**
@@ -89,7 +95,7 @@ class similar_topics
 	 */
 	public function is_available()
 	{
-		return $this->is_enabled() && $this->is_viewable() && $this->is_mysql();
+		return $this->is_enabled() && $this->is_viewable() && $this->similartopics !== null;
 	}
 
 	/**
@@ -104,7 +110,7 @@ class similar_topics
 	}
 
 	/**
-	 * Is similar topics viewable bu the user?
+	 * Is similar topics viewable by the user?
 	 *
 	 * @access public
 	 * @return bool True if viewable, false otherwise
@@ -117,10 +123,9 @@ class similar_topics
 	/**
 	 * Get similar topics by matching topic titles
 	 *
-	 * NOTE: Currently requires MySQL due to the use of FULLTEXT indexes
-	 * and MATCH and AGAINST and UNIX_TIMESTAMP. MySQL FULLTEXT has built-in
-	 * English ignore words. We use phpBB's ignore words for non-English
-	 * languages. We also remove any admin-defined special ignore words.
+	 * NOTE: FULLTEXT has built-in English ignore words. We use phpBB's
+	 * ignore words for non-English languages. We also remove any
+	 * admin-defined special ignore words.
 	 *
 	 * @access public
 	 * @param array $topic_data Array with topic data
@@ -144,26 +149,8 @@ class similar_topics
 		// Get stored sensitivity value and divide by 10. In query it should be a number between 0.0 to 1.0.
 		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? $this->config['similar_topics_sense'] / 10 : '0.5';
 
-		// Similar Topics query
-		$sql_array = array(
-			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
-				MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') AS score",
-
-			'FROM'		=> array(
-				TOPICS_TABLE	=> 't',
-			),
-			'LEFT_JOIN'	=> array(
-				array(
-					'FROM'	=>	array(FORUMS_TABLE	=> 'f'),
-					'ON'	=> 'f.forum_id = t.forum_id',
-				),
-			),
-			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') >= " . (float) $sensitivity . '
-				AND t.topic_status <> ' . ITEM_MOVED . '
-				AND t.topic_visibility = ' . ITEM_APPROVED . '
-				AND t.topic_time > (UNIX_TIMESTAMP() - ' . $this->config['similar_topics_time'] . ')
-				AND t.topic_id <> ' . (int) $topic_data['topic_id'],
-		);
+		// Similar Topics SQL query is generated in similar topics driver
+		$sql_array = $this->similartopics->get_query($topic_data['topic_id'], $topic_title, $this->config['similar_topics_time'], $sensitivity);
 
 		// Add topic tracking data to the query (only if query caching is off)
 		if ($this->user->data['is_registered'] && $this->config['load_db_lastread'] && !$this->config['similar_topics_cache'])
@@ -440,16 +427,5 @@ class similar_topics
 	protected function has_ignore_words()
 	{
 		return !empty($this->config['similar_topics_words']);
-	}
-
-	/**
-	 * Check if the database layer is MySQL4 or later
-	 *
-	 * @access protected
-	 * @return bool True is MySQL4 or later, false otherwise
-	 */
-	protected function is_mysql()
-	{
-		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');
 	}
 }

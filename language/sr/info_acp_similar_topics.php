@@ -40,6 +40,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Precise Similar Topics',
 	'PST_SETTINGS'		=> 'Slične teme podešavanja',
-	'PST_LOG_FULLTEXT'	=> '<strong>Altered baza podataka za Similar Topics kompatibilnosti</strong><br />» Promenjena tabelu “%s” za MyISAM skladištenje motora i dodao da indeks Ceo FULLTEXT “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Izmenjena podešavanja sa Similar Topics</strong>',
 ));

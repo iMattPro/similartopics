@@ -40,6 +40,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Παραπλήσια Θέματα',
 	'PST_SETTINGS'		=> 'Ρυθμίσεις',
-	'PST_LOG_FULLTEXT'	=> '<strong>Συμβατότητα τροποποίησης βάσης δεδομένων για τα "Παραπλήσια Θέματα"</strong><br />» Αλλάχτηκε ο πίνακας "%s" σε μηχανή αποθήκευσης MyISAM και προστέθηκε ένα ευρετήριο FULLTEXT στο topic_title',
 	'PST_LOG_MSG'		=> '<strong>Ρυθμίσεις τροποποίησης "Παραπλήσιων Θεμάτων"</strong>',
 ));

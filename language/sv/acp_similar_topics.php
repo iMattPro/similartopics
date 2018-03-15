@@ -72,10 +72,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Lägg till särskilda ord på forumet som skall ignoreras vid sökningen av liknande trådar. (Obs: Ord som betraktas som vanliga ord är redan undantagna). Separera varje ord med ett mellanslag. Ingen hänsyn tas till versaler eller gemenser. Max. 255 tecken.',
 	'PST_SAVED'			=> 'Inställningarna har uppdaterats',
 	'PST_FORUM_INFO'	=> '“Visa inte i” :  Liknande trådar visas inte i valda kategorier.<br />“Sök inte i” :  Sökning efter liknande trådar sker inte i valda kategorier.',
-	'PST_NO_MYSQL'		=> 'Similar Topics fungerar inte på ditt forum. Similar Topics kräver MySQL 4 eller MySQL 5.',
-	'PST_WARN_FULLTEXT'	=> 'Similar Topics fungerar inte på ditt forum. Similar Topics använder FULLTEXT index som kräver en MySQL 4 eller MySQL 5 databas och “phpbb_topics” tabell måste vara inställd på MyISAM lagring motor (eller InnoDB är också tillåtet vid användning med MySQL 5.6.4 eller nyare).<br /><br />Om du vill använda Similar Topics, vi kan säkert uppdatera din databas för att stödja FULLTEXT index. Alla ändringar kommer att återställas om du någon gång bestämmer dig för att ta bort Similar Topics.',
-	'PST_ADD_FULLTEXT'	=> 'Ja, aktivera stöd för fulltext index',
-	'PST_SAVE_FULLTEXT'	=> 'Din databas har uppdaterats. Nu kan du njuta av att använda Similar Topics.',
-	'PST_ERR_FULLTEXT'	=> 'Din databas kunde inte uppdateras.',
+	'PST_NO_COMPAT'		=> 'Similar Topics fungerar inte på ditt forum. Similar Topics kräver MySQL 4 eller MySQL 5 eller PostgreSQL.',
 	'PST_ERR_CONFIG'	=> 'Alltför många forum märktes i listan över forum. Försök igen med ett mindre urval.',
 ));

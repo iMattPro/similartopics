@@ -24,14 +24,14 @@ class similar_topics_module
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
-	/** @var \vse\similartopics\core\fulltext_support */
-	protected $fulltext;
-
 	/** @var \phpbb\log\log */
 	protected $log;
 
 	/** @var \phpbb\request\request */
 	protected $request;
+
+	/** @var \vse\similartopics\driver\driver_interface */
+	protected $similartopics;
 
 	/** @var \phpbb\template\template */
 	protected $template;
@@ -66,17 +66,17 @@ class similar_topics_module
 	{
 		global $phpbb_container;
 
-		$this->cache     = $phpbb_container->get('cache');
-		$this->config    = $phpbb_container->get('config');
-		$this->db        = $phpbb_container->get('dbal.conn');
-		$this->fulltext  = $phpbb_container->get('vse.similartopics.fulltext_support');
-		$this->log       = $phpbb_container->get('log');
-		$this->request   = $phpbb_container->get('request');
-		$this->template  = $phpbb_container->get('template');
-		$this->user      = $phpbb_container->get('user');
-		$this->root_path = $phpbb_container->getParameter('core.root_path');
-		$this->php_ext   = $phpbb_container->getParameter('core.php_ext');
-		$this->times     = array(
+		$this->cache         = $phpbb_container->get('cache');
+		$this->config        = $phpbb_container->get('config');
+		$this->db            = $phpbb_container->get('dbal.conn');
+		$this->similartopics = $phpbb_container->get('vse.similartopics.driver.manager')->get_driver($this->db->get_sql_layer());
+		$this->log           = $phpbb_container->get('log');
+		$this->request       = $phpbb_container->get('request');
+		$this->template      = $phpbb_container->get('template');
+		$this->user          = $phpbb_container->get('user');
+		$this->root_path     = $phpbb_container->getParameter('core.root_path');
+		$this->php_ext       = $phpbb_container->getParameter('core.php_ext');
+		$this->times         = array(
 			'd' => 86400, // one day
 			'w' => 604800, // one week
 			'm' => 2626560, // one month
@@ -174,36 +174,19 @@ class similar_topics_module
 					$this->update_forum('similar_topics_hide', $this->request->variable('mark_noshow_forum', array(0), true));
 					$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
 
+					// Set PostgreSQL TS Name
+					if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
+					{
+						$ts_name = $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
+						$this->config->set('pst_postgres_ts_name', $ts_name);
+						$this->similartopics->create_fulltext_index('topic_title');
+					}
+
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
 					$this->cache->destroy('sql', TOPICS_TABLE);
 
 					$this->end('PST_SAVED');
-				}
-
-				// Allow option to update the database to enable FULLTEXT support
-				if ($this->request->is_set_post('fulltext'))
-				{
-					if (confirm_box(true))
-					{
-						// If FULLTEXT is not supported, lets make it so
-						if (!$this->fulltext_support_enabled())
-						{
-							// Alter the database to support FULLTEXT
-							$this->enable_fulltext_support();
-
-							// Store the original database storage engine in a config var for recovery on uninstall
-							$this->config->set('similar_topics_fulltext', (string) $this->fulltext->get_engine());
-
-							$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_FULLTEXT', time(), array(TOPICS_TABLE));
-
-							$this->end('PST_SAVE_FULLTEXT');
-						}
-						$this->end('PST_ERR_FULLTEXT', E_USER_WARNING);
-					}
-					confirm_box(false, $this->user->lang('CONFIRM_OPERATION'), build_hidden_fields(array(
-						'fulltext' => 1,
-					)));
 				}
 
 				// Build the time options select menu
@@ -218,7 +201,7 @@ class similar_topics_module
 					$this->template->assign_block_vars('similar_time_options', array(
 						'VALUE'			=> $value,
 						'LABEL'			=> $label,
-						'S_SELECTED'	=> $value == $this->config['similar_topics_type'],
+						'S_SELECTED'	=> $value === $this->config['similar_topics_type'],
 					));
 				}
 
@@ -229,10 +212,22 @@ class similar_topics_module
 					'PST_SENSE'			=> $this->isset_or_default($this->config['similar_topics_sense'], ''),
 					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
-					'S_PST_NO_SUPPORT'	=> !$this->fulltext_support_enabled(),
-					'S_PST_NO_MYSQL'	=> !$this->fulltext->is_mysql(),
+					'S_PST_NO_COMPAT'	=> $this->similartopics === null || !$this->similartopics->is_fulltext('topic_title'),
 					'U_ACTION'			=> $this->u_action,
 				));
+
+				// If postgresql, we need to make an options list of text search names
+				if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
+				{
+					$this->user->add_lang('acp/search');
+					foreach ($this->get_cfgname_list() as $row)
+					{
+						$this->template->assign_block_vars('postgres_ts_names', array(
+							'NAME'			=> $row['ts_name'],
+							'S_SELECTED'	=> $row['ts_name'] === $this->config['pst_postgres_ts_name'],
+						));
+					}
+				}
 
 				$forum_list = $this->get_forum_list();
 				foreach ($forum_list as $row)
@@ -263,6 +258,21 @@ class similar_topics_module
 		{
 			$this->end('FORM_INVALID', E_USER_WARNING);
 		}
+	}
+
+	/**
+	 * Get list of PostgreSQL text search names
+	 *
+	 * @return array array of text search names
+	 */
+	protected function get_cfgname_list()
+	{
+		$sql = 'SELECT cfgname AS ts_name FROM pg_ts_config';
+		$result = $this->db->sql_query($sql);
+		$ts_options = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		return $ts_options;
 	}
 
 	/**
@@ -335,48 +345,6 @@ class similar_topics_module
 	protected function get_pst_time($time, $type = '')
 	{
 		return isset($this->times[$type]) ? (int) round($time / $this->times[$type]) : 0;
-	}
-
-	/**
-	 * Check for FULLTEXT index support
-	 *
-	 * @access protected
-	 * @return bool True if FULLTEXT is fully supported, false otherwise
-	 */
-	protected function fulltext_support_enabled()
-	{
-		if ($this->fulltext->is_supported())
-		{
-			return $this->fulltext->is_index('topic_title');
-		}
-
-		return false;
-	}
-
-	/**
-	 * Enable FULLTEXT support for the topic_title
-	 *
-	 * @access protected
-	 */
-	protected function enable_fulltext_support()
-	{
-		if (!$this->fulltext->is_mysql())
-		{
-			$this->end('PST_NO_MYSQL', E_USER_WARNING);
-		}
-
-		// Alter the storage engine
-		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = MYISAM';
-		$this->db->sql_query($sql);
-
-		// Prevent adding extra indeces.
-		if ($this->fulltext->is_index('topic_title'))
-		{
-			return;
-		}
-
-		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
-		$this->db->sql_query($sql);
 	}
 
 	/**

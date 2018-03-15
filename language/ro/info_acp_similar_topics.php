@@ -41,6 +41,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Subiecte similare precise',
 	'PST_SETTINGS'		=> 'Subiecte similare setări',
-	'PST_LOG_FULLTEXT'	=> '<strong>Baza de date modificate pentru compatibilitate Subiecte similare</strong><br />» Schimbat “%s” de masă pentru motorul de stocare MyISAM și a adăugat un index FULLTEXT la “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Setările pentru subiectele similare au fost modificate</strong>',
 ));

@@ -41,6 +41,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Precise Similar Topics',
 	'PST_SETTINGS'		=> 'Liknande trådar inställningar',
-	'PST_LOG_FULLTEXT'	=> '<strong>Förändrad databas för liknande Similar Topics</strong><br />» Ändrad “%s” bord till MyISAM lagring motor och lagt till ett FULLTEXT index till “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Ändrade inställningar</strong>',
 ));

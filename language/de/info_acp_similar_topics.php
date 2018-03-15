@@ -40,6 +40,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Präzise Vergleichbare Themen',
 	'PST_SETTINGS'		=> 'Vergleichbare Themen Einstellungen',
-	'PST_LOG_FULLTEXT'	=> '<strong>Veränderte Datenbank Vergleichbare Themen Kompatibilität</strong><br />» Changed “%s” Tabelle, um MyISAM-Engine und hat eine FULLTEXT-Index auf die “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Vergleichbare Themen Einstellungen geändert</strong>',
 ));

@@ -10,18 +10,17 @@ This is an extension for phpBB that will find and display a list of similar (rel
 
 ## Features
 * Displays a list of the most similar/relevant topics at the bottom of the current topic page.
-* Uses a precise and light MySQL query to search topic titles for matches.
-* Similar topics are sorted in order of decreasing relevance.
+* Similar topics are sorted by their relevance.
 * Adjust how many Similar Topics to display per page.
-* Adjust the age-span of topics to display (ie: display similar topics from the past year only).
-* Individually enable/disable the display of similar topics in each forum.
-* You can exempt certain forums from being searched for similar topics.
-* You can define which forums can share similar topics with other forums.
+* Adjust the age-span of topics to display (i.e.: display similar topics from the past year only).
+* Enable or disable similar topics in each forum.
+* Exclude specific forums from being searched for similar topics.
+* Specify which forums can share similar topics with other forums.
 * A query caching option reduces SQL overhead on large boards.
-* Permission settings for users and groups determine who can view similar topics.
+* Permission settings for users and groups determine who can view similar topics (i.e.: don't show similar topics to guests).
 * Multi-lingual support for stop-words (common words that are ignored).
 * Multiple languages are supported. View the pre-installed [localizations](https://github.com/VSEphpbb/similartopics/tree/master/language).
-* Prosilver and Subsilver2 styles compatibility.
+* Compatible with most styles, more added with every release.
 * Built-in compatibility with my "Topic Preview" extension.
 * phpBB 3.1 and 3.2 compatibility.
 
@@ -32,7 +31,7 @@ This is an extension for phpBB that will find and display a list of similar (rel
 ## Minimum Requirements
 * phpBB 3.1.0 or phpBB 3.2.0
 * PHP 5.3.3
-* MySQL 4.0.1 or higher using MyISAM tables (InnoDB supported with MySQL 5.6.4 or higher).
+* MySQL, MariaDB or PostgreSQL database (SQLite, Oracle and MS SQL Server not supported)
 
 ## Install
 1. [Download the latest validated release](https://www.phpbb.com/customise/db/extension/precise_similar_topics/).

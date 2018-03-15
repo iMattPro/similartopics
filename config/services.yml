@@ -12,13 +12,9 @@ services:
             - '@template'
             - '@user'
             - '@content.visibility'
+            - '@vse.similartopics.driver.manager'
             - '%core.root_path%'
             - '%core.php_ext%'
-
-    vse.similartopics.fulltext_support:
-        class: vse\similartopics\core\fulltext_support
-        arguments:
-            - '@dbal.conn'
 
     vse.similartopics.listener:
         class: vse\similartopics\event\listener
@@ -37,3 +33,37 @@ services:
             - '@user'
         tags:
             - { name: event.listener }
+
+    vse.similartopics.driver.manager:
+        class: vse\similartopics\driver\manager
+        arguments:
+            - '@vse.similartopics.driver_collection'
+
+# ----- Similar topics DB drivers collection -----
+    vse.similartopics.driver_collection:
+        class: phpbb\di\service_collection
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: service_collection, tag: vse.similartopcs.driver }
+
+    vse.similartopics.driver.postgres:
+        class: vse\similartopics\driver\postgres
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+        tags:
+            - { name: vse.similartopcs.driver }
+
+    vse.similartopics.driver.mysqli:
+        class: vse\similartopics\driver\mysqli
+        arguments:
+            - '@dbal.conn'
+        tags:
+            - { name: vse.similartopcs.driver }
+
+    vse.similartopics.driver.mysql4:
+        class: vse\similartopics\driver\mysql4
+        parent: vse.similartopics.driver.mysqli
+        tags:
+            - { name: vse.similartopcs.driver }

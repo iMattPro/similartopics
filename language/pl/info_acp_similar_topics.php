@@ -41,6 +41,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Precise Similar Topics',
 	'PST_SETTINGS'		=> 'Ustawienia Podobne tematy',
-	'PST_LOG_FULLTEXT'	=> '<strong>Zmieniane w bazie kompatybilności Similar Topics</strong><br />» Zmienił “%s” do silnika przechowywania tabeli MyISAM i dodaje indeks do “topic_title” FULLTEXT',
 	'PST_LOG_MSG'		=> '<strong>Zmieniono ustawienia podobnych tematów</strong>',
 ));

@@ -40,6 +40,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'Precise Similar Topics',
 	'PST_SETTINGS'		=> 'Similar topics settings',
-	'PST_LOG_FULLTEXT'	=> '<strong>Altered database for Similar Topics compatibility</strong><br />» Changed “%s” table to MyISAM storage engine and added a FULLTEXT index to the “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>Altered Similar Topics settings</strong>',
 ));

@@ -71,10 +71,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Benzer konular bulunurken yoksayılacak özel kelimeleri ekle. (Not: Dilinizde sık kullanılan kelimeler zaten varsayılan olarak yoksayılmıştır.) Kelimeleri bir boşluk ile ayır. Büyük-küçük harf duyarlıdır. Maks. 255 karakter.',
 	'PST_SAVED'			=> 'Benzer Konular ayarları güncellendi',
 	'PST_FORUM_INFO'	=> '“Şurada gösterme”: seçili forumlarda benzer konuları göstermeyecek.<br />“Şurada arama” : Seçili forumlarda benzer konular  için aramayacak.',
-	'PST_NO_MYSQL'		=> 'Benzer Konular forumunuzla uyumlu değil. Benzer Konular sadece MySQL 4 veya MySQL 5 veritabanında çalışır.',
-	'PST_WARN_FULLTEXT'	=> 'Benzer Konular forumunuzla uyumlu değil. Benzer Konular MySQL 4 veya MySQL 5 veritabanı için gerekli olan FULLTEXT indekslemesini kullanır ve the “phpbb_topics” tablosu MyISAM depolama motoruna ayarlı olmalıdır (veya MySQL 5.6.4 veya daha yeni sürüm kullanıyorsanız InnoDB de izin verilenler arasındadır).<br /><br />Benzer Konuları kullanmak istiyorsanız veritabanınız güvenle FULLTEXT indeksi desteklemesine güncellenebilir. Benzer Konuları kaldırmaya karar verdiğinizde tüm değişiklikler geri döndürülebilir.',
-	'PST_ADD_FULLTEXT'	=> 'Evet, fulltext indeksler için desteği aç',
-	'PST_SAVE_FULLTEXT'	=> 'Veritabanınınz güncellendi. Benzer Konuları kullanarak eğlenebilirsiniz.',
-	'PST_ERR_FULLTEXT'	=> 'Sizin veritabanı güncellendi olamazdı.',
+	'PST_NO_COMPAT'		=> 'Benzer Konular forumunuzla uyumlu değil. Benzer Konular sadece MySQL 4 veya MySQL 5 veya PostgreSQL veritabanında çalışır.',
 	'PST_ERR_CONFIG'	=> 'Çok fazla forumlar forumlarda listesinde işaretlenmiştir. Küçük bir seçim ile tekrar deneyin.',
 ));
