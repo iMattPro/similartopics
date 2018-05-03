@@ -47,4 +47,4 @@ This is an extension for phpBB that will find and display a list of similar (rel
 ## License
 [GNU General Public License v2](http://opensource.org/licenses/GPL-2.0)
 
-© 2013 - Matt Friedman (VSE)
+© 2013 - Matt Friedman
