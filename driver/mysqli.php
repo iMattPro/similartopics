@@ -197,7 +197,7 @@ class mysqli implements driver_interface
 	 */
 	protected function get_table_info($table = TOPICS_TABLE)
 	{
-		$result = $this->db->sql_query('SHOW TABLE STATUS LIKE \'' . $this->db->sql_escape($table) . '\'');
+		$result = $this->db->sql_query("SHOW TABLE STATUS LIKE '" . $this->db->sql_escape($table) . "'");
 		$info = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
