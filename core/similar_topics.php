@@ -147,7 +147,7 @@ class similar_topics
 		}
 
 		// Get stored sensitivity value and divide by 10. In query it should be a number between 0.0 to 1.0.
-		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? $this->config['similar_topics_sense'] / 10 : '0.5';
+		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? number_format($this->config['similar_topics_sense'] / 10, 1, '.', '') : '0.5';
 
 		// Similar Topics SQL query is generated in similar topics driver
 		$sql_array = $this->similartopics->get_query($topic_data['topic_id'], $topic_title, $this->config['similar_topics_time'], $sensitivity);
