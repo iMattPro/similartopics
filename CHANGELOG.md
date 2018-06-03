@@ -1,5 +1,10 @@
 ## Changelog
 
+### 1.5.1 - 2018-06-01
+
+- Fixed an issue where PHP using European decimal notation (comma instead of period) could cause an SQL error.
+- Minor code fixes based on phpBB Extension team validation report.
+
 ### 1.5.0 - 2018-03-14
 
 - Added support for forums using PostgreSQL databases (with thanks to hubaishan).
