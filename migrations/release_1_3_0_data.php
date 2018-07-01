@@ -28,7 +28,8 @@ class release_1_3_0_data extends \phpbb\db\migration\container_aware_migration
 		$module_tool = $this->container->get('migrator.tool.module');
 
 		return array(
-			// remove any old ACP modules
+			// remove any old ACP modules, wrapped in an if blanket to prevent
+			// these modules from being added back during extension un-installation.
 			array('if', array(
 				$module_tool->exists('acp', 'PST_TITLE_ACP', 'PST_TITLE', true),
 				array('module.remove', array('acp', 'PST_TITLE_ACP', 'PST_TITLE')),
