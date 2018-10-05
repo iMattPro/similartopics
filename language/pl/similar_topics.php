@@ -2,7 +2,7 @@
 /**
 *
 * Precise Similar Topics [Polish]
-* Translated by liptonace http://zonewarez.pl/
+* Translated by liptonace zonewarez.pl
 *
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -40,5 +40,5 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'SIMILAR_TOPICS'			=> 'Podobne tematy',
-	'DISPLAY_SIMILAR_TOPICS'	=> 'Włącz podobne tematy',
+	'DISPLAY_SIMILAR_TOPICS'	=> 'Wyświetl podobne tematy',
 ));
