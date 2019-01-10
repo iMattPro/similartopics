@@ -81,11 +81,11 @@ class listener_test extends \phpbb_test_case
 	 */
 	public function test_display_similar_topics($topic_data, $is_available, $display)
 	{
-		$this->similar_topics->expects($this->any())
+		$this->similar_topics->expects($this->once())
 			->method('is_available')
-			->will($this->returnValue($is_available));
+			->willReturn($is_available);
 
-		$this->similar_topics->expects(($is_available) ? $this->once() : $this->never())
+		$this->similar_topics->expects($is_available ? $this->once() : $this->never())
 			->method('display_similar_topics')
 			->with($topic_data);
 

@@ -283,12 +283,12 @@ class ucp_listener_test extends \phpbb_test_case
 		$this->auth->expects($this->any())
 			->method('acl_get')
 			->with($this->stringContains('u_similar_topics'), $this->anything())
-			->will($this->returnValue($u_similar_topics));
+			->willReturn($u_similar_topics);
 
 		$this->user->data['user_similar_topics'] = 0;
-		$this->request->expects($this->any())
+		$this->request->expects($this->once())
 			->method('variable')
-			->will($this->returnValue($similar_topics));
+			->willReturn($similar_topics);
 
 		$this->set_listener();
 

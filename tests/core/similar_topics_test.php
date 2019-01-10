@@ -294,13 +294,13 @@ class similar_topics_test extends \phpbb_test_case
 			->method('acl_get')
 			->with($this->stringContains('_'), $this->anything())
 			->will($this->returnValueMap(array($auth_data)));
-		$this->db->expects($this->any())
+		$this->db->expects($this->atMost(2))
 			->method('get_sql_layer')
-			->will($this->returnValue($sql_layer));
-		$this->manager->expects($this->any())
+			->willReturn($sql_layer);
+		$this->manager->expects($this->once())
 			->method('get_driver')
 			->with($sql_layer)
-			->will($this->returnValue((in_array($sql_layer, array('mysqli', 'mysql4', 'postgres')) ? $this->driver : null)));
+			->willReturn((in_array($sql_layer, array('mysqli', 'mysql4', 'postgres')) ? $this->driver : null));
 
 		$similar_topics = $this->get_similar_topics();
 
