@@ -61,6 +61,7 @@ class similar_topics_module
 	 * ACP module constructor
 	 *
 	 * @access public
+	 * @throws \Exception
 	 */
 	public function __construct()
 	{
