@@ -57,6 +57,9 @@ class similar_topics
 	/** @var string PHP file extension */
 	protected $php_ext;
 
+	/** @var string String of custom ignore words */
+	protected $ignore_words;
+
 	/**
 	 * Constructor
 	 *
@@ -77,7 +80,23 @@ class similar_topics
 	 * @param string                               $root_path
 	 * @param string                               $php_ext
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\driver\driver_interface $cache, \phpbb\cache\service $service, \phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, \vse\similartopics\driver\manager $similartopics_manager, $root_path, $php_ext)
+	public function __construct(
+		\phpbb\auth\auth $auth,
+		\phpbb\cache\driver\driver_interface $cache,
+		\phpbb\cache\service $service,
+		\phpbb\config\config $config,
+		\phpbb\config\db_text $config_text,
+		\phpbb\db\driver\driver_interface $db,
+		\phpbb\event\dispatcher_interface $dispatcher,
+		\phpbb\pagination $pagination,
+		\phpbb\request\request $request,
+		\phpbb\template\template $template,
+		\phpbb\user $user,
+		\phpbb\content_visibility $content_visibility,
+		\vse\similartopics\driver\manager $similartopics_manager,
+		$root_path,
+		$php_ext
+	)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -437,18 +456,16 @@ class similar_topics
 	 */
 	protected function get_ignore_words($name = 'similar_topics_words')
 	{
-		static $ignore_words;
-
-		if (!isset($ignore_words))
+		if ($this->ignore_words === null)
 		{
-			if (($ignore_words = $this->cache->get("_$name")) === false)
+			if (($this->ignore_words = $this->cache->get("_$name")) === false)
 			{
-				$ignore_words = $this->config_text->get($name);
+				$this->ignore_words = $this->config_text->get($name);
 
-				$this->cache->put("_$name", $ignore_words);
+				$this->cache->put("_$name", $this->ignore_words);
 			}
 		}
 
-		return !empty($ignore_words) ? $ignore_words : null;
+		return !empty($this->ignore_words) ? $this->ignore_words : null;
 	}
 }
