@@ -3,8 +3,10 @@ services:
         class: vse\similartopics\core\similar_topics
         arguments:
             - '@auth'
+            - '@cache.driver'
             - '@cache'
             - '@config'
+            - '@config_text'
             - '@dbal.conn'
             - '@dispatcher'
             - '@pagination'
