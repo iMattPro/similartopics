@@ -307,9 +307,9 @@ class similar_topics
 					'TOPIC_FOLDER_IMG'		=> $this->user->img($folder_img, $folder_alt),
 					'TOPIC_FOLDER_IMG_ALT'	=> $this->user->lang($folder_alt),
 
-					'TOPIC_ICON_IMG'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
-					'TOPIC_ICON_IMG_WIDTH'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
-					'TOPIC_ICON_IMG_HEIGHT'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
+					'TOPIC_ICON_IMG'		=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['img'] : '',
+					'TOPIC_ICON_IMG_WIDTH'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['width'] : '',
+					'TOPIC_ICON_IMG_HEIGHT'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['height'] : '',
 					'ATTACH_ICON_IMG'		=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $similar_forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->user->lang('TOTAL_ATTACHMENTS')) : '',
 					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', $topic_unapproved ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 
@@ -451,21 +451,19 @@ class similar_topics
 	 * Get custom ignore words if any were defined for similar topics
 	 *
 	 * @access protected
-	 * @param string $name Name of a config_text item
-	 * @return string|null Result on success or null if there is no such option
+	 * @return string|null String of ignore words or null if there are none defined
 	 */
-	protected function get_ignore_words($name = 'similar_topics_words')
+	protected function get_ignore_words()
 	{
-		if ($this->ignore_words === null)
-		{
-			if (($this->ignore_words = $this->cache->get("_$name")) === false)
-			{
-				$this->ignore_words = $this->config_text->get($name);
+		$key = 'similar_topics_words';
 
-				$this->cache->put("_$name", $this->ignore_words);
-			}
+		if ($this->ignore_words === null && (($this->ignore_words = $this->cache->get("_$key")) === false))
+		{
+			$this->ignore_words = $this->config_text->get($key);
+
+			$this->cache->put("_$key", $this->ignore_words);
 		}
 
-		return !empty($this->ignore_words) ? $this->ignore_words : null;
+		return $this->ignore_words;
 	}
 }

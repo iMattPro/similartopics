@@ -17,7 +17,7 @@ class similar_topic_words extends \phpbb\db\migration\migration
 		return !$this->config->offsetExists('similar_topics_words');
 	}
 
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\vse\similartopics\migrations\release_1_1_6_data');
 	}

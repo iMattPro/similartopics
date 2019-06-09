@@ -306,7 +306,7 @@ class similar_topics_test extends \phpbb_test_case
 		$this->auth->expects($this->any())
 			->method('acl_get')
 			->with($this->stringContains('_'), $this->anything())
-			->will($this->returnValueMap(array($auth_data)));
+			->willReturnMap(array($auth_data));
 		$this->db->expects($this->atMost(2))
 			->method('get_sql_layer')
 			->willReturn($sql_layer);
