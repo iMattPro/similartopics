@@ -148,9 +148,8 @@ class ucp_listener_test extends \phpbb_test_case
 		$dispatcher->dispatch('core.ucp_prefs_view_update_data', $event);
 
 		$event_data_after = $event->get_data_filtered($event_data);
-		$sql_ary = $event_data_after['sql_ary'];
 
-		$this->assertEquals($expected, $sql_ary);
+		$this->assertEquals($expected, $event_data_after['sql_ary']);
 	}
 
 	/**
@@ -310,8 +309,7 @@ class ucp_listener_test extends \phpbb_test_case
 		$dispatcher->dispatch('core.ucp_prefs_view_data', $event);
 
 		$data = $event->get_data_filtered($event_data);
-		$data = $data['data'];
 
-		$this->assertEquals($expected, $data);
+		$this->assertEquals($expected, $data['data']);
 	}
 }
