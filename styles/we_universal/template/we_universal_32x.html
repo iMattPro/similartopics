@@ -43,7 +43,7 @@
 
 							{% if not S_IS_BOT %}
 							<div class="responsive-show" style="display: none;">
-								{{ lang('LAST_POST') }} {{ lang('POST_BY_AUTHOR') }} {{ similar.LAST_POST_AUTHOR_FULL }} &laquo; <a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">{{ similar.LAST_POST_TIME }}</a>
+								{{ lang('LAST_POST') }} {{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_topic_author_username_prepend %}{{ similar.LAST_POST_AUTHOR_FULL }}{% EVENT search_results_topic_author_username_append %} &laquo; <a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">{{ similar.LAST_POST_TIME }}</a>
 								<br />{{ lang('POSTED') }} {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
 							</div>
 							{% if similar.TOPIC_REPLIES %}<span class="responsive-show left-box" style="display: none;">{{ lang('REPLIES') ~ lang('COLON') }} <strong>{{ similar.TOPIC_REPLIES }}</strong></span>{% endif %}
@@ -52,7 +52,7 @@
 							<div class="responsive-hide">
 								{% if similar.S_HAS_POLL %}<i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i>{% endif %}
 								{% if similar.ATTACH_ICON_IMG %}<i class="icon fa-paperclip fa-fw" aria-hidden="true"></i>{% endif %}
-								{{ lang('POST_BY_AUTHOR') }} {{ similar.TOPIC_AUTHOR_FULL }} &raquo; {{ similar.FIRST_POST_TIME }} &raquo; {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
+								{{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_topic_author_username_prepend %}{{ similar.TOPIC_AUTHOR_FULL }}{% EVENT search_results_topic_author_username_append %} &raquo; {{ similar.FIRST_POST_TIME }} &raquo; {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
 							</div>
 							{% if similar.pagination|length %}
 							<div class="pagination">
@@ -77,7 +77,7 @@
 					<dd class="posts">{{ similar.TOPIC_REPLIES }} <dfn>{{ lang('REPLIES') }}</dfn></dd>
 					<dd class="views">{{ similar.TOPIC_VIEWS }} <dfn>{{ lang('VIEWS') }}</dfn></dd>
 					<dd class="lastpost">
-					<span><dfn>{{ lang('LAST_POST') }} </dfn>{{ lang('POST_BY_AUTHOR') }} {{ similar.LAST_POST_AUTHOR_FULL }}
+					<span><dfn>{{ lang('LAST_POST') }} </dfn>{{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_topic_author_username_prepend %}{{ similar.LAST_POST_AUTHOR_FULL }}{% EVENT search_results_topic_author_username_append %}
 						{% if not S_IS_BOT %}
 							<a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">
 								<i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{{ VIEW_LATEST_POST }}</span>
