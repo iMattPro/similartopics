@@ -65,11 +65,13 @@
 		<dl>
 			<dt><label for="pst_time">{{ lang('PST_TIME') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_TIME_EXPLAIN') }}</span></dt>
 			<dd><input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{{ PST_TIME }}" />
-				<select name="pst_time_type">
-					{% for similar_time_options in loops.similar_time_options %}
-						<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ similar_time_options.LABEL }}</option>
-					{% endfor %}
-				</select>
+				<label>
+					<select name="pst_time_type">
+						{% for similar_time_options in loops.similar_time_options %}
+							<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ similar_time_options.LABEL }}</option>
+						{% endfor %}
+					</select>
+				</label>
 			</dd>
 		</dl>
 		<dl>
