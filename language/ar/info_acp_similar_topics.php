@@ -6,7 +6,7 @@
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
 *
-* Translated By : Bassel Taha Alhitary - www.alhitary.net
+* Translated By : Bassel Taha Alhitary <http://alhitary.net>
 */
 
 /**
@@ -41,6 +41,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'المواضيع المُتشابهه',
 	'PST_SETTINGS'		=> 'إعدادات المواضيع المُتشابهه',
-	'PST_LOG_FULLTEXT'	=> '<strong>تم التعديل على قاعدة البيانات لكي تعمل الإضافة : المواضيع المُتشابهه</strong><br />» تم تغيير جدول الـ “%s” إلى أداة التخزين MyISAM و إضافة فهرس النص الكامل FULLTEXT إلى عنوان الموضوع “topic_title”',
 	'PST_LOG_MSG'		=> '<strong>تم تعديل إعدادات المواضيع المُتشابهه</strong>',
 ));
