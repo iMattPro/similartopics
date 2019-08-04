@@ -2,7 +2,7 @@
 /**
 *
 * Precise Similar Topics [Polish]
-* Translated by liptonace http://zonewarez.pl/
+* Translated by liptonace zonewarez.pl
 *
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,8 +39,8 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PST_TITLE_ACP'		=> 'Precise Similar Topics',
-	'PST_EXPLAIN'		=> 'Precise Similar Topics wyświetla listę podobnych tematów na dole bieżącego tematu w stronie.',
+	'PST_TITLE_ACP'		=> 'Precyzyjne podobne tematy',
+	'PST_EXPLAIN'		=> 'Rozszerzenie Precise Similar Topics wyświetla listę podobnych tematów na dole strony bieżącego tematu.',
 	'PST_LEGEND1'		=> 'Ustawienia ogólne',
 	'PST_ENABLE'		=> 'Włącz podobne tematy',
 	'PST_LEGEND2'		=> 'Załaduj ustawienia',
@@ -52,13 +52,13 @@ $lang = array_merge($lang, array(
 	'PST_MONTHS'		=> 'Miesiąc',
 	'PST_WEEKS'			=> 'Tydzień',
 	'PST_DAYS'			=> 'Dzień',
-	'PST_CACHE'			=> 'Czas trwania cache',
-	'PST_CACHE_EXPLAIN'	=> 'Cache wygasa po upływie tego czasu, w sekundach. Ustaw na 0, jeśli chcesz wyłączyć cache dla podobnych tematów.',
-	'PST_SENSE'			=> 'Search sensitivity',
-	'PST_SENSE_EXPLAIN'	=> 'Set the search sensitivity to a value between 1 and 10. Use a lower number if you are not seeing any similar topics. Recommended settings: For “phpbb_topics” database tables using InnoDB use 1; for MyISAM use 5.',
+	'PST_CACHE'			=> 'Czas trwania pamięci podręcznej',
+	'PST_CACHE_EXPLAIN'	=> 'Pamięć podręczna wygasa po upływie tego czasu, w sekundach. Ustaw na 0, jeśli chcesz wyłączyć pamięć podręczną dla podobnych tematów.',
+	'PST_SENSE'			=> 'Czułość wyszukiwania',
+	'PST_SENSE_EXPLAIN'	=> 'Ustaw czułość wyszukiwania na wartość pomiędzy 1 do 10. Użyj niższej liczby, jeśli nie widzisz żadnych podobnych tematów. Zalecane ustawienia: Dla tabel bazy danych “phpbb_topics” używających InnoDB użyj 1; dla MyISAM użyj 5.',
 	'PST_LEGEND3'		=> 'Ustawienia forum',
 	'PST_NOSHOW_LIST'	=> 'Nie wyświetlaj w',
-	'PST_NOSHOW_TITLE'	=> 'Nie wyśiwetlaj podobnych tematów w',
+	'PST_NOSHOW_TITLE'	=> 'Nie wyświetlaj podobnych tematów w',
 	'PST_IGNORE_SEARCH'	=> 'Nie szukaj w',
 	'PST_IGNORE_TITLE'	=> 'Nie szukaj podobnych tematów w',
 	'PST_STANDARD'		=> 'Standard',
@@ -69,9 +69,9 @@ $lang = array_merge($lang, array(
 	'PST_DESELECT_ALL'	=> 'Odznacz wszystko',
 	'PST_LEGEND4'		=> 'Ustawienia dodatkowe',
 	'PST_WORDS'			=> 'Specjalne słowa do zignorowania',
-	'PST_WORDS_EXPLAIN'	=> 'Dodaj specjalny słów, które powinny być ignorowane podczas szukania podobne tematy. (Uwaga: Często słowa w zapytaniu języku jest domyślnie ignorowany.) Oddzielania poszczególnych słowa spacją. Sprawa nie jest wrażliwa. Maksymalnie 255 znaków.',
+	'PST_WORDS_EXPLAIN'	=> 'Dodaj specjalne unikalne słowa, które powinny być zignorowane podczas wyszukiwania podobnych tematów. (Notka: Słowa, które są obecnie uważane za powszechne w twoim języku, są już domyślnie ignorowane.) Oddziel każde słowo spacją. Bez względu na wielkość liter.',
 	'PST_SAVED'			=> 'Zaktualizowano ustawienia podobnych tematów',
-	'PST_FORUM_INFO'	=> '“Nie wyświetlaj w” : Wyłącza wyświetlanie podobnych tematów w wybranym forum.<br />“Nie szukaj w” : Będzie ignorować wybrane forum, szukając podobnych tematów.',
-	'PST_NO_COMPAT'		=> 'Similar Topics nie będą działać z forum. Similar Topics wymaga MySQL 4 lub MySQL 5 lub PostgreSQL bazy danych.',
-	'PST_ERR_CONFIG'	=> 'Zbyt wiele forum zostały oznaczone w liście forach. Spróbuj ponownie z mniejszym wyborem.',
+	'PST_FORUM_INFO'	=> '“Nie wyświetlaj w”: Nie będzie wyświetlać podobnych tematów w wybranych forach.<br />“Nie szukaj w”: Nie będzie wyszukiwać podobnych tematów w wybranych forach.',
+	'PST_NO_COMPAT'		=> 'Rozszerzenie podobne tematy nie jest kompatybilne z twoim forum. Rozszerzenie podobne tematy będzie działać tylko w bazie danych MySQL lub PostgreSQL.',
+	'PST_ERR_CONFIG'	=> 'Zbyt wiele forów zostało oznaczonych na liście forów. Proszę, spróbuj ponownie z mniejszym wyborem.',
 ));

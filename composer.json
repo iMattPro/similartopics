@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "A phpBB extension that displays a list of similar (related) topics at the bottom of the current topic's page.",
 	"homepage": "https://github.com/VSEphpbb/similartopics",
-	"version": "1.5.1",
+	"version": "1.5.2",
 	"keywords": ["phpbb", "extension", "similar", "topics"],
 	"license": "GPL-2.0-only",
 	"authors": [

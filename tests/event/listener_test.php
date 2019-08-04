@@ -153,12 +153,11 @@ class listener_test extends \phpbb_test_case
 		$event = new \phpbb\event\data(compact($event_data));
 		$dispatcher->dispatch('core.permissions', $event);
 
-		$permissions = $event->get_data_filtered($event_data);
-		$permissions = $permissions['permissions'];
+		$data = $event->get_data_filtered($event_data);
 
 		foreach ($expected_contains as $expected)
 		{
-			$this->assertContains($expected, $permissions);
+			$this->assertContains($expected, $data['permissions']);
 		}
 	}
 }

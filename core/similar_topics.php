@@ -15,11 +15,17 @@ class similar_topics
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
-	/** @var \phpbb\cache\service */
+	/** @var \phpbb\cache\driver\driver_interface */
 	protected $cache;
+
+	/** @var \phpbb\cache\service */
+	protected $service;
 
 	/** @var \phpbb\config\config */
 	protected $config;
+
+	/** @var \phpbb\config\db_text */
+	protected $config_text;
 
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
@@ -51,29 +57,52 @@ class similar_topics
 	/** @var string PHP file extension */
 	protected $php_ext;
 
+	/** @var string String of custom ignore words */
+	protected $ignore_words;
+
 	/**
 	 * Constructor
 	 *
 	 * @access public
-	 * @param \phpbb\auth\auth                  $auth
-	 * @param \phpbb\cache\service              $cache
-	 * @param \phpbb\config\config              $config
-	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\event\dispatcher_interface $dispatcher
-	 * @param \phpbb\pagination                 $pagination
-	 * @param \phpbb\request\request            $request
-	 * @param \phpbb\template\template          $template
-	 * @param \phpbb\user                       $user
-	 * @param \phpbb\content_visibility         $content_visibility
-	 * @param \vse\similartopics\driver\manager $similartopics_manager
-	 * @param string                            $root_path
-	 * @param string                            $php_ext
+	 * @param \phpbb\auth\auth                     $auth
+	 * @param \phpbb\cache\driver\driver_interface $cache
+	 * @param \phpbb\cache\service                 $service
+	 * @param \phpbb\config\config                 $config
+	 * @param \phpbb\config\db_text                $config_text
+	 * @param \phpbb\db\driver\driver_interface    $db
+	 * @param \phpbb\event\dispatcher_interface    $dispatcher
+	 * @param \phpbb\pagination                    $pagination
+	 * @param \phpbb\request\request               $request
+	 * @param \phpbb\template\template             $template
+	 * @param \phpbb\user                          $user
+	 * @param \phpbb\content_visibility            $content_visibility
+	 * @param \vse\similartopics\driver\manager    $similartopics_manager
+	 * @param string                               $root_path
+	 * @param string                               $php_ext
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\cache\service $cache, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $dispatcher, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\content_visibility $content_visibility, \vse\similartopics\driver\manager $similartopics_manager, $root_path, $php_ext)
+	public function __construct(
+		\phpbb\auth\auth $auth,
+		\phpbb\cache\driver\driver_interface $cache,
+		\phpbb\cache\service $service,
+		\phpbb\config\config $config,
+		\phpbb\config\db_text $config_text,
+		\phpbb\db\driver\driver_interface $db,
+		\phpbb\event\dispatcher_interface $dispatcher,
+		\phpbb\pagination $pagination,
+		\phpbb\request\request $request,
+		\phpbb\template\template $template,
+		\phpbb\user $user,
+		\phpbb\content_visibility $content_visibility,
+		\vse\similartopics\driver\manager $similartopics_manager,
+		$root_path,
+		$php_ext
+	)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
+		$this->service = $service;
 		$this->config = $config;
+		$this->config_text = $config_text;
 		$this->db = $db;
 		$this->dispatcher = $dispatcher;
 		$this->pagination = $pagination;
@@ -122,6 +151,7 @@ class similar_topics
 
 	/**
 	 * Get similar topics by matching topic titles
+	 * Loosely based on viewforum.php lines 840-1040
 	 *
 	 * NOTE: FULLTEXT has built-in English ignore words. We use phpBB's
 	 * ignore words for non-English languages. We also remove any
@@ -215,7 +245,7 @@ class similar_topics
 		$this->db->sql_freeresult($result);
 
 		// Grab icons
-		$icons = $this->cache->obtain_icons();
+		$icons = $this->service->obtain_icons();
 
 		/**
 		 * Modify the rowset data for similar topics
@@ -278,9 +308,9 @@ class similar_topics
 					'TOPIC_FOLDER_IMG'		=> $this->user->img($folder_img, $folder_alt),
 					'TOPIC_FOLDER_IMG_ALT'	=> $this->user->lang($folder_alt),
 
-					'TOPIC_ICON_IMG'		=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['img'] : '',
-					'TOPIC_ICON_IMG_WIDTH'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['width'] : '',
-					'TOPIC_ICON_IMG_HEIGHT'	=> (!empty($icons[$row['icon_id']])) ? $icons[$row['icon_id']]['height'] : '',
+					'TOPIC_ICON_IMG'		=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['img'] : '',
+					'TOPIC_ICON_IMG_WIDTH'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['width'] : '',
+					'TOPIC_ICON_IMG_HEIGHT'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['height'] : '',
 					'ATTACH_ICON_IMG'		=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $similar_forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->user->lang('TOTAL_ATTACHMENTS')) : '',
 					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', $topic_unapproved ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 
@@ -292,7 +322,7 @@ class similar_topics
 
 					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
 					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
-					'U_VIEW_TOPIC'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id),
+					'U_VIEW_TOPIC'			=> $base_url,
 					'U_VIEW_FORUM'			=> append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $similar_forum_id),
 					'U_MCP_REPORT'			=> append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=reports&amp;mode=reports&amp;f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id, true, $this->user->session_id),
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
@@ -339,7 +369,7 @@ class similar_topics
 		// Strip quotes, ampersands
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
-		if (!$this->english_lang() || $this->has_ignore_words())
+		if (!$this->english_lang() || $this->get_ignore_words())
 		{
 			$text = $this->strip_stop_words($text);
 		}
@@ -369,10 +399,10 @@ class similar_topics
 			}
 		}
 
-		if ($this->has_ignore_words())
+		if ($this->get_ignore_words())
 		{
 			// Merge any custom defined ignore words from the ACP to the stop-words array
-			$words = array_merge($this->make_word_array($this->config['similar_topics_words']), $words);
+			$words = array_merge($this->make_word_array($this->get_ignore_words()), $words);
 		}
 
 		// Remove stop-words from the topic title text
@@ -419,13 +449,22 @@ class similar_topics
 	}
 
 	/**
-	 * Check if custom ignore words have been defined for similar topics
+	 * Get custom ignore words if any were defined for similar topics
 	 *
 	 * @access protected
-	 * @return bool True or false
+	 * @return string|null String of ignore words or null if there are none defined
 	 */
-	protected function has_ignore_words()
+	protected function get_ignore_words()
 	{
-		return !empty($this->config['similar_topics_words']);
+		$key = 'similar_topics_words';
+
+		if ($this->ignore_words === null && (($this->ignore_words = $this->cache->get("_$key")) === false))
+		{
+			$this->ignore_words = $this->config_text->get($key);
+
+			$this->cache->put("_$key", $this->ignore_words);
+		}
+
+		return $this->ignore_words;
 	}
 }

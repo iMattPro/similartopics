@@ -21,6 +21,9 @@ class similar_topics_module
 	/** @var \phpbb\config\config */
 	protected $config;
 
+	/** @var \phpbb\config\db_text */
+	protected $config_text;
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
@@ -61,6 +64,7 @@ class similar_topics_module
 	 * ACP module constructor
 	 *
 	 * @access public
+	 * @throws \Exception
 	 */
 	public function __construct()
 	{
@@ -68,6 +72,7 @@ class similar_topics_module
 
 		$this->cache         = $phpbb_container->get('cache');
 		$this->config        = $phpbb_container->get('config');
+		$this->config_text   = $phpbb_container->get('config_text');
 		$this->db            = $phpbb_container->get('dbal.conn');
 		$this->similartopics = $phpbb_container->get('vse.similartopics.driver.manager')->get_driver($this->db->get_sql_layer());
 		$this->log           = $phpbb_container->get('log');
@@ -158,7 +163,7 @@ class similar_topics_module
 					$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
 					$this->config->set('similar_topics_limit', abs($this->request->variable('pst_limit', 0))); // use abs for positive values only
 					$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0))); // use abs for positive values only
-					$this->config->set('similar_topics_words', $this->request->variable('pst_words', '', true));
+					$this->config_text_set('similar_topics_words', $this->request->variable('pst_words', '', true));
 
 					// Set sensitivity
 					$pst_sense = min(abs($this->request->variable('pst_sense', 5)), 10); // use abs for positive values only
@@ -210,7 +215,7 @@ class similar_topics_module
 					'PST_LIMIT'			=> $this->isset_or_default($this->config['similar_topics_limit'], ''),
 					'PST_CACHE'			=> $this->isset_or_default($this->config['similar_topics_cache'], ''),
 					'PST_SENSE'			=> $this->isset_or_default($this->config['similar_topics_sense'], ''),
-					'PST_WORDS'			=> $this->isset_or_default($this->config['similar_topics_words'], ''),
+					'PST_WORDS'			=> $this->isset_or_default($this->config_text_get('similar_topics_words'), ''),
 					'PST_TIME'			=> $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
 					'S_PST_NO_COMPAT'	=> $this->similartopics === null || !$this->similartopics->is_fulltext('topic_title'),
 					'U_ACTION'			=> $this->u_action,
@@ -317,6 +322,37 @@ class similar_topics_module
 		$this->db->sql_query($sql);
 
 		$this->db->sql_transaction('commit');
+	}
+
+	/**
+	 * Store a config_text item in the database.
+	 *
+	 * @param string $name Name of a config_text item
+	 * @param string $value Value of a config_text item
+	 */
+	protected function config_text_set($name, $value)
+	{
+		$this->config_text->set($name, $value);
+		$this->cache->put("_$name", $value);
+	}
+
+	/**
+	 * Get a config_text value from the cache if it is cached, otherwise
+	 * get it directly from the database.
+	 *
+	 * @param string $name Name of a config_text item
+	 * @return string|null Value of a config_text item, either cached or from db
+	 */
+	protected function config_text_get($name)
+	{
+		if (($value = $this->cache->get("_$name")) === false)
+		{
+			$value = $this->config_text->get($name);
+
+			$this->cache->put("_$name", $value);
+		}
+
+		return !empty($value) ? $value : null;
 	}
 
 	/**

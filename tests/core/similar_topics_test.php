@@ -15,11 +15,17 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var \phpbb\auth\auth|\PHPUnit_Framework_MockObject_MockObject */
 	protected $auth;
 
-	/** @var \phpbb\cache\service|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var \phpbb\cache\driver\driver_interface|\PHPUnit_Framework_MockObject_MockObject */
 	protected $cache;
+
+	/** @var \phpbb\cache\service|\PHPUnit_Framework_MockObject_MockObject */
+	protected $service;
 
 	/** @var \phpbb\config\config */
 	protected $config;
+
+	/** @var \phpbb\config\db_text|\PHPUnit_Framework_MockObject_MockObject */
+	protected $config_text;
 
 	/** @var \phpbb\db\driver\driver_interface|\PHPUnit_Framework_MockObject_MockObject */
 	protected $db;
@@ -64,7 +70,12 @@ class similar_topics_test extends \phpbb_test_case
 		global $phpbb_root_path, $phpEx;
 
 		// Classes we just need to mock for the constructor
-		$this->cache = $this->getMockBuilder('\phpbb\cache\service')
+		$this->cache = $this->getMockBuilder('\phpbb\cache\driver\driver_interface')
+			->getMock();
+		$this->service = $this->getMockBuilder('\phpbb\cache\service')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->config_text = $this->getMockBuilder('\phpbb\config\db_text')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->db = $this->getMockBuilder('\phpbb\db\driver\driver_interface')
@@ -103,7 +114,9 @@ class similar_topics_test extends \phpbb_test_case
 		return new \vse\similartopics\core\similar_topics(
 			$this->auth,
 			$this->cache,
+			$this->service,
 			$this->config,
+			$this->config_text,
 			$this->db,
 			$this->dispatcher,
 			$this->pagination,
@@ -293,7 +306,7 @@ class similar_topics_test extends \phpbb_test_case
 		$this->auth->expects($this->any())
 			->method('acl_get')
 			->with($this->stringContains('_'), $this->anything())
-			->will($this->returnValueMap(array($auth_data)));
+			->willReturnMap(array($auth_data));
 		$this->db->expects($this->atMost(2))
 			->method('get_sql_layer')
 			->willReturn($sql_layer);
@@ -323,7 +336,14 @@ class similar_topics_test extends \phpbb_test_case
 	 */
 	public function test_clean_topic_title($test_string, $ignore_words, $expected)
 	{
-		$this->config->offsetSet('similar_topics_words', $ignore_words);
+		$this->cache->expects($this->once())
+			->method('get')
+			->willReturn(false);
+
+		$this->config_text->expects($this->once())
+			->method('get')
+			->with('similar_topics_words')
+			->willReturn($ignore_words);
 
 		$similar_topics = $this->get_similar_topics();
 

@@ -1,8 +1,7 @@
 <?php
 /**
 *
-* Precise Similar Topics [Polish]
-* Translated by liptonace zonewarez.pl
+* Precise Similar Topics [Hebrew]
 *
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,6 +38,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'SIMILAR_TOPICS'			=> 'Podobne tematy',
-	'DISPLAY_SIMILAR_TOPICS'	=> 'Wyświetl podobne tematy',
+	'PST_TITLE_ACP'		=> 'נושאים דומים במדויק',
+	'PST_SETTINGS'		=> 'הגדרות נושאים דומים',
+	'PST_LOG_MSG'		=> '<strong>שינו הגדרות נושאים דומים</strong>',
 ));
