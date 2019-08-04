@@ -65,11 +65,13 @@
 		<dl>
 			<dt><label for="pst_time">{{ lang('PST_TIME') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_TIME_EXPLAIN') }}</span></dt>
 			<dd><input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{{ PST_TIME }}" />
-				<select name="pst_time_type">
-					{% for similar_time_options in loops.similar_time_options %}
-						<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ similar_time_options.LABEL }}</option>
-					{% endfor %}
-				</select>
+				<label>
+					<select name="pst_time_type">
+						{% for similar_time_options in loops.similar_time_options %}
+							<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ similar_time_options.LABEL }}</option>
+						{% endfor %}
+					</select>
+				</label>
 			</dd>
 		</dl>
 		<dl>
@@ -128,7 +130,7 @@
 		<legend>{{ lang('PST_LEGEND4') }}</legend>
 		<dl>
 			<dt><label for="pst_words">{{ lang('PST_WORDS') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_WORDS_EXPLAIN') }}</span></dt>
-			<dd><input name="pst_words" id="pst_words" type="text" class="text medium" value="{{ PST_WORDS }}" /></dd>
+			<dd><textarea name="pst_words" id="pst_words" rows="5" cols="40">{{ PST_WORDS }}</textarea></dd>
 		</dl>
 		{% if loops.postgres_ts_names %}
 			<dl>

@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1.5.2 - 2019-06-26
+
+- Defining your own ignore-words is no longer limited to 255 characters. The new limit is over 16 million characters.
+- Languages added:
+    - Hebrew
+
 ### 1.5.1 - 2018-06-01
 
 - Fixed an issue where PHP using European decimal notation (comma instead of period) could cause an SQL error.
