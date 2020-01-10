@@ -21,7 +21,7 @@ class ext extends \phpbb\extension\base
 		{
 			$lang = $this->container->get('language');
 			$lang->add_lang('acp_similar_topics', 'vse/similartopics');
-			return [$lang->lang('PST_NO_COMPAT')];
+			return array($lang->lang('PST_NO_COMPAT'));
 		}
 
 		return $enableable;
