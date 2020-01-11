@@ -22,14 +22,13 @@ This is an extension for phpBB that will find and display a list of similar (rel
 * Multiple languages are supported. View the pre-installed [localizations](https://github.com/VSEphpbb/similartopics/tree/master/language).
 * Compatible with most styles, more added with every release.
 * Built-in compatibility with my "Topic Preview" extension.
-* phpBB 3.1 and 3.2 compatibility.
 
 ## Awards
 * Overall winner of the 2010 "Summer of MODs" competition at phpBB.com.
 * Featured MOD of the Week in the phpBB Weekly Podcast, episode #161.
 
 ## Minimum Requirements
-* phpBB 3.1.0 or phpBB 3.2.0
+* phpBB 3.1.0 or phpBB 3.2.0 or phpBB 3.3.0
 * PHP 5.3.3
 * MySQL, MariaDB or PostgreSQL database (SQLite, Oracle and MS SQL Server not supported)
 
