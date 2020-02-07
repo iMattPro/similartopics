@@ -38,7 +38,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PST_TITLE_ACP'		=> '正確な類似トピック',
-	'PST_SETTINGS'		=> '類似トピック設定',
+	'PST_TITLE_ACP'		=> 'Precise Similar Topics',
+	'PST_SETTINGS'		=> '類似トピックの設定',
 	'PST_LOG_MSG'		=> '<strong>類似トピック設定が変更されました</strong>',
 ));

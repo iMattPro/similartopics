@@ -303,8 +303,7 @@ class similar_topics_test extends \phpbb_test_case
 	{
 		$this->config = new \phpbb\config\config($config_data);
 		$this->user->data['user_similar_topics'] = $user_data['user_similar_topics'];
-		$this->auth->expects($this->any())
-			->method('acl_get')
+		$this->auth->method('acl_get')
 			->with($this->stringContains('_'), $this->anything())
 			->willReturnMap(array($auth_data));
 		$this->db->expects($this->atMost(2))

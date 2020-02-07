@@ -46,5 +46,5 @@ if (empty($lang) || !is_array($lang))
 
 // User Permissions
 $lang = array_merge($lang, array(
-	'ACL_U_SIMILARTOPICS'	=> '類似トピックを閲覧可能',
+	'ACL_U_SIMILARTOPICS'	=> '類似トピックを閲覧する',
 ));

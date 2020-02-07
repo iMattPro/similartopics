@@ -279,8 +279,7 @@ class ucp_listener_test extends \phpbb_test_case
 	 */
 	public function test_ucp_prefs_get_data($similar_topics, $submit, $u_similar_topics, $data, $expected)
 	{
-		$this->auth->expects($this->any())
-			->method('acl_get')
+		$this->auth->method('acl_get')
 			->with($this->stringContains('u_similar_topics'), $this->anything())
 			->willReturn($u_similar_topics);
 

@@ -44,7 +44,7 @@
 
 							{% if not S_IS_BOT %}
 								<div class="responsive-show" style="display: none;">
-									{{ lang('LAST_POST') }} {{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_last_post_author_username_prepend %}{{ similar.LAST_POST_AUTHOR_FULL }}{% EVENT search_results_last_post_author_username_append %} &laquo; <a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">{{ similar.LAST_POST_TIME }}</a>
+									{{ lang('LAST_POST') }} {{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_last_post_author_username_prepend %}{{ similar.LAST_POST_AUTHOR_FULL }}{% EVENT search_results_last_post_author_username_append %} &laquo; <a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}"><time datetime="{{ similar.LAST_POST_TIME_RFC3339 }}">{{ similar.LAST_POST_TIME }}</time></a>
 									<br />{{ lang('POSTED') }} {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
 								</div>
 								{% if similar.TOPIC_REPLIES %}<span class="responsive-show left-box" style="display: none;">{{ lang('REPLIES') ~ lang('COLON') }} <strong>{{ similar.TOPIC_REPLIES }}</strong></span>{% endif %}
@@ -53,7 +53,9 @@
 							<div class="responsive-hide left-box">
 								{% if similar.S_HAS_POLL %}<i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i>{% endif %}
 								{% if similar.ATTACH_ICON_IMG %}<i class="icon fa-paperclip fa-fw" aria-hidden="true"></i>{% endif %}
-								{{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_topic_author_username_prepend %}{{ similar.TOPIC_AUTHOR_FULL }}{% EVENT search_results_topic_author_username_append %} &raquo; {{ similar.FIRST_POST_TIME }} &raquo; {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
+								{% EVENT topiclist_row_topic_by_author_before %}
+								{{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_topic_author_username_prepend %}{{ similar.TOPIC_AUTHOR_FULL }}{% EVENT search_results_topic_author_username_append %} &raquo; <time datetime="{{ similar.FIRST_POST_TIME_RFC3339 }}">{{ similar.FIRST_POST_TIME }}</time> &raquo; {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
+								{% EVENT topiclist_row_topic_by_author_after %}
 							</div>
 
 							{% if similar.pagination|length %}
@@ -84,7 +86,7 @@
 									<i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{{ VIEW_LATEST_POST }}</span>
 								</a>
 							{% endif %}
-							<br />{{ similar.LAST_POST_TIME }}
+							<br /><time datetime="{{ similar.LAST_POST_TIME_RFC3339 }}">{{ similar.LAST_POST_TIME }}</time>
 						</span>
 					</dd>
 				</dl>

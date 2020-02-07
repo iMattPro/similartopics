@@ -1,5 +1,10 @@
 ## Changelog
 
+### 1.5.3 - 2020-01-10
+
+- Compatibility issues with Prosilver styles addressed.
+- Installation errors on phpBB 3.3.x will be reported to the user.
+
 ### 1.5.2 - 2019-06-26
 
 - Defining your own ignore-words is no longer limited to 255 characters. The new limit is over 16 million characters.
