@@ -1,11 +1,11 @@
-# ![Precise Similar Topics](http://vsephpbb.github.io/logo/binoc1.png "Precise Similar Topics") Precise Similar Topics
+# ![Precise Similar Topics](https://imattpro.github.io/logo/binoc1.png "Precise Similar Topics") Precise Similar Topics
 
 A Similar Topics Extension for phpBB
 
 This is an extension for phpBB that will find and display a list of similar (related) topics at the bottom of the current topic's page.
 
-[![Build Status](https://travis-ci.org/VSEphpbb/similartopics.svg?branch=master)](https://travis-ci.org/VSEphpbb/similartopics)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VSEphpbb/similartopics/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VSEphpbb/similartopics/?branch=master)
+[![Build Status](https://travis-ci.org/iMattPro/similartopics.svg?branch=master)](https://travis-ci.org/iMattPro/similartopics)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/iMattPro/similartopics/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/iMattPro/similartopics/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/vse/similartopics/v/stable)](https://www.phpbb.com/customise/db/extension/precise_similar_topics/)
 
 ## Features
@@ -19,7 +19,7 @@ This is an extension for phpBB that will find and display a list of similar (rel
 * A query caching option reduces SQL overhead on large boards.
 * Permission settings for users and groups determine who can view similar topics (i.e.: don't show similar topics to guests).
 * Multi-lingual support for stop-words (common words that are ignored).
-* Multiple languages are supported. View the pre-installed [localizations](https://github.com/VSEphpbb/similartopics/tree/master/language).
+* Multiple languages are supported. View the pre-installed [localizations](https://github.com/iMattPro/similartopics/tree/master/language).
 * Compatible with most styles, more added with every release.
 * Built-in compatibility with my "Topic Preview" extension.
 

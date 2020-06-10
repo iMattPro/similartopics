@@ -2,14 +2,14 @@
 	"name": "vse/similartopics",
 	"type": "phpbb-extension",
 	"description": "A phpBB extension that displays a list of similar (related) topics at the bottom of the current topic's page.",
-	"homepage": "https://github.com/VSEphpbb/similartopics",
+	"homepage": "https://github.com/iMattPro/similartopics",
 	"version": "1.5.3",
 	"keywords": ["phpbb", "extension", "similar", "topics"],
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
 			"name": "Matt Friedman",
-			"homepage": "http://vsephpbb.github.io",
+			"homepage": "https://imattpro.github.io",
 			"role": "Developer"
 		}
 	],
