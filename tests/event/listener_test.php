@@ -157,7 +157,7 @@ class listener_test extends \phpbb_test_case
 
 		foreach ($expected_contains as $expected)
 		{
-			$this->assertContains($expected, $data['permissions']);
+			self::assertContains($expected, $data['permissions']);
 		}
 	}
 }

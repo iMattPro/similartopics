@@ -22,6 +22,6 @@ class similar_topics_ucp_test extends similar_topics_base
 		$this->login();
 
 		$crawler = self::request('GET', 'ucp.php?i=ucp_prefs&mode=view&sid=' . $this->sid);
-		$this->assertContains($this->lang('DISPLAY_SIMILAR_TOPICS'), $crawler->filter('#cp-main')->text());
+		self::assertStringContainsString($this->lang('DISPLAY_SIMILAR_TOPICS'), $crawler->filter('#cp-main')->text());
 	}
 }
