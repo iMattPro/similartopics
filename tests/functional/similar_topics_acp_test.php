@@ -15,7 +15,7 @@ namespace vse\similartopics\tests\functional;
  */
 class similar_topics_acp_test extends similar_topics_base
 {
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 

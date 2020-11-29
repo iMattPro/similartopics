@@ -20,7 +20,7 @@ class similar_topics_base extends \phpbb_functional_test_case
 		return array('vse/similartopics');
 	}
 
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 		$this->enable_similar_topics();
