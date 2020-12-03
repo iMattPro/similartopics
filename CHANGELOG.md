@@ -1,5 +1,12 @@
 ## Changelog
 
+### 1.5.4 - 2020-12-01
+
+- Fix for Postgresql databases where titles with single quotes would fatally error.
+- Enabled AJAX interactions when saving settings in the ACP.
+- Re-wrote the search period explanation in the ACP settings.
+- Switched to using phpBB finder to locate foreign language ignore words files.
+
 ### 1.5.3 - 2020-01-10
 
 - Compatibility issues with Prosilver styles addressed.
