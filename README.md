@@ -4,7 +4,7 @@ A Similar Topics Extension for phpBB
 
 This is an extension for phpBB that will find and display a list of similar (related) topics at the bottom of the current topic's page.
 
-[![Build Status](https://travis-ci.org/iMattPro/similartopics.svg?branch=master)](https://travis-ci.org/iMattPro/similartopics)
+[![Build Status](https://github.com/iMattPro/similartopics/workflows/Tests/badge.svg)](https://github.com/iMattPro/similartopics/actions)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/iMattPro/similartopics/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/iMattPro/similartopics/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/vse/similartopics/v/stable)](https://www.phpbb.com/customise/db/extension/precise_similar_topics/)
 
