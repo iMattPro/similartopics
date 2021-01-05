@@ -146,7 +146,7 @@ class mysqli implements driver_interface
 				$this->set_engine();
 			}
 
-			$sql = 'ALTER TABLE ' . $this->db->sql_escape($table) . ' 
+			$sql = 'ALTER TABLE ' . $this->db->sql_escape($table) . '
 				ADD FULLTEXT (' . $this->db->sql_escape($column) . ')';
 			$this->db->sql_query($sql);
 		}

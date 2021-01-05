@@ -15,9 +15,6 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var \phpbb\auth\auth|\PHPUnit_Framework_MockObject_MockObject */
 	protected $auth;
 
-	/** @var \phpbb\cache\driver\driver_interface|\PHPUnit_Framework_MockObject_MockObject */
-	protected $cache;
-
 	/** @var \phpbb\cache\service|\PHPUnit_Framework_MockObject_MockObject */
 	protected $service;
 
@@ -32,6 +29,9 @@ class similar_topics_test extends \phpbb_test_case
 
 	/** @var \phpbb\event\dispatcher|\PHPUnit_Framework_MockObject_MockObject */
 	protected $dispatcher;
+
+	/** @var \phpbb\extension\manager|\PHPUnit\Framework\MockObject\MockObject */
+	protected $ext_manager;
 
 	/** @var \phpbb\language\language */
 	protected $language;
@@ -63,15 +63,13 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var string */
 	protected $phpEx;
 
-	public function setUp()
+	protected function setUp(): void
 	{
 		parent::setUp();
 
 		global $phpbb_root_path, $phpEx;
 
 		// Classes we just need to mock for the constructor
-		$this->cache = $this->getMockBuilder('\phpbb\cache\driver\driver_interface')
-			->getMock();
 		$this->service = $this->getMockBuilder('\phpbb\cache\service')
 			->disableOriginalConstructor()
 			->getMock();
@@ -98,6 +96,9 @@ class similar_topics_test extends \phpbb_test_case
 			->getMock();
 		$this->driver = $this->getMockBuilder('\vse\similartopics\driver\driver_interface')
 			->getMock();
+		$this->ext_manager = $this->getMockBuilder('\phpbb\extension\manager')
+			->disableOriginalConstructor()
+			->getMock();
 
 		// Classes used in the tests
 		$this->auth = $this->getMockBuilder('\phpbb\auth\auth')->getMock();
@@ -113,12 +114,12 @@ class similar_topics_test extends \phpbb_test_case
 	{
 		return new \vse\similartopics\core\similar_topics(
 			$this->auth,
-			$this->cache,
 			$this->service,
 			$this->config,
 			$this->config_text,
 			$this->db,
 			$this->dispatcher,
+			$this->ext_manager,
 			$this->pagination,
 			$this->request,
 			$this->template,
@@ -304,19 +305,19 @@ class similar_topics_test extends \phpbb_test_case
 		$this->config = new \phpbb\config\config($config_data);
 		$this->user->data['user_similar_topics'] = $user_data['user_similar_topics'];
 		$this->auth->method('acl_get')
-			->with($this->stringContains('_'), $this->anything())
+			->with(self::stringContains('_'), self::anything())
 			->willReturnMap(array($auth_data));
-		$this->db->expects($this->atMost(2))
+		$this->db->expects(self::atMost(2))
 			->method('get_sql_layer')
 			->willReturn($sql_layer);
-		$this->manager->expects($this->once())
+		$this->manager->expects(self::once())
 			->method('get_driver')
 			->with($sql_layer)
 			->willReturn((in_array($sql_layer, array('mysqli', 'mysql4', 'postgres')) ? $this->driver : null));
 
 		$similar_topics = $this->get_similar_topics();
 
-		$this->assertEquals($expected, $similar_topics->is_available());
+		self::assertEquals($expected, $similar_topics->is_available());
 	}
 
 	public function clean_topic_title_test_data()
@@ -335,17 +336,57 @@ class similar_topics_test extends \phpbb_test_case
 	 */
 	public function test_clean_topic_title($test_string, $ignore_words, $expected)
 	{
-		$this->cache->expects($this->once())
-			->method('get')
-			->willReturn(false);
+		$this->service->method('get_driver')
+			->willReturnCallback(array($this, 'set_cache'));
 
-		$this->config_text->expects($this->once())
+		$this->config_text->expects(self::once())
 			->method('get')
 			->with('similar_topics_words')
 			->willReturn($ignore_words);
 
+		$this->ext_manager->expects(self::once())
+			->method('get_finder')
+			->willReturnCallback(array($this, 'get_finder'));
+
 		$similar_topics = $this->get_similar_topics();
 
-		$this->assertSame($expected, $similar_topics->clean_topic_title($test_string));
+		self::assertSame($expected, $similar_topics->clean_topic_title($test_string));
+	}
+
+	public function set_cache()
+	{
+		$cache = $this->getMockBuilder('\phpbb\cache\driver\driver_interface')
+			->getMock();
+		$cache->method('get')
+			->willReturn(false);
+
+		return $cache;
+	}
+
+	public function get_finder()
+	{
+		$finder = $this->getMockBuilder('\phpbb\finder')
+			->disableOriginalConstructor()
+			->getMock();
+		$finder->expects(self::once())
+			->method('set_extensions')
+			->willReturnSelf();
+		$finder->expects(self::once())
+			->method('prefix')
+			->willReturnSelf();
+		$finder->expects(self::once())
+			->method('suffix')
+			->willReturnSelf();
+		$finder->expects(self::once())
+			->method('extension_directory')
+			->willReturnSelf();
+		$finder->expects(self::once())
+			->method('core_path')
+			->willReturnSelf();
+		$finder->expects(self::once())
+			->method('get_files')
+			->willReturn(array());
+
+		return $finder;
 	}
 }

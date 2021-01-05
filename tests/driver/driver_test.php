@@ -26,12 +26,12 @@ class driver_test extends \phpbb_database_test_case
 		return array('vse/similartopics');
 	}
 
-	public function getDataSet()
+	protected function getDataSet()
 	{
 		return $this->createXMLDataSet(__DIR__ . '/fixtures/config.xml');
 	}
 
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 
@@ -66,22 +66,22 @@ class driver_test extends \phpbb_database_test_case
 
 	public function test_get_driver()
 	{
-		$this->assertInstanceOf('\\vse\\similartopics\\driver\\' . $this->db->get_sql_layer(), $this->get_driver());
+		self::assertInstanceOf('\\vse\\similartopics\\driver\\' . $this->db->get_sql_layer(), $this->get_driver());
 	}
 
 	public function test_get_driver_fails()
 	{
-		$this->assertNull($this->manager->get_driver('foo'));
+		self::assertNull($this->manager->get_driver('foo'));
 	}
 
 	public function test_get_name()
 	{
-		$this->assertEquals($this->db->get_sql_layer(), $this->get_driver()->get_name());
+		self::assertEquals($this->db->get_sql_layer(), $this->get_driver()->get_name());
 	}
 
 	public function test_get_type()
 	{
-		$this->assertSame(0, strpos($this->db->get_sql_layer(), $this->get_driver()->get_type()));
+		self::assertSame(0, strpos($this->db->get_sql_layer(), $this->get_driver()->get_type()));
 	}
 
 	public function test_get_query()
@@ -99,10 +99,10 @@ class driver_test extends \phpbb_database_test_case
 			$where = "MATCH (t.topic_title) AGAINST ('foo bar') >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (UNIX_TIMESTAMP() - 0) AND t.topic_id <> 1";
 		}
 
-		$this->assertEquals($select, preg_replace('#\s\s+#', ' ', $sql['SELECT']));
-		$this->assertArrayHasKey('FROM', $sql);
-		$this->assertArrayHasKey('LEFT_JOIN', $sql);
-		$this->assertEquals($where, preg_replace('#\s\s+#', ' ', $sql['WHERE']));
+		self::assertEquals($select, preg_replace('#\s\s+#', ' ', $sql['SELECT']));
+		self::assertArrayHasKey('FROM', $sql);
+		self::assertArrayHasKey('LEFT_JOIN', $sql);
+		self::assertEquals($where, preg_replace('#\s\s+#', ' ', $sql['WHERE']));
 	}
 
 	public function test_is_supported()
@@ -111,7 +111,7 @@ class driver_test extends \phpbb_database_test_case
 
 		$unsupported = $driver->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '<');
 
-		$this->assertSame(!$unsupported, $this->get_driver()->is_supported());
+		self::assertSame(!$unsupported, $this->get_driver()->is_supported());
 	}
 
 	public function test_index()
@@ -121,12 +121,12 @@ class driver_test extends \phpbb_database_test_case
 		$column = 'topic_title';
 
 		// Check that the topic_title is NOT a fulltext index
-		$this->assertFalse($driver->is_fulltext($column));
+		self::assertFalse($driver->is_fulltext($column));
 
 		// Make topic_title a fulltext index
 		$driver->create_fulltext_index($column);
 
 		// Now check that the topic_title is a fulltext index
-		$this->assertTrue($driver->is_fulltext($column));
+		self::assertTrue($driver->is_fulltext($column));
 	}
 }

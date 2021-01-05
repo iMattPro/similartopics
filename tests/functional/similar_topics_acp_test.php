@@ -15,7 +15,7 @@ namespace vse\similartopics\tests\functional;
  */
 class similar_topics_acp_test extends similar_topics_base
 {
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 
@@ -51,7 +51,7 @@ class similar_topics_acp_test extends similar_topics_base
 		$crawler = self::submit($form);
 		$this->assertContainsLang('PST_SAVED', $crawler->text());
 		$crawler = self::request('GET', 'adm/index.php?i=acp_logs&mode=admin&sid=' . $this->sid);
-		$this->assertContains(strip_tags($this->lang('PST_LOG_MSG')), $crawler->text());
+		self::assertStringContainsString(strip_tags($this->lang('PST_LOG_MSG')), $crawler->text());
 	}
 
 	public function test_acp_permissions()

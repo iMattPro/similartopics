@@ -60,7 +60,7 @@ class postgres implements driver_interface
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
 		$ts_name = $this->db->sql_escape($this->ts_name);
-		$ts_query_text = $this->db->sql_escape(preg_replace('/\s+/', '|', $topic_title));
+		$ts_query_text = $this->db->sql_escape(preg_replace(['/\s+/', '/\'/'], ['|', ''],  $topic_title));
 		$ts_rank_cd = "ts_rank_cd('{1,1,1,1}', to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_name', '$ts_query_text'), 32)";
 
 		return array(
@@ -167,8 +167,8 @@ class postgres implements driver_interface
 
 		if (!$indexed)
 		{
-			$sql = 'CREATE INDEX ' . $this->db->sql_escape($new_index) . ' 
-				ON '  . $this->db->sql_escape($table) . " 
+			$sql = 'CREATE INDEX ' . $this->db->sql_escape($new_index) . '
+				ON '  . $this->db->sql_escape($table) . "
 				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->db->sql_escape($column) . '))';
 			$this->db->sql_query($sql);
 		}

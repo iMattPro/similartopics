@@ -37,6 +37,6 @@ class create_forum_test extends \phpbb_functional_test_case
 		));
 		$crawler = self::submit($form);
 
-		$this->assertGreaterThan(0, $crawler->filter('.successbox')->count());
+		self::assertGreaterThan(0, $crawler->filter('.successbox')->count());
 	}
 }

@@ -21,7 +21,7 @@ class listener_test extends \phpbb_test_case
 	/**
 	 * Setup test environment
 	 */
-	public function setUp()
+	protected function setUp(): void
 	{
 		parent::setUp();
 
@@ -47,7 +47,7 @@ class listener_test extends \phpbb_test_case
 	public function test_construct()
 	{
 		$this->set_listener();
-		$this->assertInstanceOf('\Symfony\Component\EventDispatcher\EventSubscriberInterface', $this->listener);
+		self::assertInstanceOf('\Symfony\Component\EventDispatcher\EventSubscriberInterface', $this->listener);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class listener_test extends \phpbb_test_case
 	 */
 	public function test_getSubscribedEvents()
 	{
-		$this->assertEquals(array(
+		self::assertEquals(array(
 			'core.viewtopic_modify_page_title',
 			'core.permissions',
 		), array_keys(\vse\similartopics\event\listener::getSubscribedEvents()));
@@ -81,11 +81,11 @@ class listener_test extends \phpbb_test_case
 	 */
 	public function test_display_similar_topics($topic_data, $is_available, $display)
 	{
-		$this->similar_topics->expects($this->once())
+		$this->similar_topics->expects(self::once())
 			->method('is_available')
 			->willReturn($is_available);
 
-		$this->similar_topics->expects($is_available ? $this->once() : $this->never())
+		$this->similar_topics->expects($is_available ? self::once() : self::never())
 			->method('display_similar_topics')
 			->with($topic_data);
 
@@ -94,6 +94,7 @@ class listener_test extends \phpbb_test_case
 		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
 		$dispatcher->addListener('core.viewtopic_modify_page_title', array($this->listener, 'display_similar_topics'));
 
+		$forum_id = $topic_data['forum_id'];
 		$event_data = array('forum_id', 'topic_data');
 		$event = new \phpbb\event\data(compact($event_data));
 		$dispatcher->dispatch('core.viewtopic_modify_page_title', $event);
@@ -157,7 +158,7 @@ class listener_test extends \phpbb_test_case
 
 		foreach ($expected_contains as $expected)
 		{
-			$this->assertContains($expected, $data['permissions']);
+			self::assertContains($expected, $data['permissions']);
 		}
 	}
 }

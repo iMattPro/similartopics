@@ -36,7 +36,7 @@ class ucp_listener_test extends \phpbb_test_case
 	/**
 	 * Setup test environment
 	 */
-	public function setUp()
+	protected function setUp(): void
 	{
 		parent::setUp();
 
@@ -75,7 +75,7 @@ class ucp_listener_test extends \phpbb_test_case
 	public function test_construct()
 	{
 		$this->set_listener();
-		$this->assertInstanceOf('\Symfony\Component\EventDispatcher\EventSubscriberInterface', $this->listener);
+		self::assertInstanceOf('\Symfony\Component\EventDispatcher\EventSubscriberInterface', $this->listener);
 	}
 
 	/**
@@ -83,7 +83,7 @@ class ucp_listener_test extends \phpbb_test_case
 	 */
 	public function test_getSubscribedEvents()
 	{
-		$this->assertEquals(array(
+		self::assertEquals(array(
 			'core.ucp_prefs_view_data',
 			'core.ucp_prefs_view_update_data',
 		), array_keys(\vse\similartopics\event\ucp_listener::getSubscribedEvents()));
@@ -97,11 +97,6 @@ class ucp_listener_test extends \phpbb_test_case
 	public function ucp_prefs_set_data_data()
 	{
 		return array(
-			array(
-				array(),
-				array(),
-				array('user_similar_topics' => 0),
-			),
 			array(
 				array('similar_topics' => 1),
 				array(),
@@ -149,7 +144,7 @@ class ucp_listener_test extends \phpbb_test_case
 
 		$event_data_after = $event->get_data_filtered($event_data);
 
-		$this->assertEquals($expected, $event_data_after['sql_ary']);
+		self::assertEquals($expected, $event_data_after['sql_ary']);
 	}
 
 	/**
@@ -280,11 +275,11 @@ class ucp_listener_test extends \phpbb_test_case
 	public function test_ucp_prefs_get_data($similar_topics, $submit, $u_similar_topics, $data, $expected)
 	{
 		$this->auth->method('acl_get')
-			->with($this->stringContains('u_similar_topics'), $this->anything())
+			->with(self::stringContains('u_similar_topics'), self::anything())
 			->willReturn($u_similar_topics);
 
 		$this->user->data['user_similar_topics'] = 0;
-		$this->request->expects($this->once())
+		$this->request->expects(self::once())
 			->method('variable')
 			->willReturn($similar_topics);
 
@@ -292,7 +287,7 @@ class ucp_listener_test extends \phpbb_test_case
 
 		if (!$submit)
 		{
-			$this->template->expects($this->once())
+			$this->template->expects(self::once())
 				->method('assign_vars')
 				->with(array(
 					'S_SIMILAR_TOPICS'			=> $u_similar_topics,
@@ -309,6 +304,6 @@ class ucp_listener_test extends \phpbb_test_case
 
 		$data = $event->get_data_filtered($event_data);
 
-		$this->assertEquals($expected, $data['data']);
+		self::assertEquals($expected, $data['data']);
 	}
 }
