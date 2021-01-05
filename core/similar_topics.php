@@ -22,6 +22,7 @@ use phpbb\pagination;
 use phpbb\request\request;
 use phpbb\template\template;
 use phpbb\user;
+use vse\similartopics\driver\driver_interface as similartopics_driver;
 use vse\similartopics\driver\manager as similartopics_manager;
 
 class similar_topics
@@ -62,7 +63,7 @@ class similar_topics
 	/** @var content_visibility */
 	protected $content_visibility;
 
-	/** @var similartopics_manager */
+	/** @var similartopics_driver */
 	protected $similartopics;
 
 	/** @var string phpBB root path  */
