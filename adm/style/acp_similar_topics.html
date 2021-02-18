@@ -17,24 +17,12 @@
 
 {% if S_ADVANCED_SETTINGS %}
 
-	<script>
-		function selector(bool)
-		{
-			var table = document.getElementById('similar_forums');
-
-			for (var i = 0; i < table.options.length; i++)
-			{
-				table.options[i].selected = bool;
-			}
-		}
-	</script>
-
 	<fieldset>
 		<legend>{{ lang('PST_ADVANCED_FORUM') }}</legend>
 		<dl>
 			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br /><br /><span>{{ PST_ADVANCED_EXP }}</span></dt>
 			<dd><select id="similar_forums" name="similar_forums_id[]" multiple="multiple" size="10">{{ SIMILAR_FORUMS_OPTIONS }}</select></dd>
-			<dd><a href="#" onclick="selector(false); return false;">{{ lang('PST_DESELECT_ALL') }}</a></dd>
+			<dd><a href="#" data-selector="false">{{ lang('PST_DESELECT_ALL') }}</a></dd>
 		</dl>
 		<p class="submit-buttons">
 			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
@@ -42,6 +30,17 @@
 		</p>
 		{{ S_FORM_TOKEN }}
 	</fieldset>
+
+	<script>
+		document.querySelector("[data-selector]").addEventListener("click", (e) => {
+			e.preventDefault();
+			const table = document.getElementById('similar_forums');
+			const state = e.target.dataset.selector === "true";
+			for (let i = 0; i < table.options.length; i++) {
+				table.options[i].selected = state;
+			}
+		});
+	</script>
 
 {% else %}
 
