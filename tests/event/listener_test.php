@@ -15,7 +15,7 @@ class listener_test extends \phpbb_test_case
 	/** @var \vse\similartopics\event\listener */
 	protected $listener;
 
-	/** @var \vse\similartopics\core\similar_topics|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var \vse\similartopics\core\similar_topics|\PHPUnit\Framework\MockObject\MockObject */
 	protected $similar_topics;
 
 	/**
@@ -91,13 +91,12 @@ class listener_test extends \phpbb_test_case
 
 		$this->set_listener();
 
-		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.viewtopic_modify_page_title', array($this->listener, 'display_similar_topics'));
 
 		$forum_id = $topic_data['forum_id'];
 		$event_data = array('forum_id', 'topic_data');
-		$event = new \phpbb\event\data(compact($event_data));
-		$dispatcher->dispatch('core.viewtopic_modify_page_title', $event);
+		$dispatcher->trigger_event('core.viewtopic_modify_page_title', compact($event_data));
 	}
 
 	/**
@@ -147,18 +146,16 @@ class listener_test extends \phpbb_test_case
 	{
 		$this->set_listener();
 
-		$dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+		$dispatcher = new \phpbb\event\dispatcher();
 		$dispatcher->addListener('core.permissions', array($this->listener, 'add_permissions'));
 
 		$event_data = array('permissions');
-		$event = new \phpbb\event\data(compact($event_data));
-		$dispatcher->dispatch('core.permissions', $event);
-
-		$data = $event->get_data_filtered($event_data);
+		$data = $dispatcher->trigger_event('core.permissions', compact($event_data));
+		extract($data, EXTR_OVERWRITE);
 
 		foreach ($expected_contains as $expected)
 		{
-			self::assertContains($expected, $data['permissions']);
+			self::assertContains($expected, $permissions);
 		}
 	}
 }
