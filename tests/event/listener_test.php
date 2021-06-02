@@ -69,8 +69,8 @@ class listener_test extends \phpbb_test_case
 	public function display_similar_topics_data()
 	{
 		return array(
-			array(array('forum_id' => 1), true, true),
-			array(array('forum_id' => 2), false, false),
+			array(array('forum_id' => 1), true),
+			array(array('forum_id' => 2), false),
 		);
 	}
 
@@ -79,7 +79,7 @@ class listener_test extends \phpbb_test_case
 	 *
 	 * @dataProvider display_similar_topics_data
 	 */
-	public function test_display_similar_topics($topic_data, $is_available, $display)
+	public function test_display_similar_topics($topic_data, $is_available)
 	{
 		$this->similar_topics->expects(self::once())
 			->method('is_available')

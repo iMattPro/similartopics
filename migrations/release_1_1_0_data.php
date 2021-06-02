@@ -17,7 +17,7 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 		return isset($this->config['similar_topics']);
 	}
 
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\vse\similartopics\migrations\release_1_1_0_schema');
 	}

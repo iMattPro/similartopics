@@ -87,7 +87,7 @@
 		<fieldset>
 			<legend>{{ lang('PST_LEGEND3') }}</legend>
 			<span class="small">{{ lang('PST_FORUM_INFO') }}</span>
-			<div style="max-height:300px; overflow:auto;">
+			<div style="overflow: auto; max-height: 300px;">
 				<table class="table1">
 					<colgroup><col class="row1" /><col class="row2" /><col class="row1" /><col class="row2" /></colgroup>
 					<thead>
@@ -104,17 +104,17 @@
 							<td>
 								<strong><a href="{{ forums.U_FORUM }}">{{ forums.FORUM_NAME }}</a></strong>
 							</td>
-							<td style="width:20%; text-align: center;" title="{{ lang('PST_NOSHOW_TITLE') }} {{ forums.FORUM_NAME }}">
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_NOSHOW_TITLE') }} {{ forums.FORUM_NAME }}">
 								<label>
 									<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_NOSHOW_FORUM }} />
 								</label>
 							</td>
-							<td style="width:20%; text-align: center;" title="{{ lang('PST_IGNORE_TITLE') }} {{ forums.FORUM_NAME }}">
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_IGNORE_TITLE') }} {{ forums.FORUM_NAME }}">
 								<label>
 									<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_IGNORE_FORUM }} />
 								</label>
 							</td>
-							<td style="width:20%; text-align: center;" title="{{ lang('PST_ADVANCED_TITLE') }} {{ forums.FORUM_NAME }}">
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_ADVANCED_TITLE') }} {{ forums.FORUM_NAME }}">
 							<a href="{{ forums.U_ADVANCED }}">{% if forums.S_IS_ADVANCED %}<strong>{{ lang('PST_ADVANCED') }}</strong>{% else %}{{ lang('PST_STANDARD') }}</a>{% endif %}
 							</td>
 						</tr>

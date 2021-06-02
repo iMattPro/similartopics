@@ -12,7 +12,7 @@ namespace vse\similartopics\migrations;
 
 class release_1_4_1_schema extends \phpbb\db\migration\migration
 {
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\vse\similartopics\migrations\release_1_3_1_data',
 					 '\vse\similartopics\migrations\release_1_4_0_schema');

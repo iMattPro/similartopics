@@ -17,7 +17,7 @@ class release_1_4_0_data extends \phpbb\db\migration\migration
 		return !$this->config->offsetExists('similar_topics_hide') && !$this->config->offsetExists('similar_topics_ignore');
 	}
 
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\vse\similartopics\migrations\release_1_4_0_schema');
 	}
