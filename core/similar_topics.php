@@ -349,7 +349,6 @@ class similar_topics
 		$this->user->add_lang_ext('vse/similartopics', 'similar_topics');
 
 		$this->template->assign_vars(array(
-			'L_SIMILAR_TOPICS'	=> $this->user->lang('SIMILAR_TOPICS'),
 			'NEWEST_POST_IMG'	=> $this->user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),
 			'LAST_POST_IMG'		=> $this->user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
 			'REPORTED_IMG'		=> $this->user->img('icon_topic_reported', 'TOPIC_REPORTED'),

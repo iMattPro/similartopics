@@ -20,7 +20,7 @@
 	<fieldset>
 		<legend>{{ lang('PST_ADVANCED_FORUM') }}</legend>
 		<dl>
-			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br /><br /><span>{{ PST_ADVANCED_EXP }}</span></dt>
+			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br /><br /><span>{{ lang('PST_ADVANCED_EXP', PST_FORUM_NAME) }}</span></dt>
 			<dd><select id="similar_forums" name="similar_forums_id[]" multiple="multiple" size="10">{{ SIMILAR_FORUMS_OPTIONS }}</select></dd>
 			<dd><a href="#" data-selector="false">{{ lang('PST_DESELECT_ALL') }}</a></dd>
 		</dl>
@@ -67,7 +67,7 @@
 				<label>
 					<select name="pst_time_type">
 						{% for similar_time_options in loops.similar_time_options %}
-							<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ similar_time_options.LABEL }}</option>
+							<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ lang(similar_time_options.LABEL) }}</option>
 						{% endfor %}
 					</select>
 				</label>

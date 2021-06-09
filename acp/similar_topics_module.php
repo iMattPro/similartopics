@@ -148,7 +148,6 @@ class similar_topics_module
 					'S_ADVANCED_SETTINGS'		=> true,
 					'SIMILAR_FORUMS_OPTIONS'	=> make_forum_select($selected, false, false, true),
 					'PST_FORUM_NAME'			=> $forum_name,
-					'PST_ADVANCED_EXP'			=> $this->user->lang('PST_ADVANCED_EXP', $forum_name),
 					'U_ACTION'					=> $this->u_action . '&amp;action=advanced&amp;f=' . $forum_id,
 					'U_BACK'					=> $this->u_action,
 				));
@@ -196,10 +195,10 @@ class similar_topics_module
 
 				// Build the time options select menu
 				$time_options = array(
-					'd' => $this->user->lang('PST_DAYS'),
-					'w' => $this->user->lang('PST_WEEKS'),
-					'm' => $this->user->lang('PST_MONTHS'),
-					'y' => $this->user->lang('PST_YEARS')
+					'd' => 'PST_DAYS',
+					'w' => 'PST_WEEKS',
+					'm' => 'PST_MONTHS',
+					'y' => 'PST_YEARS'
 				);
 				foreach ($time_options as $value => $label)
 				{
