@@ -65,10 +65,10 @@ class ucp_listener implements EventSubscriberInterface
 	 */
 	public static function getSubscribedEvents()
 	{
-		return array(
+		return [
 			'core.ucp_prefs_view_data'				=> 'ucp_prefs_get_data',
 			'core.ucp_prefs_view_update_data'		=> 'ucp_prefs_set_data',
-		);
+		];
 	}
 
 	/**
@@ -80,17 +80,18 @@ class ucp_listener implements EventSubscriberInterface
 	public function ucp_prefs_get_data($event)
 	{
 		// Request the user option vars and add them to the data array
-		$event['data'] = array_merge($event['data'], array(
+		$event['data'] = array_merge($event['data'], [
 			'similar_topics'	=> $this->request->variable('similar_topics', (int) $this->user->data['user_similar_topics']),
-		));
+		]);
 
 		// Output the data vars to the template (except on form submit)
 		if (!$event['submit'])
 		{
 			$this->language->add_lang('similar_topics', 'vse/similartopics');
+			$this->template->assign_vars([
 				'S_SIMILAR_TOPICS'			=> $this->config['similar_topics'] && $this->auth->acl_get('u_similar_topics'),
 				'S_DISPLAY_SIMILAR_TOPICS'	=> $event['data']['similar_topics'],
-			));
+			]);
 		}
 	}
 
@@ -102,8 +103,8 @@ class ucp_listener implements EventSubscriberInterface
 	 */
 	public function ucp_prefs_set_data($event)
 	{
-		$event['sql_ary'] = array_merge($event['sql_ary'], array(
+		$event['sql_ary'] = array_merge($event['sql_ary'], [
 			'user_similar_topics' => $event['data']['similar_topics'],
-		));
+		]);
 	}
 }

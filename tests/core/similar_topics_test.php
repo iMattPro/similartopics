@@ -102,7 +102,7 @@ class similar_topics_test extends \phpbb_test_case
 
 		// Classes used in the tests
 		$this->auth = $this->getMockBuilder('\phpbb\auth\auth')->getMock();
-		$this->config = new \phpbb\config\config(array());
+		$this->config = new \phpbb\config\config([]);
 		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
 		$this->language = new \phpbb\language\language($lang_loader);
 		$this->user = new \phpbb\user($this->language, '\phpbb\datetime');
@@ -134,168 +134,168 @@ class similar_topics_test extends \phpbb_test_case
 
 	public function is_available_test_data()
 	{
-		return array(
-			array(
-				array(
+		return [
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				true,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => false,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => false,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => false),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => false],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, false),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, false],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => false,
 					'similar_topics_limit' => false,
-				),
-				array('user_similar_topics' => false),
-				array('u_similar_topics', 0, false),
+				],
+				['user_similar_topics' => false],
+				['u_similar_topics', 0, false],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => '',
 					'similar_topics_limit' => '',
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => ''),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => ''],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'mysql4',
 				true,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'innodb',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => null,
 					'similar_topics_limit' => null,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => null),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => null],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'postgres',
 				true,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'sqlite',
 				false,
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'similar_topics' => true,
 					'similar_topics_limit' => true,
-				),
-				array('user_similar_topics' => true),
-				array('u_similar_topics', 0, true),
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
 				'sqlite3',
 				false,
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -307,14 +307,14 @@ class similar_topics_test extends \phpbb_test_case
 		$this->user->data['user_similar_topics'] = $user_data['user_similar_topics'];
 		$this->auth->method('acl_get')
 			->with(self::stringContains('_'), self::anything())
-			->willReturnMap(array($auth_data));
+			->willReturnMap([$auth_data]);
 		$this->db->expects(self::atMost(2))
 			->method('get_sql_layer')
 			->willReturn($sql_layer);
 		$this->manager->expects(self::once())
 			->method('get_driver')
 			->with($sql_layer)
-			->willReturn((in_array($sql_layer, array('mysqli', 'mysql4', 'postgres')) ? $this->driver : null));
+			->willReturn((in_array($sql_layer, ['mysqli', 'mysql4', 'postgres']) ? $this->driver : null));
 
 		$similar_topics = $this->get_similar_topics();
 
@@ -323,13 +323,13 @@ class similar_topics_test extends \phpbb_test_case
 
 	public function clean_topic_title_test_data()
 	{
-		return array(
-			array('The quick, brown fox jumps over a lazy dog.', 'brown lazy', 'the quick fox jumps over dog'),
-			array('The quick, brown fox jumps over a lazy dog.', 'the quick brown fox jumps over a lazy dog', ''),
-			array('The quick, brown fox jumps over a lazy dog.', '', 'the quick brown fox jumps over lazy dog'),
-			array('El zorro marrón rápido salta por encima de un perro perezoso.', 'marrón', 'zorro rápido salta por encima perro perezoso'),
-			array('The "quick", brown fox & jumps &amp; over a &quot;lazy&quot; dog.', 'brown lazy', 'the quick fox jumps over dog'),
-		);
+		return [
+			['The quick, brown fox jumps over a lazy dog.', 'brown lazy', 'the quick fox jumps over dog'],
+			['The quick, brown fox jumps over a lazy dog.', 'the quick brown fox jumps over a lazy dog', ''],
+			['The quick, brown fox jumps over a lazy dog.', '', 'the quick brown fox jumps over lazy dog'],
+			['El zorro marrón rápido salta por encima de un perro perezoso.', 'marrón', 'zorro rápido salta por encima perro perezoso'],
+			['The "quick", brown fox & jumps &amp; over a &quot;lazy&quot; dog.', 'brown lazy', 'the quick fox jumps over dog'],
+		];
 	}
 
 	/**
@@ -338,7 +338,7 @@ class similar_topics_test extends \phpbb_test_case
 	public function test_clean_topic_title($test_string, $ignore_words, $expected)
 	{
 		$this->service->method('get_driver')
-			->willReturnCallback(array($this, 'set_cache'));
+			->willReturnCallback([$this, 'set_cache']);
 
 		$this->config_text->expects(self::once())
 			->method('get')
@@ -347,7 +347,7 @@ class similar_topics_test extends \phpbb_test_case
 
 		$this->ext_manager->expects(self::once())
 			->method('get_finder')
-			->willReturnCallback(array($this, 'get_finder'));
+			->willReturnCallback([$this, 'get_finder']);
 
 		$similar_topics = $this->get_similar_topics();
 
@@ -386,7 +386,7 @@ class similar_topics_test extends \phpbb_test_case
 			->willReturnSelf();
 		$finder->expects(self::once())
 			->method('get_files')
-			->willReturn(array());
+			->willReturn([]);
 
 		return $finder;
 	}
