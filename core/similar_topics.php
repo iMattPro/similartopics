@@ -359,7 +359,6 @@ class similar_topics
 			'LAST_POST_IMG'		=> $this->user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
 			'REPORTED_IMG'		=> $this->user->img('icon_topic_reported', 'TOPIC_REPORTED'),
 			'POLL_IMG'			=> $this->user->img('icon_topic_poll', 'TOPIC_POLL'),
-			'S_PST_BRANCH'		=> phpbb_version_compare(max($this->config['phpbb_version'], PHPBB_VERSION), '3.2.0-dev', '<') ? '31x' : '32x',
 		));
 	}
 

@@ -1,1 +1,111 @@
-{% include '@vse_similartopics/we_universal_' ~ S_PST_BRANCH ~ '.html' ignore missing %}
+{# based on we_universal 2.5.9 search_reults.html #}
+{% if loops.similar|length %}
+	<div class="forumbg">
+
+		<div class="inner">
+			<ul class="topiclist">
+				<li class="header">
+					<dl class="row-item">
+						<dt><div class="list-inner">{{ lang('SIMILAR_TOPICS') }}</div></dt>
+						<dd class="posts">{{ lang('STATISTICS') }}</dd>
+						<dd class="lastpost"><span>{{ lang('LAST_POST') }}</span></dd>
+					</dl>
+				</li>
+			</ul>
+			<ul class="inventea topiclist topics">
+
+				{% for similar in loops.similar %}
+					{% EVENT search_results_topic_before %}
+					<li class="row{% if similar.S_ROW_COUNT is even %} bg1{% else %} bg2{% endif %}">
+						<dl title="{{ similar.TOPIC_FOLDER_IMG_ALT }}">
+							<dt class="icon {{ similar.TOPIC_IMG_STYLE }}">{% if similar.TOPIC_ICON_IMG %}<img src="{{ T_ICONS_PATH ~ similar.TOPIC_ICON_IMG }}" alt="" title="" />{% endif %}</dt>
+							<dd>
+								{% if not similar.S_UNREAD_TOPIC and not S_IS_BOT %}
+									<a href="{{ similar.U_LAST_POST }}" class="row-item-link"></a>
+								{% endif %}
+								{% if similar.S_UNREAD_TOPIC and not S_IS_BOT %}
+									<a href="{{ similar.U_NEWEST_POST }}" class="row-item-link"></a>
+								{% endif %}
+								<div class="list-inner">
+
+									{% EVENT topiclist_row_prepend %}
+									{% if similar.S_UNREAD_TOPIC and not S_IS_BOT %}
+										<a class="unread" href="{{ similar.U_NEWEST_POST }}">
+											<i class="icon fa-file fa-fw icon-red icon-md" aria-hidden="true"></i><span class="sr-only">{{ lang('NEW_POST') }}</span>
+										</a>
+									{% endif %}
+									<a href="{{ similar.U_VIEW_TOPIC }}" class="topictitle">{{ similar.TOPIC_TITLE }}</a>
+									{% if similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED %}
+										<a href="{{ similar.U_MCP_QUEUE }}" title="{{ lang('TOPIC_UNAPPROVED') }}">
+											<i class="icon fa-question fa-fw icon-blue" aria-hidden="true"></i><span class="sr-only">{{ lang('TOPIC_UNAPPROVED') }}</span>
+										</a>
+									{% endif %}
+									{% if similar.S_TOPIC_REPORTED %}
+										<a href="{{ similar.U_MCP_REPORT }}" title="{{ lang('TOPIC_REPORTED') }}">
+											<i class="icon fa-exclamation fa-fw icon-red" aria-hidden="true"></i><span class="sr-only">{{ lang('TOPIC_REPORTED') }}</span>
+										</a>
+									{% endif %}
+									<br />
+									{% EVENT topiclist_row_topic_title_after %}
+
+									{% if not S_IS_BOT %}
+										<div class="responsive-show" style="display: none;">
+											{{ lang('POST_BY_AUTHOR') }} {{ similar.TOPIC_AUTHOR_FULL }} &raquo; {{ similar.FIRST_POST_TIME }} &raquo; {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
+											{% if similar.TOPIC_REPLIES %}
+												<br />{{ lang('LAST_POST') }} {{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_last_post_author_username_prepend %}{{ similar.LAST_POST_AUTHOR_FULL }}{% EVENT search_results_last_post_author_username_append %} &raquo; <a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">{{ similar.LAST_POST_TIME }}</a>
+											{% endif %}
+										</div>
+										<span class="responsive-show left-box" style="display: none;">{{ lang('REPLIES') }}{{ lang('COLON') }} <strong>{{ similar.TOPIC_REPLIES }}</strong></span>
+									{% endif %}
+
+									<div class="responsive-hide left-box">
+										{% if similar.S_HAS_POLL %}<i class="icon fa-bar-chart fa-fw" aria-hidden="true"></i>{% endif %}
+										{% if similar.ATTACH_ICON_IMG %}<i class="icon fa-paperclip fa-fw" aria-hidden="true"></i>{% endif %}
+										{% EVENT topiclist_row_topic_by_author_before %}
+										{{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_topic_author_username_prepend %}{{ similar.TOPIC_AUTHOR_FULL }}{% EVENT search_results_topic_author_username_append %} &raquo; {{ similar.FIRST_POST_TIME }} &raquo; {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
+										{% EVENT topiclist_row_topic_by_author_after %}
+									</div>
+									{% if similar.pagination|length %}
+										<div class="pagination">
+											<span><i class="icon fa-clone fa-fw" aria-hidden="true"></i></span>
+											<ul>
+												{% for pagination in similar.pagination %}
+													{% if pagination.S_IS_PREV %}
+													{% elseif pagination.S_IS_CURRENT %}<li class="active"><span>{{ pagination.PAGE_NUMBER }}</span></li>
+													{% elseif pagination.S_IS_ELLIPSIS %}<li class="ellipsis"><span>{{ lang('ELLIPSIS') }}</span></li>
+													{% elseif pagination.S_IS_NEXT %}
+													{% else %}<li><a class="button" href="{{ pagination.PAGE_URL }}">{{ pagination.PAGE_NUMBER }}</a></li>
+													{% endif %}
+												{% endfor %}
+											</ul>
+										</div>
+									{% endif %}
+
+									{% EVENT topiclist_row_append %}
+
+								</div>
+							</dd>
+							<dd class="posts">
+								{{ lang('REPLIES') }}{{ lang('COLON') }} <strong>{{ similar.TOPIC_REPLIES }}</strong><br />
+								{{ lang('VIEWS') }}{{ lang('COLON') }} <strong>{{ similar.TOPIC_VIEWS }}</strong>
+							</dd>
+							<dd class="lastpost">
+								{% if not S_IS_BOT %}
+									<span>
+								<dfn>{{ lang('LAST_POST') }} </dfn>{{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_last_post_author_username_prepend %}{{ similar.LAST_POST_AUTHOR_FULL }}{% EVENT search_results_last_post_author_username_append %}
+								<a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">
+									<i class="icon fa-external-link-square fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">{{ VIEW_LATEST_POST }}</span>
+								</a>
+							<br />{{ similar.LAST_POST_TIME }}
+							</span>
+								{% endif %}
+							</dd>
+						</dl>
+					</li>
+					{% EVENT search_results_topic_after %}
+				{% endfor %}
+			</ul>
+
+		</div>
+	</div>
+{% endif %}
