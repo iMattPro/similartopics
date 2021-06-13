@@ -71,8 +71,9 @@ class listener implements EventSubscriberInterface
 	 */
 	public function add_permissions($event)
 	{
-		$permissions = $event['permissions'];
-		$permissions['u_similar_topics'] = array('lang' => 'ACL_U_SIMILARTOPICS', 'cat' => 'misc');
-		$event['permissions'] = $permissions;
+		$event->update_subarray('permissions', 'u_similar_topics', [
+			'lang' => 'ACL_U_SIMILARTOPICS',
+			'cat' => 'misc'
+		]);
 	}
 }
