@@ -18,6 +18,7 @@ use phpbb\content_visibility;
 use phpbb\db\driver\driver_interface as db;
 use phpbb\event\dispatcher_interface as dispatcher;
 use phpbb\extension\manager as ext_manager;
+use phpbb\language\language;
 use phpbb\pagination;
 use phpbb\request\request;
 use phpbb\template\template;
@@ -47,6 +48,9 @@ class similar_topics
 
 	/** @var ext_manager */
 	protected $extension_manager;
+
+	/** @var language */
+	protected $language;
 
 	/** @var pagination */
 	protected $pagination;
@@ -86,6 +90,7 @@ class similar_topics
 	 * @param db                    $db
 	 * @param dispatcher            $dispatcher
 	 * @param ext_manager           $extension_manager
+	 * @param language              $language
 	 * @param pagination            $pagination
 	 * @param request               $request
 	 * @param template              $template
@@ -95,7 +100,7 @@ class similar_topics
 	 * @param string                $root_path
 	 * @param string                $php_ext
 	 */
-	public function __construct(auth $auth, cache $cache, config $config, db_text $config_text, db $db, dispatcher $dispatcher, ext_manager $extension_manager, pagination $pagination, request $request, template $template, user $user, content_visibility $content_visibility, similartopics_manager $similartopics_manager, $root_path, $php_ext)
+	public function __construct(auth $auth, cache $cache, config $config, db_text $config_text, db $db, dispatcher $dispatcher, ext_manager $extension_manager, language $language, pagination $pagination, request $request, template $template, user $user, content_visibility $content_visibility, similartopics_manager $similartopics_manager, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -104,6 +109,7 @@ class similar_topics
 		$this->db = $db;
 		$this->dispatcher = $dispatcher;
 		$this->extension_manager = $extension_manager;
+		$this->language = $language;
 		$this->pagination = $pagination;
 		$this->request = $request;
 		$this->template = $template;
@@ -307,12 +313,12 @@ class similar_topics
 
 					'TOPIC_IMG_STYLE'		=> $folder_img,
 					'TOPIC_FOLDER_IMG'		=> $this->user->img($folder_img, $folder_alt),
-					'TOPIC_FOLDER_IMG_ALT'	=> $this->user->lang($folder_alt),
+					'TOPIC_FOLDER_IMG_ALT'	=> $this->language->lang($folder_alt),
 
 					'TOPIC_ICON_IMG'		=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['img'] : '',
 					'TOPIC_ICON_IMG_WIDTH'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['width'] : '',
 					'TOPIC_ICON_IMG_HEIGHT'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['height'] : '',
-					'ATTACH_ICON_IMG'		=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $similar_forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->user->lang('TOTAL_ATTACHMENTS')) : '',
+					'ATTACH_ICON_IMG'		=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $similar_forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->language->lang('TOTAL_ATTACHMENTS')) : '',
 					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', $topic_unapproved ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 
 					'S_UNREAD_TOPIC'		=> $unread_topic,
@@ -346,7 +352,7 @@ class similar_topics
 			}
 		}
 
-		$this->user->add_lang_ext('vse/similartopics', 'similar_topics');
+		$this->language->add_lang('similar_topics', 'vse/similartopics');
 
 		$this->template->assign_vars(array(
 			'NEWEST_POST_IMG'	=> $this->user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),

@@ -9,6 +9,7 @@ services:
             - '@dbal.conn'
             - '@dispatcher'
             - '@ext.manager'
+            - '@language'
             - '@pagination'
             - '@request'
             - '@template'
@@ -30,6 +31,7 @@ services:
         arguments:
             - '@auth'
             - '@config'
+            - '@language'
             - '@request'
             - '@template'
             - '@user'

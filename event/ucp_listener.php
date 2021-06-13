@@ -23,6 +23,9 @@ class ucp_listener implements EventSubscriberInterface
 	/** @var \phpbb\config\config */
 	protected $config;
 
+	/** @var \phpbb\language\language */
+	protected $language;
+
 	/** @var \phpbb\request\request */
 	protected $request;
 
@@ -38,14 +41,16 @@ class ucp_listener implements EventSubscriberInterface
 	 * @access public
 	 * @param \phpbb\auth\auth         $auth
 	 * @param \phpbb\config\config     $config
+	 * @param \phpbb\language\language $language
 	 * @param \phpbb\request\request   $request
 	 * @param \phpbb\template\template $template
 	 * @param \phpbb\user              $user
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\language\language $language, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
+		$this->language = $language;
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
@@ -82,8 +87,7 @@ class ucp_listener implements EventSubscriberInterface
 		// Output the data vars to the template (except on form submit)
 		if (!$event['submit'])
 		{
-			$this->user->add_lang_ext('vse/similartopics', 'similar_topics');
-			$this->template->assign_vars(array(
+			$this->language->add_lang('similar_topics', 'vse/similartopics');
 				'S_SIMILAR_TOPICS'			=> $this->config['similar_topics'] && $this->auth->acl_get('u_similar_topics'),
 				'S_DISPLAY_SIMILAR_TOPICS'	=> $event['data']['similar_topics'],
 			));

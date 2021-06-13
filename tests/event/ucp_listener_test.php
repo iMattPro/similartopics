@@ -63,6 +63,7 @@ class ucp_listener_test extends \phpbb_test_case
 		$this->listener = new \vse\similartopics\event\ucp_listener(
 			$this->auth,
 			$this->config,
+			$this->language,
 			$this->request,
 			$this->template,
 			$this->user

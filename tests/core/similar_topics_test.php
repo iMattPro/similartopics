@@ -120,6 +120,7 @@ class similar_topics_test extends \phpbb_test_case
 			$this->db,
 			$this->dispatcher,
 			$this->ext_manager,
+			$this->language,
 			$this->pagination,
 			$this->request,
 			$this->template,
