@@ -36,8 +36,8 @@
 			e.preventDefault();
 			const table = document.getElementById('similar_forums');
 			const state = e.target.dataset.selector === "true";
-			for (let i = 0; i < table.options.length; i++) {
-				table.options[i].selected = state;
+			for (const option of table.options) {
+				option.selected = state;
 			}
 		});
 	</script>
