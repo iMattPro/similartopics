@@ -27,6 +27,9 @@ class similar_topics_module
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\language\language */
+	protected $language;
+
 	/** @var \phpbb\log\log */
 	protected $log;
 
@@ -75,6 +78,7 @@ class similar_topics_module
 		$this->config_text   = $phpbb_container->get('config_text');
 		$this->db            = $phpbb_container->get('dbal.conn');
 		$this->similartopics = $phpbb_container->get('vse.similartopics.driver.manager')->get_driver($this->db->get_sql_layer());
+		$this->language      = $phpbb_container->get('language');
 		$this->log           = $phpbb_container->get('log');
 		$this->request       = $phpbb_container->get('request');
 		$this->template      = $phpbb_container->get('template');
@@ -96,10 +100,10 @@ class similar_topics_module
 	 */
 	public function main()
 	{
-		$this->user->add_lang_ext('vse/similartopics', 'acp_similar_topics');
+		$this->language->add_lang('acp_similar_topics', 'vse/similartopics');
 
 		$this->tpl_name = 'acp_similar_topics';
-		$this->page_title = $this->user->lang('PST_TITLE_ACP');
+		$this->page_title = $this->language->lang('PST_TITLE_ACP');
 
 		$form_key = 'acp_similar_topics';
 		add_form_key($form_key);
@@ -223,7 +227,7 @@ class similar_topics_module
 				// If postgresql, we need to make an options list of text search names
 				if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
 				{
-					$this->user->add_lang('acp/search');
+					$this->language->add_lang('acp/search');
 					foreach ($this->get_cfgname_list() as $row)
 					{
 						$this->template->assign_block_vars('postgres_ts_names', array(
@@ -405,6 +409,6 @@ class similar_topics_module
 	 */
 	protected function end($message, $code = E_USER_NOTICE)
 	{
-		trigger_error($this->user->lang($message) . adm_back_link($this->u_action), $code);
+		trigger_error($this->language->lang($message) . adm_back_link($this->u_action), $code);
 	}
 }

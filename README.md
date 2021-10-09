@@ -28,8 +28,8 @@ This is an extension for phpBB that will find and display a list of similar (rel
 * Featured MOD of the Week in the phpBB Weekly Podcast, episode #161.
 
 ## Minimum Requirements
-* phpBB 3.1.3 up to the most current version (3.3.x).
-* PHP 5.3.3
+* phpBB 3.2.1 up to the most current version (3.3.x).
+* PHP 5.4
 * MySQL, MariaDB or PostgreSQL database (SQLite, Oracle and MS SQL Server not supported)
 
 ## Install
