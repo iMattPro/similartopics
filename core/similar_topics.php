@@ -326,6 +326,12 @@ class similar_topics
 					'S_TOPIC_UNAPPROVED'	=> $topic_unapproved,
 					'S_POSTS_UNAPPROVED'	=> $posts_unapproved,
 					'S_HAS_POLL'			=> (bool) $row['poll_start'],
+					'S_POST_ANNOUNCE'		=> $row['topic_type'] == POST_ANNOUNCE,
+					'S_POST_GLOBAL'			=> $row['topic_type'] == POST_GLOBAL,
+					'S_POST_STICKY'			=> $row['topic_type'] == POST_STICKY,
+					'S_TOPIC_LOCKED'		=> $row['topic_status'] == ITEM_LOCKED,
+					'S_TOPIC_MOVED'			=> $row['topic_status'] == ITEM_MOVED,
+					'S_TOPIC_HOT'			=> $this->config['hot_threshold'] && ($replies + 1) >= $this->config['hot_threshold'] && $row['topic_status'] != ITEM_LOCKED,
 
 					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
 					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
