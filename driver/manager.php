@@ -37,12 +37,7 @@ class manager
 	 */
 	public function get_driver($sql_layer)
 	{
-		if (isset($this->similartopics_drivers[$sql_layer]))
-		{
-			return $this->similartopics_drivers[$sql_layer];
-		}
-
-		return null;
+		return $this->similartopics_drivers[$sql_layer] ?? null;
 	}
 
 	/**

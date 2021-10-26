@@ -116,7 +116,7 @@ class mysqli implements driver_interface
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			// Older MySQL versions didn't use Index_type, so fallback to Comment
-			$index_type = isset($row['Index_type']) ? $row['Index_type'] : $row['Comment'];
+			$index_type = $row['Index_type'] ?? $row['Comment'];
 
 			if ($index_type === 'FULLTEXT' && $row['Key_name'] === $column)
 			{
@@ -155,7 +155,7 @@ class mysqli implements driver_interface
 	 */
 	public function get_engine()
 	{
-		return $this->engine !== null ? $this->engine : $this->set_engine();
+		return $this->engine ?? $this->set_engine();
 	}
 
 	/**
