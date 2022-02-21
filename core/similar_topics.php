@@ -18,10 +18,12 @@ use phpbb\content_visibility;
 use phpbb\db\driver\driver_interface as db;
 use phpbb\event\dispatcher_interface as dispatcher;
 use phpbb\extension\manager as ext_manager;
+use phpbb\language\language;
 use phpbb\pagination;
 use phpbb\request\request;
 use phpbb\template\template;
 use phpbb\user;
+use vse\similartopics\driver\driver_interface as similartopics_driver;
 use vse\similartopics\driver\manager as similartopics_manager;
 
 class similar_topics
@@ -47,6 +49,9 @@ class similar_topics
 	/** @var ext_manager */
 	protected $extension_manager;
 
+	/** @var language */
+	protected $language;
+
 	/** @var pagination */
 	protected $pagination;
 
@@ -62,7 +67,7 @@ class similar_topics
 	/** @var content_visibility */
 	protected $content_visibility;
 
-	/** @var similartopics_manager */
+	/** @var similartopics_driver */
 	protected $similartopics;
 
 	/** @var string phpBB root path  */
@@ -85,6 +90,7 @@ class similar_topics
 	 * @param db                    $db
 	 * @param dispatcher            $dispatcher
 	 * @param ext_manager           $extension_manager
+	 * @param language              $language
 	 * @param pagination            $pagination
 	 * @param request               $request
 	 * @param template              $template
@@ -94,7 +100,7 @@ class similar_topics
 	 * @param string                $root_path
 	 * @param string                $php_ext
 	 */
-	public function __construct(auth $auth, cache $cache, config $config, db_text $config_text, db $db, dispatcher $dispatcher, ext_manager $extension_manager, pagination $pagination, request $request, template $template, user $user, content_visibility $content_visibility, similartopics_manager $similartopics_manager, $root_path, $php_ext)
+	public function __construct(auth $auth, cache $cache, config $config, db_text $config_text, db $db, dispatcher $dispatcher, ext_manager $extension_manager, language $language, pagination $pagination, request $request, template $template, user $user, content_visibility $content_visibility, similartopics_manager $similartopics_manager, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -103,6 +109,7 @@ class similar_topics
 		$this->db = $db;
 		$this->dispatcher = $dispatcher;
 		$this->extension_manager = $extension_manager;
+		$this->language = $language;
 		$this->pagination = $pagination;
 		$this->request = $request;
 		$this->template = $template;
@@ -285,11 +292,13 @@ class similar_topics
 				$unread_topic = isset($topic_tracking_info[$similar_topic_id]) && $row['topic_last_post_time'] > $topic_tracking_info[$similar_topic_id];
 				topic_status($row, $replies, $unread_topic, $folder_img, $folder_alt, $topic_type);
 
+				$view_topic_url_params = 't=' . $similar_topic_id;
+
 				$topic_unapproved = $row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $similar_forum_id);
 				$posts_unapproved = $row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id);
 				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
 
-				$base_url = append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id);
+				$base_url = append_sid("{$this->root_path}viewtopic.{$this->php_ext}", $view_topic_url_params);
 
 				$topic_row = array(
 					'TOPIC_AUTHOR_FULL'			=> get_username_string('full', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
@@ -306,12 +315,12 @@ class similar_topics
 
 					'TOPIC_IMG_STYLE'		=> $folder_img,
 					'TOPIC_FOLDER_IMG'		=> $this->user->img($folder_img, $folder_alt),
-					'TOPIC_FOLDER_IMG_ALT'	=> $this->user->lang($folder_alt),
+					'TOPIC_FOLDER_IMG_ALT'	=> $this->language->lang($folder_alt),
 
 					'TOPIC_ICON_IMG'		=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['img'] : '',
 					'TOPIC_ICON_IMG_WIDTH'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['width'] : '',
 					'TOPIC_ICON_IMG_HEIGHT'	=> !empty($icons[$row['icon_id']]) ? $icons[$row['icon_id']]['height'] : '',
-					'ATTACH_ICON_IMG'		=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $similar_forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->user->lang('TOTAL_ATTACHMENTS')) : '',
+					'ATTACH_ICON_IMG'		=> ($this->auth->acl_get('u_download') && $this->auth->acl_get('f_download', $similar_forum_id) && $row['topic_attachment']) ? $this->user->img('icon_topic_attach', $this->language->lang('TOTAL_ATTACHMENTS')) : '',
 					'UNAPPROVED_IMG'		=> ($topic_unapproved || $posts_unapproved) ? $this->user->img('icon_topic_unapproved', $topic_unapproved ? 'TOPIC_UNAPPROVED' : 'POSTS_UNAPPROVED') : '',
 
 					'S_UNREAD_TOPIC'		=> $unread_topic,
@@ -320,11 +329,11 @@ class similar_topics
 					'S_POSTS_UNAPPROVED'	=> $posts_unapproved,
 					'S_HAS_POLL'			=> (bool) $row['poll_start'],
 
-					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;view=unread') . '#unread',
-					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 'f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
+					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", $view_topic_url_params . '&amp;view=unread') . '#unread',
+					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", $view_topic_url_params . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
 					'U_VIEW_TOPIC'			=> $base_url,
 					'U_VIEW_FORUM'			=> append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $similar_forum_id),
-					'U_MCP_REPORT'			=> append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=reports&amp;mode=reports&amp;f=' . $similar_forum_id . '&amp;t=' . $similar_topic_id, true, $this->user->session_id),
+					'U_MCP_REPORT'			=> append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=reports&amp;mode=reports&amp;' . $view_topic_url_params, true, $this->user->session_id),
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
 				);
 
@@ -345,15 +354,13 @@ class similar_topics
 			}
 		}
 
-		$this->user->add_lang_ext('vse/similartopics', 'similar_topics');
+		$this->language->add_lang('similar_topics', 'vse/similartopics');
 
 		$this->template->assign_vars(array(
-			'L_SIMILAR_TOPICS'	=> $this->user->lang('SIMILAR_TOPICS'),
 			'NEWEST_POST_IMG'	=> $this->user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),
 			'LAST_POST_IMG'		=> $this->user->img('icon_topic_latest', 'VIEW_LATEST_POST'),
 			'REPORTED_IMG'		=> $this->user->img('icon_topic_reported', 'TOPIC_REPORTED'),
 			'POLL_IMG'			=> $this->user->img('icon_topic_poll', 'TOPIC_POLL'),
-			'S_PST_BRANCH'		=> phpbb_version_compare(max($this->config['phpbb_version'], PHPBB_VERSION), '3.2.0-dev', '<') ? '31x' : '32x',
 		));
 	}
 

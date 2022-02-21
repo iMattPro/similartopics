@@ -9,6 +9,7 @@ services:
             - '@dbal.conn'
             - '@dispatcher'
             - '@ext.manager'
+            - '@language'
             - '@pagination'
             - '@request'
             - '@template'
@@ -30,6 +31,7 @@ services:
         arguments:
             - '@auth'
             - '@config'
+            - '@language'
             - '@request'
             - '@template'
             - '@user'
@@ -40,6 +42,22 @@ services:
         class: vse\similartopics\driver\manager
         arguments:
             - '@vse.similartopics.driver_collection'
+
+    vse.similartopics.acp.controller:
+        class: vse\similartopics\acp\controller\similar_topics_admin
+        arguments:
+            - '@cache.driver'
+            - '@config'
+            - '@config_text'
+            - '@dbal.conn'
+            - '@vse.similartopics.driver.manager'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '%core.root_path%'
+            - '%core.php_ext%'
 
 # ----- Similar topics DB drivers collection -----
     vse.similartopics.driver_collection:

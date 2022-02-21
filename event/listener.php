@@ -40,10 +40,10 @@ class listener implements EventSubscriberInterface
 	 */
 	public static function getSubscribedEvents()
 	{
-		return array(
+		return [
 			'core.viewtopic_modify_page_title'		=> 'display_similar_topics',
 			'core.permissions'						=> 'add_permissions',
-		);
+		];
 	}
 
 	/**
@@ -71,8 +71,9 @@ class listener implements EventSubscriberInterface
 	 */
 	public function add_permissions($event)
 	{
-		$permissions = $event['permissions'];
-		$permissions['u_similar_topics'] = array('lang' => 'ACL_U_SIMILARTOPICS', 'cat' => 'misc');
-		$event['permissions'] = $permissions;
+		$event->update_subarray('permissions', 'u_similar_topics', [
+			'lang' => 'ACL_U_SIMILARTOPICS',
+			'cat' => 'misc'
+		]);
 	}
 }

@@ -17,7 +17,7 @@ class release_1_3_0_schema extends \phpbb\db\migration\migration
 		return $this->db_tools->sql_column_exists($this->table_prefix . 'users', 'user_similar_topics');
 	}
 
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\vse\similartopics\migrations\release_1_1_6_data');
 	}

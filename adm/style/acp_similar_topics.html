@@ -17,24 +17,12 @@
 
 {% if S_ADVANCED_SETTINGS %}
 
-	<script>
-		function selector(bool)
-		{
-			var table = document.getElementById('similar_forums');
-
-			for (var i = 0; i < table.options.length; i++)
-			{
-				table.options[i].selected = bool;
-			}
-		}
-	</script>
-
 	<fieldset>
 		<legend>{{ lang('PST_ADVANCED_FORUM') }}</legend>
 		<dl>
-			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br /><br /><span>{{ PST_ADVANCED_EXP }}</span></dt>
+			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br /><br /><span>{{ lang('PST_ADVANCED_EXP', PST_FORUM_NAME) }}</span></dt>
 			<dd><select id="similar_forums" name="similar_forums_id[]" multiple="multiple" size="10">{{ SIMILAR_FORUMS_OPTIONS }}</select></dd>
-			<dd><a href="#" onclick="selector(false); return false;">{{ lang('PST_DESELECT_ALL') }}</a></dd>
+			<dd><a href="#" data-selector="false">{{ lang('PST_DESELECT_ALL') }}</a></dd>
 		</dl>
 		<p class="submit-buttons">
 			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
@@ -42,6 +30,17 @@
 		</p>
 		{{ S_FORM_TOKEN }}
 	</fieldset>
+
+	<script>
+		document.querySelector("[data-selector]").addEventListener("click", (e) => {
+			e.preventDefault();
+			const table = document.getElementById('similar_forums');
+			const state = e.target.dataset.selector === "true";
+			for (const option of table.options) {
+				option.selected = state;
+			}
+		});
+	</script>
 
 {% else %}
 
@@ -68,7 +67,7 @@
 				<label>
 					<select name="pst_time_type">
 						{% for similar_time_options in loops.similar_time_options %}
-							<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ similar_time_options.LABEL }}</option>
+							<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ lang(similar_time_options.LABEL) }}</option>
 						{% endfor %}
 					</select>
 				</label>
@@ -88,7 +87,7 @@
 		<fieldset>
 			<legend>{{ lang('PST_LEGEND3') }}</legend>
 			<span class="small">{{ lang('PST_FORUM_INFO') }}</span>
-			<div style="max-height:300px; overflow:auto;">
+			<div style="overflow: auto; max-height: 300px;">
 				<table class="table1">
 					<colgroup><col class="row1" /><col class="row2" /><col class="row1" /><col class="row2" /></colgroup>
 					<thead>
@@ -105,17 +104,17 @@
 							<td>
 								<strong><a href="{{ forums.U_FORUM }}">{{ forums.FORUM_NAME }}</a></strong>
 							</td>
-							<td style="width:20%; text-align: center;" title="{{ lang('PST_NOSHOW_TITLE') }} {{ forums.FORUM_NAME }}">
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_NOSHOW_TITLE') }} {{ forums.FORUM_NAME }}">
 								<label>
 									<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_NOSHOW_FORUM }} />
 								</label>
 							</td>
-							<td style="width:20%; text-align: center;" title="{{ lang('PST_IGNORE_TITLE') }} {{ forums.FORUM_NAME }}">
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_IGNORE_TITLE') }} {{ forums.FORUM_NAME }}">
 								<label>
 									<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_IGNORE_FORUM }} />
 								</label>
 							</td>
-							<td style="width:20%; text-align: center;" title="{{ lang('PST_ADVANCED_TITLE') }} {{ forums.FORUM_NAME }}">
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_ADVANCED_TITLE') }} {{ forums.FORUM_NAME }}">
 							<a href="{{ forums.U_ADVANCED }}">{% if forums.S_IS_ADVANCED %}<strong>{{ lang('PST_ADVANCED') }}</strong>{% else %}{{ lang('PST_STANDARD') }}</a>{% endif %}
 							</td>
 						</tr>

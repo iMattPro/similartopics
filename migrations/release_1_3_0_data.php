@@ -17,7 +17,7 @@ class release_1_3_0_data extends \phpbb\db\migration\container_aware_migration
 		return isset($this->config['similar_topics_version']) && version_compare($this->config['similar_topics_version'], '1.3.0', '>=');
 	}
 
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\vse\similartopics\migrations\release_1_3_0_schema');
 	}

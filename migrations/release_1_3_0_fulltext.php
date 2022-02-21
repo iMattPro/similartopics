@@ -17,7 +17,7 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 		return !isset($this->config['similar_topics_fulltext']);
 	}
 
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\vse\similartopics\migrations\release_1_3_0_data');
 	}

@@ -78,9 +78,7 @@ class mysqli implements driver_interface
 	 */
 	public function is_supported()
 	{
-		// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
-		// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
-		return $this->is_mysql() && ($this->get_engine() === 'myisam' || ($this->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=')));
+		return $this->is_mysql() && $this->supported_engine();
 	}
 
 	/**
@@ -213,5 +211,27 @@ class mysqli implements driver_interface
 	protected function is_mysql()
 	{
 		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');
+	}
+
+	/**
+	 * Check if the database engine is supported.
+	 * FULLTEXT is supported on MyISAM, and also on InnoDB as of MySQL 5.6.4 according
+	 * to http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
+	 *
+	 * @return bool True if supported, false otherwise
+	 */
+	protected function supported_engine()
+	{
+		if ($this->get_engine() === 'myisam')
+		{
+			return true;
+		}
+
+		if ($this->get_engine() === 'innodb')
+		{
+			return phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '>=');
+		}
+
+		return false;
 	}
 }
