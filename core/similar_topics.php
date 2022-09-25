@@ -181,7 +181,7 @@ class similar_topics
 			return;
 		}
 
-		// Get stored sensitivity value and divide by 10. In query it should be a number between 0.0 to 1.0.
+		// Get stored sensitivity value and divide by 10. In query, it should be a number between 0.0 to 1.0.
 		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? number_format($this->config['similar_topics_sense'] / 10, 1, '.', '') : '0.5';
 
 		// Similar Topics SQL query is generated in similar topics driver
@@ -201,7 +201,7 @@ class similar_topics
 			$tracking_topics = $tracking_topics ? tracking_unserialize($tracking_topics) : array();
 		}
 
-		// We need to exclude passworded forums so we do not leak the topic title
+		// We need to exclude passworded forums, so we do not leak the topic title
 		$passworded_forums = $this->user->get_passworded_forums();
 
 		// See if the admin set this forum to only search a specific group of other forums, and include them
@@ -217,7 +217,7 @@ class similar_topics
 
 			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $included_forums);
 		}
-		// Otherwise exclude any ignored forums
+		// Otherwise, exclude any ignored forums
 		else
 		{
 			// Remove any passworded forums
@@ -296,9 +296,9 @@ class similar_topics
 
 				$topic_unapproved = $row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $similar_forum_id);
 				$posts_unapproved = $row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id);
-				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
+				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->php_ext", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
 
-				$base_url = append_sid("{$this->root_path}viewtopic.{$this->php_ext}", $view_topic_url_params);
+				$base_url = append_sid("{$this->root_path}viewtopic.$this->php_ext", $view_topic_url_params);
 
 				$topic_row = array(
 					'TOPIC_AUTHOR_FULL'			=> get_username_string('full', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
@@ -329,11 +329,11 @@ class similar_topics
 					'S_POSTS_UNAPPROVED'	=> $posts_unapproved,
 					'S_HAS_POLL'			=> (bool) $row['poll_start'],
 
-					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", $view_topic_url_params . '&amp;view=unread') . '#unread',
-					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.{$this->php_ext}", $view_topic_url_params . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
+					'U_NEWEST_POST'			=> append_sid("{$this->root_path}viewtopic.$this->php_ext", $view_topic_url_params . '&amp;view=unread') . '#unread',
+					'U_LAST_POST'			=> append_sid("{$this->root_path}viewtopic.$this->php_ext", $view_topic_url_params . '&amp;p=' . $row['topic_last_post_id']) . '#p' . $row['topic_last_post_id'],
 					'U_VIEW_TOPIC'			=> $base_url,
-					'U_VIEW_FORUM'			=> append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $similar_forum_id),
-					'U_MCP_REPORT'			=> append_sid("{$this->root_path}mcp.{$this->php_ext}", 'i=reports&amp;mode=reports&amp;' . $view_topic_url_params, true, $this->user->session_id),
+					'U_VIEW_FORUM'			=> append_sid("{$this->root_path}viewforum.$this->php_ext", 'f=' . $similar_forum_id),
+					'U_MCP_REPORT'			=> append_sid("{$this->root_path}mcp.$this->php_ext", 'i=reports&amp;mode=reports&amp;' . $view_topic_url_params, true, $this->user->session_id),
 					'U_MCP_QUEUE'			=> $u_mcp_queue,
 				);
 
@@ -403,7 +403,7 @@ class similar_topics
 			$search_ignore_words = $finder
 				->set_extensions(array('vse/similartopics'))
 				->prefix('search_ignore_words')
-				->suffix(".{$this->php_ext}")
+				->suffix(".$this->php_ext")
 				->extension_directory("/language/{$this->user->lang_name}")
 				->core_path("language/{$this->user->lang_name}/")
 				->get_files();
@@ -441,7 +441,7 @@ class similar_topics
 		$words = explode(' ', utf8_strtolower($text));
 		foreach ($words as $key => $word)
 		{
-			// Strip words of 2 characters or less
+			// Strip words of 2 characters or fewer
 			if (utf8_strlen(trim($word)) < 3)
 			{
 				unset($words[$key]);

@@ -240,7 +240,7 @@ class similar_topics_admin
 				'CHECKED_NOSHOW_FORUM' => $row['similar_topics_hide'] ? 'checked="checked"' : '',
 				'S_IS_ADVANCED'        => (bool) $row['similar_topic_forums'],
 				'U_ADVANCED'           => "{$this->u_action}&amp;action=advanced&amp;f=" . $row['forum_id'],
-				'U_FORUM'              => append_sid("{$this->root_path}viewforum.{$this->php_ext}", 'f=' . $row['forum_id']),
+				'U_FORUM'              => append_sid("{$this->root_path}viewforum.$this->php_ext", 'f=' . $row['forum_id']),
 			));
 		}
 	}
