@@ -113,7 +113,7 @@ jobs:
                       db: "mysql:5.7"
                     - php: '7.2'
                       db: "mysql:5.7"
-                      COVERAGE: 0
+                      COVERAGE: 1
                     - php: '7.3'
                       db: "mysql:5.7"
                     - php: '7.4'
