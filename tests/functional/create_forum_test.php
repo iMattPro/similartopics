@@ -27,7 +27,7 @@ class create_forum_test extends \phpbb_functional_test_case
 		$this->login();
 		$this->admin_login();
 
-		$crawler = self::request('GET', "adm/index.php?i=acp_forums&mode=manage&sid={$this->sid}");
+		$crawler = self::request('GET', "adm/index.php?i=acp_forums&mode=manage&sid=$this->sid");
 		$form = $crawler->selectButton($this->lang('CREATE_FORUM'))->form();
 		$crawler = self::submit($form);
 		$this->assertContainsLang('CREATE_FORUM', $crawler->filter('#main h1')->text());
