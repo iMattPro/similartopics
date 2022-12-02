@@ -70,38 +70,20 @@ class similar_topics_test extends \phpbb_test_case
 		global $phpbb_root_path, $phpEx;
 
 		// Classes we just need to mock for the constructor
-		$this->service = $this->getMockBuilder('\phpbb\cache\service')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->config_text = $this->getMockBuilder('\phpbb\config\db_text')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->db = $this->getMockBuilder('\phpbb\db\driver\driver_interface')
-			->getMock();
-		$this->dispatcher = $this->getMockBuilder('\phpbb\event\dispatcher_interface')
-			->getMock();
-		$this->pagination = $this->getMockBuilder('\phpbb\pagination')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->request = $this->getMockBuilder('\phpbb\request\request')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->template = $this->getMockBuilder('\phpbb\template\template')
-			->getMock();
-		$this->content_visibility = $this->getMockBuilder('\phpbb\content_visibility')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->manager = $this->getMockBuilder('\vse\similartopics\driver\manager')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->driver = $this->getMockBuilder('\vse\similartopics\driver\driver_interface')
-			->getMock();
-		$this->ext_manager = $this->getMockBuilder('\phpbb\extension\manager')
-			->disableOriginalConstructor()
-			->getMock();
+		$this->service = $this->createMock('\phpbb\cache\service');
+		$this->config_text = $this->createMock('\phpbb\config\db_text');
+		$this->db = $this->createMock('\phpbb\db\driver\driver_interface');
+		$this->dispatcher = $this->createMock('\phpbb\event\dispatcher_interface');
+		$this->pagination = $this->createMock('\phpbb\pagination');
+		$this->request = $this->createMock('\phpbb\request\request');
+		$this->template = $this->createMock('\phpbb\template\template');
+		$this->content_visibility = $this->createMock('\phpbb\content_visibility');
+		$this->manager = $this->createMock('\vse\similartopics\driver\manager');
+		$this->driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$this->ext_manager = $this->createMock('\phpbb\extension\manager');
 
 		// Classes used in the tests
-		$this->auth = $this->getMockBuilder('\phpbb\auth\auth')->getMock();
+		$this->auth = $this->createMock('\phpbb\auth\auth');
 		$this->config = new \phpbb\config\config([]);
 		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
 		$this->language = new \phpbb\language\language($lang_loader);
@@ -356,8 +338,7 @@ class similar_topics_test extends \phpbb_test_case
 
 	public function set_cache()
 	{
-		$cache = $this->getMockBuilder('\phpbb\cache\driver\driver_interface')
-			->getMock();
+		$cache = $this->createMock('\phpbb\cache\driver\driver_interface');
 		$cache->method('get')
 			->willReturn(false);
 
@@ -366,9 +347,7 @@ class similar_topics_test extends \phpbb_test_case
 
 	public function get_finder()
 	{
-		$finder = $this->getMockBuilder('\phpbb\finder')
-			->disableOriginalConstructor()
-			->getMock();
+		$finder = $this->createMock('\phpbb\finder');
 		$finder->expects(self::once())
 			->method('set_extensions')
 			->willReturnSelf();

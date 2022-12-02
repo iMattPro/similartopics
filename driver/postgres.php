@@ -97,15 +97,7 @@ class postgres implements driver_interface
 	 */
 	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		foreach ($this->get_fulltext_indexes($column, $table) as $index)
-		{
-			if ($index === $table . '_' . $this->ts_name . '_' . $column)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return in_array($table . '_' . $this->ts_name . '_' . $column, $this->get_fulltext_indexes($column, $table), true);
 	}
 
 	/**

@@ -86,15 +86,7 @@ class mysqli implements driver_interface
 	 */
 	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		foreach ($this->get_fulltext_indexes($column, $table) as $index)
-		{
-			if ($index === $column)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return in_array($column, $this->get_fulltext_indexes($column, $table), true);
 	}
 
 	/**

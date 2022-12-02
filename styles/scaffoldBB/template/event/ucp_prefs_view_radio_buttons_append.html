@@ -1,0 +1,9 @@
+{% if S_SIMILAR_TOPICS %}
+	<dl class="row gx-0 mb-1">
+		<dt class="col-md-5"><label for="similar_topics1">{{ lang('DISPLAY_SIMILAR_TOPICS') ~ lang('COLON') }}</label></dt>
+		<dd class="col-md-7">
+			<div class="form-check form-check-inline"><label class="form-label" for="similar_topics1">{{ lang('YES') }}</label><input class="form-check-input" type="radio" name="similar_topics" id="similar_topics1" value="1"{% if S_DISPLAY_SIMILAR_TOPICS %} checked="checked"{% endif %} /> </div>
+			<div class="form-check form-check-inline"><label class="form-label" for="similar_topics0">{{ lang('NO') }}</label><input class="form-check-input" type="radio" name="similar_topics" id="similar_topics0" value="0"{% if not S_DISPLAY_SIMILAR_TOPICS %} checked="checked"{% endif %} /> </div>
+		</dd>
+	</dl>
+{% endif %}

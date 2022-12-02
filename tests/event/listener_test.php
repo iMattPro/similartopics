@@ -26,9 +26,7 @@ class listener_test extends \phpbb_test_case
 		parent::setUp();
 
 		// Load/Mock classes required by the event listener class
-		$this->similar_topics = $this->getMockBuilder('\vse\similartopics\core\similar_topics')
-			->disableOriginalConstructor()
-			->getMock();
+		$this->similar_topics = $this->createMock('\vse\similartopics\core\similar_topics');
 	}
 
 	/**
