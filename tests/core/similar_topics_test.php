@@ -347,7 +347,7 @@ class similar_topics_test extends \phpbb_test_case
 
 	public function get_finder()
 	{
-		$finder = $this->createMock('\phpbb\finder');
+		$finder = $this->createMock('\phpbb\finder\finder');
 		$finder->expects(self::once())
 			->method('set_extensions')
 			->willReturnSelf();
