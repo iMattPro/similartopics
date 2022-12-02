@@ -19,7 +19,7 @@ This is an extension for phpBB that will find and display a list of similar (rel
 * Specify which forums can share similar topics with other forums.
 * A query caching option reduces SQL overhead on large boards.
 * Permission settings for users and groups determine who can view similar topics (i.e.: don't show similar topics to guests).
-* Multi-lingual support for stop-words (common words that are ignored).
+* Multilingual support for stop-words (common words that are ignored).
 * Multiple languages are supported. View the pre-installed [localizations](https://github.com/iMattPro/similartopics/tree/master/language).
 * Compatible with most styles, more added with every release.
 * Built-in compatibility with my "Topic Preview" extension.

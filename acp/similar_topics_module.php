@@ -25,6 +25,7 @@ class similar_topics_module
 	 * Main ACP module
 	 *
 	 * @access public
+	 * @throws \Exception
 	 */
 	public function main()
 	{
