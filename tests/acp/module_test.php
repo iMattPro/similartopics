@@ -37,8 +37,7 @@ class module_test extends \phpbb_test_case
 			->method('set_u_action')
 			->willReturn($mock_acp_controller);
 
-		$phpbb_container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-			->getMock();
+		$phpbb_container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
 		$phpbb_container
 			->expects($this->at(0))
 			->method('get')

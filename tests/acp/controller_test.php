@@ -36,26 +36,17 @@ class controller_test extends \phpbb_database_test_case
 
 		$cache = new \phpbb_mock_cache;
 		$config = $this->config = new \phpbb\config\config([]);
-		$config_text = $this->getMockBuilder('\phpbb\config\db_text')
-			->disableOriginalConstructor()
-			->getMock();
+		$config_text = $this->createMock('\phpbb\config\db_text');
 		$db = $this->new_dbal();
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
-		$log = $this->getMockBuilder('\phpbb\log\log')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->request = $this->getMockBuilder('\phpbb\request\request')
-			->disableOriginalConstructor()
-			->getMock();
-		$template = $this->getMockBuilder('\phpbb\template\template')
-			->getMock();
+		$log = $this->createMock('\phpbb\log\log');
+		$this->request = $this->createMock('\phpbb\request\request');
+		$template = $this->createMock('\phpbb\template\template');
 		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
 		$language = new \phpbb\language\language($lang_loader);
 		$user = new \phpbb\user($language, '\phpbb\datetime');
 
-		$pst_manager = $this->getMockBuilder('\vse\similartopics\driver\manager')
-			->disableOriginalConstructor()
-			->getMock();
+		$pst_manager = $this->createMock('\vse\similartopics\driver\manager');
 
 		$this->controller = new \vse\similartopics\acp\controller\similar_topics_admin(
 			$cache,
