@@ -1,5 +1,12 @@
 ## Changelog
 
+### 1.6.0 - 2022-12-17
+
+- Removed support for phpBB 3.1.x.
+- Removed forum "f=" parameters from URLs.
+- Optimized Javascript and other coding updates.
+- Support added for ScaffoldBB style.
+
 ### 1.5.4 - 2020-12-01
 
 - Fix for Postgresql databases where titles with single quotes would fatally error.
