@@ -2,8 +2,8 @@
 	<dl>
 		<dt><label for="similar_topics1">{{ lang('DISPLAY_SIMILAR_TOPICS') ~ lang('COLON') }}</label></dt>
 		<dd>
-			<label for="similar_topics1"><input type="radio" name="similar_topics" id="similar_topics1" value="1"{% if S_DISPLAY_SIMILAR_TOPICS %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
-			<label for="similar_topics0"><input type="radio" name="similar_topics" id="similar_topics0" value="0"{% if not S_DISPLAY_SIMILAR_TOPICS %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+			<label for="similar_topics1"><input type="radio" name="similar_topics" id="similar_topics1" value="1"{% if S_DISPLAY_SIMILAR_TOPICS %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+			<label for="similar_topics0"><input type="radio" name="similar_topics" id="similar_topics0" value="0"{% if not S_DISPLAY_SIMILAR_TOPICS %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
 		</dd>
 	</dl>
 {% endif %}

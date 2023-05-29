@@ -20,13 +20,13 @@
 	<fieldset>
 		<legend>{{ lang('PST_ADVANCED_FORUM') }}</legend>
 		<dl>
-			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br /><br /><span>{{ lang('PST_ADVANCED_EXP', PST_FORUM_NAME) }}</span></dt>
+			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br><br><span>{{ lang('PST_ADVANCED_EXP', PST_FORUM_NAME) }}</span></dt>
 			<dd><select id="similar_forums" name="similar_forums_id[]" multiple="multiple" size="10">{{ SIMILAR_FORUMS_OPTIONS }}</select></dd>
 			<dd><a href="#" data-selector="false">{{ lang('PST_DESELECT_ALL') }}</a></dd>
 		</dl>
 		<p class="submit-buttons">
-			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}" />
+			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}">&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}">
 		</p>
 		{{ S_FORM_TOKEN }}
 	</fieldset>
@@ -49,8 +49,8 @@
 		<dl>
 			<dt><label for="pst_enable">{{ lang('PST_ENABLE') ~ lang('COLON') }}</label></dt>
 			<dd>
-				<label><input type="radio" class="radio" id="pst_enable" name="pst_enable" value="1"{% if S_PST_ENABLE %} checked="checked"{% endif %}{% if S_PST_NO_SUPPORT %} disabled="disabled"{% endif %} /> {{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="pst_enable" value="0"{% if not S_PST_ENABLE %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+				<label><input type="radio" class="radio" id="pst_enable" name="pst_enable" value="1"{% if S_PST_ENABLE %} checked="checked"{% endif %}{% if S_PST_NO_SUPPORT %} disabled="disabled"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="pst_enable" value="0"{% if not S_PST_ENABLE %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
 			</dd>
 		</dl>
 	</fieldset>
@@ -58,12 +58,12 @@
 	<fieldset>
 		<legend>{{ lang('PST_LEGEND2') }}</legend>
 		<dl>
-			<dt><label for="pst_limit">{{ lang('PST_LIMIT') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_LIMIT_EXPLAIN') }}</span></dt>
-			<dd><input name="pst_limit" id="pst_limit" type="number" min="0" max="999" value="{{ PST_LIMIT }}" /></dd>
+			<dt><label for="pst_limit">{{ lang('PST_LIMIT') ~ lang('COLON') }}</label><br><span>{{ lang('PST_LIMIT_EXPLAIN') }}</span></dt>
+			<dd><input name="pst_limit" id="pst_limit" type="number" min="0" max="999" value="{{ PST_LIMIT }}"></dd>
 		</dl>
 		<dl>
-			<dt><label for="pst_time">{{ lang('PST_TIME') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_TIME_EXPLAIN') }}</span></dt>
-			<dd><input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{{ PST_TIME }}" />
+			<dt><label for="pst_time">{{ lang('PST_TIME') ~ lang('COLON') }}</label><br><span>{{ lang('PST_TIME_EXPLAIN') }}</span></dt>
+			<dd><input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{{ PST_TIME }}">
 				<label>
 					<select name="pst_time_type">
 						{% for similar_time_options in loops.similar_time_options %}
@@ -74,12 +74,12 @@
 			</dd>
 		</dl>
 		<dl>
-			<dt><label for="pst_cache">{{ lang('PST_CACHE') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_CACHE_EXPLAIN') }}</span></dt>
-			<dd><input name="pst_cache" id="pst_cache" type="number" min="0" max="99999999" value="{{ PST_CACHE }}" /> {{ lang('SECONDS') }}</dd>
+			<dt><label for="pst_cache">{{ lang('PST_CACHE') ~ lang('COLON') }}</label><br><span>{{ lang('PST_CACHE_EXPLAIN') }}</span></dt>
+			<dd><input name="pst_cache" id="pst_cache" type="number" min="0" max="99999999" value="{{ PST_CACHE }}"> {{ lang('SECONDS') }}</dd>
 		</dl>
 		<dl>
-			<dt><label for="pst_sense">{{ lang('PST_SENSE') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_SENSE_EXPLAIN') }}</span></dt>
-			<dd><input name="pst_sense" id="pst_sense" type="number" min="1" max="10" value="{{ PST_SENSE }}" /></dd>
+			<dt><label for="pst_sense">{{ lang('PST_SENSE') ~ lang('COLON') }}</label><br><span>{{ lang('PST_SENSE_EXPLAIN') }}</span></dt>
+			<dd><input name="pst_sense" id="pst_sense" type="number" min="1" max="10" value="{{ PST_SENSE }}"></dd>
 		</dl>
 	</fieldset>
 
@@ -89,7 +89,7 @@
 			<span class="small">{{ lang('PST_FORUM_INFO') }}</span>
 			<div style="overflow: auto; max-height: 300px;">
 				<table class="table1">
-					<colgroup><col class="row1" /><col class="row2" /><col class="row1" /><col class="row2" /></colgroup>
+					<colgroup><col class="row1"><col class="row2"><col class="row1"><col class="row2"></colgroup>
 					<thead>
 						<tr>
 							<th>{{ lang('FORUMS') }}</th>
@@ -106,12 +106,12 @@
 							</td>
 							<td style="text-align: center; width: 20%;" title="{{ lang('PST_NOSHOW_TITLE') }} {{ forums.FORUM_NAME }}">
 								<label>
-									<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_NOSHOW_FORUM }} />
+									<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_NOSHOW_FORUM }}>
 								</label>
 							</td>
 							<td style="text-align: center; width: 20%;" title="{{ lang('PST_IGNORE_TITLE') }} {{ forums.FORUM_NAME }}">
 								<label>
-									<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_IGNORE_FORUM }} />
+									<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_IGNORE_FORUM }}>
 								</label>
 							</td>
 							<td style="text-align: center; width: 20%;" title="{{ lang('PST_ADVANCED_TITLE') }} {{ forums.FORUM_NAME }}">
@@ -128,12 +128,12 @@
 	<fieldset>
 		<legend>{{ lang('PST_LEGEND4') }}</legend>
 		<dl>
-			<dt><label for="pst_words">{{ lang('PST_WORDS') ~ lang('COLON') }}</label><br /><span>{{ lang('PST_WORDS_EXPLAIN') }}</span></dt>
+			<dt><label for="pst_words">{{ lang('PST_WORDS') ~ lang('COLON') }}</label><br><span>{{ lang('PST_WORDS_EXPLAIN') }}</span></dt>
 			<dd><textarea name="pst_words" id="pst_words" rows="5" cols="40">{{ PST_WORDS }}</textarea></dd>
 		</dl>
 		{% if loops.postgres_ts_names %}
 			<dl>
-				<dt><label for="pst_postgres_ts_name">{{ lang('FULLTEXT_POSTGRES_TS_NAME') }}</label><br /><span>{{ lang('FULLTEXT_POSTGRES_TS_NAME_EXPLAIN') }}</span></dt>
+				<dt><label for="pst_postgres_ts_name">{{ lang('FULLTEXT_POSTGRES_TS_NAME') }}</label><br><span>{{ lang('FULLTEXT_POSTGRES_TS_NAME_EXPLAIN') }}</span></dt>
 				<dd>
 					<select name="pst_postgres_ts_name" id="pst_postgres_ts_name">
 						{% for ts_name in loops.postgres_ts_names %}
@@ -148,8 +148,8 @@
 	<fieldset>
 		<legend>{{ lang('ACP_SUBMIT_CHANGES') }}</legend>
 		<p class="submit-buttons">
-			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}" />
+			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}">&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}">
 		</p>
 		{{ S_FORM_TOKEN }}
 	</fieldset>
