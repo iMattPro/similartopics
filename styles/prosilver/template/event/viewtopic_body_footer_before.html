@@ -22,14 +22,14 @@
 						<dl class="row-item">
 							<dt>
 								<a class="row-item-link{% if similar.S_UNREAD_TOPIC %} unread{% else %} read{% endif %}" href="{{ similar.U_NEWEST_POST }}" title="{{ similar.TOPIC_FOLDER_IMG_ALT }}">
-									{{ Icon('iconify', {
-										'mdi:info-variant' : similar.S_POST_GLOBAL,
-										'mdi:info-variant' : similar.S_POST_ANNOUNCE,
-										'mdi:star' : similar.S_POST_STICKY,
-										'mdi:lock' : similar.S_TOPIC_LOCKED,
-										'mdi:arrow-right-bold' : similar.S_TOPIC_MOVED,
-										'mdi:fire' : similar.S_TOPIC_HOT,
-										'mdi:file-document-outline' : true,
+									{{ Icon('svg', {
+										'info-variant' : similar.S_POST_GLOBAL,
+										'info-variant' : similar.S_POST_ANNOUNCE,
+										'star' : similar.S_POST_STICKY,
+										'lock' : similar.S_TOPIC_LOCKED,
+										'arrow-right-bold' : similar.S_TOPIC_MOVED,
+										'fire' : similar.S_TOPIC_HOT,
+										'file-document-outline' : true,
 									}, '', true, 'c-forum-row-icon') }}
 								</a>
 								{% if lang(similar.TOPIC_AUTHOR) == S_USERNAME %}
@@ -42,18 +42,18 @@
 									{% EVENT topiclist_row_prepend %}
 									{% if similar.S_UNREAD_TOPIC and not S_IS_BOT %}
 										<a class="unread" href="{{ similar.U_NEWEST_POST }}">
-											{{ Icon('iconify', 'fa:file', lang('NEW_POST'), true, 'c-topic-unread-icon') }}
+											{{ Icon('font', 'file', lang('NEW_POST'), true, 'fas c-topic-unread-icon') }}
 										</a>
 									{% endif %}
 									<a href="{{ similar.U_VIEW_TOPIC }}" class="topictitle">{{ similar.TOPIC_TITLE }}</a>
 									{% if similar.S_TOPIC_UNAPPROVED or similar.S_POSTS_UNAPPROVED %}
 										<a href="{{ similar.U_MCP_QUEUE }}" title="{{ lang('TOPIC_UNAPPROVED') }}">
-											{{ Icon('iconify', 'fa:question', lang('TOPIC_UNAPPROVED'), true, 'c-uapproved-icon') }}
+											{{ Icon('font', 'circle-question', lang('TOPIC_UNAPPROVED'), true, 'fas c-unapproved-icon') }}
 										</a>
 									{% endif %}
 									{% if similar.S_TOPIC_REPORTED %}
 										<a href="{{ similar.U_MCP_REPORT }}" title="{{ lang('TOPIC_REPORTED') }}">
-											{{ Icon('iconify', 'fa:exclamation', lang('TOPIC_REPORTED'), true, 'c-topic-reported-icon') }}
+											{{ Icon('font', 'triangle-exclamation', lang('TOPIC_REPORTED'), true, 'fas c-topic-reported-icon') }}
 										</a>
 									{% endif %}
 									<br />
@@ -68,8 +68,8 @@
 									{% endif %}
 
 									<div class="responsive-hide left-box">
-										{% if similar.S_HAS_POLL %}{{ Icon('iconify', 'fa:bar-chart', '', true) }}{% endif %}
-										{% if similar.ATTACH_ICON_IMG %}{{ Icon('iconify', 'fa:paperclip', '', true) }}{% endif %}
+										{% if similar.S_HAS_POLL %}{{ Icon('font', 'chart-bar', '', true) }}{% endif %}
+										{% if similar.ATTACH_ICON_IMG %}{{ Icon('font', 'paperclip', '', true) }}{% endif %}
 										{% EVENT topiclist_row_topic_by_author_before %}
 										{{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_topic_author_username_prepend %}{{ similar.TOPIC_AUTHOR_FULL }}{% EVENT search_results_topic_author_username_append %} &raquo; <time datetime="{{ similar.FIRST_POST_TIME_RFC3339 }}">{{ similar.FIRST_POST_TIME }}</time> &raquo; {{ lang('IN') }} <a href="{{ similar.U_VIEW_FORUM }}">{{ similar.FORUM_TITLE }}</a>
 										{% EVENT topiclist_row_topic_by_author_after %}
@@ -77,7 +77,7 @@
 
 									{% if similar.pagination|length %}
 										<div class="pagination">
-											<span>{{ Icon('iconify', 'fa:clone', '', true) }}</span>
+											<span>{{ Icon('font', 'clone', '', true, 'far') }}</span>
 											<ul>
 												{% for pagination in similar.pagination %}
 													{% if pagination.S_IS_PREV %}
@@ -100,7 +100,7 @@
 								<span><dfn>{{ lang('LAST_POST') }} </dfn>{{ lang('POST_BY_AUTHOR') }} {% EVENT search_results_last_post_author_username_prepend %}{{ similar.LAST_POST_AUTHOR_FULL }}{% EVENT search_results_last_post_author_username_append %}
 									{% if not S_IS_BOT %}
 										<a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">
-											{{ Icon('iconify', 'fa:external-link-square', VIEW_LATEST_POST, true, 'c-last-post-icon') }}
+											{{ Icon('font', 'arrow-up-right-from-square', VIEW_LATEST_POST, true, 'fas c-last-post-icon') }}
 										</a>
 									{% endif %}
 									<br /><time datetime="{{ similar.LAST_POST_TIME_RFC3339 }}">{{ similar.LAST_POST_TIME }}</time>
