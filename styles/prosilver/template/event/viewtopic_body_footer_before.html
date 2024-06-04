@@ -23,9 +23,9 @@
 							<dt>
 								<a class="row-item-link{% if similar.S_UNREAD_TOPIC %} unread{% else %} read{% endif %}" href="{{ similar.U_NEWEST_POST }}" title="{{ similar.TOPIC_FOLDER_IMG_ALT }}">
 									{{ Icon('svg', {
-										'info-variant' : similar.S_POST_GLOBAL,
-										'info-variant' : similar.S_POST_ANNOUNCE,
-										'star' : similar.S_POST_STICKY,
+										'globe' : similar.S_POST_GLOBAL,
+										'bullhorn' : similar.S_POST_ANNOUNCE,
+										'thumbtack' : similar.S_POST_STICKY,
 										'lock' : similar.S_TOPIC_LOCKED,
 										'arrow-right-bold' : similar.S_TOPIC_MOVED,
 										'fire' : similar.S_TOPIC_HOT,
