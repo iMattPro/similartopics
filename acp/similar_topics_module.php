@@ -32,9 +32,7 @@ class similar_topics_module
 		global $phpbb_container;
 
 		$this->tpl_name = 'acp_similar_topics';
-
-		$this->page_title = $phpbb_container->get('language')
-			->lang('PST_TITLE_ACP');
+		$this->page_title = 'PST_TITLE_ACP';
 
 		$phpbb_container->get('vse.similartopics.acp.controller')
 			->set_u_action($this->u_action)

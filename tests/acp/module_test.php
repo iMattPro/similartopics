@@ -34,16 +34,10 @@ class module_test extends \phpbb_test_case
 			->willReturn($mock_acp_controller);
 
 		$phpbb_container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
-		$phpbb_container->expects(self::exactly(2))
+		$phpbb_container->expects(self::once())
 			->method('get')
-			->withConsecutive(
-				['language'],
-				['vse.similartopics.acp.controller']
-			)
-			->willReturnOnConsecutiveCalls(
-				new \phpbb\language\language(new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx)),
-				$mock_acp_controller
-			);
+			->with('vse.similartopics.acp.controller')
+			->willReturn($mock_acp_controller);
 
 		$module->main();
 	}
