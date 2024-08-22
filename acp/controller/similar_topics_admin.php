@@ -213,6 +213,7 @@ class similar_topics_admin
 			'PST_SENSE'       => $this->isset_or_default($this->config['similar_topics_sense'], ''),
 			'PST_WORDS'       => $this->isset_or_default($this->config_text_get('similar_topics_words'), ''),
 			'PST_TIME'        => $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
+			'PST_SENSITIVITY' => $this->similartopics && $this->similartopics->get_engine() === 'innodb' ? 1 : 5,
 			'S_PST_NO_COMPAT' => $this->similartopics === null || !$this->similartopics->is_fulltext('topic_title'),
 			'U_ACTION'        => $this->u_action,
 		));
