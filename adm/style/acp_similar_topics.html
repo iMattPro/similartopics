@@ -78,7 +78,7 @@
 			<dd><input name="pst_cache" id="pst_cache" type="number" min="0" max="99999999" value="{{ PST_CACHE }}"> {{ lang('SECONDS') }}</dd>
 		</dl>
 		<dl>
-			<dt><label for="pst_sense">{{ lang('PST_SENSE') ~ lang('COLON') }}</label><br><span>{{ lang('PST_SENSE_EXPLAIN') }}</span></dt>
+			<dt><label for="pst_sense">{{ lang('PST_SENSE') ~ lang('COLON') }}</label><br><span>{{ lang('PST_SENSE_EXPLAIN', PST_SENSITIVITY) }}</span></dt>
 			<dd><input name="pst_sense" id="pst_sense" type="number" min="1" max="10" value="{{ PST_SENSE }}"></dd>
 		</dl>
 	</fieldset>

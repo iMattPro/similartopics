@@ -55,7 +55,7 @@ $lang = array_merge($lang, array(
 	'PST_CACHE'			=> 'Trajanje sličnih tema pohranjenih u priručnu memoriju',
 	'PST_CACHE_EXPLAIN'	=> 'Slične teme, pohranjene u priručnu memoriju, bit će izbrisane, iz priručne memorije, po isteku [u sekundama] postavljenog vremena [0=onemogućeno].',
 	'PST_SENSE'			=> 'Search sensitivity',
-	'PST_SENSE_EXPLAIN'	=> 'Set the search sensitivity to a value between 1 and 10. Use a lower number if you are not seeing any similar topics. Recommended settings: For “phpbb_topics” database tables using InnoDB use 1; for MyISAM use 5.',
+	'PST_SENSE_EXPLAIN'	=> 'Set the search sensitivity to a value between 1 and 10. Use a lower number if you are not seeing any similar topics. Recommended setting: %d',
 	'PST_LEGEND3'		=> 'Postavke foruma',
 	'PST_NOSHOW_LIST'	=> 'Ne prikazuj u',
 	'PST_NOSHOW_TITLE'	=> 'Ne prikazuj slične teme u',
