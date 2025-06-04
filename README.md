@@ -6,7 +6,7 @@ This is an extension for phpBB that will find and display a list of similar (rel
 
 [![Build Status](https://github.com/iMattPro/similartopics/actions/workflows/tests.yml/badge.svg)](https://github.com/iMattPro/similartopics/actions)
 [![codecov](https://codecov.io/gh/iMattPro/similartopics/branch/master/graph/badge.svg?token=2lqwl0xQrN)](https://codecov.io/gh/iMattPro/similartopics)
-[![Maintainability](https://api.codeclimate.com/v1/badges/c68566f3c96b249ad5f8/maintainability)](https://codeclimate.com/github/iMattPro/similartopics/maintainability)
+[![Maintainability](https://qlty.sh/badges/a157cd93-28e0-4d45-92dd-212f6a5ce05e/maintainability.svg)](https://qlty.sh/gh/iMattPro/projects/similartopics)
 [![Latest Stable Version](https://poser.pugx.org/vse/similartopics/v/stable)](https://www.phpbb.com/customise/db/extension/precise_similar_topics/)
 
 ## Features
