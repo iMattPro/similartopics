@@ -13,7 +13,7 @@ namespace vse\similartopics;
 class ext extends \phpbb\extension\base
 {
 	/**
-	 * Extension requires Mysql or Postgres DBMS and phpBB 3.2.1 or newer.
+	 * Extension requires Mysql or Postgres DBMS and phpBB 4.0.0 or newer.
 	 *
 	 * @return array|bool If phpBB 3.3.x, return message as to why it could not be installed.
 	 *                    Otherwise, just return boolean true/false.
