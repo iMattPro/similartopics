@@ -26,7 +26,7 @@ class module_test extends \phpbb_test_case
 		// Test calling module->main()
 		$mock_acp_controller = $this->getMockBuilder('\vse\similartopics\acp\controller\similar_topics_admin')
 			->disableOriginalConstructor()
-			->setMethods(array('handle', 'set_u_action'))
+			->onlyMethods(array('handle', 'set_u_action'))
 			->getMock();
 
 		$mock_acp_controller->expects($this->once())
