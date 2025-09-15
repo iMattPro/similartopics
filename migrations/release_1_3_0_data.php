@@ -19,7 +19,10 @@ class release_1_3_0_data extends \phpbb\db\migration\container_aware_migration
 
 	public static function depends_on()
 	{
-		return array('\vse\similartopics\migrations\release_1_3_0_schema');
+		return array(
+			'\vse\similartopics\migrations\release_1_1_0_data',
+			'\vse\similartopics\migrations\release_1_3_0_schema'
+		);
 	}
 
 	public function update_data()
@@ -47,6 +50,14 @@ class release_1_3_0_data extends \phpbb\db\migration\container_aware_migration
 			)),
 			// Update existing configs
 			array('config.update', array('similar_topics_version', '1.3.0')),
+		);
+	}
+
+	// need to specify this revert_data in phpBB4 or this migration will fail
+	public function revert_data()
+	{
+		return array(
+			array('module.remove', array('acp', 'PST_TITLE_ACP')),
 		);
 	}
 }
