@@ -25,7 +25,7 @@ class controller_test extends \phpbb_database_test_case
 	/** @var \vse\similartopics\acp\controller\similar_topics_admin */
 	protected $controller;
 
-	/** @var \PHPUnit_Framework_MockObject_MockObject|\phpbb\request\request */
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\request\request */
 	protected $request;
 
 	public function setUp(): void
