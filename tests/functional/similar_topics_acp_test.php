@@ -23,7 +23,7 @@ class similar_topics_acp_test extends similar_topics_base
 		$this->admin_login();
 	}
 
-	public function acp_pages_data()
+	public static function acp_pages_data()
 	{
 		return array(
 			array('settings'), // Load the main ACP page

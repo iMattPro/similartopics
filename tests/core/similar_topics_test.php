@@ -114,7 +114,7 @@ class similar_topics_test extends \phpbb_test_case
 		);
 	}
 
-	public function is_available_test_data()
+	public static function is_available_test_data()
 	{
 		return [
 			[
@@ -303,7 +303,7 @@ class similar_topics_test extends \phpbb_test_case
 		self::assertEquals($expected, $similar_topics->is_available());
 	}
 
-	public function clean_topic_title_test_data()
+	public static function clean_topic_title_test_data()
 	{
 		return [
 			['The quick, brown fox jumps over a lazy dog.', 'brown lazy', 'the quick fox jumps over dog'],

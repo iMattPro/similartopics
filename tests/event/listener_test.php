@@ -64,7 +64,7 @@ class listener_test extends \phpbb_test_case
 	 *
 	 * @return array Array of test data
 	 */
-	public function display_similar_topics_data()
+	public static function display_similar_topics_data()
 	{
 		return array(
 			array(array('forum_id' => 1), true),
@@ -102,7 +102,7 @@ class listener_test extends \phpbb_test_case
 	 *
 	 * @return array Array of test data
 	 */
-	public function add_permissions_data()
+	public static function add_permissions_data()
 	{
 		return array(
 			array(

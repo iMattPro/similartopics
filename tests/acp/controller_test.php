@@ -35,7 +35,7 @@ class controller_test extends \phpbb_database_test_case
 		global $config, $phpbb_dispatcher, $template, $phpbb_root_path, $phpEx;
 
 		$cache = new \phpbb_mock_cache;
-		$config = $this->config = new \phpbb\config\config([]);
+		$config = new \phpbb\config\config([]);
 		$config_text = $this->createMock('\phpbb\config\db_text');
 		$db = $this->new_dbal();
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
