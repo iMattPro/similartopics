@@ -9,6 +9,5 @@ jobs:
         with:
             EXTNAME: vse/similartopics   # Your extension vendor/package name
             CODECOV: 1           # Run code coverage via codecov? 1 or 0
-            RUN_MSSQL_JOBS: 0
         secrets:
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # Do not change this

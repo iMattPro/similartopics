@@ -87,3 +87,23 @@ services:
         parent: vse.similartopics.driver.mysqli
         tags:
             - { name: vse.similartopcs.driver }
+
+    vse.similartopics.driver.mssql:
+        class: vse\similartopics\driver\mssql
+        arguments:
+            - '@dbal.conn'
+        tags:
+            - { name: vse.similartopcs.driver }
+
+    vse.similartopics.driver.sqlite3:
+        class: vse\similartopics\driver\sqlite3
+        arguments:
+            - '@dbal.conn'
+        tags:
+            - { name: vse.similartopcs.driver }
+
+    vse.similartopics.driver.mssqlnative:
+        class: vse\similartopics\driver\mssqlnative
+        parent: vse.similartopics.driver.mssql
+        tags:
+            - { name: vse.similartopcs.driver }

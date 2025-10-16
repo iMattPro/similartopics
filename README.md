@@ -31,7 +31,7 @@ This is an extension for phpBB that will find and display a list of similar (rel
 ## Minimum Requirements
 * phpBB 3.2.1 up to the most current version (3.3.x).
 * PHP 5.4
-* MySQL, MariaDB or PostgreSQL database (SQLite, Oracle and MS SQL Server not supported)
+* MySQL, MariaDB, PostgreSQL, MSSQL or SQLite3 database (Oracle not supported)
 
 ## Install
 1. [Download the latest validated release](https://www.phpbb.com/customise/db/extension/precise_similar_topics/).

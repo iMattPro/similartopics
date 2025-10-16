@@ -376,7 +376,7 @@ class similar_topics
 		// Strip quotes, ampersands
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
-		if (!$this->english_lang() || $this->get_ignore_words())
+		if ($this->load_localized_ignore_words() || $this->get_ignore_words())
 		{
 			$text = $this->strip_stop_words($text);
 		}
@@ -395,9 +395,7 @@ class similar_topics
 	{
 		$words = array();
 
-		// If non-English, look for a list of stop-words to be ignored
-		// in either the core or the extension (deprecated from core)
-		if (!$this->english_lang())
+		if ($this->load_localized_ignore_words())
 		{
 			$finder = $this->extension_manager->get_finder();
 			$search_ignore_words = $finder
@@ -452,14 +450,17 @@ class similar_topics
 	}
 
 	/**
-	 * Check if English is the current user's language
+	 * Check if we should load localized ignore words
 	 *
 	 * @access protected
-	 * @return bool True if lang is 'en' or 'en_us', false otherwise
+	 * @return bool True if non-English language or using MSSQL/SQLite3
 	 */
-	protected function english_lang()
+	protected function load_localized_ignore_words()
 	{
-		return ($this->user->lang_name === 'en' || $this->user->lang_name === 'en_us');
+		$is_english = ($this->user->lang_name === 'en' || $this->user->lang_name === 'en_us');
+		$has_no_stop_words = in_array($this->db->get_sql_layer(), array('mssql', 'mssqlnative', 'sqlite3'), true);
+
+		return !$is_english || $has_no_stop_words;
 	}
 
 	/**

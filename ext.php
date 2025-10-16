@@ -21,7 +21,7 @@ class ext extends \phpbb\extension\base
 	public function is_enableable()
 	{
 		$db = $this->container->get('dbal.conn');
-		$valid_db = in_array($db->get_sql_layer(), array('mysqli', 'mysql4', 'postgres'));
+		$valid_db = in_array($db->get_sql_layer(), array('mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative'));
 		$valid_phpBB = phpbb_version_compare(PHPBB_VERSION, '3.2.1', '>=') && phpbb_version_compare(PHPBB_VERSION, '4.0.0-dev', '<');
 		$enableable = $valid_db && $valid_phpBB;
 
