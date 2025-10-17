@@ -88,15 +88,15 @@ services:
         tags:
             - { name: vse.similartopics.driver }
 
-    vse.similartopics.driver.mssql:
-        class: vse\similartopics\driver\mssql
+    vse.similartopics.driver.sqlite3:
+        class: vse\similartopics\driver\sqlite3
         arguments:
             - '@dbal.conn'
         tags:
             - { name: vse.similartopics.driver }
 
-    vse.similartopics.driver.sqlite3:
-        class: vse\similartopics\driver\sqlite3
+    vse.similartopics.driver.mssql:
+        class: vse\similartopics\driver\mssql
         arguments:
             - '@dbal.conn'
         tags:

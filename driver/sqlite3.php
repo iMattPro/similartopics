@@ -3,7 +3,7 @@
  *
  * Precise Similar Topics
  *
- * @copyright (c) 2018 Matt Friedman
+ * @copyright (c) 2025 Matt Friedman
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -62,7 +62,6 @@ class sqlite3 implements driver_interface
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
 				CASE WHEN " . $where_condition . " THEN 1.0 ELSE 0.0 END AS score",
-
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
 			),
@@ -146,28 +145,6 @@ class sqlite3 implements driver_interface
 	public function get_engine()
 	{
 		return '';
-	}
-
-	/**
-	 * Check if FTS virtual table exists
-	 *
-	 * @param string $table Name of the base table
-	 * @return bool True if FTS table exists, false otherwise
-	 */
-	protected function fts_table_exists($table)
-	{
-		if (!$this->is_supported())
-		{
-			return false;
-		}
-
-		$sql = "SELECT name FROM sqlite_master
-			WHERE type='table' AND name = '" . $this->db->sql_escape($table) . "_fts'";
-		$result = $this->db->sql_query($sql);
-		$exists = (bool) $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
-
-		return $exists;
 	}
 
 	/**

@@ -3,7 +3,7 @@
  *
  * Precise Similar Topics
  *
- * @copyright (c) 2018 Matt Friedman
+ * @copyright (c) 2025 Matt Friedman
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -64,14 +64,28 @@ class mssql implements driver_interface
 					$like_conditions[] = "t.topic_title LIKE '%" . $this->db->sql_escape($word) . "%'";
 				}
 			}
-			$search_condition = !empty($like_conditions) ? '(' . implode(' OR ', $like_conditions) . ')' : "t.topic_title LIKE '%" . $this->db->sql_escape($topic_title) . "%'";
+			$search_condition = !empty($like_conditions)
+				? '(' . implode(' OR ', $like_conditions) . ')'
+				: "t.topic_title LIKE '%" . $this->db->sql_escape($topic_title) . "%'";
 		}
 
 		return array(
-			'SELECT'	=> "f.forum_id, f.forum_name, t.*, CASE WHEN " . $search_condition . " THEN 1.0 ELSE 0.0 END AS score",
-			'FROM'		=> array(TOPICS_TABLE => 't'),
-			'LEFT_JOIN'	=> array(array('FROM' => array(FORUMS_TABLE => 'f'), 'ON' => 'f.forum_id = t.forum_id')),
-			'WHERE'		=> $search_condition . " AND t.topic_status <> " . ITEM_MOVED . " AND t.topic_visibility = " . ITEM_APPROVED . " AND t.topic_time > (DATEDIFF(second, '1970-01-01', GETDATE()) - " . (int) $length . ") AND t.topic_id <> " . (int) $topic_id,
+			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
+				CASE WHEN " . $search_condition . " THEN 1.0 ELSE 0.0 END AS score",
+			'FROM'		=> array(
+				TOPICS_TABLE => 't'
+			),
+			'LEFT_JOIN'	=> array(
+				array(
+					'FROM' => array(FORUMS_TABLE => 'f'),
+					'ON' => 'f.forum_id = t.forum_id'
+				)
+			),
+			'WHERE'		=> $search_condition . "
+				AND t.topic_status <> " . ITEM_MOVED . "
+				AND t.topic_visibility = " . ITEM_APPROVED . "
+				AND t.topic_time > (DATEDIFF(second, '1970-01-01', GETDATE()) - " . (int) $length . ")
+				AND t.topic_id <> " . (int) $topic_id,
 			'ORDER_BY'	=> 'score DESC, t.topic_time DESC',
 		);
 	}

@@ -3,9 +3,6 @@
 ### 1.7.0 - TBD
 
 - Added support for MSSQL and SQLite3 databases.
-- Updated database compatibility messaging.
-- Added new database drivers for mssql, mssqlnative, and sqlite3.
-- Added migration files for MSSQL and SQLite3 fulltext index support.
 
 ### 1.6.0 - 2022-12-17
 

@@ -65,7 +65,6 @@ class postgres implements driver_interface
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*, $ts_rank_cd AS score",
-
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
 			),

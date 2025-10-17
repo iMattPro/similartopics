@@ -376,7 +376,7 @@ class similar_topics
 		// Strip quotes, ampersands
 		$text = str_replace(array('&quot;', '&amp;'), '', $text);
 
-		if ($this->load_localized_ignore_words() || $this->get_ignore_words())
+		if ($this->get_localized_ignore_words() || $this->get_additional_ignore_words())
 		{
 			$text = $this->strip_stop_words($text);
 		}
@@ -395,7 +395,7 @@ class similar_topics
 	{
 		$words = array();
 
-		if ($this->load_localized_ignore_words())
+		if ($this->get_localized_ignore_words())
 		{
 			$finder = $this->extension_manager->get_finder();
 			$search_ignore_words = $finder
@@ -411,10 +411,9 @@ class similar_topics
 			}
 		}
 
-		if ($this->get_ignore_words())
+		if ($additional_words = $this->get_additional_ignore_words())
 		{
-			// Merge any custom defined ignore words from the ACP to the stop-words array
-			$words = array_merge($this->make_word_array($this->get_ignore_words()), $words);
+			$words = array_merge($this->make_word_array($additional_words), $words);
 		}
 
 		// Remove stop-words from the topic title text
@@ -455,7 +454,7 @@ class similar_topics
 	 * @access protected
 	 * @return bool True if non-English language or using MSSQL/SQLite3
 	 */
-	protected function load_localized_ignore_words()
+	protected function get_localized_ignore_words()
 	{
 		$is_english = ($this->user->lang_name === 'en' || $this->user->lang_name === 'en_us');
 		$has_no_stop_words = in_array($this->db->get_sql_layer(), array('mssql', 'mssqlnative', 'sqlite3'), true);
@@ -469,7 +468,7 @@ class similar_topics
 	 * @access protected
 	 * @return string|null String of ignore words or null if there are none defined
 	 */
-	protected function get_ignore_words()
+	protected function get_additional_ignore_words()
 	{
 		$key = 'similar_topics_words';
 
