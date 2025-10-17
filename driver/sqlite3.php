@@ -131,12 +131,16 @@ class sqlite3 implements driver_interface
 	{
 		// SQLite FTS setup is complex and optional for LIKE-based search
 		// We'll create a simple index to improve LIKE performance
-		if (!$this->index_exists($table, $column))
+		if ($this->index_exists($table, $column))
 		{
-			$sql = "CREATE INDEX idx_" . $this->db->sql_escape($table) . "_" . $this->db->sql_escape($column) . "
-				ON " . $this->db->sql_escape($table) . " (" . $this->db->sql_escape($column) . ")";
-			$this->db->sql_query($sql);
+			return;
 		}
+
+		$escaped_table = $this->db->sql_escape($table);
+		$escaped_column = $this->db->sql_escape($column);
+		$sql = 'CREATE INDEX idx_' . $escaped_table . '_' . $escaped_column . '
+			ON ' . $escaped_table . ' (' . $escaped_column . ')';
+		$this->db->sql_query($sql);
 	}
 
 	/**
@@ -161,7 +165,7 @@ class sqlite3 implements driver_interface
 			return false;
 		}
 
-		$index_name = "idx_" . $table . "_" . $column;
+		$index_name = 'idx_' . $table . '_' . $column;
 		$sql = "SELECT name FROM sqlite_master
 			WHERE type='index' AND name = '" . $this->db->sql_escape($index_name) . "'";
 		$result = $this->db->sql_query($sql);
