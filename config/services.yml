@@ -93,17 +93,17 @@ services:
         arguments:
             - '@dbal.conn'
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
 
     vse.similartopics.driver.sqlite3:
         class: vse\similartopics\driver\sqlite3
         arguments:
             - '@dbal.conn'
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
 
     vse.similartopics.driver.mssqlnative:
         class: vse\similartopics\driver\mssqlnative
         parent: vse.similartopics.driver.mssql
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
