@@ -65,7 +65,7 @@ services:
         arguments:
             - '@service_container'
         tags:
-            - { name: service_collection, tag: vse.similartopcs.driver }
+            - { name: service_collection, tag: vse.similartopics.driver }
 
     vse.similartopics.driver.postgres:
         class: vse\similartopics\driver\postgres
@@ -73,20 +73,20 @@ services:
             - '@dbal.conn'
             - '@config'
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
 
     vse.similartopics.driver.mysqli:
         class: vse\similartopics\driver\mysqli
         arguments:
             - '@dbal.conn'
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
 
     vse.similartopics.driver.mysql4:
         class: vse\similartopics\driver\mysql4
         parent: vse.similartopics.driver.mysqli
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
 
     vse.similartopics.driver.mssql:
         class: vse\similartopics\driver\mssql
