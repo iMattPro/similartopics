@@ -30,27 +30,39 @@ class stop_word_helper_test extends \phpbb_test_case
 		$this->user->lang_name = 'en';
 	}
 
-	public function get_helper($use_localized = false, $additional_ignore = '')
+	public function get_helper()
 	{
 		return new \vse\similartopics\core\stop_word_helper(
 			$this->ext_manager,
 			$this->user,
-			$this->php_ext,
-			$use_localized,
-			$additional_ignore
+			$this->php_ext
 		);
 	}
 
 	public function clean_text_test_data()
 	{
 		return [
-			['The quick brown fox', false, '', 'The quick brown fox'],
-			['The &quot;quick&quot; &amp; brown fox', false, '', 'The quick  brown fox'],
-			['The quick brown fox', true, '', 'quick brown fox'],
-			['The quick brown fox', false, 'quick brown', 'the fox'],
-			['The quick brown fox', true, 'quick brown', 'fox'],
-			['', false, '', ''],
-			['   ', false, '', '   '],
+			'No filtering' => [
+				'The quick brown fox', false, '', 'The quick brown fox'
+			],
+			'HTML filtering only' => [
+				'The &quot;quick&quot; &amp; brown fox', false, '', 'The quick  brown fox'
+			],
+			'Filter with localized stop words' => [
+				'The quick brown fox', true, '', 'quick brown fox'
+			],
+			'Filter with additional ignore words' =>[
+				'The quick brown fox', false, 'quick brown', 'the fox'
+			],
+			'Filter with additional and localized ignore words'	=> [
+				'The quick brown fox', true, 'quick brown', 'fox'
+			],
+			'No filtering, everything empty' => [
+				'', false, '', ''
+			],
+			'No filtering, with whitespaces' => [
+				'   ', false, '', '   '
+			],
 		];
 	}
 
@@ -61,10 +73,13 @@ class stop_word_helper_test extends \phpbb_test_case
 	{
 		if ($use_localized)
 		{
-			$this->setup_finder_mock(['the']);
+			$this->setup_finder_mock();
 		}
 
-		$helper = $this->get_helper($use_localized, $additional_ignore);
+		$helper = $this->get_helper();
+		$helper->set_additional_ignore_words($additional_ignore);
+		$helper->set_use_localized($use_localized);
+
 		self::assertSame($expected, $helper->clean_text($text));
 	}
 
@@ -90,19 +105,21 @@ class stop_word_helper_test extends \phpbb_test_case
 		self::assertSame('example', $helper->clean_text('The and example'));
 	}
 
-	public function test_dirty_tracking()
+	public function test_needs_reload_tracking()
 	{
 		$this->setup_finder_mock();
 
-		$helper = $this->get_helper(true);
+		$helper = $this->get_helper();
+		$helper->set_additional_ignore_words('');
+		$helper->set_use_localized(true);
 
-		// First call should load words
+		// The first call should load words
 		$helper->clean_text('The example');
 
 		// Second call with same settings should not reload
 		$helper->clean_text('The test');
 
-		// Changing settings should mark dirty and reload
+		// Changing settings should mark needs_reload and reload
 		$helper->set_additional_ignore_words('example');
 		$result = $helper->clean_text('The example test');
 		self::assertSame('test', $result);
