@@ -37,8 +37,8 @@ class stop_word_helper
 	/** @var string Additional ignore words string */
 	protected $additional_ignore = '';
 
-	/** @var bool Dirty flag to track if reload is needed */
-	protected $dirty = true;
+	/** @var bool Whether ignore words need to be reloaded */
+	protected $needs_reload = true;
 
 	/**
 	 * Constructor
@@ -46,16 +46,12 @@ class stop_word_helper
 	 * @param ext_manager $extension_manager
 	 * @param user $user
 	 * @param string $php_ext
-	 * @param bool $use_localized
-	 * @param string $additional_ignore
 	 */
-	public function __construct(ext_manager $extension_manager, user $user, $php_ext, $use_localized = false, $additional_ignore = '')
+	public function __construct(ext_manager $extension_manager, user $user, $php_ext)
 	{
 		$this->extension_manager = $extension_manager;
 		$this->user = $user;
 		$this->php_ext = $php_ext;
-		$this->use_localized = $use_localized;
-		$this->additional_ignore = $additional_ignore;
 	}
 
 	/**
@@ -68,7 +64,7 @@ class stop_word_helper
 		if ($this->additional_ignore !== $words)
 		{
 			$this->additional_ignore = $words;
-			$this->dirty = true;
+			$this->needs_reload = true;
 		}
 	}
 
@@ -83,12 +79,12 @@ class stop_word_helper
 		if ($this->use_localized !== $value)
 		{
 			$this->use_localized = $value;
-			$this->dirty = true;
+			$this->needs_reload = true;
 		}
 	}
 
 	/**
-	 * Clean topic title (strip quotes, ampersands, stop words)
+	 * Clean text (strip quotes, ampersands, stop words)
 	 *
 	 * @param string $text
 	 * @return string
@@ -96,14 +92,14 @@ class stop_word_helper
 	public function clean_text($text)
 	{
 		// Strip HTML entities
-		$text = str_replace(array('&quot;', '&amp;'), '', $text);
+		$text = str_replace(['&quot;', '&amp;'], '', $text);
 
 		if ($this->use_localized || !empty($this->additional_ignore))
 		{
 			$this->load_ignore_words();
 			$filtered = array_filter(
 				$this->make_word_array($text, true),
-				array($this, 'filter_ignore_words')
+				[$this, 'filter_ignore_words']
 			);
 			$text = implode(' ', array_unique($filtered));
 		}
@@ -116,19 +112,10 @@ class stop_word_helper
 	 */
 	protected function load_ignore_words()
 	{
-		if ($this->dirty || $this->ignore_lookup === null)
+		if ($this->needs_reload || $this->ignore_lookup === null)
 		{
-			$words = array();
-
 			// Load localized ignore words (if needed)
-			if ($this->use_localized)
-			{
-				$localized = $this->load_localized_words();
-				if (is_array($localized))
-				{
-					$words = array_merge($words, $localized);
-				}
-			}
+			$words = $this->use_localized ? $this->load_localized_words() : [];
 
 			// Load additional ignore words (if defined)
 			if (!empty($this->additional_ignore))
@@ -137,21 +124,21 @@ class stop_word_helper
 			}
 
 			$this->ignore_lookup = array_flip(array_unique($words));
-			$this->dirty = false;
+			$this->needs_reload = false;
 		}
 	}
 
 	/**
 	 * Load localized ignore words
 	 *
-	 * @return array
+	 * @return array An array of ignore words from the user's language pack
 	 */
 	protected function load_localized_words()
 	{
-		$words = array();
+		$words = [];
 		$finder = $this->extension_manager->get_finder();
 		$files = $finder
-			->set_extensions(array('vse/similartopics'))
+			->set_extensions(['vse/similartopics'])
 			->prefix('search_ignore_words')
 			->suffix('.' . $this->php_ext)
 			->extension_directory("/language/{$this->user->lang_name}")
@@ -169,34 +156,25 @@ class stop_word_helper
 	/**
 	 * Split text into word array
 	 *
-	 * @param string $text
+	 * @param string $text A string of text
 	 * @param bool $filter_short Whether to filter out words < 3 characters
-	 * @return array
+	 * @return array The original string of text, filtered into an array of individual words
 	 */
-	protected function make_word_array($text, $filter_short = true)
+	protected function make_word_array($text, $filter_short = false)
 	{
 		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
-		$words = explode(' ', utf8_strtolower($text));
+		$words = array_filter(explode(' ', utf8_strtolower($text)));
 
-		if ($filter_short)
-		{
-			foreach ($words as $key => $word)
-			{
-				if (utf8_strlen(trim($word)) < 3)
-				{
-					unset($words[$key]);
-				}
-			}
-		}
-
-		return array_values($words);
+		return $filter_short ? array_filter($words, static function($word) {
+			return utf8_strlen($word) >= 3;
+		}) : $words;
 	}
 
 	/**
-	 * Filter callback
+	 * Filter callback for array_filter to exclude stop words
 	 *
-	 * @param string $word
-	 * @return bool
+	 * @param string $word Word to check
+	 * @return bool True to keep word, false to remove it
 	 */
 	protected function filter_ignore_words($word)
 	{
