@@ -8,13 +8,13 @@ services:
             - '@config_text'
             - '@dbal.conn'
             - '@dispatcher'
-            - '@ext.manager'
             - '@language'
             - '@pagination'
             - '@request'
             - '@template'
             - '@user'
             - '@content.visibility'
+            - '@vse.similartopics.stop_word_helper'
             - '@vse.similartopics.driver.manager'
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -57,6 +57,14 @@ services:
             - '@template'
             - '@user'
             - '%core.root_path%'
+            - '%core.php_ext%'
+
+    vse.similartopics.stop_word_helper:
+        class: vse\similartopics\core\stop_word_helper
+        public: false
+        arguments:
+            - '@ext.manager'
+            - '@user'
             - '%core.php_ext%'
 
 # ----- Similar topics DB drivers collection -----
