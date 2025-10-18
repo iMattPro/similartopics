@@ -30,9 +30,6 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var \phpbb\event\dispatcher|\PHPUnit\Framework\MockObject\MockObject */
 	protected $dispatcher;
 
-	/** @var \phpbb\extension\manager|\PHPUnit\Framework\MockObject\MockObject */
-	protected $ext_manager;
-
 	/** @var \phpbb\language\language */
 	protected $language;
 
@@ -50,6 +47,9 @@ class similar_topics_test extends \phpbb_test_case
 
 	/** @var \phpbb\content_visibility|\PHPUnit\Framework\MockObject\MockObject */
 	protected $content_visibility;
+
+	/** @var \vse\similartopics\core\stop_word_helper|\PHPUnit\Framework\MockObject\MockObject */
+	protected $stop_word_helper;
 
 	/** @var \vse\similartopics\driver\manager|\PHPUnit\Framework\MockObject\MockObject */
 	protected $manager;
@@ -78,9 +78,9 @@ class similar_topics_test extends \phpbb_test_case
 		$this->request = $this->createMock('\phpbb\request\request');
 		$this->template = $this->createMock('\phpbb\template\template');
 		$this->content_visibility = $this->createMock('\phpbb\content_visibility');
+		$this->stop_word_helper = $this->createMock('\vse\similartopics\core\stop_word_helper');
 		$this->manager = $this->createMock('\vse\similartopics\driver\manager');
 		$this->driver = $this->createMock('\vse\similartopics\driver\driver_interface');
-		$this->ext_manager = $this->createMock('\phpbb\extension\manager');
 
 		// Classes used in the tests
 		$this->auth = $this->createMock('\phpbb\auth\auth');
@@ -101,13 +101,13 @@ class similar_topics_test extends \phpbb_test_case
 			$this->config_text,
 			$this->db,
 			$this->dispatcher,
-			$this->ext_manager,
 			$this->language,
 			$this->pagination,
 			$this->request,
 			$this->template,
 			$this->user,
 			$this->content_visibility,
+			$this->stop_word_helper,
 			$this->manager,
 			$this->phpbb_root_path,
 			$this->phpEx
@@ -312,61 +312,5 @@ class similar_topics_test extends \phpbb_test_case
 			['El zorro marrón rápido salta por encima de un perro perezoso.', 'marrón', 'zorro rápido salta por encima perro perezoso'],
 			['The "quick", brown fox & jumps &amp; over a &quot;lazy&quot; dog.', 'brown lazy', 'the quick fox jumps over dog'],
 		];
-	}
-
-	/**
-	 * @dataProvider clean_topic_title_test_data
-	 */
-	public function test_clean_topic_title($test_string, $ignore_words, $expected)
-	{
-		$this->service->method('get_driver')
-			->willReturnCallback([$this, 'set_cache']);
-
-		$this->config_text->expects(self::once())
-			->method('get')
-			->with('similar_topics_words')
-			->willReturn($ignore_words);
-
-		$this->ext_manager->expects(self::once())
-			->method('get_finder')
-			->willReturnCallback([$this, 'get_finder']);
-
-		$similar_topics = $this->get_similar_topics();
-
-		self::assertSame($expected, $similar_topics->clean_topic_title($test_string));
-	}
-
-	public function set_cache()
-	{
-		$cache = $this->createMock('\phpbb\cache\driver\driver_interface');
-		$cache->method('get')
-			->willReturn(false);
-
-		return $cache;
-	}
-
-	public function get_finder()
-	{
-		$finder = $this->createMock('\phpbb\finder');
-		$finder->expects(self::once())
-			->method('set_extensions')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('prefix')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('suffix')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('extension_directory')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('core_path')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('get_files')
-			->willReturn([]);
-
-		return $finder;
 	}
 }

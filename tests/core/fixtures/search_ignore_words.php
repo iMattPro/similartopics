@@ -1,0 +1,1 @@
+<?php $words = ['and', 'the'];
