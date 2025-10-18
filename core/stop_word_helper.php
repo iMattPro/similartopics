@@ -102,7 +102,7 @@ class stop_word_helper
 		{
 			$this->load_ignore_words();
 			$filtered = array_filter(
-				$this->make_word_array($text),
+				$this->make_word_array($text, true),
 				array($this, 'filter_ignore_words')
 			);
 			$text = implode(' ', array_unique($filtered));
@@ -133,7 +133,7 @@ class stop_word_helper
 			// Load additional ignore words (if defined)
 			if (!empty($this->additional_ignore))
 			{
-				$words = array_merge($words, $this->make_word_array($this->additional_ignore));
+				$words = array_merge($words, $this->make_word_array($this->additional_ignore, false));
 			}
 
 			$this->ignore_lookup = array_flip(array_unique($words));
@@ -170,19 +170,22 @@ class stop_word_helper
 	 * Split text into word array
 	 *
 	 * @param string $text
+	 * @param bool $filter_short Whether to filter out words < 3 characters
 	 * @return array
 	 */
-	protected function make_word_array($text)
+	protected function make_word_array($text, $filter_short = true)
 	{
 		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
 		$words = explode(' ', utf8_strtolower($text));
 
-		foreach ($words as $key => $word)
+		if ($filter_short)
 		{
-			// Strip words of 2 characters or fewer
-			if (utf8_strlen(trim($word)) < 3)
+			foreach ($words as $key => $word)
 			{
-				unset($words[$key]);
+				if (utf8_strlen(trim($word)) < 3)
+				{
+					unset($words[$key]);
+				}
 			}
 		}
 
