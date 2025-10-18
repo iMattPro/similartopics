@@ -117,67 +117,167 @@ class similar_topics_test extends \phpbb_test_case
 	public function is_available_test_data()
 	{
 		return [
-			[
+			'enabled on mysqli' => [
 				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				true,
 			],
-			[
+			'enabled on mysql4' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mysql4',
+				true,
+			],
+			'enabled on postgres' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'postgres',
+				true,
+			],
+			'enabled on sqlite' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'sqlite',
+				false,
+			],
+			'enabled on sqlite3' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'sqlite3',
+				true,
+			],
+			'enabled on mssql' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mssql',
+				true,
+			],
+			'enabled on mssqlnative' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mssqlnative',
+				true,
+			],
+			'enabled on invalid db' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'innodb',
+				false,
+			],
+			'enabled on no db' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'',
+				false,
+			],
+			'admin do not show' => [
 				[
 					'similar_topics' => false,
-					'similar_topics_limit' => true,
+					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
 			],
-			[
+			'admin show 0 results' => [
 				[
-					'similar_topics' => true,
-					'similar_topics_limit' => false,
+					'similar_topics' => '1',
+					'similar_topics_limit' => '0',
 				],
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
 			],
-			[
+			'admin fully disabled' => [
 				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
+					'similar_topics' => '0',
+					'similar_topics_limit' => '0',
+				],
+				['user_similar_topics' => false],
+				['u_similar_topics', 0, false],
+				'mysqli',
+				false,
+			],
+			'user disabled' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => false],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
 			],
-			[
+			'user not authed' => [
 				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, false],
 				'mysqli',
 				false,
 			],
-			[
+			'user disabled and not authed' => [
 				[
-					'similar_topics' => false,
-					'similar_topics_limit' => false,
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
 				],
-				['user_similar_topics' => false],
-				['u_similar_topics', 0, false],
+				['user_similar_topics' => null],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
 			],
-			[
+			'user settings error' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => ''],
+				['u_similar_topics', 0, true],
+				'mysqli',
+				false,
+			],
+			'empty configs' => [
 				[
 					'similar_topics' => '',
 					'similar_topics_limit' => '',
@@ -187,37 +287,7 @@ class similar_topics_test extends \phpbb_test_case
 				'mysqli',
 				false,
 			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => ''],
-				['u_similar_topics', 0, true],
-				'mysqli',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'mysql4',
-				true,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'innodb',
-				false,
-			],
-			[
+			'null configs' => [
 				[
 					'similar_topics' => null,
 					'similar_topics_limit' => null,
@@ -225,56 +295,6 @@ class similar_topics_test extends \phpbb_test_case
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, true],
 				'mysqli',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => null],
-				['u_similar_topics', 0, true],
-				'mysqli',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'postgres',
-				true,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'sqlite',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'sqlite3',
 				false,
 			],
 		];
@@ -296,21 +316,10 @@ class similar_topics_test extends \phpbb_test_case
 		$this->manager->expects(self::once())
 			->method('get_driver')
 			->with($sql_layer)
-			->willReturn((in_array($sql_layer, ['mysqli', 'mysql4', 'postgres']) ? $this->driver : null));
+			->willReturn((in_array($sql_layer, ['mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative']) ? $this->driver : null));
 
 		$similar_topics = $this->get_similar_topics();
 
 		self::assertEquals($expected, $similar_topics->is_available());
-	}
-
-	public function clean_topic_title_test_data()
-	{
-		return [
-			['The quick, brown fox jumps over a lazy dog.', 'brown lazy', 'the quick fox jumps over dog'],
-			['The quick, brown fox jumps over a lazy dog.', 'the quick brown fox jumps over a lazy dog', ''],
-			['The quick, brown fox jumps over a lazy dog.', '', 'the quick brown fox jumps over lazy dog'],
-			['El zorro marrón rápido salta por encima de un perro perezoso.', 'marrón', 'zorro rápido salta por encima perro perezoso'],
-			['The "quick", brown fox & jumps &amp; over a &quot;lazy&quot; dog.', 'brown lazy', 'the quick fox jumps over dog'],
-		];
 	}
 }
