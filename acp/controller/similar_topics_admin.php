@@ -219,10 +219,10 @@ class similar_topics_admin
 		));
 
 		// If postgresql, we need to make an options list of text search names
-		if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
+		if ($this->similartopics instanceof \vse\similartopics\driver\postgres)
 		{
 			$this->language->add_lang('acp/search');
-			foreach ($this->get_cfgname_list() as $row)
+			foreach ($this->similartopics->get_cfg_name_list() as $row)
 			{
 				$this->template->assign_block_vars('postgres_ts_names', array(
 					'NAME'       => $row['ts_name'],
@@ -309,22 +309,6 @@ class similar_topics_admin
 		{
 			$this->end('FORM_INVALID', E_USER_WARNING);
 		}
-	}
-
-	/**
-	 * Get list of PostgreSQL text search names
-	 *
-	 * @access protected
-	 * @return array array of text search names
-	 */
-	protected function get_cfgname_list()
-	{
-		$sql = 'SELECT cfgname AS ts_name FROM pg_ts_config';
-		$result = $this->db->sql_query($sql);
-		$ts_options = $this->db->sql_fetchrowset($result);
-		$this->db->sql_freeresult($result);
-
-		return $ts_options;
 	}
 
 	/**

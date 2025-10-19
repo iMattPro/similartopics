@@ -174,6 +174,21 @@ class postgres implements driver_interface
 	}
 
 	/**
+	 * Get a list of postgresql text search names
+	 *
+	 * @return array array of text search names
+	 */
+	public function get_cfg_name_list()
+	{
+		$sql = 'SELECT cfgname AS ts_name FROM pg_ts_config';
+		$result = $this->db->sql_query($sql);
+		$ts_options = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		return $ts_options;
+	}
+
+	/**
 	 * Set the PostgreSQL Text Search name (dictionary)
 	 *
 	 * @param string $ts_name Dictionary name
