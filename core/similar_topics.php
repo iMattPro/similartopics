@@ -369,14 +369,26 @@ class similar_topics
 	 * Check if we should load localized ignore words
 	 *
 	 * @access protected
-	 * @return bool True if non-English language or using MSSQL/SQLite3
+	 * @return bool True if non-English language or using a dbms with no stop-words
 	 */
 	protected function get_localized_ignore_words()
 	{
-		$is_english = ($this->user->lang_name === 'en' || $this->user->lang_name === 'en_us');
-		$has_no_stop_words = in_array($this->db->get_sql_layer(), array('mssql', 'mssqlnative', 'sqlite3'), true);
+		// Return true if the language is not English
+		if ($this->user->lang_name !== 'en' && $this->user->lang_name !== 'en_us')
+		{
+			return true;
+		}
 
-		return !$is_english || $has_no_stop_words;
+		$db_layer = $this->db->get_sql_layer();
+
+		// Check for databases without stop-word support
+		if (in_array($db_layer, ['mssql', 'mssqlnative', 'sqlite3'], true))
+		{
+			return true;
+		}
+
+		// Check for Postgres with simple text search
+		return $db_layer === 'postgres' && in_array($this->config->offsetGet('pst_postgres_ts_name'), ['simple', ''], true);
 	}
 
 	/**
