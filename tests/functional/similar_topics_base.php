@@ -42,7 +42,7 @@ class similar_topics_base extends \phpbb_functional_test_case
 		{
 			$sql = "UPDATE phpbb_config
 				SET config_value = 'english'
-				WHERE config_name = 'fulltext_postgres_ts_name'";
+				WHERE config_name = 'pst_postgres_ts_name'";
 			$this->db->sql_query($sql);
 		}
 
