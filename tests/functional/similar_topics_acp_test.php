@@ -26,8 +26,8 @@ class similar_topics_acp_test extends similar_topics_base
 	public static function acp_pages_data()
 	{
 		return array(
-			array('settings'), // Load the main ACP page
-			array('settings&action=advanced&f=2'), // Load the advanced forum settings ACP page
+			array('settings' => 'settings'), // Load the main ACP page
+			array('advanced' => 'settings&action=advanced&f=2'), // Load the advanced forum settings ACP page
 		);
 	}
 
@@ -40,6 +40,27 @@ class similar_topics_acp_test extends similar_topics_base
 		$crawler = self::request('GET', 'adm/index.php?i=\vse\similartopics\acp\similar_topics_module&amp;mode=' . $mode . '&sid=' . $this->sid);
 		$this->assertContainsLang('PST_TITLE_ACP', $crawler->text());
 		$this->assertContainsLang('PST_EXPLAIN', $crawler->text());
+		if ($mode === 'settings')
+		{
+			$this->assertCount(1, $crawler->filter('#pst_enable'));
+			$this->assertCount(1, $crawler->filter('#pst_limit'));
+			$this->assertCount(1, $crawler->filter('#pst_time'));
+			$this->assertCount(1, $crawler->filter('#pst_cache'));
+			$this->assertCount(1, $crawler->filter('#pst_sense'));
+			$this->assertCount(1, $crawler->filter('textarea[name="pst_words"]'));
+			if ($this->get_db()->get_sql_layer() === 'postgres')
+			{
+				$this->assertCount(1, $crawler->filter('select[name="pst_postgres_ts_name"]'));
+			}
+			else
+			{
+				$this->assertCount(0, $crawler->filter('select[name="pst_postgres_ts_name"]'));
+			}
+		}
+		else
+		{
+			$this->assertCount(1, $crawler->filter('select[name="similar_forums_id[]"]'));
+		}
 		return $crawler;
 	}
 

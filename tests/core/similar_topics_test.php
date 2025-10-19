@@ -30,9 +30,6 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var \phpbb\event\dispatcher|\PHPUnit\Framework\MockObject\MockObject */
 	protected $dispatcher;
 
-	/** @var \phpbb\extension\manager|\PHPUnit\Framework\MockObject\MockObject */
-	protected $ext_manager;
-
 	/** @var \phpbb\language\language */
 	protected $language;
 
@@ -50,6 +47,9 @@ class similar_topics_test extends \phpbb_test_case
 
 	/** @var \phpbb\content_visibility|\PHPUnit\Framework\MockObject\MockObject */
 	protected $content_visibility;
+
+	/** @var \vse\similartopics\core\stop_word_helper|\PHPUnit\Framework\MockObject\MockObject */
+	protected $stop_word_helper;
 
 	/** @var \vse\similartopics\driver\manager|\PHPUnit\Framework\MockObject\MockObject */
 	protected $manager;
@@ -78,9 +78,9 @@ class similar_topics_test extends \phpbb_test_case
 		$this->request = $this->createMock('\phpbb\request\request');
 		$this->template = $this->createMock('\phpbb\template\template');
 		$this->content_visibility = $this->createMock('\phpbb\content_visibility');
+		$this->stop_word_helper = $this->createMock('\vse\similartopics\core\stop_word_helper');
 		$this->manager = $this->createMock('\vse\similartopics\driver\manager');
 		$this->driver = $this->createMock('\vse\similartopics\driver\driver_interface');
-		$this->ext_manager = $this->createMock('\phpbb\extension\manager');
 
 		// Classes used in the tests
 		$this->auth = $this->createMock('\phpbb\auth\auth');
@@ -101,13 +101,13 @@ class similar_topics_test extends \phpbb_test_case
 			$this->config_text,
 			$this->db,
 			$this->dispatcher,
-			$this->ext_manager,
 			$this->language,
 			$this->pagination,
 			$this->request,
 			$this->template,
 			$this->user,
 			$this->content_visibility,
+			$this->stop_word_helper,
 			$this->manager,
 			$this->phpbb_root_path,
 			$this->phpEx
@@ -117,67 +117,167 @@ class similar_topics_test extends \phpbb_test_case
 	public static function is_available_test_data()
 	{
 		return [
-			[
+			'enabled on mysqli' => [
 				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				true,
 			],
-			[
+			'enabled on mysql4' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mysql4',
+				true,
+			],
+			'enabled on postgres' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'postgres',
+				true,
+			],
+			'enabled on sqlite' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'sqlite',
+				false,
+			],
+			'enabled on sqlite3' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'sqlite3',
+				true,
+			],
+			'enabled on mssql' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mssql',
+				true,
+			],
+			'enabled on mssqlnative' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mssqlnative',
+				true,
+			],
+			'enabled on invalid db' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'innodb',
+				false,
+			],
+			'enabled on no db' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'',
+				false,
+			],
+			'admin do not show' => [
 				[
 					'similar_topics' => false,
-					'similar_topics_limit' => true,
+					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
 			],
-			[
+			'admin show 0 results' => [
 				[
-					'similar_topics' => true,
-					'similar_topics_limit' => false,
+					'similar_topics' => '1',
+					'similar_topics_limit' => '0',
 				],
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
 			],
-			[
+			'admin fully disabled' => [
 				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
+					'similar_topics' => '0',
+					'similar_topics_limit' => '0',
+				],
+				['user_similar_topics' => false],
+				['u_similar_topics', 0, false],
+				'mysqli',
+				false,
+			],
+			'user disabled' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => false],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
 			],
-			[
+			'user not authed' => [
 				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, false],
 				'mysqli',
 				false,
 			],
-			[
+			'user disabled and not authed' => [
 				[
-					'similar_topics' => false,
-					'similar_topics_limit' => false,
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
 				],
-				['user_similar_topics' => false],
-				['u_similar_topics', 0, false],
+				['user_similar_topics' => null],
+				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
 			],
-			[
+			'user settings error' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => ''],
+				['u_similar_topics', 0, true],
+				'mysqli',
+				false,
+			],
+			'empty configs' => [
 				[
 					'similar_topics' => '',
 					'similar_topics_limit' => '',
@@ -187,37 +287,7 @@ class similar_topics_test extends \phpbb_test_case
 				'mysqli',
 				false,
 			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => ''],
-				['u_similar_topics', 0, true],
-				'mysqli',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'mysql4',
-				true,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'innodb',
-				false,
-			],
-			[
+			'null configs' => [
 				[
 					'similar_topics' => null,
 					'similar_topics_limit' => null,
@@ -225,56 +295,6 @@ class similar_topics_test extends \phpbb_test_case
 				['user_similar_topics' => true],
 				['u_similar_topics', 0, true],
 				'mysqli',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => null],
-				['u_similar_topics', 0, true],
-				'mysqli',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'postgres',
-				true,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'sqlite',
-				false,
-			],
-			[
-				[
-					'similar_topics' => true,
-					'similar_topics_limit' => true,
-				],
-				['user_similar_topics' => true],
-				['u_similar_topics', 0, true],
-				'sqlite3',
 				false,
 			],
 		];
@@ -296,77 +316,10 @@ class similar_topics_test extends \phpbb_test_case
 		$this->manager->expects(self::once())
 			->method('get_driver')
 			->with($sql_layer)
-			->willReturn((in_array($sql_layer, ['mysqli', 'mysql4', 'postgres']) ? $this->driver : null));
+			->willReturn((in_array($sql_layer, ['mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative']) ? $this->driver : null));
 
 		$similar_topics = $this->get_similar_topics();
 
 		self::assertEquals($expected, $similar_topics->is_available());
-	}
-
-	public static function clean_topic_title_test_data()
-	{
-		return [
-			['The quick, brown fox jumps over a lazy dog.', 'brown lazy', 'the quick fox jumps over dog'],
-			['The quick, brown fox jumps over a lazy dog.', 'the quick brown fox jumps over a lazy dog', ''],
-			['The quick, brown fox jumps over a lazy dog.', '', 'the quick brown fox jumps over lazy dog'],
-			['El zorro marrón rápido salta por encima de un perro perezoso.', 'marrón', 'zorro rápido salta por encima perro perezoso'],
-			['The "quick", brown fox & jumps &amp; over a &quot;lazy&quot; dog.', 'brown lazy', 'the quick fox jumps over dog'],
-		];
-	}
-
-	/**
-	 * @dataProvider clean_topic_title_test_data
-	 */
-	public function test_clean_topic_title($test_string, $ignore_words, $expected)
-	{
-		$this->service->method('get_driver')
-			->willReturnCallback([$this, 'set_cache']);
-
-		$this->config_text->expects(self::once())
-			->method('get')
-			->with('similar_topics_words')
-			->willReturn($ignore_words);
-
-		$this->ext_manager->expects(self::once())
-			->method('get_finder')
-			->willReturnCallback([$this, 'get_finder']);
-
-		$similar_topics = $this->get_similar_topics();
-
-		self::assertSame($expected, $similar_topics->clean_topic_title($test_string));
-	}
-
-	public function set_cache()
-	{
-		$cache = $this->createMock('\phpbb\cache\driver\driver_interface');
-		$cache->method('get')
-			->willReturn(false);
-
-		return $cache;
-	}
-
-	public function get_finder()
-	{
-		$finder = $this->createMock('\phpbb\finder\finder');
-		$finder->expects(self::once())
-			->method('set_extensions')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('prefix')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('suffix')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('extension_directory')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('core_path')
-			->willReturnSelf();
-		$finder->expects(self::once())
-			->method('get_files')
-			->willReturn([]);
-
-		return $finder;
 	}
 }

@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.7.0 - TBD
+
+- Added support for MSSQL and SQLite3 databases.
+
 ### 1.6.0 - 2022-12-17
 
 - Removed support for phpBB 3.1.x.

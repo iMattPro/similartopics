@@ -36,8 +36,15 @@ class similar_topics_base extends \phpbb_functional_test_case
 		$sql = "UPDATE phpbb_config
 			SET config_value = 1
 			WHERE config_name = 'similar_topics'";
-
 		$this->db->sql_query($sql);
+
+		if ($this->db->get_sql_layer() === 'postgres')
+		{
+			$sql = "UPDATE phpbb_config
+				SET config_value = 'english'
+				WHERE config_name = 'pst_postgres_ts_name'";
+			$this->db->sql_query($sql);
+		}
 
 		$this->purge_cache();
 	}

@@ -17,7 +17,6 @@ use phpbb\config\db_text;
 use phpbb\content_visibility;
 use phpbb\db\driver\driver_interface as db;
 use phpbb\event\dispatcher_interface as dispatcher;
-use phpbb\extension\manager as ext_manager;
 use phpbb\language\language;
 use phpbb\pagination;
 use phpbb\request\request;
@@ -46,9 +45,6 @@ class similar_topics
 	/** @var dispatcher */
 	protected $dispatcher;
 
-	/** @var ext_manager */
-	protected $extension_manager;
-
 	/** @var language */
 	protected $language;
 
@@ -66,6 +62,9 @@ class similar_topics
 
 	/** @var content_visibility */
 	protected $content_visibility;
+
+	/** @var stop_word_helper */
+	protected $helper;
 
 	/** @var similartopics_driver */
 	protected $similartopics;
@@ -85,22 +84,22 @@ class similar_topics
 	 * @access public
 	 * @param auth                  $auth
 	 * @param cache                 $cache
-	 * @param config                $config
+	 * @param config                 $config
 	 * @param db_text               $config_text
 	 * @param db                    $db
 	 * @param dispatcher            $dispatcher
-	 * @param ext_manager           $extension_manager
 	 * @param language              $language
 	 * @param pagination            $pagination
 	 * @param request               $request
 	 * @param template              $template
 	 * @param user                  $user
 	 * @param content_visibility    $content_visibility
+	 * @param stop_word_helper      $stop_word_helper
 	 * @param similartopics_manager $similartopics_manager
 	 * @param string                $root_path
 	 * @param string                $php_ext
 	 */
-	public function __construct(auth $auth, cache $cache, config $config, db_text $config_text, db $db, dispatcher $dispatcher, ext_manager $extension_manager, language $language, pagination $pagination, request $request, template $template, user $user, content_visibility $content_visibility, similartopics_manager $similartopics_manager, $root_path, $php_ext)
+	public function __construct(auth $auth, cache $cache, config $config, db_text $config_text, db $db, dispatcher $dispatcher, language $language, pagination $pagination, request $request, template $template, user $user, content_visibility $content_visibility, stop_word_helper $stop_word_helper, similartopics_manager $similartopics_manager, $root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -108,7 +107,7 @@ class similar_topics
 		$this->config_text = $config_text;
 		$this->db = $db;
 		$this->dispatcher = $dispatcher;
-		$this->extension_manager = $extension_manager;
+		$this->helper = $stop_word_helper;
 		$this->language = $language;
 		$this->pagination = $pagination;
 		$this->request = $request;
@@ -173,7 +172,9 @@ class similar_topics
 			return;
 		}
 
-		$topic_title = $this->clean_topic_title($topic_data['topic_title']);
+		$this->helper->set_use_localized($this->get_localized_ignore_words());
+		$this->helper->set_additional_ignore_words($this->get_additional_ignore_words());
+		$topic_title = $this->helper->clean_text($topic_data['topic_title']);
 
 		// If the cleaned up topic_title is empty, no need to continue
 		if (empty($topic_title))
@@ -371,101 +372,29 @@ class similar_topics
 	}
 
 	/**
-	 * Clean topic title (and if needed, ignore-words)
-	 *
-	 * @access public
-	 * @param string $text The topic title
-	 * @return string The topic title
-	 */
-	public function clean_topic_title($text)
-	{
-		// Strip quotes, ampersands
-		$text = str_replace(array('&quot;', '&amp;'), '', $text);
-
-		if (!$this->english_lang() || $this->get_ignore_words())
-		{
-			$text = $this->strip_stop_words($text);
-		}
-
-		return $text;
-	}
-
-	/**
-	 * Remove any non-english and/or custom defined ignore-words
+	 * Check if we should load localized ignore words
 	 *
 	 * @access protected
-	 * @param string $text The topic title
-	 * @return string The topic title
+	 * @return bool True if non-English language or using a dbms with no stop-words
 	 */
-	protected function strip_stop_words($text)
+	protected function get_localized_ignore_words()
 	{
-		$words = array();
-
-		// If non-English, look for a list of stop-words to be ignored
-		// in either the core or the extension (deprecated from core)
-		if (!$this->english_lang())
+		// Return true if the language is not English
+		if ($this->user->lang_name !== 'en' && $this->user->lang_name !== 'en_us')
 		{
-			$finder = $this->extension_manager->get_finder();
-			$search_ignore_words = $finder
-				->set_extensions(array('vse/similartopics'))
-				->prefix('search_ignore_words')
-				->suffix(".$this->php_ext")
-				->extension_directory("/language/{$this->user->lang_name}")
-				->core_path("language/{$this->user->lang_name}/")
-				->get_files();
-			if (current($search_ignore_words))
-			{
-				include current($search_ignore_words);
-			}
+			return true;
 		}
 
-		if ($this->get_ignore_words())
+		$db_layer = $this->db->get_sql_layer();
+
+		// Check for databases without stop-word support
+		if (in_array($db_layer, ['mssql', 'mssqlnative', 'sqlite3'], true))
 		{
-			// Merge any custom defined ignore words from the ACP to the stop-words array
-			$words = array_merge($this->make_word_array($this->get_ignore_words()), $words);
+			return true;
 		}
 
-		// Remove stop-words from the topic title text
-		$words = array_diff($this->make_word_array($text), $words);
-
-		// Convert our words array back to a string
-		return implode(' ', $words);
-	}
-
-	/**
-	 * Helper function to split string into an array of words
-	 *
-	 * @access protected
-	 * @param string $text String of plain text words
-	 * @return array Array of plaintext words
-	 */
-	protected function make_word_array($text)
-	{
-		// Strip out any non-alpha-numeric characters using PCRE regex syntax
-		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
-
-		$words = explode(' ', utf8_strtolower($text));
-		foreach ($words as $key => $word)
-		{
-			// Strip words of 2 characters or fewer
-			if (utf8_strlen(trim($word)) < 3)
-			{
-				unset($words[$key]);
-			}
-		}
-
-		return $words;
-	}
-
-	/**
-	 * Check if English is the current user's language
-	 *
-	 * @access protected
-	 * @return bool True if lang is 'en' or 'en_us', false otherwise
-	 */
-	protected function english_lang()
-	{
-		return ($this->user->lang_name === 'en' || $this->user->lang_name === 'en_us');
+		// Check for Postgres with simple text search
+		return $db_layer === 'postgres' && in_array($this->config->offsetGet('pst_postgres_ts_name'), ['simple', ''], true);
 	}
 
 	/**
@@ -474,7 +403,7 @@ class similar_topics
 	 * @access protected
 	 * @return string|null String of ignore words or null if there are none defined
 	 */
-	protected function get_ignore_words()
+	protected function get_additional_ignore_words()
 	{
 		$key = 'similar_topics_words';
 

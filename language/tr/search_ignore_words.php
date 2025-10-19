@@ -1,0 +1,102 @@
+<?php
+/**
+ *
+ * Precise Similar Topics
+ *
+ * @copyright (c) 2025 Matt Friedman
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ * This [tr] language list of stop words created by Matt Friedman for Similar Topics
+ *
+ */
+
+if (!defined('IN_PHPBB'))
+{
+   exit;
+}
+
+$words = array(
+	'acaba',
+	'ama',
+	'ancak',
+	'artık',
+	'aslında',
+	'ayrıca',
+	'bana',
+	'bazen',
+	'ben',
+	'beni',
+	'benim',
+	'bile',
+	'bir',
+	'birçok',
+	'biri',
+	'birkaç',
+	'biz',
+	'bizi',
+	'bizim',
+	'bu',
+	'buna',
+	'bunda',
+	'bundan',
+	'bunlar',
+	'bunları',
+	'bunların',
+	'bunu',
+	'bunun',
+	'büyük',
+	'çok',
+	'da',
+	'daha',
+	'de',
+	'değil',
+	'diye',
+	'en',
+	'eve',
+	'gibi',
+	'gün',
+	'günler',
+	'hep',
+	'her',
+	'hiç',
+	'için',
+	'ile',
+	'ise',
+	'işte',
+	'kadar',
+	'kendi',
+	'ki',
+	'küçük',
+	'mı',
+	'mi',
+	'mu',
+	'mü',
+	'nasıl',
+	'ne',
+	'neden',
+	'nerede',
+	'niye',
+	'olan',
+	'olarak',
+	'oldu',
+	'olduğu',
+	'olmak',
+	'olması',
+	'onu',
+	'onun',
+	'sadece',
+	'şey',
+	'şimdi',
+	'şu',
+	'şunu',
+	'şunun',
+	'tüm',
+	'var',
+	've',
+	'veya',
+	'ya',
+	'yani',
+	'yapılan',
+	'yok',
+	'zaman',
+);

@@ -54,7 +54,7 @@ $lang = array_merge($lang, array(
 	'PST_CACHE'			=> 'Similar Topics cache length',
 	'PST_CACHE_EXPLAIN'	=> 'Cached similar topics will expire after this time, in seconds. Set to 0 if you want to disable the similar topics cache.',
 	'PST_SENSE'			=> 'Search sensitivity',
-	'PST_SENSE_EXPLAIN'	=> 'Set the search sensitivity to a value between 1 and 10. Use a lower number if you are not seeing any similar topics. Recommended setting: %d',
+	'PST_SENSE_EXPLAIN'	=> 'For MySQL or Postgres databases, you can set the search sensitivity to a value between 1 and 10. Use a lower number if you are not seeing any similar topics. Recommended setting: %d',
 	'PST_LEGEND3'		=> 'Forum settings',
 	'PST_NOSHOW_LIST'	=> 'Do Not Display In',
 	'PST_NOSHOW_TITLE'	=> 'Do not display similar topics in',
@@ -71,6 +71,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Add special words unique to your forum that should be ignored when finding similar topics. (Note: Words that are currently regarded as common in your language are already ignored by default.) Separate each word with a space. Case insensitive.',
 	'PST_SAVED'			=> 'Similar Topics settings updated',
 	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will not show similar topics in the selected forums.<br>“Do Not Search In” : Will not search for similar topics in the selected forums.',
-	'PST_NO_COMPAT'		=> 'Similar Topics is not compatible with your forum. Similar Topics will only run on a MySQL or PostgreSQL database.',
+	'PST_NO_COMPAT'		=> 'Similar Topics is not compatible with your forum. Similar Topics will run on MySQL, PostgreSQL, MSSQL or SQLite3 databases.',
 	'PST_ERR_CONFIG'	=> 'Too many forums were marked in the list of forums. Please try again with a smaller selection.',
 ));

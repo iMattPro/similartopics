@@ -8,13 +8,13 @@ services:
             - '@config_text'
             - '@dbal.conn'
             - '@dispatcher'
-            - '@ext.manager'
             - '@language'
             - '@pagination'
             - '@request'
             - '@template'
             - '@user'
             - '@content.visibility'
+            - '@vse.similartopics.stop_word_helper'
             - '@vse.similartopics.driver.manager'
             - '%core.root_path%'
             - '%core.php_ext%'
@@ -59,13 +59,21 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%'
 
+    vse.similartopics.stop_word_helper:
+        class: vse\similartopics\core\stop_word_helper
+        public: false
+        arguments:
+            - '@ext.manager'
+            - '@user'
+            - '%core.php_ext%'
+
 # ----- Similar topics DB drivers collection -----
     vse.similartopics.driver_collection:
         class: phpbb\di\service_collection
         arguments:
             - '@service_container'
         tags:
-            - { name: service_collection, tag: vse.similartopcs.driver }
+            - { name: service_collection, tag: vse.similartopics.driver }
 
     vse.similartopics.driver.postgres:
         class: vse\similartopics\driver\postgres
@@ -73,17 +81,37 @@ services:
             - '@dbal.conn'
             - '@config'
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
 
     vse.similartopics.driver.mysqli:
         class: vse\similartopics\driver\mysqli
         arguments:
             - '@dbal.conn'
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
 
     vse.similartopics.driver.mysql4:
         class: vse\similartopics\driver\mysql4
         parent: vse.similartopics.driver.mysqli
         tags:
-            - { name: vse.similartopcs.driver }
+            - { name: vse.similartopics.driver }
+
+    vse.similartopics.driver.sqlite3:
+        class: vse\similartopics\driver\sqlite3
+        arguments:
+            - '@dbal.conn'
+        tags:
+            - { name: vse.similartopics.driver }
+
+    vse.similartopics.driver.mssql:
+        class: vse\similartopics\driver\mssql
+        arguments:
+            - '@dbal.conn'
+        tags:
+            - { name: vse.similartopics.driver }
+
+    vse.similartopics.driver.mssqlnative:
+        class: vse\similartopics\driver\mssqlnative
+        parent: vse.similartopics.driver.mssql
+        tags:
+            - { name: vse.similartopics.driver }

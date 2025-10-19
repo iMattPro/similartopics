@@ -65,7 +65,6 @@ class postgres implements driver_interface
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*, $ts_rank_cd AS score",
-
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
 			),
@@ -172,6 +171,21 @@ class postgres implements driver_interface
 	public function get_engine()
 	{
 		return '';
+	}
+
+	/**
+	 * Get a list of postgresql text search names
+	 *
+	 * @return array array of text search names
+	 */
+	public function get_cfg_name_list()
+	{
+		$sql = 'SELECT cfgname AS ts_name FROM pg_ts_config';
+		$result = $this->db->sql_query($sql);
+		$ts_options = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		return $ts_options;
 	}
 
 	/**
