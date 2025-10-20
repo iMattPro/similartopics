@@ -45,6 +45,7 @@ class driver_test extends \phpbb_database_test_case
 			'mssqlnative',
 			'mssql_odbc',
 			'sqlite3',
+			'oracle',
 		);
 		$services = array();
 		foreach ($drivers as $driver)

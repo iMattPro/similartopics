@@ -2,7 +2,7 @@
 
 ### 1.7.0 - TBD
 
-- Added support for MSSQL and SQLite3 databases.
+- Added support for MSSQL, SQLite3 and Oracle databases.
 - Enabled stop-word filtering for Postgres database users when using the 'simple' dictionary.
 - Added missing stop-word filters (AI-translated) for Hebrew, Persian, Japanese, Swedish and Turkish languages.
 - Fixed and optimized lots of code when processing similar topics.
