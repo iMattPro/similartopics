@@ -71,6 +71,6 @@ $lang = array_merge($lang, array(
 	'PST_WORDS_EXPLAIN'	=> 'Add special words unique to your forum that should be ignored when finding similar topics. (Note: Words that are currently regarded as common in your language are already ignored by default.) Separate each word with a space. Case insensitive.',
 	'PST_SAVED'			=> 'Similar Topics settings updated',
 	'PST_FORUM_INFO'	=> '“Do Not Display In”: Will not show similar topics in the selected forums.<br>“Do Not Search In” : Will not search for similar topics in the selected forums.',
-	'PST_NO_COMPAT'		=> 'Similar Topics is not compatible with your forum. Similar Topics will run on MySQL, PostgreSQL, MSSQL or SQLite3 databases.',
+	'PST_NO_COMPAT'		=> 'Similar Topics is not compatible with your forum. Similar Topics should run on MySQL, PostgreSQL, MSSQL, SQLite3 or Oracle databases.',
 	'PST_ERR_CONFIG'	=> 'Too many forums were marked in the list of forums. Please try again with a smaller selection.',
 ));
