@@ -382,7 +382,7 @@ class similar_topics
 		$db_layer = $this->db->get_sql_layer();
 
 		// Check for databases without stop-word support
-		if (in_array($db_layer, ['mssql', 'mssqlnative', 'sqlite3'], true))
+		if (in_array($db_layer, ['sqlite3', 'mssql', 'mssqlnative', 'mssql_odbc'], true))
 		{
 			return true;
 		}

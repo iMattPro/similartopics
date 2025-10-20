@@ -43,6 +43,7 @@ class driver_test extends \phpbb_database_test_case
 			'mysqli',
 			'mssql',
 			'mssqlnative',
+			'mssql_odbc',
 			'sqlite3',
 		);
 		$services = array();
@@ -98,7 +99,7 @@ class driver_test extends \phpbb_database_test_case
 			$select = "f.forum_id, f.forum_name, t.*, ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) AS score";
 			$where = "to_tsquery('simple', 'foo|bar') @@ to_tsvector('simple', t.topic_title) AND ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (extract(epoch from current_timestamp)::integer - 0) AND t.topic_id <> 1";
 		}
-		else if ($sql_layer === 'mssql' || $sql_layer === 'mssqlnative')
+		else if (strpos($sql_layer, 'mssql') === 0)
 		{
 			$search_condition = $driver->is_fulltext() ?  "CONTAINS(t.topic_title, 'foo AND bar')" : "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%')";
 			$select = "f.forum_id, f.forum_name, t.*, CASE WHEN " . $search_condition . " THEN 1.0 ELSE 0.0 END AS score";
@@ -152,7 +153,7 @@ class driver_test extends \phpbb_database_test_case
 		$driver->create_fulltext_index($column);
 
 		// For MSSQL, skip assertion if fulltext is not available
-		if (in_array($sql_layer, array('mssql', 'mssqlnative')))
+		if (strpos($sql_layer, 'mssql') === 0)
 		{
 			// MSSQL may not have fulltext available in test environment
 			self::assertTrue(true); // Skip test

@@ -187,6 +187,16 @@ class similar_topics_test extends \phpbb_test_case
 				'mssqlnative',
 				true,
 			],
+			'enabled on mssql_odbc' => [
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mssql_odbc',
+				true,
+			],
 			'enabled on invalid db' => [
 				[
 					'similar_topics' => '1',
@@ -316,7 +326,7 @@ class similar_topics_test extends \phpbb_test_case
 		$this->manager->expects(self::once())
 			->method('get_driver')
 			->with($sql_layer)
-			->willReturn((in_array($sql_layer, ['mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative']) ? $this->driver : null));
+			->willReturn((in_array($sql_layer, ['mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative', 'mssql_odbc']) ? $this->driver : null));
 
 		$similar_topics = $this->get_similar_topics();
 

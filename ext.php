@@ -22,7 +22,7 @@ class ext extends \phpbb\extension\base
 	{
 		$db = $this->container->get('dbal.conn');
 
-		$valid_db = in_array($db->get_sql_layer(), array('mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative'));
+		$valid_db = in_array($db->get_sql_layer(), array('mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative', 'mssql_odbc'));
 
 		$valid_phpBB =
 			phpbb_version_compare(PHPBB_VERSION, '3.2.1', '>=') &&
