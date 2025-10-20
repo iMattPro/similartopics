@@ -33,27 +33,27 @@ class sqlite3_index extends \phpbb\db\migration\migration
 
 	public static function depends_on()
 	{
-		return array('\vse\similartopics\migrations\release_1_5_x\similar_topic_words');
+		return ['\vse\similartopics\migrations\release_1_5_x\similar_topic_words'];
 	}
 
 	public function update_data()
 	{
-		return array(
-			array('if', array(
+		return [
+			['if', [
 				$this->db->get_sql_layer() === 'sqlite3',
-				array('custom', array(array($this, 'create_sqlite3_index'))),
-			)),
-		);
+				['custom', [[$this, 'create_sqlite3_index']]],
+			]],
+		];
 	}
 
 	public function revert_data()
 	{
-		return array(
-			array('if', array(
+		return [
+			['if', [
 				$this->db->get_sql_layer() === 'sqlite3',
-				array('custom', array(array($this, 'drop_sqlite3_index'))),
-			)),
-		);
+				['custom', [[$this, 'drop_sqlite3_index']]],
+			]],
+		];
 	}
 
 	/**
