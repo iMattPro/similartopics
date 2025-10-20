@@ -127,7 +127,7 @@ class driver_test extends \phpbb_database_test_case
 		$driver = $this->get_driver();
 		$sql_layer = $this->db->get_sql_layer();
 
-		if (in_array($sql_layer, array('mysql4', 'mysqli')))
+		if (strpos($sql_layer, 'mysql') === 0)
 		{
 			$unsupported = $driver->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '<');
 			self::assertSame(!$unsupported, $driver->is_supported());

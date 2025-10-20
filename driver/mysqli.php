@@ -202,7 +202,7 @@ class mysqli implements driver_interface
 	 */
 	protected function is_mysql()
 	{
-		return ($this->db->get_sql_layer() === 'mysql4' || $this->db->get_sql_layer() === 'mysqli');
+		return strpos($this->db->get_sql_layer(), 'mysql') === 0;
 	}
 
 	/**
