@@ -9,6 +9,9 @@
 
 	if (!subjectField || !dropdown) return;
 
+	// Disable browser autocomplete to prevent interference
+	subjectField.setAttribute('autocomplete', 'off');
+
 	function positionDropdown() {
 		var rect = subjectField.getBoundingClientRect();
 		dropdown.style.left = rect.left + 'px';
