@@ -63,6 +63,7 @@ services:
         class: vse\similartopics\core\stop_word_helper
         public: false
         arguments:
+            - '@cache.driver'
             - '@ext.manager'
             - '@user'
             - '%core.php_ext%'

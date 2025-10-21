@@ -12,6 +12,9 @@ namespace vse\similartopics\tests\core;
 
 class stop_word_helper_test extends \phpbb_test_case
 {
+	/** @var \phpbb\cache\driver\driver_interface|\PHPUnit\Framework\MockObject\MockObject */
+	protected $cache;
+
 	/** @var \phpbb\extension\manager|\PHPUnit\Framework\MockObject\MockObject */
 	protected $ext_manager;
 
@@ -25,6 +28,9 @@ class stop_word_helper_test extends \phpbb_test_case
 	{
 		parent::setUp();
 
+		$this->cache = $this->createMock('\phpbb\cache\driver\driver_interface');
+		$this->cache->method('get')->willReturn(false);
+		$this->cache->method('put')->willReturn(true);
 		$this->ext_manager = $this->createMock('\phpbb\extension\manager');
 		$this->user = $this->createMock('\phpbb\user');
 		$this->user->lang_name = 'en';
@@ -33,6 +39,7 @@ class stop_word_helper_test extends \phpbb_test_case
 	public function get_helper()
 	{
 		return new \vse\similartopics\core\stop_word_helper(
+			$this->cache,
 			$this->ext_manager,
 			$this->user,
 			$this->php_ext

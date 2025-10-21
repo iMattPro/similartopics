@@ -10,15 +10,19 @@
 
 namespace vse\similartopics\core;
 
+use phpbb\cache\driver\driver_interface as cache_driver;
 use phpbb\extension\manager as ext_manager;
 use phpbb\user;
 
 /**
- * A helper class to clean text and remove stop words (localized + additional)
+ * A helper class to clean text and remove stop words (localized and additional)
  * for topic titles or other search-related strings.
  */
 class stop_word_helper
 {
+	/** @var cache_driver */
+	protected $cache;
+
 	/** @var ext_manager */
 	protected $extension_manager;
 
@@ -43,12 +47,14 @@ class stop_word_helper
 	/**
 	 * Constructor
 	 *
+	 * @param cache_driver $cache
 	 * @param ext_manager $extension_manager
 	 * @param user $user
 	 * @param string $php_ext
 	 */
-	public function __construct(ext_manager $extension_manager, user $user, $php_ext)
+	public function __construct(cache_driver $cache, ext_manager $extension_manager, user $user, $php_ext)
 	{
+		$this->cache = $cache;
 		$this->extension_manager = $extension_manager;
 		$this->user = $user;
 		$this->php_ext = $php_ext;
@@ -108,22 +114,31 @@ class stop_word_helper
 	}
 
 	/**
-	 * Load ignore words into memory and build lookup table
+	 * Load ignore words into memory and build a lookup table
 	 */
 	protected function load_ignore_words()
 	{
 		if ($this->needs_reload || $this->ignore_lookup === null)
 		{
-			// Load localized ignore words (if needed)
-			$words = $this->use_localized ? $this->load_localized_words() : [];
+			// The cache will be invalidated when language, localized setting, or additional words change
+			$cache_key = '_pst_ignore_' . md5($this->user->lang_name . '|' . (int) $this->use_localized . '|' . $this->additional_ignore);
+			$this->ignore_lookup = $this->cache->get($cache_key);
 
-			// Load additional ignore words (if defined)
-			if (!empty($this->additional_ignore))
+			if ($this->ignore_lookup === false)
 			{
-				$words = array_merge($words, $this->make_word_array($this->additional_ignore, false));
+				// Load localized ignore words (if needed)
+				$words = $this->use_localized ? $this->load_localized_words() : [];
+
+				// Load additional ignore words (if defined)
+				if (!empty($this->additional_ignore))
+				{
+					$words = array_merge($words, $this->make_word_array($this->additional_ignore));
+				}
+
+				$this->ignore_lookup = array_flip(array_unique($words));
+				$this->cache->put($cache_key, $this->ignore_lookup);
 			}
 
-			$this->ignore_lookup = array_flip(array_unique($words));
 			$this->needs_reload = false;
 		}
 	}
@@ -131,7 +146,7 @@ class stop_word_helper
 	/**
 	 * Load localized ignore words
 	 *
-	 * @return array An array of ignore words from the user's language pack
+	 * @return array An array of ignore-words from the user's language pack
 	 */
 	protected function load_localized_words()
 	{
@@ -154,7 +169,7 @@ class stop_word_helper
 	}
 
 	/**
-	 * Split text into word array
+	 * Split text into a word array
 	 *
 	 * @param string $text A string of text
 	 * @param bool $filter_short Whether to filter out words < 3 characters
@@ -174,7 +189,7 @@ class stop_word_helper
 	 * Filter callback for array_filter to exclude stop words
 	 *
 	 * @param string $word Word to check
-	 * @return bool True to keep word, false to remove it
+	 * @return bool True to keep a word, false to remove it
 	 */
 	protected function filter_ignore_words($word)
 	{
