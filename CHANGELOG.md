@@ -2,13 +2,16 @@
 
 ### 1.7.0 - TBD
 
-- Added support for MSSQL and SQLite3 databases.
+- Added support for MSSQL, SQLite3 and Oracle databases.
+- Enabled stop-word filtering for Postgres database users when using the 'simple' dictionary.
+- Added missing stop-word filters (AI-translated) for Hebrew, Persian, Japanese, Swedish and Turkish languages.
+- Fixed and optimized lots of code when processing similar topics.
 
 ### 1.6.0 - 2022-12-17
 
 - Removed support for phpBB 3.1.x.
 - Removed forum "f=" parameters from URLs.
-- Optimized Javascript and other coding updates.
+- Optimized JavaScript and other coding updates.
 - Support added for ScaffoldBB style.
 
 ### 1.5.4 - 2020-12-01
@@ -16,11 +19,11 @@
 - Fix for Postgresql databases where titles with single quotes would fatally error.
 - Enabled AJAX interactions when saving settings in the ACP.
 - Re-wrote the search period explanation in the ACP settings.
-- Switched to using phpBB finder to locate foreign language ignore words files.
+- Switched to using the phpBB finder to locate foreign language ignore words files.
 
 ### 1.5.3 - 2020-01-10
 
-- Compatibility issues with Prosilver styles addressed.
+- Compatibility issues with Prosilver styles are addressed.
 - Installation errors on phpBB 3.3.x will be reported to the user.
 
 ### 1.5.2 - 2019-06-26
@@ -31,18 +34,18 @@
 
 ### 1.5.1 - 2018-06-01
 
-- Fixed an issue where PHP using European decimal notation (comma instead of period) could cause an SQL error.
-- Minor code fixes based on phpBB Extension team validation report.
+- Fixed an issue where PHP using European decimal notation (comma instead of a period) could cause an SQL error.
+- Minor code fixes based on the phpBB Extension team validation report.
 
 ### 1.5.0 - 2018-03-14
 
 - Added support for forums using PostgreSQL databases (with thanks to hubaishan).
 - Fixed a layout bug with the pagination buttons introduced in phpBB 3.2.2.
-- Fixed potential SQL error bug when installing.
+- Fixed a potential SQL error bug when installing.
 
 ### 1.4.3 - 2018-01-03
 
-- Added a new setting: Search Sensitivity. Allows users to adjust the weighting of similar topics matches. This was added because InnoDB which is now supported, weights results differently than MyISAM. This will allow users with InnoDB tables to improve their similar topics results by lowering the weighting/sensitivity.
+- Added a new setting: Search Sensitivity. Allows users to adjust the weighting of similar topics matches. This was added because InnoDB, which is now supported, weights results differently than MyISAM. This will allow users with InnoDB tables to improve their similar topics results by lowering the weighting/sensitivity.
 - Converted all template syntax to Twig format.
 
 ### 1.4.2 - 2017-03-18

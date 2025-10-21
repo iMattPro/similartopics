@@ -43,7 +43,9 @@ class driver_test extends \phpbb_database_test_case
 			'mysqli',
 			'mssql',
 			'mssqlnative',
+			'mssql_odbc',
 			'sqlite3',
+			'oracle',
 		);
 		$services = array();
 		foreach ($drivers as $driver)
@@ -98,7 +100,7 @@ class driver_test extends \phpbb_database_test_case
 			$select = "f.forum_id, f.forum_name, t.*, ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) AS score";
 			$where = "to_tsquery('simple', 'foo|bar') @@ to_tsvector('simple', t.topic_title) AND ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (extract(epoch from current_timestamp)::integer - 0) AND t.topic_id <> 1";
 		}
-		else if ($sql_layer === 'mssql' || $sql_layer === 'mssqlnative')
+		else if (strpos($sql_layer, 'mssql') === 0)
 		{
 			$search_condition = $driver->is_fulltext() ?  "CONTAINS(t.topic_title, 'foo AND bar')" : "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%')";
 			$select = "f.forum_id, f.forum_name, t.*, CASE WHEN " . $search_condition . " THEN 1.0 ELSE 0.0 END AS score";
@@ -126,7 +128,7 @@ class driver_test extends \phpbb_database_test_case
 		$driver = $this->get_driver();
 		$sql_layer = $this->db->get_sql_layer();
 
-		if (in_array($sql_layer, array('mysql4', 'mysqli')))
+		if (strpos($sql_layer, 'mysql') === 0)
 		{
 			$unsupported = $driver->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '<');
 			self::assertSame(!$unsupported, $driver->is_supported());
@@ -135,6 +137,27 @@ class driver_test extends \phpbb_database_test_case
 		{
 			// For other database types, they should be supported if the driver exists
 			self::assertTrue($driver->is_supported());
+		}
+	}
+
+	public function test_has_stopword_support()
+	{
+		$driver = $this->get_driver();
+		$sql_layer = $this->db->get_sql_layer();
+
+		if ($sql_layer === 'oracle' || strpos($sql_layer, 'mysql') === 0)
+		{
+			self::assertTrue($driver->has_stopword_support());
+		}
+		else if ($sql_layer === 'postgres')
+		{
+			// Postgres depends on text search configuration
+			self::assertIsBool($driver->has_stopword_support());
+		}
+		else
+		{
+			// SQLite3, MSSQL variants have no stopword support
+			self::assertFalse($driver->has_stopword_support());
 		}
 	}
 
@@ -152,7 +175,7 @@ class driver_test extends \phpbb_database_test_case
 		$driver->create_fulltext_index($column);
 
 		// For MSSQL, skip assertion if fulltext is not available
-		if (in_array($sql_layer, array('mssql', 'mssqlnative')))
+		if (strpos($sql_layer, 'mssql') === 0)
 		{
 			// MSSQL may not have fulltext available in test environment
 			self::assertTrue(true); // Skip test

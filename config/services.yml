@@ -115,3 +115,16 @@ services:
         parent: vse.similartopics.driver.mssql
         tags:
             - { name: vse.similartopics.driver }
+
+    vse.similartopics.driver.mssql_odbc:
+        class: vse\similartopics\driver\mssql_odbc
+        parent: vse.similartopics.driver.mssql
+        tags:
+            - { name: vse.similartopics.driver }
+
+    vse.similartopics.driver.oracle:
+        class: vse\similartopics\driver\oracle
+        arguments:
+            - '@dbal.conn'
+        tags:
+            - { name: vse.similartopics.driver }

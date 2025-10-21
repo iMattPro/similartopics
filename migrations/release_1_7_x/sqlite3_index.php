@@ -8,7 +8,7 @@
  *
  */
 
-namespace vse\similartopics\migrations\release_1_5_x;
+namespace vse\similartopics\migrations\release_1_7_x;
 
 use vse\similartopics\driver\sqlite3;
 
@@ -33,31 +33,31 @@ class sqlite3_index extends \phpbb\db\migration\migration
 
 	public static function depends_on()
 	{
-		return array('\vse\similartopics\migrations\release_1_5_x\similar_topic_words');
+		return ['\vse\similartopics\migrations\release_1_5_x\similar_topic_words'];
 	}
 
 	public function update_data()
 	{
-		return array(
-			array('if', array(
+		return [
+			['if', [
 				$this->db->get_sql_layer() === 'sqlite3',
-				array('custom', array(array($this, 'create_sqlite3_index'))),
-			)),
-		);
+				['custom', [[$this, 'create_sqlite3_index']]],
+			]],
+		];
 	}
 
 	public function revert_data()
 	{
-		return array(
-			array('if', array(
+		return [
+			['if', [
 				$this->db->get_sql_layer() === 'sqlite3',
-				array('custom', array(array($this, 'drop_sqlite3_index'))),
-			)),
-		);
+				['custom', [[$this, 'drop_sqlite3_index']]],
+			]],
+		];
 	}
 
 	/**
-	 * Create FULLTEXT index for the topic_title in topics table
+	 * Create a FULLTEXT index for the topic_title in the topic table
 	 */
 	public function create_sqlite3_index()
 	{
@@ -65,15 +65,12 @@ class sqlite3_index extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Drop FULLTEXT index we created from the topics table
+	 * Drop the FULLTEXT index we created from the topic table
 	 */
 	public function drop_sqlite3_index()
 	{
-		if ($this->db->get_sql_layer() === 'sqlite3')
-		{
-			$sql = "DROP INDEX IF EXISTS idx_" . TOPICS_TABLE . "_topic_title";
-			$this->db->sql_query($sql);
-		}
+		$sql = 'DROP INDEX IF EXISTS idx_' . TOPICS_TABLE . '_topic_title';
+		$this->db->sql_query($sql);
 	}
 
 	/**

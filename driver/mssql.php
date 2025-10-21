@@ -95,7 +95,7 @@ class mssql implements driver_interface
 	 */
 	public function is_supported()
 	{
-		return ($this->db->get_sql_layer() === 'mssql' || $this->db->get_sql_layer() === 'mssqlnative');
+		return (strpos($this->db->get_sql_layer(), 'mssql') === 0);
 	}
 
 	/**
@@ -171,6 +171,14 @@ class mssql implements driver_interface
 	public function get_engine()
 	{
 		return '';
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function has_stopword_support()
+	{
+		return false;
 	}
 
 	protected function fulltext_available()

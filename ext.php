@@ -13,7 +13,7 @@ namespace vse\similartopics;
 class ext extends \phpbb\extension\base
 {
 	/**
-	 * Extension requires Mysql, Postgres, SQLite3 or MSSQL DBMS and phpBB 4.0.0 or newer.
+	 * Extension requires phpBB 4.0.0 or newer.
 	 *
 	 * @return array|bool If phpBB 3.3.x, return message as to why it could not be installed.
 	 *                    Otherwise, just return boolean true/false.
@@ -22,11 +22,7 @@ class ext extends \phpbb\extension\base
 	{
 		$db = $this->container->get('dbal.conn');
 
-		$valid_db = in_array($db->get_sql_layer(), array('mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative'));
-
-		$valid_phpBB = phpbb_version_compare(PHPBB_VERSION, '4.0.0-dev', '>=');
-
-		$enableable = $valid_db && $valid_phpBB;
+		$enableable = phpbb_version_compare(PHPBB_VERSION, '4.0.0-dev', '>=');
 
 		// Since showing error messages only works for phpBB 3.3.x, the only message worth showing is
 		// if the DBMS is incompatible. That is, we can't show somebody on phpBB 3.2.x. the message that

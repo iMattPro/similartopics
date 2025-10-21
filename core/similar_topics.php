@@ -379,22 +379,7 @@ class similar_topics
 	 */
 	protected function get_localized_ignore_words()
 	{
-		// Return true if the language is not English
-		if ($this->user->lang_name !== 'en' && $this->user->lang_name !== 'en_us')
-		{
-			return true;
-		}
-
-		$db_layer = $this->db->get_sql_layer();
-
-		// Check for databases without stop-word support
-		if (in_array($db_layer, ['mssql', 'mssqlnative', 'sqlite3'], true))
-		{
-			return true;
-		}
-
-		// Check for Postgres with simple text search
-		return $db_layer === 'postgres' && in_array($this->config->offsetGet('pst_postgres_ts_name'), ['simple', ''], true);
+		return !in_array($this->user->lang_name, ['en', 'en_us'], true) || !$this->similartopics->has_stopword_support();
 	}
 
 	/**
