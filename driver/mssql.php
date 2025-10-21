@@ -173,6 +173,14 @@ class mssql implements driver_interface
 		return '';
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function has_stopword_support()
+	{
+		return false;
+	}
+
 	protected function fulltext_available()
 	{
 		try

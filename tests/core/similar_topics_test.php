@@ -337,6 +337,8 @@ class similar_topics_test extends \phpbb_test_case
 			->method('get_driver')
 			->with($sql_layer)
 			->willReturn((in_array($sql_layer, ['mysqli', 'mysql4', 'postgres', 'sqlite3', 'mssql', 'mssqlnative', 'mssql_odbc', 'oracle']) ? $this->driver : null));
+		$this->driver->method('has_stopword_support')
+			->willReturn(in_array($sql_layer, ['mysqli', 'mysql4', 'oracle']));
 
 		$similar_topics = $this->get_similar_topics();
 

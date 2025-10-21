@@ -152,6 +152,14 @@ class sqlite3 implements driver_interface
 	}
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function has_stopword_support()
+	{
+		return false;
+	}
+
+	/**
 	 * Check if index exists
 	 *
 	 * @param string $table Name of the table

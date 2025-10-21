@@ -157,6 +157,14 @@ class oracle implements driver_interface
 	}
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function has_stopword_support()
+	{
+		return true;
+	}
+
+	/**
 	 * Check if the database is using Oracle
 	 *
 	 * @return bool True if is oracle, false otherwise

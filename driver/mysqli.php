@@ -206,6 +206,14 @@ class mysqli implements driver_interface
 	}
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function has_stopword_support()
+	{
+		return true;
+	}
+
+	/**
 	 * Check if the database engine is supported.
 	 * FULLTEXT is supported on MyISAM, and also on InnoDB as of MySQL 5.6.4 according
 	 * to http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html

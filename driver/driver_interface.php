@@ -82,4 +82,12 @@ interface driver_interface
 	 * @return string The storage engine name
 	 */
 	public function get_engine();
+
+	/**
+	 * Check if the database has built-in stop-word support
+	 *
+	 * @access public
+	 * @return bool True if has stop-word support, false otherwise
+	 */
+	public function has_stopword_support();
 }

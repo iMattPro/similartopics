@@ -140,6 +140,27 @@ class driver_test extends \phpbb_database_test_case
 		}
 	}
 
+	public function test_has_stopword_support()
+	{
+		$driver = $this->get_driver();
+		$sql_layer = $this->db->get_sql_layer();
+
+		if ($sql_layer === 'oracle' || strpos($sql_layer, 'mysql') === 0)
+		{
+			self::assertTrue($driver->has_stopword_support());
+		}
+		else if ($sql_layer === 'postgres')
+		{
+			// Postgres depends on text search configuration
+			self::assertIsBool($driver->has_stopword_support());
+		}
+		else
+		{
+			// SQLite3, MSSQL variants have no stopword support
+			self::assertFalse($driver->has_stopword_support());
+		}
+	}
+
 	public function test_index()
 	{
 		$driver = $this->get_driver();

@@ -174,6 +174,14 @@ class postgres implements driver_interface
 	}
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function has_stopword_support()
+	{
+		return !in_array($this->ts_name, ['simple', ''], true);
+	}
+
+	/**
 	 * Get a list of postgresql text search names
 	 *
 	 * @return array array of text search names
