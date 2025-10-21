@@ -35,7 +35,7 @@
 		}
 
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', '{{ U_AJAX_SEARCH|e('js') }}?q=' + encodeURIComponent(query) + '&f={{ FORUM_ID|e('js') }}');
+		xhr.open('GET', '{{ U_PST_AJAX_SEARCH|e('js') }}?q=' + encodeURIComponent(query) + '&f={{ FORUM_ID|e('js') }}');
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
 		xhr.onreadystatechange = function() {

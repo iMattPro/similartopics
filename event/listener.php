@@ -101,7 +101,7 @@ class listener implements EventSubscriberInterface
 		if ($this->similar_topics->is_available() && $this->similar_topics->is_dynamic_enabled())
 		{
 			$this->template->assign_vars([
-				'U_AJAX_SEARCH' => $this->helper->route('vse_similartopics_ajax_search'),
+				'U_PST_AJAX_SEARCH' => $this->helper->route('vse_similartopics_ajax_search'),
 				'FORUM_ID' => isset($event['forum_id']) ? $event['forum_id'] : 0
 			]);
 		}
