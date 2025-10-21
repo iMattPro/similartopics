@@ -154,6 +154,17 @@ class similar_topics
 	}
 
 	/**
+	 * Is dynamic similar topics enabled?
+	 *
+	 * @access public
+	 * @return bool True if enabled, false otherwise
+	 */
+	public function is_dynamic_enabled()
+	{
+		return !empty($this->config['similar_topics_dynamic']);
+	}
+
+	/**
 	 * Get similar topics by matching topic titles
 	 * Loosely based on viewforum.php lines 840-1040
 	 *

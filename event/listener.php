@@ -98,7 +98,7 @@ class listener implements EventSubscriberInterface
 	 */
 	public function add_ajax_url($event)
 	{
-		if ($this->similar_topics->is_available())
+		if ($this->similar_topics->is_available() && $this->similar_topics->is_dynamic_enabled())
 		{
 			$this->template->assign_vars([
 				'U_AJAX_SEARCH' => $this->helper->route('vse_similartopics_ajax_search'),
