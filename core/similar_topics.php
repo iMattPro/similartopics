@@ -380,7 +380,7 @@ class similar_topics
 	 * Search for similar topics via AJAX for dynamic suggestions
 	 *
 	 * @param string $query The search query
-	 * @param int $forum_id The forum ID to search in
+	 * @param int $forum_id The forum ID to search from
 	 * @return array Array of similar topics
 	 */
 	public function search_similar_topics_ajax($query, $forum_id = 0)
@@ -397,18 +397,35 @@ class similar_topics
 		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? number_format($this->config['similar_topics_sense'] / 10, 1, '.', '') : '0.5';
 		$sql_array = $this->similartopics->get_query(0, $cleaned_query, $this->config['similar_topics_time'], $sensitivity);
 
-		$passworded_forums = $this->user->get_passworded_forums();
-		if (count($passworded_forums))
-		{
-			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
-		}
-
+		$similar_topic_forums = null;
 		if ($forum_id > 0)
 		{
-			$sql_array['WHERE'] .= ' AND f.forum_id = ' . (int) $forum_id;
+			$sql = 'SELECT similar_topic_forums FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . (int) $forum_id;
+			$result = $this->db->sql_query($sql, 300);
+			$similar_topic_forums = $this->db->sql_fetchfield('similar_topic_forums');
+			$this->db->sql_freeresult($result);
 		}
 
-		$sql_array['WHERE'] .= ' AND f.similar_topics_ignore = 0';
+		$passworded_forums = $this->user->get_passworded_forums();
+
+		// Apply same logic as display_similar_topics
+		if (!empty($similar_topic_forums))
+		{
+			$included_forums = array_diff(json_decode($similar_topic_forums, true), $passworded_forums);
+			if (empty($included_forums))
+			{
+				return [];
+			}
+			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $included_forums);
+		}
+		else
+		{
+			if (count($passworded_forums))
+			{
+				$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
+			}
+			$sql_array['WHERE'] .= ' AND f.similar_topics_ignore = 0';
+		}
 
 		$topics = [];
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);

@@ -100,7 +100,10 @@ class listener implements EventSubscriberInterface
 	{
 		if ($this->similar_topics->is_available())
 		{
-			$this->template->assign_var('U_AJAX_SEARCH', $this->helper->route('vse_similartopics_ajax_search'));
+			$this->template->assign_vars([
+				'U_AJAX_SEARCH' => $this->helper->route('vse_similartopics_ajax_search'),
+				'FORUM_ID' => isset($event['forum_id']) ? $event['forum_id'] : 0
+			]);
 		}
 	}
 }

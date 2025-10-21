@@ -34,12 +34,29 @@ class ajax_controller_test extends \phpbb_test_case
 		);
 	}
 
+	public function test_search_similar_topics_not_ajax()
+	{
+		$this->request->expects($this->once())
+			->method('is_ajax')
+			->willReturn(false);
+
+		$this->expectException('\phpbb\exception\http_exception');
+		$this->controller->search_similar_topics();
+	}
+
 	public function test_search_similar_topics_short_query()
 	{
 		$this->request->expects($this->once())
+			->method('is_ajax')
+			->willReturn(true);
+
+		$this->request->expects($this->exactly(2))
 			->method('variable')
-			->with('q', '', true)
-			->willReturn('ab');
+			->withConsecutive(
+				['q', '', true],
+				['f', 0]
+			)
+			->willReturnOnConsecutiveCalls('ab', 1);
 
 		$response = $this->controller->search_similar_topics();
 		$data = json_decode($response->getContent(), true);
@@ -49,12 +66,17 @@ class ajax_controller_test extends \phpbb_test_case
 
 	public function test_search_similar_topics_not_available()
 	{
+		$this->request->expects($this->once())
+			->method('is_ajax')
+			->willReturn(true);
+
 		$this->request->expects($this->exactly(2))
 			->method('variable')
-			->willReturnMap([
-				['q', '', true, 'test query'],
-				['f', 0, false, 1]
-			]);
+			->withConsecutive(
+				['q', '', true],
+				['f', 0]
+			)
+			->willReturnOnConsecutiveCalls('test query', 1);
 
 		$this->similar_topics->expects($this->once())
 			->method('is_available')
@@ -68,12 +90,17 @@ class ajax_controller_test extends \phpbb_test_case
 
 	public function test_search_similar_topics_success()
 	{
+		$this->request->expects($this->once())
+			->method('is_ajax')
+			->willReturn(true);
+
 		$this->request->expects($this->exactly(2))
 			->method('variable')
-			->willReturnMap([
-				['q', '', true, 'test query'],
-				['f', 0, false, 1]
-			]);
+			->withConsecutive(
+				['q', '', true],
+				['f', 0]
+			)
+			->willReturnOnConsecutiveCalls('test query', 1);
 
 		$this->similar_topics->expects($this->once())
 			->method('is_available')

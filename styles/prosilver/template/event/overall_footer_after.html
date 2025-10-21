@@ -31,11 +31,8 @@
 			return;
 		}
 
-		var forumId = document.querySelector('input[name="f"]');
-		var fId = forumId ? forumId.value : 0;
-
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', '{{ U_AJAX_SEARCH }}?q=' + encodeURIComponent(query) + '&f=' + fId);
+		xhr.open('GET', '{{ U_AJAX_SEARCH|e('js') }}?q=' + encodeURIComponent(query) + '&f={{ FORUM_ID|e('js') }}');
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
 		xhr.onreadystatechange = function() {
