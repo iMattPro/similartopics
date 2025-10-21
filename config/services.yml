@@ -23,6 +23,8 @@ services:
         class: vse\similartopics\event\listener
         arguments:
             - '@vse.similartopics.manager'
+            - '@controller.helper'
+            - '@template'
         tags:
             - { name: event.listener }
 
@@ -67,6 +69,12 @@ services:
             - '@ext.manager'
             - '@user'
             - '%core.php_ext%'
+
+    vse.similartopics.ajax.controller:
+        class: vse\similartopics\controller\ajax_controller
+        arguments:
+            - '@request'
+            - '@vse.similartopics.manager'
 
 # ----- Similar topics DB drivers collection -----
     vse.similartopics.driver_collection:

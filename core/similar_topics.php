@@ -377,6 +377,60 @@ class similar_topics
 	}
 
 	/**
+	 * Search for similar topics via AJAX for dynamic suggestions
+	 *
+	 * @param string $query The search query
+	 * @param int $forum_id The forum ID to search in
+	 * @return array Array of similar topics
+	 */
+	public function search_similar_topics_ajax($query, $forum_id = 0)
+	{
+		$this->helper->set_use_localized($this->get_localized_ignore_words());
+		$this->helper->set_additional_ignore_words($this->get_additional_ignore_words());
+		$cleaned_query = $this->helper->clean_text($query);
+
+		if (empty($cleaned_query))
+		{
+			return [];
+		}
+
+		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? number_format($this->config['similar_topics_sense'] / 10, 1, '.', '') : '0.5';
+		$sql_array = $this->similartopics->get_query(0, $cleaned_query, $this->config['similar_topics_time'], $sensitivity);
+
+		$passworded_forums = $this->user->get_passworded_forums();
+		if (count($passworded_forums))
+		{
+			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
+		}
+
+		if ($forum_id > 0)
+		{
+			$sql_array['WHERE'] .= ' AND f.forum_id = ' . (int) $forum_id;
+		}
+
+		$sql_array['WHERE'] .= ' AND f.similar_topics_ignore = 0';
+
+		$topics = [];
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+		$result = $this->db->sql_query_limit($sql, 5);
+
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			if ($this->auth->acl_get('f_read', (int) $row['forum_id']))
+			{
+				$topics[] = [
+					'id' => (int) $row['topic_id'],
+					'title' => censor_text($row['topic_title']),
+					'url' => append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 't=' . $row['topic_id'])
+				];
+			}
+		}
+		$this->db->sql_freeresult($result);
+
+		return $topics;
+	}
+
+	/**
 	 * Get custom ignore words if any were defined for similar topics
 	 *
 	 * @access protected

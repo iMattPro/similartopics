@@ -1,0 +1,100 @@
+{% if S_POST_ACTION and not S_EDIT_POST %}
+{% INCLUDECSS '@vse_similartopics/similar_topics_ajax.css' %}
+<script>
+(function() {
+	var searchTimeout;
+	var dropdown = document.getElementById('similar-topics-dropdown');
+	var subjectField = document.getElementById('subject');
+	var listContainer = document.getElementById('similar-topics-list');
+
+	if (!subjectField || !dropdown) return;
+
+	function positionDropdown() {
+		var rect = subjectField.getBoundingClientRect();
+		dropdown.style.left = rect.left + 'px';
+		dropdown.style.top = (rect.bottom + window.scrollY) + 'px';
+		dropdown.style.width = rect.width + 'px';
+	}
+
+	function hideDropdown() {
+		dropdown.style.display = 'none';
+	}
+
+	function showDropdown() {
+		positionDropdown();
+		dropdown.style.display = 'block';
+	}
+
+	function searchSimilarTopics(query) {
+		if (query.length < 3) {
+			hideDropdown();
+			return;
+		}
+
+		var forumId = document.querySelector('input[name="f"]');
+		var fId = forumId ? forumId.value : 0;
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '{{ U_AJAX_SEARCH }}?q=' + encodeURIComponent(query) + '&f=' + fId);
+		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4 && xhr.status === 200) {
+				try {
+					var response = JSON.parse(xhr.responseText);
+					displayResults(response.topics);
+				} catch (e) {
+					hideDropdown();
+				}
+			}
+		};
+
+		xhr.send();
+	}
+
+	function displayResults(topics) {
+		if (!topics || topics.length === 0) {
+			hideDropdown();
+			return;
+		}
+
+		listContainer.innerHTML = '';
+
+		topics.forEach(function(topic) {
+			var item = document.createElement('div');
+			item.className = 'similar-topic-item';
+
+			var link = document.createElement('a');
+			link.href = topic.url;
+			link.className = 'similar-topic-title';
+			link.textContent = topic.title;
+			link.target = '_blank';
+
+			item.appendChild(link);
+			listContainer.appendChild(item);
+		});
+
+		showDropdown();
+	}
+
+	subjectField.addEventListener('input', function() {
+		clearTimeout(searchTimeout);
+		var query = this.value.trim();
+
+		searchTimeout = setTimeout(function() {
+			searchSimilarTopics(query);
+		}, 300);
+	});
+
+	subjectField.addEventListener('blur', function() {
+		setTimeout(hideDropdown, 200);
+	});
+
+	document.addEventListener('click', function(e) {
+		if (!dropdown.contains(e.target) && e.target !== subjectField) {
+			hideDropdown();
+		}
+	});
+})();
+</script>
+{% endif %}

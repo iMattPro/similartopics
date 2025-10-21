@@ -11,6 +11,8 @@
 namespace vse\similartopics\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use phpbb\controller\helper;
+use phpbb\template\template;
 
 /**
  * Event listener
@@ -20,15 +22,25 @@ class listener implements EventSubscriberInterface
 	/** @var \vse\similartopics\core\similar_topics */
 	protected $similar_topics;
 
+	/** @var helper */
+	protected $helper;
+
+	/** @var template */
+	protected $template;
+
 	/**
 	 * Constructor
 	 *
 	 * @access public
 	 * @param \vse\similartopics\core\similar_topics $similar_topics
+	 * @param helper $helper
+	 * @param template $template
 	 */
-	public function __construct(\vse\similartopics\core\similar_topics $similar_topics)
+	public function __construct(\vse\similartopics\core\similar_topics $similar_topics, helper $helper, template $template)
 	{
 		$this->similar_topics = $similar_topics;
+		$this->helper = $helper;
+		$this->template = $template;
 	}
 
 	/**
@@ -43,6 +55,7 @@ class listener implements EventSubscriberInterface
 		return [
 			'core.viewtopic_modify_page_title'		=> 'display_similar_topics',
 			'core.permissions'						=> 'add_permissions',
+			'core.posting_modify_template_vars'		=> 'add_ajax_url',
 		];
 	}
 
@@ -75,5 +88,19 @@ class listener implements EventSubscriberInterface
 			'lang' => 'ACL_U_SIMILARTOPICS',
 			'cat' => 'misc'
 		]);
+	}
+
+	/**
+	 * Add AJAX URL for similar topics search
+	 *
+	 * @access public
+	 * @param \phpbb\event\data $event The event object
+	 */
+	public function add_ajax_url($event)
+	{
+		if ($this->similar_topics->is_available())
+		{
+			$this->template->assign_var('U_AJAX_SEARCH', $this->helper->route('vse_similartopics_ajax_search'));
+		}
 	}
 }
