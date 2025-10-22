@@ -421,7 +421,9 @@ class similar_topics
 		$similar_topic_forums = null;
 		if ($forum_id > 0)
 		{
-			$sql = 'SELECT similar_topic_forums FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . (int) $forum_id;
+			$sql = 'SELECT similar_topic_forums
+				FROM ' . FORUMS_TABLE . '
+				WHERE forum_id = ' . (int) $forum_id;
 			$result = $this->db->sql_query($sql, 3600);
 			$similar_topic_forums = $this->db->sql_fetchfield('similar_topic_forums');
 			$this->db->sql_freeresult($result);

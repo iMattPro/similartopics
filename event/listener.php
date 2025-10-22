@@ -91,7 +91,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * Add AJAX URL for similar topics search
+	 * Add AJAX URL for dynamic similar topics when creating posts
 	 *
 	 * @access public
 	 * @param \phpbb\event\data $event The event object

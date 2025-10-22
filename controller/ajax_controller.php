@@ -45,7 +45,7 @@ class ajax_controller
 	{
 		if (!$this->request->is_ajax())
 		{
-			throw new http_exception(404, 'GENERAL_ERROR');
+			throw new http_exception(403, 'NO_AUTH_OPERATION');
 		}
 
 		$query = $this->request->variable('q', '', true);
