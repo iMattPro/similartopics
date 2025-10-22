@@ -25,7 +25,7 @@ class database_drivers_test extends \phpbb_test_case
 		$this->config = new \phpbb\config\config(['pst_postgres_ts_name' => 'english']);
 	}
 
-	public function driver_data_provider()
+	public static function driver_data_provider()
 	{
 		return [
 			'mssql' => ['mssql', 'mssql', 'mssql'],
@@ -281,6 +281,8 @@ class database_drivers_test extends \phpbb_test_case
 		$this->db->method('sql_query')->willReturn(true);
 		$this->db->method('sql_fetchrow')
 			->willReturnOnConsecutiveCalls(
+				['relname' => 'topics_english_topic_title'],
+				false,
 				['relname' => 'topics_english_topic_title'],
 				false
 			);

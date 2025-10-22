@@ -109,13 +109,22 @@ class controller_test extends \phpbb_database_test_case
 
 	public function test_handle_advanced_action()
 	{
+		$call_count = 0;
 		$this->request->expects($this->exactly(2))
 			->method('variable')
-			->withConsecutive(
-				['action', ''],
-				['f', 0]
-			)
-			->willReturnOnConsecutiveCalls('advanced', 1);
+			->willReturnCallback(function($param, $default) use (&$call_count) {
+				$call_count++;
+				if ($call_count === 1) {
+					$this->assertEquals('action', $param);
+					$this->assertEquals('', $default);
+					return 'advanced';
+				}
+				if ($call_count === 2) {
+					$this->assertEquals('f', $param);
+					$this->assertEquals(0, $default);
+					return 1;
+				}
+			});
 
 		$this->request->expects($this->once())
 			->method('is_set_post')
@@ -125,7 +134,7 @@ class controller_test extends \phpbb_database_test_case
 		$this->controller->set_u_action('u_action')->handle();
 	}
 
-	public function default_settings_data_provider()
+	public static function default_settings_data_provider()
 	{
 		return [
 			'valid settings' => [

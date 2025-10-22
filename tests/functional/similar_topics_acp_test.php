@@ -26,8 +26,8 @@ class similar_topics_acp_test extends similar_topics_base
 	public static function acp_pages_data()
 	{
 		return array(
-			array('settings' => 'settings'), // Load the main ACP page
-			array('advanced' => 'settings&action=advanced&f=2'), // Load the advanced forum settings ACP page
+			'settings' => array('settings'), // Load the main ACP page
+			'advanced' => array('settings&action=advanced&f=2'), // Load the advanced forum settings ACP page
 		);
 	}
 

@@ -46,7 +46,7 @@ class stop_word_helper_test extends \phpbb_test_case
 		);
 	}
 
-	public function clean_text_test_data()
+	public static function clean_text_test_data()
 	{
 		return [
 			'No filtering' => [

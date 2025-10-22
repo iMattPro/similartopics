@@ -50,13 +50,16 @@ class ajax_controller_test extends \phpbb_test_case
 			->method('is_ajax')
 			->willReturn(true);
 
+		$call_count = 0;
 		$this->request->expects($this->exactly(2))
 			->method('variable')
-			->withConsecutive(
-				['q', '', true],
-				['f', 0]
-			)
-			->willReturnOnConsecutiveCalls('ab', 1);
+			->willReturnCallback(function($param, $default, $raw = false) use (&$call_count) {
+				$call_count++;
+				if ($call_count === 1) {
+					return 'ab';
+				}
+				return 1;
+			});
 
 		$response = $this->controller->search_similar_topics();
 		$data = json_decode($response->getContent(), true);
@@ -70,13 +73,16 @@ class ajax_controller_test extends \phpbb_test_case
 			->method('is_ajax')
 			->willReturn(true);
 
+		$call_count = 0;
 		$this->request->expects($this->exactly(2))
 			->method('variable')
-			->withConsecutive(
-				['q', '', true],
-				['f', 0]
-			)
-			->willReturnOnConsecutiveCalls('test query', 1);
+			->willReturnCallback(function($param, $default, $raw = false) use (&$call_count) {
+				$call_count++;
+				if ($call_count === 1) {
+					return 'test query';
+				}
+				return 1;
+			});
 
 		$this->similar_topics->expects($this->once())
 			->method('is_available')
@@ -94,13 +100,16 @@ class ajax_controller_test extends \phpbb_test_case
 			->method('is_ajax')
 			->willReturn(true);
 
+		$call_count = 0;
 		$this->request->expects($this->exactly(2))
 			->method('variable')
-			->withConsecutive(
-				['q', '', true],
-				['f', 0]
-			)
-			->willReturnOnConsecutiveCalls('test query', 1);
+			->willReturnCallback(function($param, $default, $raw = false) use (&$call_count) {
+				$call_count++;
+				if ($call_count === 1) {
+					return 'test query';
+				}
+				return 1;
+			});
 
 		$this->similar_topics->expects($this->once())
 			->method('is_available')
