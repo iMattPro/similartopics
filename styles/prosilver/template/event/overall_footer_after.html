@@ -3,6 +3,7 @@
 <script>
 (function() {
 	let searchTimeout;
+	let selectedIndex = -1;
 	const dropdown = document.getElementById('similar-topics-dropdown');
 	const subjectField = document.getElementById('subject');
 	const listContainer = document.getElementById('similar-topics-list');
@@ -21,6 +22,7 @@
 
 	function hideDropdown() {
 		dropdown.style.display = 'none';
+		selectedIndex = -1;
 	}
 
 	function showDropdown() {
@@ -59,6 +61,7 @@
 		}
 
 		listContainer.innerHTML = '';
+		selectedIndex = -1;
 
 		topics.forEach(topic => {
 			const item = document.createElement('div');
@@ -77,6 +80,22 @@
 		showDropdown();
 	}
 
+	function updateSelection() {
+		const items = listContainer.querySelectorAll('.similar-topic-item');
+		items.forEach((item, index) => {
+			item.classList.toggle('selected', index === selectedIndex);
+		});
+	}
+
+	function openSelectedTopic() {
+		const items = listContainer.querySelectorAll('.similar-topic-item');
+		if (selectedIndex >= 0 && selectedIndex < items.length) {
+			const link = items[selectedIndex].querySelector('a');
+			window.open(link.href, '_blank');
+			hideDropdown();
+		}
+	}
+
 	subjectField.addEventListener('input', () => {
 		clearTimeout(searchTimeout);
 		const query = subjectField.value.trim();
@@ -84,6 +103,26 @@
 		searchTimeout = setTimeout(() => {
 			searchSimilarTopics(query);
 		}, 300);
+	});
+
+	subjectField.addEventListener('keydown', (e) => {
+		if (dropdown.style.display === 'none') return;
+
+		const items = listContainer.querySelectorAll('.similar-topic-item');
+		if (items.length === 0) return;
+
+		if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			selectedIndex = selectedIndex < items.length - 1 ? selectedIndex + 1 : 0;
+			updateSelection();
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			selectedIndex = selectedIndex > 0 ? selectedIndex - 1 : items.length - 1;
+			updateSelection();
+		} else if (e.key === 'Enter' && selectedIndex >= 0) {
+			e.preventDefault();
+			openSelectedTopic();
+		}
 	});
 
 	subjectField.addEventListener('blur', () => {

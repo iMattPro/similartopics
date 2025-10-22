@@ -30,7 +30,8 @@
 	transition: background-color 0.2s;
 }
 
-.similar-topic-item:hover {
+.similar-topic-item:hover,
+.similar-topic-item.selected {
 	background: #f0f0f0;
 }
 
