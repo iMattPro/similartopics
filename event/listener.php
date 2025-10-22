@@ -55,7 +55,7 @@ class listener implements EventSubscriberInterface
 		return [
 			'core.viewtopic_modify_page_title'		=> 'display_similar_topics',
 			'core.permissions'						=> 'add_permissions',
-			'core.posting_modify_template_vars'		=> 'add_ajax_url',
+			'core.posting_modify_template_vars'		=> 'dynamic_similar_topics',
 		];
 	}
 
@@ -91,12 +91,12 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * Add AJAX URL for dynamic similar topics when creating posts
+	 * Display dynamic similar topics when creating posts
 	 *
 	 * @access public
 	 * @param \phpbb\event\data $event The event object
 	 */
-	public function add_ajax_url($event)
+	public function dynamic_similar_topics($event)
 	{
 		if ($event['mode'] !== 'post'
 			|| !empty($event['post_data']['topic_id'])
@@ -106,11 +106,17 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
-		$this->similar_topics->add_language();
-		$this->template->assign_vars([
+		$tpl_ary = [
 			'S_DYNAMIC_SIMILAR_TOPICS' => true,
 			'U_PST_AJAX_SEARCH' => $this->helper->route('vse_similartopics_ajax_search'),
-			'FORUM_ID' => isset($event['forum_id']) ? $event['forum_id'] : 0
-		]);
+		];
+
+		if ($this->template->retrieve_var('FORUM_ID') === null)
+		{
+			$tpl_ary['FORUM_ID'] = isset($event['forum_id']) ? $event['forum_id'] : 0;
+		}
+
+		$this->template->assign_vars($tpl_ary);
+		$this->similar_topics->add_language();
 	}
 }
