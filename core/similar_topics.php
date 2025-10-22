@@ -422,14 +422,13 @@ class similar_topics
 		if ($forum_id > 0)
 		{
 			$sql = 'SELECT similar_topic_forums FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . (int) $forum_id;
-			$result = $this->db->sql_query($sql, 300);
+			$result = $this->db->sql_query($sql, 3600);
 			$similar_topic_forums = $this->db->sql_fetchfield('similar_topic_forums');
 			$this->db->sql_freeresult($result);
 		}
 
 		$passworded_forums = $this->user->get_passworded_forums();
 
-		// Apply same logic as display_similar_topics
 		if (!empty($similar_topic_forums))
 		{
 			$included_forums = array_diff(json_decode($similar_topic_forums, true), $passworded_forums);
@@ -459,7 +458,7 @@ class similar_topics
 				$topics[] = [
 					'id' => (int) $row['topic_id'],
 					'title' => censor_text($row['topic_title']),
-					'url' => append_sid("{$this->root_path}viewtopic.{$this->php_ext}", 't=' . $row['topic_id'])
+					'url' => append_sid("{$this->root_path}viewtopic.$this->php_ext", 't=' . $row['topic_id'])
 				];
 			}
 		}

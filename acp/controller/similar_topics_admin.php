@@ -269,6 +269,8 @@ class similar_topics_admin
 				WHERE forum_id = $forum_id";
 			$this->db->sql_query($sql);
 
+			$this->cache->destroy('sql', FORUMS_TABLE);
+
 			$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
 			$this->end('PST_SAVED');
