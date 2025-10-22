@@ -1,35 +1,38 @@
 {% if S_DYNAMIC_SIMILAR_TOPICS and S_POST_ACTION and not S_EDIT_POST %}
 {% INCLUDECSS '@vse_similartopics/similar_topics_ajax.css' %}
 <script>
+// Dynamic Similar Topics - Real-time search as user types in the subject field
 (function() {
-	let searchTimeout;
-	let selectedIndex = -1;
+	// State variables: debounce timer, keyboard selection index, cached DOM elements
+	let searchTimeout, selectedIndex = -1, cachedItems = [];
 	const dropdown = document.getElementById('similar-topics-dropdown');
 	const subjectField = document.getElementById('subject');
 	const listContainer = document.getElementById('similar-topics-list');
 
 	if (!subjectField || !dropdown) return;
 
-	// Disable browser autocomplete to prevent interference
+	// Disable browser autocomplete to prevent interference with our dropdown
 	subjectField.setAttribute('autocomplete', 'off');
 
-	function positionDropdown() {
-		const rect = subjectField.getBoundingClientRect();
-		dropdown.style.left = rect.left + 'px';
-		dropdown.style.top = (rect.bottom + window.scrollY) + 'px';
-		dropdown.style.width = rect.width + 'px';
-	}
-
+	// Hide dropdown and reset selection state
 	function hideDropdown() {
 		dropdown.style.display = 'none';
 		selectedIndex = -1;
+		cachedItems = [];
 	}
 
+	// Position dropdown below the subject field and show it
 	function showDropdown() {
-		positionDropdown();
-		dropdown.style.display = 'block';
+		const rect = subjectField.getBoundingClientRect();
+		Object.assign(dropdown.style, {
+			left: rect.left + 'px',
+			top: (rect.bottom + window.scrollY) + 'px',
+			width: rect.width + 'px',
+			display: 'block'
+		});
 	}
 
+	// AJAX search for similar topics (minimum 3 characters)
 	function searchSimilarTopics(query) {
 		if (query.length < 3) {
 			hideDropdown();
@@ -54,48 +57,45 @@
 		xhr.send();
 	}
 
+	// Build and display topic results in a dropdown
 	function displayResults(topics) {
-		if (!topics || topics.length === 0) {
-			hideDropdown();
-			return;
-		}
+		if (!topics || topics.length === 0) return hideDropdown();
 
 		listContainer.innerHTML = '';
-		selectedIndex = -1;
-
 		topics.forEach(topic => {
 			const item = document.createElement('div');
 			item.className = 'similar-topic-item';
-
 			const link = document.createElement('a');
 			link.href = topic.url;
 			link.className = 'similar-topic-title';
 			link.textContent = topic.title;
 			link.target = '_blank';
-
 			item.appendChild(link);
 			listContainer.appendChild(item);
 		});
 
+		// Cache items for keyboard navigation performance
+		cachedItems = listContainer.children;
+		selectedIndex = -1;
 		showDropdown();
 	}
 
+	// Update visual selection highlighting for keyboard navigation
 	function updateSelection() {
-		const items = listContainer.querySelectorAll('.similar-topic-item');
-		items.forEach((item, index) => {
-			item.classList.toggle('selected', index === selectedIndex);
-		});
+		for (let i = 0; i < cachedItems.length; i++) {
+			cachedItems[i].classList.toggle('selected', i === selectedIndex);
+		}
 	}
 
+	// Open currently selected topic in new tab
 	function openSelectedTopic() {
-		const items = listContainer.querySelectorAll('.similar-topic-item');
-		if (selectedIndex >= 0 && selectedIndex < items.length) {
-			const link = items[selectedIndex].querySelector('a');
-			window.open(link.href, '_blank');
+		if (selectedIndex >= 0 && selectedIndex < cachedItems.length) {
+			window.open(cachedItems[selectedIndex].querySelector('a').href, '_blank');
 			hideDropdown();
 		}
 	}
 
+	// Debounced search on input (300 ms delay)
 	subjectField.addEventListener('input', () => {
 		clearTimeout(searchTimeout);
 		const query = subjectField.value.trim();
@@ -105,30 +105,30 @@
 		}, 300);
 	});
 
+	// Keyboard navigation: Arrow keys to select, Enter to open
 	subjectField.addEventListener('keydown', (e) => {
-		if (dropdown.style.display === 'none') return;
+		if (dropdown.style.display === 'none' || !cachedItems.length) return;
 
-		const items = listContainer.querySelectorAll('.similar-topic-item');
-		if (items.length === 0) return;
-
-		if (e.key === 'ArrowDown') {
+		const { key } = e;
+		if (key === 'ArrowDown' || key === 'ArrowUp') {
 			e.preventDefault();
-			selectedIndex = selectedIndex < items.length - 1 ? selectedIndex + 1 : 0;
+			// Cycle through items (wraps around at ends)
+			selectedIndex = key === 'ArrowDown'
+				? (selectedIndex < cachedItems.length - 1 ? selectedIndex + 1 : 0)
+				: (selectedIndex > 0 ? selectedIndex - 1 : cachedItems.length - 1);
 			updateSelection();
-		} else if (e.key === 'ArrowUp') {
-			e.preventDefault();
-			selectedIndex = selectedIndex > 0 ? selectedIndex - 1 : items.length - 1;
-			updateSelection();
-		} else if (e.key === 'Enter' && selectedIndex >= 0) {
+		} else if (key === 'Enter' && selectedIndex >= 0) {
 			e.preventDefault();
 			openSelectedTopic();
 		}
 	});
 
+	// Hide dropdown when the field loses focus (delayed to allow clicks)
 	subjectField.addEventListener('blur', () => {
 		setTimeout(hideDropdown, 200);
 	});
 
+	// Hide dropdown when clicking outside
 	document.addEventListener('click', (e) => {
 		if (!dropdown.contains(e.target) && e.target !== subjectField) {
 			hideDropdown();
