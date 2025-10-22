@@ -15,25 +15,10 @@ class ext extends \phpbb\extension\base
 	/**
 	 * Extension requires phpBB 4.0.0 or newer.
 	 *
-	 * @return array|bool If phpBB 3.3.x, return message as to why it could not be installed.
-	 *                    Otherwise, just return boolean true/false.
+	 * @return bool
 	 */
 	public function is_enableable()
 	{
-		$db = $this->container->get('dbal.conn');
-
-		$enableable = phpbb_version_compare(PHPBB_VERSION, '4.0.0-dev', '>=');
-
-		// Since showing error messages only works for phpBB 3.3.x, the only message worth showing is
-		// if the DBMS is incompatible. That is, we can't show somebody on phpBB 3.2.x. the message that
-		// their board is too old, so there's no reason to handle invalid phpBB version messages here.
-		if (!$enableable && phpbb_version_compare(PHPBB_VERSION, '3.3.0-b1', '>='))
-		{
-			$lang = $this->container->get('language');
-			$lang->add_lang('acp_similar_topics', 'vse/similartopics');
-			return array($lang->lang('PST_NO_COMPAT'));
-		}
-
-		return $enableable;
+		return phpbb_version_compare(PHPBB_VERSION, '4.0.0-dev', '>=');
 	}
 }

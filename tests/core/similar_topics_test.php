@@ -67,10 +67,13 @@ class similar_topics_test extends \phpbb_test_case
 	{
 		parent::setUp();
 
-		global $phpbb_root_path, $phpEx;
+		global $phpbb_dispatcher, $cache, $phpbb_root_path, $phpEx;
 
 		// Classes we just need to mock for the constructor
+		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
+		$cache = new \phpbb_mock_cache();
 		$this->service = $this->createMock('\phpbb\cache\service');
+		$this->service->method('get_driver')->willReturn($cache);
 		$this->config_text = $this->createMock('\phpbb\config\db_text');
 		$this->db = $this->createMock('\phpbb\db\driver\driver_interface');
 		$this->dispatcher = $this->createMock('\phpbb\event\dispatcher_interface');
@@ -83,9 +86,19 @@ class similar_topics_test extends \phpbb_test_case
 		$this->driver = $this->createMock('\vse\similartopics\driver\driver_interface');
 
 		// Classes used in the tests
+		$this->extension_manager = new \phpbb_mock_extension_manager(
+			$phpbb_root_path,
+			array(
+				'vse/similartopics' => array(
+					'ext_name' => 'vse/similartopics',
+					'ext_active' => '1',
+					'ext_path' => 'ext/vse/similartopics',
+				),
+			));
 		$this->auth = $this->createMock('\phpbb\auth\auth');
 		$this->config = new \phpbb\config\config([]);
 		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
+		$lang_loader->set_extension_manager($this->extension_manager);
 		$this->language = new \phpbb\language\language($lang_loader);
 		$this->user = new \phpbb\user($this->language, '\phpbb\datetime');
 		$this->phpbb_root_path = $phpbb_root_path;
@@ -343,5 +356,91 @@ class similar_topics_test extends \phpbb_test_case
 		$similar_topics = $this->get_similar_topics();
 
 		self::assertEquals($expected, $similar_topics->is_available());
+	}
+
+	public function test_is_dynamic_enabled()
+	{
+		$this->config = new \phpbb\config\config(['similar_topics_dynamic' => '1']);
+		$similar_topics = $this->get_similar_topics();
+		self::assertTrue($similar_topics->is_dynamic_enabled());
+
+		$this->config = new \phpbb\config\config(['similar_topics_dynamic' => '0']);
+		$similar_topics = $this->get_similar_topics();
+		self::assertFalse($similar_topics->is_dynamic_enabled());
+	}
+
+	public function test_display_similar_topics_hidden_forum()
+	{
+		$topic_data = ['similar_topics_hide' => true];
+		$similar_topics = $this->get_similar_topics();
+
+		// Should return early without doing anything
+		$similar_topics->display_similar_topics($topic_data);
+		$this->addToAssertionCount(1);
+	}
+
+	public function test_display_similar_topics_empty_title()
+	{
+		$topic_data = ['similar_topics_hide' => false, 'topic_title' => ''];
+		$this->stop_word_helper->method('clean_text')->willReturn('');
+		$similar_topics = $this->get_similar_topics();
+
+		$similar_topics->display_similar_topics($topic_data);
+		$this->addToAssertionCount(1);
+	}
+
+	public function test_search_similar_topics_ajax_empty_query()
+	{
+		$this->stop_word_helper->method('clean_text')->willReturn('');
+		$similar_topics = $this->get_similar_topics();
+
+		$result = $similar_topics->search_similar_topics_ajax('', 1);
+		self::assertEquals([], $result);
+	}
+
+	public function test_search_similar_topics_ajax_with_results()
+	{
+		global $config, $user, $auth, $cache;
+		$this->config = $config = new \phpbb\config\config(['similar_topics_time' => 86400]);
+		$this->stop_word_helper->method('clean_text')->willReturn('test query');
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->manager->method('get_driver')->willReturn($this->driver);
+		$this->driver->method('get_query')->willReturn(['SELECT' => 't.topic_id, t.topic_title', 'FROM' => [], 'WHERE' => '1=1']);
+		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums', 'optionget']);
+		$this->user->method('get_passworded_forums')->willReturn([]);
+		$this->auth->method('acl_get')->willReturn(true);
+		$auth = $this->auth;
+		$cache = new \phpbb_mock_cache();
+
+		$this->db->expects(self::once())
+			->method('sql_query')
+			->willReturn(true);
+		$this->db->expects(self::once())
+			->method('sql_query_limit')
+			->willReturn(true);
+		$this->db->expects(self::exactly(2))
+			->method('sql_fetchrow')
+			->willReturnOnConsecutiveCalls(
+				['topic_id' => 1, 'topic_title' => 'Test Topic', 'forum_id' => 1],
+				false
+			);
+		$this->db->expects(self::exactly(2))
+			->method('sql_freeresult');
+		$this->db->method('sql_fetchfield')->willReturn(null);
+
+		$similar_topics = $this->get_similar_topics();
+		$result = $similar_topics->search_similar_topics_ajax('test query', 1);
+
+		self::assertIsArray($result);
+		self::assertCount(1, $result);
+		self::assertEquals(1, $result[0]['id']);
+		self::assertEquals('Test Topic', $result[0]['title']);
+	}
+
+	public function test_add_language()
+	{
+		$similar_topics = $this->get_similar_topics();
+		$similar_topics->add_language();
+		$this->assertTrue($this->language->is_set('SIMILAR_TOPICS'));
 	}
 }

@@ -53,6 +53,13 @@
 				<label><input type="radio" class="radio" name="pst_enable" value="0"{% if not S_PST_ENABLE %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
 			</dd>
 		</dl>
+		<dl>
+			<dt><label for="pst_dynamic">{{ lang('PST_DYNAMIC') ~ lang('COLON') }}</label><br><span>{{ lang('PST_DYNAMIC_EXPLAIN') }}</span></dt>
+			<dd>
+				<label><input type="radio" class="radio" id="pst_dynamic" name="pst_dynamic" value="1"{% if S_PST_DYNAMIC %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="pst_dynamic" value="0"{% if not S_PST_DYNAMIC %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
+			</dd>
+		</dl>
 	</fieldset>
 
 	<fieldset>

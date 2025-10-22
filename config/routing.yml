@@ -1,0 +1,6 @@
+vse_similartopics_ajax_search:
+    path: /similartopics/ajax/search
+    defaults: { _controller: vse.similartopics.ajax.controller:search_similar_topics }
+    methods: [GET]
+    requirements:
+        _format: json

@@ -18,6 +18,12 @@ class listener_test extends \phpbb_test_case
 	/** @var \vse\similartopics\core\similar_topics|\PHPUnit\Framework\MockObject\MockObject */
 	protected $similar_topics;
 
+	/** @var \phpbb\controller\helper|\PHPUnit\Framework\MockObject\MockObject */
+	protected $helper;
+
+	/** @var \phpbb\template\template|\PHPUnit\Framework\MockObject\MockObject */
+	protected $template;
+
 	/**
 	 * Setup test environment
 	 */
@@ -27,6 +33,8 @@ class listener_test extends \phpbb_test_case
 
 		// Load/Mock classes required by the event listener class
 		$this->similar_topics = $this->createMock('\vse\similartopics\core\similar_topics');
+		$this->helper = $this->createMock('\phpbb\controller\helper');
+		$this->template = $this->createMock('\phpbb\template\template');
 	}
 
 	/**
@@ -35,7 +43,9 @@ class listener_test extends \phpbb_test_case
 	protected function set_listener()
 	{
 		$this->listener = new \vse\similartopics\event\listener(
-			$this->similar_topics
+			$this->similar_topics,
+			$this->helper,
+			$this->template
 		);
 	}
 
@@ -56,6 +66,7 @@ class listener_test extends \phpbb_test_case
 		self::assertEquals(array(
 			'core.viewtopic_modify_page_title',
 			'core.permissions',
+			'core.posting_modify_template_vars',
 		), array_keys(\vse\similartopics\event\listener::getSubscribedEvents()));
 	}
 
@@ -155,5 +166,70 @@ class listener_test extends \phpbb_test_case
 		{
 			self::assertContains($expected, $permissions);
 		}
+	}
+
+	/**
+	 * Test add_ajax_url method for new topic creation
+	 */
+	public function test_add_ajax_url_new_topic()
+	{
+		$this->similar_topics->expects(self::once())
+			->method('is_available')
+			->willReturn(true);
+
+		$this->similar_topics->expects(self::once())
+			->method('is_dynamic_enabled')
+			->willReturn(true);
+
+		$this->similar_topics->expects(self::once())
+			->method('add_language');
+
+		$this->helper->expects(self::once())
+			->method('route')
+			->with('vse_similartopics_ajax_search')
+			->willReturn('/similartopics/ajax/search');
+
+		$this->template->expects(self::once())
+			->method('assign_vars')
+			->with([
+				'S_DYNAMIC_SIMILAR_TOPICS' => true,
+				'U_PST_AJAX_SEARCH' => '/similartopics/ajax/search',
+				'FORUM_ID' => 1
+			]);
+
+		$this->set_listener();
+
+		$event = new \phpbb\event\data([
+			'forum_id' => 1,
+			'mode' => 'post',
+			'post_data' => []
+		]);
+		$this->listener->add_ajax_url($event);
+	}
+
+	/**
+	 * Test add_ajax_url method does not activate for replies
+	 */
+	public function test_add_ajax_url_reply()
+	{
+		$this->similar_topics->expects(self::never())
+			->method('is_available')
+			->willReturn(true);
+
+		$this->similar_topics->expects(self::never())
+			->method('is_dynamic_enabled')
+			->willReturn(true);
+
+		$this->template->expects(self::never())
+			->method('assign_vars');
+
+		$this->set_listener();
+
+		$event = new \phpbb\event\data([
+			'forum_id' => 1,
+			'mode' => 'reply',
+			'post_data' => ['topic_id' => 123]
+		]);
+		$this->listener->add_ajax_url($event);
 	}
 }

@@ -43,6 +43,7 @@ class similar_topics_acp_test extends similar_topics_base
 		if ($mode === 'settings')
 		{
 			$this->assertCount(1, $crawler->filter('#pst_enable'));
+			$this->assertCount(1, $crawler->filter('#pst_dynamic'));
 			$this->assertCount(1, $crawler->filter('#pst_limit'));
 			$this->assertCount(1, $crawler->filter('#pst_time'));
 			$this->assertCount(1, $crawler->filter('#pst_cache'));

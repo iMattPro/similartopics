@@ -2,6 +2,7 @@
 
 ### 1.7.0 - TBD
 
+- Added a new feature to dynamically show similar topics to users as they title their posts.
 - Added support for MSSQL, SQLite3 and Oracle databases.
 - Enabled stop-word filtering for Postgres database users when using the 'simple' dictionary.
 - Added missing stop-word filters (AI-translated) for Hebrew, Persian, Japanese, Swedish and Turkish languages.

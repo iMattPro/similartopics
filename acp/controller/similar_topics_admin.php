@@ -157,6 +157,7 @@ class similar_topics_admin
 
 			// Set basic config settings
 			$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
+			$this->config->set('similar_topics_dynamic', $this->request->variable('pst_dynamic', 0));
 			$this->config->set('similar_topics_limit', abs($this->request->variable('pst_limit', 0))); // use abs for positive values only
 			$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0))); // use abs for positive values only
 			$this->config_text_set('similar_topics_words', $this->request->variable('pst_words', '', true));
@@ -208,6 +209,7 @@ class similar_topics_admin
 
 		$this->template->assign_vars(array(
 			'S_PST_ENABLE'    => $this->isset_or_default($this->config['similar_topics'], false),
+			'S_PST_DYNAMIC'   => $this->isset_or_default($this->config['similar_topics_dynamic'], false),
 			'PST_LIMIT'       => $this->isset_or_default($this->config['similar_topics_limit'], ''),
 			'PST_CACHE'       => $this->isset_or_default($this->config['similar_topics_cache'], ''),
 			'PST_SENSE'       => $this->isset_or_default($this->config['similar_topics_sense'], ''),
@@ -266,6 +268,8 @@ class similar_topics_admin
 				SET similar_topic_forums = '" . $this->db->sql_escape($similar_topic_forums) . "'
 				WHERE forum_id = $forum_id";
 			$this->db->sql_query($sql);
+
+			$this->cache->destroy('sql', FORUMS_TABLE);
 
 			$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 

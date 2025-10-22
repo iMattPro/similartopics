@@ -154,6 +154,17 @@ class similar_topics
 	}
 
 	/**
+	 * Is dynamic similar topics enabled?
+	 *
+	 * @access public
+	 * @return bool True if enabled, false otherwise
+	 */
+	public function is_dynamic_enabled()
+	{
+		return !empty($this->config['similar_topics_dynamic']);
+	}
+
+	/**
 	 * Get similar topics by matching topic titles
 	 * Loosely based on viewforum.php lines 840-1040
 	 *
@@ -361,7 +372,7 @@ class similar_topics
 			}
 		}
 
-		$this->language->add_lang('similar_topics', 'vse/similartopics');
+		$this->add_language();
 
 		$this->template->assign_vars(array(
 			'NEWEST_POST_IMG'	=> $this->user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),
@@ -369,6 +380,16 @@ class similar_topics
 			'REPORTED_IMG'		=> $this->user->img('icon_topic_reported', 'TOPIC_REPORTED'),
 			'POLL_IMG'			=> $this->user->img('icon_topic_poll', 'TOPIC_POLL'),
 		));
+	}
+
+	/**
+	 * Add lang files for similar topics
+	 *
+	 * @return void
+	 */
+	public function add_language()
+	{
+		$this->language->add_lang('similar_topics', 'vse/similartopics');
 	}
 
 	/**
@@ -380,6 +401,78 @@ class similar_topics
 	protected function get_localized_ignore_words()
 	{
 		return !in_array($this->user->lang_name, ['en', 'en_us'], true) || !$this->similartopics->has_stopword_support();
+	}
+
+	/**
+	 * Search for similar topics via AJAX for dynamic suggestions
+	 *
+	 * @param string $query The search query
+	 * @param int $forum_id The forum ID to search from
+	 * @return array Array of similar topics
+	 */
+	public function search_similar_topics_ajax($query, $forum_id = 0)
+	{
+		$this->helper->set_use_localized($this->get_localized_ignore_words());
+		$this->helper->set_additional_ignore_words($this->get_additional_ignore_words());
+		$cleaned_query = $this->helper->clean_text($query);
+
+		if (empty($cleaned_query))
+		{
+			return [];
+		}
+
+		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? number_format($this->config['similar_topics_sense'] / 10, 1, '.', '') : '0.5';
+		$sql_array = $this->similartopics->get_query(0, $cleaned_query, $this->config['similar_topics_time'], $sensitivity);
+
+		$similar_topic_forums = null;
+		if ($forum_id > 0)
+		{
+			$sql = 'SELECT similar_topic_forums
+				FROM ' . FORUMS_TABLE . '
+				WHERE forum_id = ' . (int) $forum_id;
+			$result = $this->db->sql_query($sql, 3600);
+			$similar_topic_forums = $this->db->sql_fetchfield('similar_topic_forums');
+			$this->db->sql_freeresult($result);
+		}
+
+		$passworded_forums = $this->user->get_passworded_forums();
+
+		if (!empty($similar_topic_forums))
+		{
+			$included_forums = array_diff(json_decode($similar_topic_forums, true), $passworded_forums);
+			if (empty($included_forums))
+			{
+				return [];
+			}
+			$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $included_forums);
+		}
+		else
+		{
+			if (count($passworded_forums))
+			{
+				$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $passworded_forums, true);
+			}
+			$sql_array['WHERE'] .= ' AND f.similar_topics_ignore = 0';
+		}
+
+		$topics = [];
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+		$result = $this->db->sql_query_limit($sql, 5);
+
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			if ($this->auth->acl_get('f_read', (int) $row['forum_id']))
+			{
+				$topics[] = [
+					'id' => (int) $row['topic_id'],
+					'title' => censor_text($row['topic_title']),
+					'url' => append_sid("{$this->root_path}viewtopic.$this->php_ext", 't=' . $row['topic_id'])
+				];
+			}
+		}
+		$this->db->sql_freeresult($result);
+
+		return $topics;
 	}
 
 	/**
