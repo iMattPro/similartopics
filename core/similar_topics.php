@@ -366,7 +366,7 @@ class similar_topics
 			}
 		}
 
-		$this->language->add_lang('similar_topics', 'vse/similartopics');
+		$this->add_language();
 
 		$this->template->assign_vars(array(
 			'NEWEST_POST_IMG'	=> $this->user->img('icon_topic_newest', 'VIEW_NEWEST_POST'),
@@ -374,6 +374,16 @@ class similar_topics
 			'REPORTED_IMG'		=> $this->user->img('icon_topic_reported', 'TOPIC_REPORTED'),
 			'POLL_IMG'			=> $this->user->img('icon_topic_poll', 'TOPIC_POLL'),
 		));
+	}
+
+	/**
+	 * Add lang files for similar topics
+	 *
+	 * @return void
+	 */
+	public function add_language()
+	{
+		$this->language->add_lang('similar_topics', 'vse/similartopics');
 	}
 
 	/**
