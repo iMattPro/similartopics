@@ -169,9 +169,9 @@ class listener_test extends \phpbb_test_case
 	}
 
 	/**
-	 * Test add_ajax_url method
+	 * Test add_ajax_url method for new topic creation
 	 */
-	public function test_add_ajax_url()
+	public function test_add_ajax_url_new_topic()
 	{
 		$this->similar_topics->expects(self::once())
 			->method('is_available')
@@ -181,6 +181,9 @@ class listener_test extends \phpbb_test_case
 			->method('is_dynamic_enabled')
 			->willReturn(true);
 
+		$this->similar_topics->expects(self::once())
+			->method('add_language');
+
 		$this->helper->expects(self::once())
 			->method('route')
 			->with('vse_similartopics_ajax_search')
@@ -189,13 +192,44 @@ class listener_test extends \phpbb_test_case
 		$this->template->expects(self::once())
 			->method('assign_vars')
 			->with([
+				'S_DYNAMIC_SIMILAR_TOPICS' => true,
 				'U_PST_AJAX_SEARCH' => '/similartopics/ajax/search',
 				'FORUM_ID' => 1
 			]);
 
 		$this->set_listener();
 
-		$event = new \phpbb\event\data(['forum_id' => 1]);
+		$event = new \phpbb\event\data([
+			'forum_id' => 1,
+			'mode' => 'post',
+			'post_data' => []
+		]);
+		$this->listener->add_ajax_url($event);
+	}
+
+	/**
+	 * Test add_ajax_url method does not activate for replies
+	 */
+	public function test_add_ajax_url_reply()
+	{
+		$this->similar_topics->expects(self::never())
+			->method('is_available')
+			->willReturn(true);
+
+		$this->similar_topics->expects(self::never())
+			->method('is_dynamic_enabled')
+			->willReturn(true);
+
+		$this->template->expects(self::never())
+			->method('assign_vars');
+
+		$this->set_listener();
+
+		$event = new \phpbb\event\data([
+			'forum_id' => 1,
+			'mode' => 'reply',
+			'post_data' => ['topic_id' => 123]
+		]);
 		$this->listener->add_ajax_url($event);
 	}
 }
