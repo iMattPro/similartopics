@@ -40,7 +40,9 @@
 		}
 
 		const xhr = new XMLHttpRequest();
-		xhr.open('GET', '{{ U_PST_AJAX_SEARCH|e('js') }}?q=' + encodeURIComponent(query) + '&f={{ FORUM_ID|e('js') }}');
+		const baseUrl = '{{ U_PST_AJAX_SEARCH|e('js') }}';
+		const separator = baseUrl.includes('?') ? '&' : '?';
+		xhr.open('GET', baseUrl + separator + 'q=' + encodeURIComponent(query) + '&f={{ FORUM_ID|e('js') }}');
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
 		xhr.onreadystatechange = () => {
