@@ -131,6 +131,7 @@ class similar_topics_test extends \phpbb_test_case
 	{
 		return [
 			'enabled on mysqli' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -141,6 +142,7 @@ class similar_topics_test extends \phpbb_test_case
 				true,
 			],
 			'enabled on mysql4' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -151,6 +153,7 @@ class similar_topics_test extends \phpbb_test_case
 				true,
 			],
 			'enabled on postgres' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -161,6 +164,7 @@ class similar_topics_test extends \phpbb_test_case
 				true,
 			],
 			'enabled on sqlite' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -171,6 +175,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'enabled on sqlite3' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -181,6 +186,7 @@ class similar_topics_test extends \phpbb_test_case
 				true,
 			],
 			'enabled on mssql' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -191,6 +197,7 @@ class similar_topics_test extends \phpbb_test_case
 				true,
 			],
 			'enabled on mssqlnative' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -201,6 +208,7 @@ class similar_topics_test extends \phpbb_test_case
 				true,
 			],
 			'enabled on mssql_odbc' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -211,6 +219,7 @@ class similar_topics_test extends \phpbb_test_case
 				true,
 			],
 			'enabled on oracle' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -221,6 +230,7 @@ class similar_topics_test extends \phpbb_test_case
 				true,
 			],
 			'enabled on invalid db' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -231,6 +241,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'enabled on no db' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -241,8 +252,9 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'admin do not show' => [
+				'is_available',
 				[
-					'similar_topics' => false,
+					'similar_topics' => '0',
 					'similar_topics_limit' => '5',
 				],
 				['user_similar_topics' => true],
@@ -251,6 +263,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'admin show 0 results' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '0',
@@ -261,6 +274,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'admin fully disabled' => [
+				'is_available',
 				[
 					'similar_topics' => '0',
 					'similar_topics_limit' => '0',
@@ -271,6 +285,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'user disabled' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -281,6 +296,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'user not authed' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -291,6 +307,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'user disabled and not authed' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -301,6 +318,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'user settings error' => [
+				'is_available',
 				[
 					'similar_topics' => '1',
 					'similar_topics_limit' => '5',
@@ -311,6 +329,7 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'empty configs' => [
+				'is_available',
 				[
 					'similar_topics' => '',
 					'similar_topics_limit' => '',
@@ -321,11 +340,96 @@ class similar_topics_test extends \phpbb_test_case
 				false,
 			],
 			'null configs' => [
+				'is_available',
 				[
 					'similar_topics' => null,
 					'similar_topics_limit' => null,
 				],
 				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mysqli',
+				false,
+			],
+			'dynamic enabled' => [
+				'is_dynamic_available',
+				[
+					'similar_topics' => '0',
+					'similar_topics_limit' => '5',
+					'similar_topics_dynamic' => '1',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mysqli',
+				true,
+			],
+			'dynamic admin do not show' => [
+				'is_dynamic_available',
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+					'similar_topics_dynamic' => '0',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mysqli',
+				false,
+			],
+			'dynamic admin show 0 results' => [
+				'is_dynamic_available',
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '0',
+					'similar_topics_dynamic' => '1',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, true],
+				'mysqli',
+				false,
+			],
+			'dynamic admin fully disabled' => [
+				'is_dynamic_available',
+				[
+					'similar_topics' => '0',
+					'similar_topics_limit' => '0',
+					'similar_topics_dynamic' => '0',
+				],
+				['user_similar_topics' => false],
+				['u_similar_topics', 0, false],
+				'mysqli',
+				false,
+			],
+			'dynamic user disabled' => [
+				'is_dynamic_available',
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+					'similar_topics_dynamic' => '1',
+				],
+				['user_similar_topics' => false],
+				['u_similar_topics', 0, true],
+				'mysqli',
+				false,
+			],
+			'dynamic user not authed' => [
+				'is_dynamic_available',
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+					'similar_topics_dynamic' => '1',
+				],
+				['user_similar_topics' => true],
+				['u_similar_topics', 0, false],
+				'mysqli',
+				false,
+			],
+			'dynamic user disabled and not authed' => [
+				'is_dynamic_available',
+				[
+					'similar_topics' => '1',
+					'similar_topics_limit' => '5',
+					'similar_topics_dynamic' => '1',
+				],
+				['user_similar_topics' => null],
 				['u_similar_topics', 0, true],
 				'mysqli',
 				false,
@@ -336,7 +440,7 @@ class similar_topics_test extends \phpbb_test_case
 	/**
 	 * @dataProvider is_available_test_data
 	 */
-	public function test_is_available($config_data, $user_data, $auth_data, $sql_layer, $expected)
+	public function test_is_available($method, $config_data, $user_data, $auth_data, $sql_layer, $expected)
 	{
 		$this->config = new \phpbb\config\config($config_data);
 		$this->user->data['user_similar_topics'] = $user_data['user_similar_topics'];
@@ -355,18 +459,7 @@ class similar_topics_test extends \phpbb_test_case
 
 		$similar_topics = $this->get_similar_topics();
 
-		self::assertEquals($expected, $similar_topics->is_available());
-	}
-
-	public function test_is_dynamic_enabled()
-	{
-		$this->config = new \phpbb\config\config(['similar_topics_dynamic' => '1']);
-		$similar_topics = $this->get_similar_topics();
-		self::assertTrue($similar_topics->is_dynamic_enabled());
-
-		$this->config = new \phpbb\config\config(['similar_topics_dynamic' => '0']);
-		$similar_topics = $this->get_similar_topics();
-		self::assertFalse($similar_topics->is_dynamic_enabled());
+		self::assertEquals($expected, $similar_topics->$method());
 	}
 
 	public function test_display_similar_topics_hidden_forum()

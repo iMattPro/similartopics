@@ -47,7 +47,7 @@
 	<fieldset>
 		<legend>{{ lang('PST_LEGEND1') }}</legend>
 		<dl>
-			<dt><label for="pst_enable">{{ lang('PST_ENABLE') ~ lang('COLON') }}</label></dt>
+			<dt><label for="pst_enable">{{ lang('PST_ENABLE') ~ lang('COLON') }}</label><br><span>{{ lang('PST_ENABLE_EXPLAIN') }}</span></dt>
 			<dd>
 				<label><input type="radio" class="radio" id="pst_enable" name="pst_enable" value="1"{% if S_PST_ENABLE %} checked="checked"{% endif %}{% if S_PST_NO_SUPPORT %} disabled="disabled"{% endif %}> {{ lang('YES') }}</label>
 				<label><input type="radio" class="radio" name="pst_enable" value="0"{% if not S_PST_ENABLE %} checked="checked"{% endif %}> {{ lang('NO') }}</label>

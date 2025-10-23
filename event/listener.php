@@ -100,8 +100,7 @@ class listener implements EventSubscriberInterface
 	{
 		if ($event['mode'] !== 'post'
 			|| !empty($event['post_data']['topic_id'])
-			|| !$this->similar_topics->is_available()
-			|| !$this->similar_topics->is_dynamic_enabled())
+			|| !$this->similar_topics->is_dynamic_available())
 		{
 			return;
 		}

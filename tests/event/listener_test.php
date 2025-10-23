@@ -174,11 +174,7 @@ class listener_test extends \phpbb_test_case
 	public function test_add_ajax_url_new_topic()
 	{
 		$this->similar_topics->expects(self::once())
-			->method('is_available')
-			->willReturn(true);
-
-		$this->similar_topics->expects(self::once())
-			->method('is_dynamic_enabled')
+			->method('is_dynamic_available')
 			->willReturn(true);
 
 		$this->similar_topics->expects(self::once())
@@ -213,11 +209,7 @@ class listener_test extends \phpbb_test_case
 	public function test_add_ajax_url_reply()
 	{
 		$this->similar_topics->expects(self::never())
-			->method('is_available')
-			->willReturn(true);
-
-		$this->similar_topics->expects(self::never())
-			->method('is_dynamic_enabled')
+			->method('is_dynamic_available')
 			->willReturn(true);
 
 		$this->template->expects(self::never())

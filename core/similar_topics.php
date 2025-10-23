@@ -154,6 +154,17 @@ class similar_topics
 	}
 
 	/**
+	 * Is dynamic similar topics available?
+	 *
+	 * @access public
+	 * @return bool True if available, false otherwise
+	 */
+	public function is_dynamic_available()
+	{
+		return $this->is_dynamic_enabled() && $this->is_viewable() && $this->similartopics !== null;
+	}
+
+	/**
 	 * Is dynamic similar topics enabled?
 	 *
 	 * @access public
@@ -161,7 +172,7 @@ class similar_topics
 	 */
 	public function is_dynamic_enabled()
 	{
-		return !empty($this->config['similar_topics_dynamic']);
+		return !empty($this->config['similar_topics_dynamic']) && !empty($this->config['similar_topics_limit']);
 	}
 
 	/**

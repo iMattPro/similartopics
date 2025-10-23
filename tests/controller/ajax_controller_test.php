@@ -79,7 +79,7 @@ class ajax_controller_test extends \phpbb_test_case
 			->willReturnOnConsecutiveCalls('test query', 1);
 
 		$this->similar_topics->expects($this->once())
-			->method('is_available')
+			->method('is_dynamic_available')
 			->willReturn(false);
 
 		$response = $this->controller->search_similar_topics();
@@ -103,7 +103,7 @@ class ajax_controller_test extends \phpbb_test_case
 			->willReturnOnConsecutiveCalls('test query', 1);
 
 		$this->similar_topics->expects($this->once())
-			->method('is_available')
+			->method('is_dynamic_available')
 			->willReturn(true);
 
 		$expected_topics = [
