@@ -64,7 +64,7 @@ class similar_topics
 	protected $content_visibility;
 
 	/** @var stop_word_helper */
-	protected $helper;
+	protected $stop_word_helper;
 
 	/** @var similartopics_driver */
 	protected $similartopics;
@@ -107,7 +107,7 @@ class similar_topics
 		$this->config_text = $config_text;
 		$this->db = $db;
 		$this->dispatcher = $dispatcher;
-		$this->helper = $stop_word_helper;
+		$this->stop_word_helper = $stop_word_helper;
 		$this->language = $language;
 		$this->pagination = $pagination;
 		$this->request = $request;
@@ -194,9 +194,9 @@ class similar_topics
 			return;
 		}
 
-		$this->helper->set_use_localized($this->get_localized_ignore_words());
-		$this->helper->set_additional_ignore_words($this->get_additional_ignore_words());
-		$topic_title = $this->helper->clean_text($topic_data['topic_title']);
+		$this->stop_word_helper->set_use_localized($this->get_localized_ignore_words());
+		$this->stop_word_helper->set_additional_ignore_words($this->get_additional_ignore_words());
+		$topic_title = $this->stop_word_helper->clean_text($topic_data['topic_title']);
 
 		// If the cleaned up topic_title is empty, no need to continue
 		if (empty($topic_title))
@@ -417,9 +417,9 @@ class similar_topics
 	 */
 	public function search_similar_topics_ajax($query, $forum_id = 0)
 	{
-		$this->helper->set_use_localized($this->get_localized_ignore_words());
-		$this->helper->set_additional_ignore_words($this->get_additional_ignore_words());
-		$cleaned_query = $this->helper->clean_text($query);
+		$this->stop_word_helper->set_use_localized($this->get_localized_ignore_words());
+		$this->stop_word_helper->set_additional_ignore_words($this->get_additional_ignore_words());
+		$cleaned_query = $this->stop_word_helper->clean_text($query);
 
 		if (empty($cleaned_query))
 		{

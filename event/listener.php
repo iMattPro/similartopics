@@ -23,7 +23,7 @@ class listener implements EventSubscriberInterface
 	protected $similar_topics;
 
 	/** @var helper */
-	protected $helper;
+	protected $controller_helper;
 
 	/** @var template */
 	protected $template;
@@ -39,7 +39,7 @@ class listener implements EventSubscriberInterface
 	public function __construct(\vse\similartopics\core\similar_topics $similar_topics, helper $helper, template $template)
 	{
 		$this->similar_topics = $similar_topics;
-		$this->helper = $helper;
+		$this->controller_helper = $helper;
 		$this->template = $template;
 	}
 
@@ -107,7 +107,7 @@ class listener implements EventSubscriberInterface
 
 		$tpl_ary = [
 			'S_DYNAMIC_SIMILAR_TOPICS' => true,
-			'U_PST_AJAX_SEARCH' => $this->helper->route('vse_similartopics_ajax_search'),
+			'U_PST_AJAX_SEARCH' => $this->controller_helper->route('vse_similartopics_ajax_search'),
 		];
 
 		if ($this->template->retrieve_var('FORUM_ID') === null)
