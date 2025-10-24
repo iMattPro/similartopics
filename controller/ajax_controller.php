@@ -51,7 +51,7 @@ class ajax_controller
 		$query = $this->request->variable('q', '', true);
 		$forum_id = $this->request->variable('f', 0);
 
-		if (strlen($query) < 3 || !$this->similar_topics->is_available())
+		if (utf8_strlen($query) < 3 || !$this->similar_topics->is_dynamic_available())
 		{
 			return new JsonResponse(['topics' => []]);
 		}

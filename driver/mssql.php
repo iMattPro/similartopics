@@ -59,7 +59,7 @@ class mssql implements driver_interface
 			foreach (explode(' ', $topic_title) as $word)
 			{
 				$word = trim($word);
-				if (strlen($word) > 2)
+				if (utf8_strlen($word) > 2)
 				{
 					$like_conditions[] = "t.topic_title LIKE '%" . $this->db->sql_escape($word) . "%'";
 				}

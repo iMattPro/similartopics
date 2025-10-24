@@ -169,16 +169,12 @@ class listener_test extends \phpbb_test_case
 	}
 
 	/**
-	 * Test add_ajax_url method for new topic creation
+	 * Test dynamic_similar_topics method for new topic creation
 	 */
 	public function test_add_ajax_url_new_topic()
 	{
 		$this->similar_topics->expects(self::once())
-			->method('is_available')
-			->willReturn(true);
-
-		$this->similar_topics->expects(self::once())
-			->method('is_dynamic_enabled')
+			->method('is_dynamic_available')
 			->willReturn(true);
 
 		$this->similar_topics->expects(self::once())
@@ -204,20 +200,16 @@ class listener_test extends \phpbb_test_case
 			'mode' => 'post',
 			'post_data' => []
 		]);
-		$this->listener->add_ajax_url($event);
+		$this->listener->dynamic_similar_topics($event);
 	}
 
 	/**
-	 * Test add_ajax_url method does not activate for replies
+	 * Test dynamic_similar_topics method does not activate for replies
 	 */
 	public function test_add_ajax_url_reply()
 	{
 		$this->similar_topics->expects(self::never())
-			->method('is_available')
-			->willReturn(true);
-
-		$this->similar_topics->expects(self::never())
-			->method('is_dynamic_enabled')
+			->method('is_dynamic_available')
 			->willReturn(true);
 
 		$this->template->expects(self::never())
@@ -230,6 +222,6 @@ class listener_test extends \phpbb_test_case
 			'mode' => 'reply',
 			'post_data' => ['topic_id' => 123]
 		]);
-		$this->listener->add_ajax_url($event);
+		$this->listener->dynamic_similar_topics($event);
 	}
 }

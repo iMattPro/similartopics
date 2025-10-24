@@ -189,7 +189,7 @@ class oracle implements driver_interface
 		$search_words = array();
 		foreach ($words as $word)
 		{
-			if (strlen($word) >= 3)
+			if (utf8_strlen($word) >= 3)
 			{
 				$search_words[] = $word;
 			}
