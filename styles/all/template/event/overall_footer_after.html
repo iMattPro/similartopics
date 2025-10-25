@@ -114,8 +114,8 @@
 	subjectField.addEventListener('keydown', (e) => {
 		if (dropdown.style.display === 'none' || !cachedItems.length) return;
 
-		const { key } = e;
-		if (key === 'ArrowDown' || key === 'ArrowUp') {
+		const { key, shiftKey, ctrlKey, altKey, metaKey } = e;
+		if ((key === 'ArrowDown' || key === 'ArrowUp') && !shiftKey && !ctrlKey && !altKey && !metaKey) {
 			e.preventDefault();
 			// Cycle through items (wraps around at ends)
 			selectedIndex = key === 'ArrowDown'
