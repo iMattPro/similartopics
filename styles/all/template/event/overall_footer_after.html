@@ -24,8 +24,11 @@
 	// Position dropdown below the subject field and show it
 	function showDropdown() {
 		const rect = subjectField.getBoundingClientRect();
+		const isRTL = document.documentElement.dir === 'rtl' || document.body.classList.contains('rtl');
+		
 		Object.assign(dropdown.style, {
-			left: rect.left + 'px',
+			left: isRTL ? 'auto' : rect.left + 'px',
+			right: 'auto',
 			top: (rect.bottom + window.scrollY) + 'px',
 			width: rect.width + 'px',
 			display: 'block'
