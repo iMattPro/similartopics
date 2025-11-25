@@ -53,7 +53,28 @@ class release_1_3_0_data extends \phpbb\db\migration\container_aware_migration
 		);
 	}
 
-	// need to specify this revert_data in phpBB4 or this migration will fail
+	/**
+	 * Explicit revert handler for phpBB 4.0+ compatibility
+	 *
+	 * This fixes uninstall failures in phpBB 4.0.0+ caused by a behavior change in
+	 * module removal (commit 07b63fc6a8, ticket PHPBB-17507):
+	 *
+	 * - phpBB 3.x: Silently succeeded when removing non-existent modules
+	 * - phpBB 4.0: Throws MODULE_NOT_EXIST exception when removing non-existent modules
+	 *
+	 * The problem: This migration uses 'if' conditions to conditionally remove modules
+	 * during installation. During automatic reversal (uninstall), the migration helper skips
+	 * all 'if' statements, causing it to attempt removal of modules that may not exist,
+	 * triggering the exception in phpBB 4.0+.
+	 *
+	 * The solution: Provide explicit revert_data() that removes the parent category
+	 * TOPIC_PREVIEW instead of individual child modules. This works because:
+	 * - The parent category always exists (added by release_1_0_0.php)
+	 * - Child modules are already removed by prior migration reversals
+	 * - Removing an empty parent category never throws exceptions
+	 *
+	 * @return array
+	 */
 	public function revert_data()
 	{
 		return array(
