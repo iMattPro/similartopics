@@ -24,8 +24,11 @@
 	// Position dropdown below the subject field and show it
 	function showDropdown() {
 		const rect = subjectField.getBoundingClientRect();
+		const isRTL = document.documentElement.dir === 'rtl' || document.body.classList.contains('rtl');
+		
 		Object.assign(dropdown.style, {
-			left: rect.left + 'px',
+			left: isRTL ? 'auto' : rect.left + 'px',
+			right: 'auto',
 			top: (rect.bottom + window.scrollY) + 'px',
 			width: rect.width + 'px',
 			display: 'block'
@@ -111,8 +114,8 @@
 	subjectField.addEventListener('keydown', (e) => {
 		if (dropdown.style.display === 'none' || !cachedItems.length) return;
 
-		const { key } = e;
-		if (key === 'ArrowDown' || key === 'ArrowUp') {
+		const { key, shiftKey, ctrlKey, altKey, metaKey } = e;
+		if ((key === 'ArrowDown' || key === 'ArrowUp') && !shiftKey && !ctrlKey && !altKey && !metaKey) {
 			e.preventDefault();
 			// Cycle through items (wraps around at ends)
 			selectedIndex = key === 'ArrowDown'
