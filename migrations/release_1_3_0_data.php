@@ -19,10 +19,7 @@ class release_1_3_0_data extends \phpbb\db\migration\container_aware_migration
 
 	public static function depends_on()
 	{
-		return array(
-			'\vse\similartopics\migrations\release_1_1_0_data',
-			'\vse\similartopics\migrations\release_1_3_0_schema'
-		);
+		return array('\vse\similartopics\migrations\release_1_3_0_schema');
 	}
 
 	public function update_data()
