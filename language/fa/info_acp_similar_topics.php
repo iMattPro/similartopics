@@ -40,6 +40,6 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'PST_TITLE_ACP'		=> 'موضوعات مشابه',
-	'PST_SETTINGS'		=> 'تنظیمات افزونه "موضوعات مشابه"',
-	'PST_LOG_MSG'		=> '<strong>تنظیمات افزونه "موضوعات مشابه" به روز رسانی شد</strong>',
+	'PST_SETTINGS'		=> 'تنظیمات',
+	'PST_LOG_MSG'		=> '<strong>تنظیمات افزونه "موضوعات مشابه" بروز رسانی شد</strong>',
 ));
