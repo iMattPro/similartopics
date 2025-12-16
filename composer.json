@@ -20,7 +20,7 @@
 	"extra": {
 		"display-name": "Precise Similar Topics",
 		"soft-require": {
-			"phpbb/phpbb": ">=3.2.1,<4.0.0@dev"
+			"phpbb/phpbb": ">=3.2.1"
 		},
 		"version-check": {
 			"host": "www.phpbb.com",

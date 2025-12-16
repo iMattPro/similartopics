@@ -13,14 +13,13 @@ namespace vse\similartopics;
 class ext extends \phpbb\extension\base
 {
 	/**
-	 * Extension requires phpBB 3.2.1 or newer. Not compatible with phpBB 4.x.
+	 * Extension requires phpBB 3.2.1 or newer.
 	 *
 	 * @return bool
 	 */
 	public function is_enableable()
 	{
 		return
-			phpbb_version_compare(PHPBB_VERSION, '3.2.1', '>=') &&
-			phpbb_version_compare(PHPBB_VERSION, '4.0.0-dev', '<');
+			phpbb_version_compare(PHPBB_VERSION, '3.2.1', '>=');
 	}
 }
