@@ -15,9 +15,9 @@ namespace vse\similartopics\tests\functional;
  */
 class similar_topics_test extends similar_topics_base
 {
-	public function test_similar_topics()
+	public function test_similar_topics(): void
 	{
-		$this->login();
+		self::login();
 
 		// Create some basic topics
 		$topic1 = $this->create_topic(2, 'This is Test Topic 1', 'This is test topic 1 posted by the testing framework.');

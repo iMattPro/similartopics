@@ -10,13 +10,15 @@
 
 namespace vse\similartopics\driver;
 
+use Exception;
+
 /**
  * This class handles similar topics queries for MSSQL dbms
  */
 class mssql implements driver_interface
 {
 	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	protected \phpbb\db\driver\driver_interface $db;
 
 	/**
 	 * Constructor
@@ -31,7 +33,7 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name()
+	public function get_name(): string
 	{
 		return 'mssql';
 	}
@@ -39,7 +41,7 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_type()
+	public function get_type(): string
 	{
 		return 'mssql';
 	}
@@ -47,7 +49,7 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_query($topic_id, $topic_title, $length, $sensitivity)
+	public function get_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array
 	{
 		if ($this->is_fulltext('topic_title', TOPICS_TABLE))
 		{
@@ -93,15 +95,15 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_supported()
+	public function is_supported(): bool
 	{
-		return (strpos($this->db->get_sql_layer(), 'mssql') === 0);
+		return (str_starts_with($this->db->get_sql_layer(), 'mssql'));
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
+	public function is_fulltext(string $column = 'topic_title', string $table = TOPICS_TABLE): bool
 	{
 		return in_array($column, $this->get_fulltext_indexes($column, $table), true);
 	}
@@ -109,7 +111,7 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
+	public function get_fulltext_indexes(string $column = 'topic_title', string $table = TOPICS_TABLE): array
 	{
 		$indexes = array();
 
@@ -134,7 +136,7 @@ class mssql implements driver_interface
 
 			$this->db->sql_freeresult($result);
 		}
-		catch (\Exception $e)
+		catch (Exception)
 		{
 			// Full-text search not available
 		}
@@ -145,7 +147,7 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
 	{
 		if (!$this->is_supported() || !$this->fulltext_available() || $this->is_fulltext($column, $table))
 		{
@@ -168,7 +170,7 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_engine()
+	public function get_engine(): string
 	{
 		return '';
 	}
@@ -176,12 +178,12 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function has_stopword_support()
+	public function has_stopword_support(): bool
 	{
 		return false;
 	}
 
-	protected function fulltext_available()
+	protected function fulltext_available(): bool
 	{
 		try
 		{
@@ -191,7 +193,7 @@ class mssql implements driver_interface
 			$this->db->sql_freeresult($result);
 			return (bool) $row['IsFullTextInstalled'];
 		}
-		catch (\Exception $e)
+		catch (Exception)
 		{
 			return false;
 		}

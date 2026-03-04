@@ -10,27 +10,29 @@
 
 namespace vse\similartopics\driver;
 
+use phpbb\config\config;
+
 /**
  * This class handles similar topics queries for PostgreSQL dbms
  */
 class postgres implements driver_interface
 {
 	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	protected \phpbb\db\driver\driver_interface $db;
 
-	/** @var \phpbb\config\config */
-	protected $config;
+	/** @var config */
+	protected config $config;
 
 	/** @var string */
-	protected $ts_name;
+	protected string $ts_name;
 
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\config\config              $config
+	 * @param config              $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config)
+	public function __construct(\phpbb\db\driver\driver_interface $db, config $config)
 	{
 		$this->db = $db;
 		$this->config = $config;
@@ -41,7 +43,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name()
+	public function get_name(): string
 	{
 		return 'postgres';
 	}
@@ -49,7 +51,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_type()
+	public function get_type(): string
 	{
 		return 'postgres';
 	}
@@ -57,7 +59,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_query($topic_id, $topic_title, $length, $sensitivity)
+	public function get_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array
 	{
 		$ts_name = $this->db->sql_escape($this->ts_name);
 		$ts_query_text = $this->db->sql_escape(preg_replace(['/\s+/', '/\'/'], ['|', ''], $topic_title));
@@ -86,7 +88,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_supported()
+	public function is_supported(): bool
 	{
 		return ($this->db->get_sql_layer() === 'postgres');
 	}
@@ -94,7 +96,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
+	public function is_fulltext(string $column = 'topic_title', string $table = TOPICS_TABLE): bool
 	{
 		return in_array($table . '_' . $this->ts_name . '_' . $column, $this->get_fulltext_indexes($column, $table), true);
 	}
@@ -102,7 +104,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
+	public function get_fulltext_indexes(string $column = 'topic_title', string $table = TOPICS_TABLE): array
 	{
 		$indexes = array();
 
@@ -121,7 +123,7 @@ class postgres implements driver_interface
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			if (strpos($row['relname'], $column) !== false)
+			if (str_contains($row['relname'], $column))
 			{
 				$indexes[] = $row['relname'];
 			}
@@ -134,7 +136,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
 	{
 		// Make sure ts_name is current
 		$this->set_ts_name($this->config['pst_postgres_ts_name']);
@@ -168,7 +170,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_engine()
+	public function get_engine(): string
 	{
 		return '';
 	}
@@ -176,7 +178,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function has_stopword_support()
+	public function has_stopword_support(): bool
 	{
 		return !in_array($this->ts_name, ['simple', ''], true);
 	}
@@ -186,7 +188,7 @@ class postgres implements driver_interface
 	 *
 	 * @return array array of text search names
 	 */
-	public function get_cfg_name_list()
+	public function get_cfg_name_list(): array
 	{
 		$sql = 'SELECT cfgname AS ts_name FROM pg_ts_config';
 		$result = $this->db->sql_query($sql);
@@ -201,7 +203,7 @@ class postgres implements driver_interface
 	 *
 	 * @param string $ts_name Dictionary name
 	 */
-	protected function set_ts_name($ts_name)
+	protected function set_ts_name(string $ts_name): void
 	{
 		$this->ts_name = $ts_name ?: 'simple';
 	}

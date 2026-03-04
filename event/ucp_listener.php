@@ -10,6 +10,13 @@
 
 namespace vse\similartopics\event;
 
+use phpbb\auth\auth;
+use phpbb\config\config;
+use phpbb\event\data;
+use phpbb\language\language;
+use phpbb\request\request;
+use phpbb\template\template;
+use phpbb\user;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -17,36 +24,36 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class ucp_listener implements EventSubscriberInterface
 {
-	/** @var \phpbb\auth\auth */
-	protected $auth;
+	/** @var auth */
+	protected auth $auth;
 
-	/** @var \phpbb\config\config */
-	protected $config;
+	/** @var config */
+	protected config $config;
 
-	/** @var \phpbb\language\language */
-	protected $language;
+	/** @var language */
+	protected language $language;
 
-	/** @var \phpbb\request\request */
-	protected $request;
+	/** @var request */
+	protected request $request;
 
-	/** @var \phpbb\template\template */
-	protected $template;
+	/** @var template */
+	protected template $template;
 
-	/** @var \phpbb\user */
-	protected $user;
+	/** @var user */
+	protected user $user;
 
 	/**
 	 * Constructor
 	 *
 	 * @access public
-	 * @param \phpbb\auth\auth         $auth
-	 * @param \phpbb\config\config     $config
-	 * @param \phpbb\language\language $language
-	 * @param \phpbb\request\request   $request
-	 * @param \phpbb\template\template $template
-	 * @param \phpbb\user              $user
+	 * @param auth         $auth
+	 * @param config     $config
+	 * @param language $language
+	 * @param request   $request
+	 * @param template $template
+	 * @param user              $user
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\language\language $language, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(auth $auth, config $config, language $language, request $request, template $template, user $user)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -63,7 +70,7 @@ class ucp_listener implements EventSubscriberInterface
 	 * @access public
 	 * @return array
 	 */
-	public static function getSubscribedEvents()
+	public static function getSubscribedEvents(): array
 	{
 		return [
 			'core.ucp_prefs_view_data'				=> 'ucp_prefs_get_data',
@@ -75,9 +82,9 @@ class ucp_listener implements EventSubscriberInterface
 	 * Get user's Similar Topics option and display it in UCP Prefs View page
 	 *
 	 * @access public
-	 * @param \phpbb\event\data $event The event object
+	 * @param data $event The event object
 	 */
-	public function ucp_prefs_get_data($event)
+	public function ucp_prefs_get_data(data $event): void
 	{
 		// Request the user option vars and add them to the data array
 		$event['data'] = array_merge($event['data'], [
@@ -99,9 +106,9 @@ class ucp_listener implements EventSubscriberInterface
 	 * Add user's Similar Topics option state into the sql_array
 	 *
 	 * @access public
-	 * @param \phpbb\event\data $event The event object
+	 * @param data $event The event object
 	 */
-	public function ucp_prefs_set_data($event)
+	public function ucp_prefs_set_data(data $event): void
 	{
 		$event['sql_ary'] = array_merge($event['sql_ary'], [
 			'user_similar_topics' => $event['data']['similar_topics'],

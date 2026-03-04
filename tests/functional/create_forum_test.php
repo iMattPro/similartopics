@@ -10,29 +10,31 @@
 
 namespace vse\similartopics\tests\functional;
 
+use phpbb_functional_test_case;
+
 /**
  * @group functional
  */
-class create_forum_test extends \phpbb_functional_test_case
+class create_forum_test extends phpbb_functional_test_case
 {
-	protected static function setup_extensions()
+	protected static function setup_extensions(): array
 	{
 		return array('vse/similartopics');
 	}
 
-	public function test_create_forum()
+	public function test_create_forum(): void
 	{
-		$this->add_lang('acp/forums');
+		self::add_lang('acp/forums');
 
-		$this->login();
-		$this->admin_login();
+		self::login();
+		self::admin_login();
 
 		$crawler = self::request('GET', "adm/index.php?i=acp_forums&mode=manage&sid=$this->sid");
-		$form = $crawler->selectButton($this->lang('CREATE_FORUM'))->form();
+		$form = $crawler->selectButton(self::lang('CREATE_FORUM'))->form();
 		$crawler = self::submit($form);
-		$this->assertContainsLang('CREATE_FORUM', $crawler->filter('#main h1')->text());
+		self::assertContainsLang('CREATE_FORUM', $crawler->filter('#main h1')->text());
 
-		$form = $crawler->selectButton($this->lang('SUBMIT'))->form(array(
+		$form = $crawler->selectButton(self::lang('SUBMIT'))->form(array(
 			'forum_name'	=> 'Test Forum',
 		));
 		$crawler = self::submit($form);

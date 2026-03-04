@@ -10,41 +10,49 @@
 
 namespace vse\similartopics\tests\acp;
 
-class module_test extends \phpbb_test_case
+use phpbb_test_case;
+use vse\similartopics\acp\similar_topics_info;
+use vse\similartopics\acp\similar_topics_module;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use vse\similartopics\acp\controller\similar_topics_admin;
+
+class module_test extends phpbb_test_case
 {
 	/**
 	 * Test the acp module instance
 	 */
-	public function test_module()
+	public function test_module(): void
 	{
-		global $phpbb_container, $phpbb_root_path, $phpEx;
+		global $phpbb_container;
 
 		// Test basic module instantiation
-		$module = new \vse\similartopics\acp\similar_topics_module();
-		$this->assertInstanceOf('\vse\similartopics\acp\similar_topics_module', $module);
+		$module = new similar_topics_module();
+		$this->assertInstanceOf(similar_topics_module::class, $module);
 
 		// Test calling module->main()
-		$mock_acp_controller = $this->getMockBuilder('\vse\similartopics\acp\controller\similar_topics_admin')
+		$mock_acp_controller = $this->getMockBuilder(similar_topics_admin::class)
 			->disableOriginalConstructor()
 			->onlyMethods(array('handle', 'set_u_action'))
 			->getMock();
 
 		$mock_acp_controller->expects($this->once())
 			->method('set_u_action')
+			->with('u_action')
 			->willReturn($mock_acp_controller);
 
-		$phpbb_container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
+		$phpbb_container = $this->createMock(ContainerInterface::class);
 		$phpbb_container->expects(self::once())
 			->method('get')
 			->with('vse.similartopics.acp.controller')
 			->willReturn($mock_acp_controller);
 
+		$module->u_action = 'u_action';
 		$module->main();
 	}
 
-	public function test_info()
+	public function test_info(): void
 	{
-		$info_class = new \vse\similartopics\acp\similar_topics_info();
+		$info_class = new similar_topics_info();
 		$info_array = $info_class->module();
 		$this->assertArrayHasKey('filename', $info_array);
 		$this->assertEquals('\vse\similartopics\acp\similar_topics_module', $info_array['filename']);

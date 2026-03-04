@@ -15,13 +15,13 @@ namespace vse\similartopics\tests\functional;
  */
 class similar_topics_ucp_test extends similar_topics_base
 {
-	public function test_ucp_pages()
+	public function test_ucp_pages(): void
 	{
-		$this->add_lang_ext('vse/similartopics', 'similar_topics');
+		self::add_lang_ext('vse/similartopics', 'similar_topics');
 
-		$this->login();
+		self::login();
 
 		$crawler = self::request('GET', 'ucp.php?i=ucp_prefs&mode=view&sid=' . $this->sid);
-		self::assertStringContainsString($this->lang('DISPLAY_SIMILAR_TOPICS'), $crawler->filter('#cp-main')->text());
+		self::assertStringContainsString(self::lang('DISPLAY_SIMILAR_TOPICS'), $crawler->filter('#cp-main')->text());
 	}
 }

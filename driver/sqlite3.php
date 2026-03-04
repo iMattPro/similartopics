@@ -16,7 +16,7 @@ namespace vse\similartopics\driver;
 class sqlite3 implements driver_interface
 {
 	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	protected \phpbb\db\driver\driver_interface $db;
 
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name()
+	public function get_name(): string
 	{
 		return 'sqlite3';
 	}
@@ -39,7 +39,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_type()
+	public function get_type(): string
 	{
 		return 'sqlite';
 	}
@@ -47,7 +47,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_query($topic_id, $topic_title, $length, $sensitivity)
+	public function get_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array
 	{
 		$words = explode(' ', $topic_title);
 		$like_conditions = array();
@@ -83,7 +83,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_supported()
+	public function is_supported(): bool
 	{
 		return ($this->db->get_sql_layer() === 'sqlite3');
 	}
@@ -91,7 +91,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
+	public function is_fulltext(string $column = 'topic_title', string $table = TOPICS_TABLE): bool
 	{
 		// For SQLite, we check if a regular index exists since we use LIKE operations
 		return $this->index_exists($table, $column);
@@ -100,7 +100,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
+	public function get_fulltext_indexes(string $column = 'topic_title', string $table = TOPICS_TABLE): array
 	{
 		$indexes = array();
 
@@ -127,7 +127,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
 	{
 		// SQLite FTS setup is complex and optional for LIKE-based search
 		// We'll create a simple index to improve LIKE performance
@@ -146,7 +146,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_engine()
+	public function get_engine(): string
 	{
 		return '';
 	}
@@ -154,7 +154,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function has_stopword_support()
+	public function has_stopword_support(): bool
 	{
 		return false;
 	}
@@ -166,7 +166,7 @@ class sqlite3 implements driver_interface
 	 * @param string $column Name of the column
 	 * @return bool True if index exists, false otherwise
 	 */
-	protected function index_exists($table, $column)
+	protected function index_exists(string $table, string $column): bool
 	{
 		if (!$this->is_supported())
 		{

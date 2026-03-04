@@ -16,7 +16,7 @@ namespace vse\similartopics\driver;
 class oracle implements driver_interface
 {
 	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	protected \phpbb\db\driver\driver_interface $db;
 
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name()
+	public function get_name(): string
 	{
 		return 'oracle';
 	}
@@ -39,7 +39,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_type()
+	public function get_type(): string
 	{
 		return 'oracle';
 	}
@@ -47,7 +47,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_query($topic_id, $topic_title, $length, $sensitivity)
+	public function get_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array
 	{
 		// Clean and prepare the search terms for Oracle Text
 		$search_terms = $this->prepare_search_terms($topic_title);
@@ -77,7 +77,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_supported()
+	public function is_supported(): bool
 	{
 		return $this->is_oracle();
 	}
@@ -85,7 +85,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
+	public function is_fulltext(string $column = 'topic_title', string $table = TOPICS_TABLE): bool
 	{
 		return in_array($column, $this->get_fulltext_indexes($column, $table), true);
 	}
@@ -93,7 +93,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
+	public function get_fulltext_indexes(string $column = 'topic_title', string $table = TOPICS_TABLE): array
 	{
 		$indexes = array();
 
@@ -133,7 +133,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
 	{
 		if (!$this->is_fulltext($column, $table))
 		{
@@ -151,7 +151,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_engine()
+	public function get_engine(): string
 	{
 		return 'oracle';
 	}
@@ -159,7 +159,7 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function has_stopword_support()
+	public function has_stopword_support(): bool
 	{
 		return true;
 	}
@@ -169,9 +169,9 @@ class oracle implements driver_interface
 	 *
 	 * @return bool True if is oracle, false otherwise
 	 */
-	protected function is_oracle()
+	protected function is_oracle(): bool
 	{
-		return strpos($this->db->get_sql_layer(), 'oracle') === 0;
+		return str_starts_with($this->db->get_sql_layer(), 'oracle');
 	}
 
 	/**
@@ -180,7 +180,7 @@ class oracle implements driver_interface
 	 * @param string $topic_title The topic title to search for
 	 * @return string Formatted search terms for Oracle Text
 	 */
-	protected function prepare_search_terms($topic_title)
+	protected function prepare_search_terms(string $topic_title): string
 	{
 		// Remove special characters and split into words
 		$words = preg_split('/[^\p{L}\p{N}]+/u', $topic_title, -1, PREG_SPLIT_NO_EMPTY);

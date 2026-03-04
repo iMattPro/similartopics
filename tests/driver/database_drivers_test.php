@@ -10,22 +10,31 @@
 
 namespace vse\similartopics\tests\driver;
 
-class database_drivers_test extends \phpbb_test_case
-{
-	/** @var \phpbb\db\driver\driver_interface|\PHPUnit\Framework\MockObject\MockObject */
-	protected $db;
+use phpbb\config\config;
+use phpbb\db\driver\driver_interface;
+use phpbb_test_case;
+use PHPUnit\Framework\MockObject\MockObject;
+use vse\similartopics\driver\mssql;
+use vse\similartopics\driver\oracle;
+use vse\similartopics\driver\postgres;
+use vse\similartopics\driver\sqlite3;
 
-	/** @var \phpbb\config\config */
-	protected $config;
+class database_drivers_test extends phpbb_test_case
+{
+	/** @var MockObject|driver_interface */
+	protected MockObject|driver_interface $db;
+
+	/** @var config */
+	protected config $config;
 
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->db = $this->createMock('\phpbb\db\driver\driver_interface');
-		$this->config = new \phpbb\config\config(['pst_postgres_ts_name' => 'english']);
+		$this->db = $this->createMock(driver_interface::class);
+		$this->config = new config(['pst_postgres_ts_name' => 'english']);
 	}
 
-	public static function driver_data_provider()
+	public static function driver_data_provider(): array
 	{
 		return [
 			'mssql' => ['mssql', 'mssql', 'mssql'],
@@ -38,7 +47,7 @@ class database_drivers_test extends \phpbb_test_case
 	/**
 	 * @dataProvider driver_data_provider
 	 */
-	public function test_driver_basic_properties($driver_class, $expected_name, $expected_type)
+	public function test_driver_basic_properties($driver_class, $expected_name, $expected_type): void
 	{
 		$driver = $this->create_driver($driver_class);
 
@@ -46,7 +55,7 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertEquals($expected_type, $driver->get_type());
 	}
 
-	public function test_mssql_driver()
+	public function test_mssql_driver(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('mssql');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -58,7 +67,7 @@ class database_drivers_test extends \phpbb_test_case
 			);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\mssql($this->db);
+		$driver = new mssql($this->db);
 
 		$this->assertTrue($driver->is_supported());
 		$this->assertEquals('', $driver->get_engine());
@@ -69,7 +78,7 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString('CONTAINS', $query['WHERE']);
 	}
 
-	public function test_mssql_driver_without_fulltext()
+	public function test_mssql_driver_without_fulltext(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('mssql');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -77,13 +86,13 @@ class database_drivers_test extends \phpbb_test_case
 		$this->db->method('sql_fetchrow')->willReturn(false);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\mssql($this->db);
+		$driver = new mssql($this->db);
 
 		$query = $driver->get_query(1, 'test topic', 86400, 0.5);
 		$this->assertStringContainsString('LIKE', $query['WHERE']);
 	}
 
-	public function test_postgres_driver()
+	public function test_postgres_driver(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('postgres');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -95,7 +104,7 @@ class database_drivers_test extends \phpbb_test_case
 			);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\postgres($this->db, $this->config);
+		$driver = new postgres($this->db, $this->config);
 
 		$this->assertTrue($driver->is_supported());
 		$this->assertEquals('', $driver->get_engine());
@@ -107,7 +116,7 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString('ts_rank_cd', $query['SELECT']);
 	}
 
-	public function test_oracle_driver()
+	public function test_oracle_driver(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('oracle');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -121,7 +130,7 @@ class database_drivers_test extends \phpbb_test_case
 			);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\oracle($this->db);
+		$driver = new oracle($this->db);
 
 		$this->assertTrue($driver->is_supported());
 		$this->assertEquals('oracle', $driver->get_engine());
@@ -133,7 +142,7 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString('SCORE(1)', $query['SELECT']);
 	}
 
-	public function test_sqlite3_driver()
+	public function test_sqlite3_driver(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -147,7 +156,7 @@ class database_drivers_test extends \phpbb_test_case
 			);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\sqlite3($this->db);
+		$driver = new sqlite3($this->db);
 
 		$this->assertTrue($driver->is_supported());
 		$this->assertEquals('', $driver->get_engine());
@@ -158,17 +167,17 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString('LIKE', $query['WHERE']);
 	}
 
-	public function test_fulltext_index_operations()
+	public function test_fulltext_index_operations(): void
 	{
 		$this->db->method('sql_query')->willReturn(true);
 		$this->db->method('sql_fetchrow')->willReturn(false);
 		$this->db->method('sql_freeresult');
 
 		$drivers = [
-			new \vse\similartopics\driver\mssql($this->db),
-			new \vse\similartopics\driver\postgres($this->db, $this->config),
-			new \vse\similartopics\driver\oracle($this->db),
-			new \vse\similartopics\driver\sqlite3($this->db)
+			new mssql($this->db),
+			new postgres($this->db, $this->config),
+			new oracle($this->db),
+			new sqlite3($this->db)
 		];
 
 		foreach ($drivers as $driver)
@@ -181,7 +190,7 @@ class database_drivers_test extends \phpbb_test_case
 		}
 	}
 
-	public function test_postgres_cfg_name_list()
+	public function test_postgres_cfg_name_list(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('postgres');
 		$this->db->method('sql_query')->willReturn(true);
@@ -191,22 +200,22 @@ class database_drivers_test extends \phpbb_test_case
 		]);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\postgres($this->db, $this->config);
+		$driver = new postgres($this->db, $this->config);
 		$cfg_list = $driver->get_cfg_name_list();
 
 		$this->assertIsArray($cfg_list);
 		$this->assertCount(2, $cfg_list);
 	}
 
-	public function test_unsupported_drivers()
+	public function test_unsupported_drivers(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('unsupported');
 
 		$drivers = [
-			new \vse\similartopics\driver\mssql($this->db),
-			new \vse\similartopics\driver\postgres($this->db, $this->config),
-			new \vse\similartopics\driver\oracle($this->db),
-			new \vse\similartopics\driver\sqlite3($this->db)
+			new mssql($this->db),
+			new postgres($this->db, $this->config),
+			new oracle($this->db),
+			new sqlite3($this->db)
 		];
 
 		foreach ($drivers as $driver)
@@ -216,7 +225,7 @@ class database_drivers_test extends \phpbb_test_case
 		}
 	}
 
-	public function test_mssql_create_fulltext_index()
+	public function test_mssql_create_fulltext_index(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('mssql');
 		$this->db->method('sql_query')->willReturn(true);
@@ -227,12 +236,12 @@ class database_drivers_test extends \phpbb_test_case
 			);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\mssql($this->db);
+		$driver = new mssql($this->db);
 		$driver->create_fulltext_index();
 		$this->addToAssertionCount(1);
 	}
 
-	public function test_oracle_get_fulltext_indexes()
+	public function test_oracle_get_fulltext_indexes(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('oracle');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -246,13 +255,13 @@ class database_drivers_test extends \phpbb_test_case
 			);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\oracle($this->db);
+		$driver = new oracle($this->db);
 		$indexes = $driver->get_fulltext_indexes();
 		$this->assertIsArray($indexes);
 		$this->assertContains('topic_title', $indexes);
 	}
 
-	public function test_sqlite3_fulltext_methods()
+	public function test_sqlite3_fulltext_methods(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -266,7 +275,7 @@ class database_drivers_test extends \phpbb_test_case
 			);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\sqlite3($this->db);
+		$driver = new sqlite3($this->db);
 
 		$indexes = $driver->get_fulltext_indexes();
 		$this->assertIsArray($indexes);
@@ -274,7 +283,7 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertTrue($driver->is_fulltext());
 	}
 
-	public function test_postgres_fulltext_methods()
+	public function test_postgres_fulltext_methods(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('postgres');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -288,7 +297,7 @@ class database_drivers_test extends \phpbb_test_case
 			);
 		$this->db->method('sql_freeresult');
 
-		$driver = new \vse\similartopics\driver\postgres($this->db, $this->config);
+		$driver = new postgres($this->db, $this->config);
 
 		$indexes = $driver->get_fulltext_indexes();
 		$this->assertIsArray($indexes);
@@ -297,19 +306,14 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertFalse($driver->is_fulltext());
 	}
 
-	protected function create_driver($driver_class)
+	protected function create_driver($driver_class): mssql|oracle|postgres|sqlite3|null
 	{
-		switch ($driver_class)
-		{
-			case 'mssql':
-				return new \vse\similartopics\driver\mssql($this->db);
-			case 'postgres':
-				return new \vse\similartopics\driver\postgres($this->db, $this->config);
-			case 'oracle':
-				return new \vse\similartopics\driver\oracle($this->db);
-			case 'sqlite3':
-				return new \vse\similartopics\driver\sqlite3($this->db);
-		}
-		return null;
+		return match ($driver_class) {
+			'mssql' => new mssql($this->db),
+			'oracle' => new oracle($this->db),
+			'postgres' => new postgres($this->db, $this->config),
+			'sqlite3' => new sqlite3($this->db),
+			default => null,
+		};
 	}
 }

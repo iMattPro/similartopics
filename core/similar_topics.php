@@ -20,6 +20,7 @@ use phpbb\event\dispatcher_interface as dispatcher;
 use phpbb\language\language;
 use phpbb\pagination;
 use phpbb\request\request;
+use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
 use vse\similartopics\driver\driver_interface as similartopics_driver;
@@ -28,55 +29,55 @@ use vse\similartopics\driver\manager as similartopics_manager;
 class similar_topics
 {
 	/** @var auth */
-	protected $auth;
+	protected auth $auth;
 
 	/** @var cache */
-	protected $cache;
+	protected cache $cache;
 
 	/** @var config */
-	protected $config;
+	protected config $config;
 
 	/** @var db_text */
-	protected $config_text;
+	protected db_text $config_text;
 
 	/** @var db */
-	protected $db;
+	protected db $db;
 
 	/** @var dispatcher */
-	protected $dispatcher;
+	protected dispatcher $dispatcher;
 
 	/** @var language */
-	protected $language;
+	protected language $language;
 
 	/** @var pagination */
-	protected $pagination;
+	protected pagination $pagination;
 
 	/** @var request */
-	protected $request;
+	protected request $request;
 
 	/** @var template */
-	protected $template;
+	protected template $template;
 
 	/** @var user */
-	protected $user;
+	protected user $user;
 
 	/** @var content_visibility */
-	protected $content_visibility;
+	protected content_visibility $content_visibility;
 
 	/** @var stop_word_helper */
-	protected $stop_word_helper;
+	protected stop_word_helper $stop_word_helper;
 
-	/** @var similartopics_driver */
-	protected $similartopics;
+	/** @var similartopics_driver|null */
+	protected similartopics_driver|null $similartopics;
 
 	/** @var string phpBB root path  */
-	protected $root_path;
+	protected string $root_path;
 
 	/** @var string PHP file extension */
-	protected $php_ext;
+	protected string $php_ext;
 
-	/** @var string String of custom ignore words */
-	protected $ignore_words;
+	/** @var string|null String of custom ignore words */
+	protected string|null $ignore_words = null;
 
 	/**
 	 * Constructor
@@ -99,7 +100,7 @@ class similar_topics
 	 * @param string                $root_path
 	 * @param string                $php_ext
 	 */
-	public function __construct(auth $auth, cache $cache, config $config, db_text $config_text, db $db, dispatcher $dispatcher, language $language, pagination $pagination, request $request, template $template, user $user, content_visibility $content_visibility, stop_word_helper $stop_word_helper, similartopics_manager $similartopics_manager, $root_path, $php_ext)
+	public function __construct(auth $auth, cache $cache, config $config, db_text $config_text, db $db, dispatcher $dispatcher, language $language, pagination $pagination, request $request, template $template, user $user, content_visibility $content_visibility, stop_word_helper $stop_word_helper, similartopics_manager $similartopics_manager, string $root_path, string $php_ext)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -126,7 +127,7 @@ class similar_topics
 	 * @access public
 	 * @return bool True if available, false otherwise
 	 */
-	public function is_available()
+	public function is_available(): bool
 	{
 		return $this->is_enabled() && $this->is_viewable() && $this->similartopics !== null;
 	}
@@ -137,7 +138,7 @@ class similar_topics
 	 * @access public
 	 * @return bool True if configured, false otherwise
 	 */
-	public function is_enabled()
+	public function is_enabled(): bool
 	{
 		return !empty($this->config['similar_topics']) && !empty($this->config['similar_topics_limit']);
 	}
@@ -148,7 +149,7 @@ class similar_topics
 	 * @access public
 	 * @return bool True if viewable, false otherwise
 	 */
-	public function is_viewable()
+	public function is_viewable(): bool
 	{
 		return !empty($this->user->data['user_similar_topics']) && $this->auth->acl_get('u_similar_topics');
 	}
@@ -159,7 +160,7 @@ class similar_topics
 	 * @access public
 	 * @return bool True if available, false otherwise
 	 */
-	public function is_dynamic_available()
+	public function is_dynamic_available(): bool
 	{
 		return $this->is_dynamic_enabled() && $this->is_viewable() && $this->similartopics !== null;
 	}
@@ -170,7 +171,7 @@ class similar_topics
 	 * @access public
 	 * @return bool True if enabled, false otherwise
 	 */
-	public function is_dynamic_enabled()
+	public function is_dynamic_enabled(): bool
 	{
 		return !empty($this->config['similar_topics_dynamic']) && !empty($this->config['similar_topics_limit']);
 	}
@@ -186,7 +187,7 @@ class similar_topics
 	 * @access public
 	 * @param array $topic_data Array with topic data
 	 */
-	public function display_similar_topics($topic_data)
+	public function display_similar_topics(array $topic_data): void
 	{
 		// If the forum should not display similar topics, no need to continue
 		if ($topic_data['similar_topics_hide'])
@@ -220,7 +221,7 @@ class similar_topics
 		else if ($this->config['load_anon_lastread'] || $this->user->data['is_registered'])
 		{
 			// Cookie based tracking copied from search.php
-			$tracking_topics = $this->request->variable($this->config['cookie_name'] . '_track', '', true, \phpbb\request\request_interface::COOKIE);
+			$tracking_topics = $this->request->variable($this->config['cookie_name'] . '_track', '', true, request_interface::COOKIE);
 			$tracking_topics = $tracking_topics ? tracking_unserialize($tracking_topics) : array();
 		}
 
@@ -398,7 +399,7 @@ class similar_topics
 	 *
 	 * @return void
 	 */
-	public function add_language()
+	public function add_language(): void
 	{
 		$this->language->add_lang('similar_topics', 'vse/similartopics');
 	}
@@ -409,7 +410,7 @@ class similar_topics
 	 * @access protected
 	 * @return bool True if non-English language or using a dbms with no stop-words
 	 */
-	protected function get_localized_ignore_words()
+	protected function get_localized_ignore_words(): bool
 	{
 		return !in_array($this->user->lang_name, ['en', 'en_us'], true) || !$this->similartopics->has_stopword_support();
 	}
@@ -421,7 +422,7 @@ class similar_topics
 	 * @param int $forum_id The forum ID to search from
 	 * @return array Array of similar topics
 	 */
-	public function search_similar_topics_ajax($query, $forum_id = 0)
+	public function search_similar_topics_ajax(string $query, int $forum_id = 0): array
 	{
 		$this->stop_word_helper->set_use_localized($this->get_localized_ignore_words());
 		$this->stop_word_helper->set_additional_ignore_words($this->get_additional_ignore_words());
@@ -492,7 +493,7 @@ class similar_topics
 	 * @access protected
 	 * @return string|null String of ignore words or null if there are none defined
 	 */
-	protected function get_additional_ignore_words()
+	protected function get_additional_ignore_words(): string|null
 	{
 		$key = 'similar_topics_words';
 

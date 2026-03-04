@@ -18,7 +18,7 @@ class mysql4 extends mysqli
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name()
+	public function get_name(): string
 	{
 		return 'mysql4';
 	}

@@ -10,34 +10,42 @@
 
 namespace vse\similartopics\tests;
 
-class ext_test extends \phpbb_test_case
+use phpbb\db\migrator;
+use phpbb\finder\finder;
+use phpbb_test_case;
+use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use vse\similartopics\ext;
+use phpbb\extension\base;
+
+class ext_test extends phpbb_test_case
 {
-	/** @var \PHPUnit\Framework\MockObject\MockObject|\Symfony\Component\DependencyInjection\ContainerInterface */
-	protected $container;
+	/** @var ContainerInterface|MockObject */
+	protected ContainerInterface|MockObject $container;
 
-	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\finder\finder */
-	protected $extension_finder;
+	/** @var MockObject|finder */
+	protected MockObject|finder $extension_finder;
 
-	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\db\migrator */
-	protected $migrator;
+	/** @var MockObject|migrator */
+	protected MockObject|migrator $migrator;
 
-	/** @var \vse\similartopics\ext */
-	protected $ext;
+	/** @var ext */
+	protected ext $ext;
 
 	protected function setUp(): void
 	{
 		parent::setUp();
 
 		// Stub the container
-		$this->container = $this->createMock('\Symfony\Component\DependencyInjection\ContainerInterface');
+		$this->container = $this->createMock(ContainerInterface::class);
 
 		// Stub the ext finder and disable its constructor
-		$this->extension_finder = $this->createMock('\phpbb\finder\finder');
+		$this->extension_finder = $this->createMock(finder::class);
 
 		// Stub the migrator and disable its constructor
-		$this->migrator = $this->createMock('\phpbb\db\migrator');
+		$this->migrator = $this->createMock(migrator::class);
 
-		$this->ext = new \vse\similartopics\ext(
+		$this->ext = new ext(
 			$this->container,
 			$this->extension_finder,
 			$this->migrator,
@@ -46,14 +54,14 @@ class ext_test extends \phpbb_test_case
 		);
 	}
 
-	public function test_is_enableable_returns_boolean()
+	public function test_is_enableable_returns_boolean(): void
 	{
 		$result = $this->ext->is_enableable();
 		$this->assertIsBool($result);
 	}
 
-	public function test_ext_extends_base()
+	public function test_ext_extends_base(): void
 	{
-		$this->assertInstanceOf('\phpbb\extension\base', $this->ext);
+		$this->assertInstanceOf(base::class, $this->ext);
 	}
 }

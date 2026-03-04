@@ -10,19 +10,29 @@
 
 namespace vse\similartopics\tests\event;
 
-class listener_test extends \phpbb_test_case
+use phpbb\controller\helper;
+use phpbb\event\data;
+use phpbb\event\dispatcher;
+use phpbb\template\template;
+use phpbb_test_case;
+use PHPUnit\Framework\MockObject\MockObject;
+use vse\similartopics\core\similar_topics;
+use vse\similartopics\event\listener;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+class listener_test extends phpbb_test_case
 {
-	/** @var \vse\similartopics\event\listener */
-	protected $listener;
+	/** @var listener */
+	protected listener $listener;
 
-	/** @var \vse\similartopics\core\similar_topics|\PHPUnit\Framework\MockObject\MockObject */
-	protected $similar_topics;
+	/** @var MockObject|similar_topics */
+	protected MockObject|similar_topics$similar_topics;
 
-	/** @var \phpbb\controller\helper|\PHPUnit\Framework\MockObject\MockObject */
-	protected $helper;
+	/** @var MockObject|helper */
+	protected MockObject|helper $helper;
 
-	/** @var \phpbb\template\template|\PHPUnit\Framework\MockObject\MockObject */
-	protected $template;
+	/** @var MockObject|template */
+	protected MockObject|template $template;
 
 	/**
 	 * Setup test environment
@@ -32,17 +42,17 @@ class listener_test extends \phpbb_test_case
 		parent::setUp();
 
 		// Load/Mock classes required by the event listener class
-		$this->similar_topics = $this->createMock('\vse\similartopics\core\similar_topics');
-		$this->helper = $this->createMock('\phpbb\controller\helper');
-		$this->template = $this->createMock('\phpbb\template\template');
+		$this->similar_topics = $this->createMock(similar_topics::class);
+		$this->helper = $this->createMock(helper::class);
+		$this->template = $this->createMock(template::class);
 	}
 
 	/**
 	 * Create our event listener
 	 */
-	protected function set_listener()
+	protected function set_listener(): void
 	{
-		$this->listener = new \vse\similartopics\event\listener(
+		$this->listener = new listener(
 			$this->similar_topics,
 			$this->helper,
 			$this->template
@@ -52,22 +62,22 @@ class listener_test extends \phpbb_test_case
 	/**
 	 * Test the event listener is constructed correctly
 	 */
-	public function test_construct()
+	public function test_construct(): void
 	{
 		$this->set_listener();
-		self::assertInstanceOf('\Symfony\Component\EventDispatcher\EventSubscriberInterface', $this->listener);
+		self::assertInstanceOf(EventSubscriberInterface::class, $this->listener);
 	}
 
 	/**
 	 * Test the event listener is subscribing events
 	 */
-	public function test_getSubscribedEvents()
+	public function test_getSubscribedEvents(): void
 	{
 		self::assertEquals(array(
 			'core.viewtopic_modify_page_title',
 			'core.permissions',
 			'core.posting_modify_template_vars',
-		), array_keys(\vse\similartopics\event\listener::getSubscribedEvents()));
+		), array_keys(listener::getSubscribedEvents()));
 	}
 
 	/**
@@ -75,7 +85,7 @@ class listener_test extends \phpbb_test_case
 	 *
 	 * @return array Array of test data
 	 */
-	public static function display_similar_topics_data()
+	public static function display_similar_topics_data(): array
 	{
 		return array(
 			array(array('forum_id' => 1), true),
@@ -88,7 +98,7 @@ class listener_test extends \phpbb_test_case
 	 *
 	 * @dataProvider display_similar_topics_data
 	 */
-	public function test_display_similar_topics($topic_data, $is_available)
+	public function test_display_similar_topics($topic_data, $is_available): void
 	{
 		$this->similar_topics->expects(self::once())
 			->method('is_available')
@@ -100,7 +110,7 @@ class listener_test extends \phpbb_test_case
 
 		$this->set_listener();
 
-		$dispatcher = new \phpbb\event\dispatcher();
+		$dispatcher = new dispatcher();
 		$dispatcher->addListener('core.viewtopic_modify_page_title', array($this->listener, 'display_similar_topics'));
 
 		$forum_id = $topic_data['forum_id'];
@@ -113,7 +123,7 @@ class listener_test extends \phpbb_test_case
 	 *
 	 * @return array Array of test data
 	 */
-	public static function add_permissions_data()
+	public static function add_permissions_data(): array
 	{
 		return array(
 			array(
@@ -151,16 +161,16 @@ class listener_test extends \phpbb_test_case
 	 *
 	 * @dataProvider add_permissions_data
 	 */
-	public function test_add_permissions($permissions, $expected_contains)
+	public function test_add_permissions($permissions, $expected_contains): void
 	{
 		$this->set_listener();
 
-		$dispatcher = new \phpbb\event\dispatcher();
+		$dispatcher = new dispatcher();
 		$dispatcher->addListener('core.permissions', array($this->listener, 'add_permissions'));
 
 		$event_data = array('permissions');
 		$data = $dispatcher->trigger_event('core.permissions', compact($event_data));
-		extract($data, EXTR_OVERWRITE);
+		extract($data);
 
 		foreach ($expected_contains as $expected)
 		{
@@ -171,7 +181,7 @@ class listener_test extends \phpbb_test_case
 	/**
 	 * Test dynamic_similar_topics method for new topic creation
 	 */
-	public function test_add_ajax_url_new_topic()
+	public function test_add_ajax_url_new_topic(): void
 	{
 		$this->similar_topics->expects(self::once())
 			->method('is_dynamic_available')
@@ -195,7 +205,7 @@ class listener_test extends \phpbb_test_case
 
 		$this->set_listener();
 
-		$event = new \phpbb\event\data([
+		$event = new data([
 			'forum_id' => 1,
 			'mode' => 'post',
 			'post_data' => []
@@ -206,7 +216,7 @@ class listener_test extends \phpbb_test_case
 	/**
 	 * Test dynamic_similar_topics method does not activate for replies
 	 */
-	public function test_add_ajax_url_reply()
+	public function test_add_ajax_url_reply(): void
 	{
 		$this->similar_topics->expects(self::never())
 			->method('is_dynamic_available')
@@ -217,7 +227,7 @@ class listener_test extends \phpbb_test_case
 
 		$this->set_listener();
 
-		$event = new \phpbb\event\data([
+		$event = new data([
 			'forum_id' => 1,
 			'mode' => 'reply',
 			'post_data' => ['topic_id' => 123]

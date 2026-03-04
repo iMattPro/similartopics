@@ -10,35 +10,43 @@
 
 namespace vse\similartopics\tests\core;
 
-class stop_word_helper_test extends \phpbb_test_case
+use phpbb\cache\driver\driver_interface;
+use phpbb\extension\manager;
+use phpbb\user;
+use phpbb_test_case;
+use PHPUnit\Framework\MockObject\MockObject;
+use vse\similartopics\core\stop_word_helper;
+use phpbb\finder\finder;
+
+class stop_word_helper_test extends phpbb_test_case
 {
-	/** @var \phpbb\cache\driver\driver_interface|\PHPUnit\Framework\MockObject\MockObject */
-	protected $cache;
+	/** @var MockObject|driver_interface */
+	protected MockObject|driver_interface $cache;
 
-	/** @var \phpbb\extension\manager|\PHPUnit\Framework\MockObject\MockObject */
-	protected $ext_manager;
+	/** @var MockObject|manager */
+	protected MockObject|manager $ext_manager;
 
-	/** @var \phpbb\user|\PHPUnit\Framework\MockObject\MockObject */
-	protected $user;
+	/** @var MockObject|user */
+	protected MockObject|user $user;
 
 	/** @var string */
-	protected $php_ext = 'php';
+	protected string $php_ext = 'php';
 
 	protected function setUp(): void
 	{
 		parent::setUp();
 
-		$this->cache = $this->createMock('\phpbb\cache\driver\driver_interface');
+		$this->cache = $this->createMock(driver_interface::class);
 		$this->cache->method('get')->willReturn(false);
 		$this->cache->method('put')->willReturn(true);
-		$this->ext_manager = $this->createMock('\phpbb\extension\manager');
-		$this->user = $this->createMock('\phpbb\user');
+		$this->ext_manager = $this->createMock(manager::class);
+		$this->user = $this->createMock(user::class);
 		$this->user->lang_name = 'en';
 	}
 
-	public function get_helper()
+	public function get_helper(): stop_word_helper
 	{
-		return new \vse\similartopics\core\stop_word_helper(
+		return new stop_word_helper(
 			$this->cache,
 			$this->ext_manager,
 			$this->user,
@@ -46,7 +54,7 @@ class stop_word_helper_test extends \phpbb_test_case
 		);
 	}
 
-	public static function clean_text_test_data()
+	public static function clean_text_test_data(): array
 	{
 		return [
 			'No filtering' => [
@@ -76,7 +84,7 @@ class stop_word_helper_test extends \phpbb_test_case
 	/**
 	 * @dataProvider clean_text_test_data
 	 */
-	public function test_clean_text($text, $use_localized, $additional_ignore, $expected)
+	public function test_clean_text($text, $use_localized, $additional_ignore, $expected): void
 	{
 		if ($use_localized)
 		{
@@ -90,7 +98,7 @@ class stop_word_helper_test extends \phpbb_test_case
 		self::assertSame($expected, $helper->clean_text($text));
 	}
 
-	public function test_set_additional_ignore_words()
+	public function test_set_additional_ignore_words(): void
 	{
 		$helper = $this->get_helper();
 
@@ -101,7 +109,7 @@ class stop_word_helper_test extends \phpbb_test_case
 		self::assertSame('test example', $helper->clean_text('test my words example'));
 	}
 
-	public function test_set_use_localized()
+	public function test_set_use_localized(): void
 	{
 		$this->setup_finder_mock();
 
@@ -112,7 +120,7 @@ class stop_word_helper_test extends \phpbb_test_case
 		self::assertSame('example', $helper->clean_text('The and example'));
 	}
 
-	public function test_needs_reload_tracking()
+	public function test_needs_reload_tracking(): void
 	{
 		$this->setup_finder_mock();
 
@@ -132,9 +140,9 @@ class stop_word_helper_test extends \phpbb_test_case
 		self::assertSame('test', $result);
 	}
 
-	protected function setup_finder_mock()
+	protected function setup_finder_mock(): void
 	{
-		$finder = $this->createMock('\phpbb\finder\finder');
+		$finder = $this->createMock(finder::class);
 		$finder->method('set_extensions')->willReturnSelf();
 		$finder->method('prefix')->willReturnSelf();
 		$finder->method('suffix')->willReturnSelf();

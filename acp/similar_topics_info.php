@@ -15,7 +15,7 @@ namespace vse\similartopics\acp;
  */
 class similar_topics_info
 {
-	public function module()
+	public function module(): array
 	{
 		return array(
 			'filename'	=> '\vse\similartopics\acp\similar_topics_module',

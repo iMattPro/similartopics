@@ -10,23 +10,30 @@
 
 namespace vse\similartopics\tests\driver;
 
-class driver_test extends \phpbb_database_test_case
+use phpbb\config\config;
+use phpbb\db\driver\driver_interface;
+use phpbb_database_test_case;
+use PHPUnit\DbUnit\DataSet\DefaultDataSet;
+use PHPUnit\DbUnit\DataSet\XmlDataSet;
+use vse\similartopics\driver\manager;
+
+class driver_test extends phpbb_database_test_case
 {
-	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	/** @var driver_interface */
+	protected driver_interface $db;
 
-	/** @var \phpbb\config\config */
-	protected $config;
+	/** @var config */
+	protected config $config;
 
-	/** @var \vse\similartopics\driver\manager */
-	protected $manager;
+	/** @var manager */
+	protected manager $manager;
 
-	protected static function setup_extensions()
+	protected static function setup_extensions(): array
 	{
 		return array('vse/similartopics');
 	}
 
-	protected function getDataSet()
+	protected function getDataSet(): DefaultDataSet|XmlDataSet
 	{
 		return $this->createXMLDataSet(__DIR__ . '/fixtures/config.xml');
 	}
@@ -36,7 +43,7 @@ class driver_test extends \phpbb_database_test_case
 		parent::setUp();
 
 		$this->db = $this->new_dbal();
-		$this->config = new \phpbb\config\config(array());
+		$this->config = new config(array());
 		$drivers = array(
 			'postgres',
 			'mysql4',
@@ -61,35 +68,35 @@ class driver_test extends \phpbb_database_test_case
 			}
 		}
 
-		$this->manager = new \vse\similartopics\driver\manager($services);
+		$this->manager = new manager($services);
 	}
 
-	public function get_driver()
+	public function get_driver(): \vse\similartopics\driver\driver_interface
 	{
 		return $this->manager->get_driver($this->db->get_sql_layer());
 	}
 
-	public function test_get_driver()
+	public function test_get_driver(): void
 	{
 		self::assertInstanceOf('\\vse\\similartopics\\driver\\' . $this->db->get_sql_layer(), $this->get_driver());
 	}
 
-	public function test_get_driver_fails()
+	public function test_get_driver_fails(): void
 	{
 		self::assertNull($this->manager->get_driver('foo'));
 	}
 
-	public function test_get_name()
+	public function test_get_name(): void
 	{
 		self::assertEquals($this->db->get_sql_layer(), $this->get_driver()->get_name());
 	}
 
-	public function test_get_type()
+	public function test_get_type(): void
 	{
 		self::assertSame(0, strpos($this->db->get_sql_layer(), $this->get_driver()->get_type()));
 	}
 
-	public function test_get_query()
+	public function test_get_query(): void
 	{
 		$sql_layer = $this->db->get_sql_layer();
 		$driver = $this->get_driver();
@@ -100,7 +107,7 @@ class driver_test extends \phpbb_database_test_case
 			$select = "f.forum_id, f.forum_name, t.*, ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) AS score";
 			$where = "to_tsquery('simple', 'foo|bar') @@ to_tsvector('simple', t.topic_title) AND ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (extract(epoch from current_timestamp)::integer - 0) AND t.topic_id <> 1";
 		}
-		else if (strpos($sql_layer, 'mssql') === 0)
+		else if (str_starts_with($sql_layer, 'mssql'))
 		{
 			$search_condition = $driver->is_fulltext() ?  "CONTAINS(t.topic_title, 'foo AND bar')" : "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%')";
 			$select = "f.forum_id, f.forum_name, t.*, CASE WHEN " . $search_condition . " THEN 1.0 ELSE 0.0 END AS score";
@@ -123,12 +130,12 @@ class driver_test extends \phpbb_database_test_case
 		self::assertEquals($where, preg_replace('#\s\s+#', ' ', $sql['WHERE']));
 	}
 
-	public function test_is_supported()
+	public function test_is_supported(): void
 	{
 		$driver = $this->get_driver();
 		$sql_layer = $this->db->get_sql_layer();
 
-		if (strpos($sql_layer, 'mysql') === 0)
+		if (str_starts_with($sql_layer, 'mysql'))
 		{
 			$unsupported = $driver->get_engine() === 'innodb' && phpbb_version_compare($this->db->sql_server_info(true), '5.6.4', '<');
 			self::assertSame(!$unsupported, $driver->is_supported());
@@ -140,12 +147,12 @@ class driver_test extends \phpbb_database_test_case
 		}
 	}
 
-	public function test_has_stopword_support()
+	public function test_has_stopword_support(): void
 	{
 		$driver = $this->get_driver();
 		$sql_layer = $this->db->get_sql_layer();
 
-		if ($sql_layer === 'oracle' || strpos($sql_layer, 'mysql') === 0)
+		if ($sql_layer === 'oracle' || str_starts_with($sql_layer, 'mysql'))
 		{
 			self::assertTrue($driver->has_stopword_support());
 		}
@@ -161,7 +168,7 @@ class driver_test extends \phpbb_database_test_case
 		}
 	}
 
-	public function test_index()
+	public function test_index(): void
 	{
 		$driver = $this->get_driver();
 		$sql_layer = $this->db->get_sql_layer();
@@ -175,7 +182,7 @@ class driver_test extends \phpbb_database_test_case
 		$driver->create_fulltext_index($column);
 
 		// For MSSQL, skip assertion if fulltext is not available
-		if (strpos($sql_layer, 'mssql') === 0)
+		if (str_starts_with($sql_layer, 'mssql'))
 		{
 			// MSSQL may not have fulltext available in test environment
 			self::assertTrue(true); // Skip test

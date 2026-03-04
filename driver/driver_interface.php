@@ -17,25 +17,25 @@ interface driver_interface
 	 *
 	 * @return string
 	 */
-	public function get_name();
+	public function get_name(): string;
 
 	/**
 	 * Get the type of the driver, i.e.: mysql or postgres
 	 *
 	 * @return string
 	 */
-	public function get_type();
+	public function get_type(): string;
 
 	/**
 	 * Generate the basic SQL query for similar topic searches
 	 *
-	 * @param int    $topic_id    The ID of the main topic
+	 * @param int $topic_id    The ID of the main topic
 	 * @param string $topic_title The title of the main topic
-	 * @param int    $length      The length of time of the search period
-	 * @param float  $sensitivity The search score weighting
+	 * @param int $length      The length of time of the search period
+	 * @param float $sensitivity The search score weighting
 	 * @return array An SQL query array
 	 */
-	public function get_query($topic_id, $topic_title, $length, $sensitivity);
+	public function get_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array;
 
 	/**
 	 * Check for database support
@@ -43,7 +43,7 @@ interface driver_interface
 	 * @access public
 	 * @return bool True if FULLTEXT is supported, false otherwise
 	 */
-	public function is_supported();
+	public function is_supported(): bool;
 
 	/**
 	 * Check if a column is a FULLTEXT index in topics table
@@ -53,7 +53,7 @@ interface driver_interface
 	 * @param string $table  Name of the table
 	 * @return bool True if column is a FULLTEXT index, false otherwise
 	 */
-	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE);
+	public function is_fulltext(string $column = 'topic_title', string $table = TOPICS_TABLE): bool;
 
 	/**
 	 * Get all FULLTEXT indexes for a column in topics table
@@ -63,7 +63,7 @@ interface driver_interface
 	 * @param string $table  Name of the table
 	 * @return array contains index names
 	 */
-	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE);
+	public function get_fulltext_indexes(string $column = 'topic_title', string $table = TOPICS_TABLE): array;
 
 	/**
 	 * Make a column into a FULLTEXT index in topics table
@@ -73,7 +73,7 @@ interface driver_interface
 	 * @param string $table  Name of the table
 	 * @return void
 	 */
-	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
+	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void;
 
 	/**
 	 * Get the database storage engine name
@@ -81,7 +81,7 @@ interface driver_interface
 	 * @access public
 	 * @return string The storage engine name
 	 */
-	public function get_engine();
+	public function get_engine(): string;
 
 	/**
 	 * Check if the database has built-in stop-word support
@@ -89,5 +89,5 @@ interface driver_interface
 	 * @access public
 	 * @return bool True if has stop-word support, false otherwise
 	 */
-	public function has_stopword_support();
+	public function has_stopword_support(): bool;
 }

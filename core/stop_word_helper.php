@@ -21,28 +21,28 @@ use phpbb\user;
 class stop_word_helper
 {
 	/** @var cache_driver */
-	protected $cache;
+	protected cache_driver $cache;
 
 	/** @var ext_manager */
-	protected $extension_manager;
+	protected ext_manager $extension_manager;
 
 	/** @var user */
-	protected $user;
+	protected user $user;
 
 	/** @var string */
-	protected $php_ext;
+	protected string $php_ext;
 
 	/** @var array|null Lookup table for fast filtering */
-	protected $ignore_lookup;
+	protected array|null $ignore_lookup;
 
 	/** @var bool Whether localized ignore words should be loaded */
-	protected $use_localized = false;
+	protected bool $use_localized = false;
 
 	/** @var string Additional ignore words string */
-	protected $additional_ignore = '';
+	protected string $additional_ignore = '';
 
 	/** @var bool Whether ignore words need to be reloaded */
-	protected $needs_reload = true;
+	protected bool $needs_reload = true;
 
 	/**
 	 * Constructor
@@ -52,7 +52,7 @@ class stop_word_helper
 	 * @param user $user
 	 * @param string $php_ext
 	 */
-	public function __construct(cache_driver $cache, ext_manager $extension_manager, user $user, $php_ext)
+	public function __construct(cache_driver $cache, ext_manager $extension_manager, user $user, string $php_ext)
 	{
 		$this->cache = $cache;
 		$this->extension_manager = $extension_manager;
@@ -65,7 +65,7 @@ class stop_word_helper
 	 *
 	 * @param string $words
 	 */
-	public function set_additional_ignore_words($words)
+	public function set_additional_ignore_words(string $words): void
 	{
 		if ($this->additional_ignore !== $words)
 		{
@@ -79,9 +79,8 @@ class stop_word_helper
 	 *
 	 * @param bool $value
 	 */
-	public function set_use_localized($value)
+	public function set_use_localized(bool $value): void
 	{
-		$value = (bool) $value;
 		if ($this->use_localized !== $value)
 		{
 			$this->use_localized = $value;
@@ -95,7 +94,7 @@ class stop_word_helper
 	 * @param string $text
 	 * @return string
 	 */
-	public function clean_text($text)
+	public function clean_text(string $text): string
 	{
 		// Strip HTML entities
 		$text = str_replace(['&quot;', '&amp;'], '', $text);
@@ -116,15 +115,15 @@ class stop_word_helper
 	/**
 	 * Load ignore words into memory and build a lookup table
 	 */
-	protected function load_ignore_words()
+	protected function load_ignore_words(): void
 	{
 		if ($this->needs_reload || $this->ignore_lookup === null)
 		{
 			// The cache will be invalidated when language, localized setting, or additional words change
 			$cache_key = '_pst_ignore_' . md5($this->user->lang_name . '|' . (int) $this->use_localized . '|' . $this->additional_ignore);
-			$this->ignore_lookup = $this->cache->get($cache_key);
+			$cached_value = $this->cache->get($cache_key);
 
-			if ($this->ignore_lookup === false)
+			if ($cached_value === false)
 			{
 				// Load localized ignore words (if needed)
 				$words = $this->use_localized ? $this->load_localized_words() : [];
@@ -138,6 +137,10 @@ class stop_word_helper
 				$this->ignore_lookup = array_flip(array_unique($words));
 				$this->cache->put($cache_key, $this->ignore_lookup);
 			}
+			else
+			{
+				$this->ignore_lookup = $cached_value;
+			}
 
 			$this->needs_reload = false;
 		}
@@ -148,7 +151,7 @@ class stop_word_helper
 	 *
 	 * @return array An array of ignore-words from the user's language pack
 	 */
-	protected function load_localized_words()
+	protected function load_localized_words(): array
 	{
 		$words = [];
 		$finder = $this->extension_manager->get_finder();
@@ -175,7 +178,7 @@ class stop_word_helper
 	 * @param bool $filter_short Whether to filter out words < 3 characters
 	 * @return array The original string of text, filtered into an array of individual words
 	 */
-	protected function make_word_array($text, $filter_short = false)
+	protected function make_word_array(string $text, bool $filter_short = false): array
 	{
 		$text = trim(preg_replace('#[^\p{L}\p{N}]+#u', ' ', $text));
 		$words = array_filter(explode(' ', utf8_strtolower($text)));
@@ -191,7 +194,7 @@ class stop_word_helper
 	 * @param string $word Word to check
 	 * @return bool True to keep a word, false to remove it
 	 */
-	protected function filter_ignore_words($word)
+	protected function filter_ignore_words(string $word): bool
 	{
 		return !isset($this->ignore_lookup[$word]);
 	}

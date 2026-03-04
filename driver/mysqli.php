@@ -16,10 +16,10 @@ namespace vse\similartopics\driver;
 class mysqli implements driver_interface
 {
 	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	protected \phpbb\db\driver\driver_interface $db;
 
 	/** @var string */
-	protected $engine;
+	protected string $engine;
 
 	/**
 	 * Constructor
@@ -34,7 +34,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name()
+	public function get_name(): string
 	{
 		return 'mysqli';
 	}
@@ -42,7 +42,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_type()
+	public function get_type(): string
 	{
 		return 'mysql';
 	}
@@ -50,7 +50,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_query($topic_id, $topic_title, $length, $sensitivity)
+	public function get_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array
 	{
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
@@ -76,7 +76,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_supported()
+	public function is_supported(): bool
 	{
 		return $this->is_mysql() && $this->supported_engine();
 	}
@@ -84,7 +84,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
+	public function is_fulltext(string $column = 'topic_title', string $table = TOPICS_TABLE): bool
 	{
 		return in_array($column, $this->get_fulltext_indexes($column, $table), true);
 	}
@@ -92,7 +92,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
+	public function get_fulltext_indexes(string $column = 'topic_title', string $table = TOPICS_TABLE): array
 	{
 		$indexes = array();
 
@@ -124,7 +124,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
 	{
 		if (!$this->is_fulltext($column, $table))
 		{
@@ -145,7 +145,7 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_engine()
+	public function get_engine(): string
 	{
 		return $this->engine ?? $this->set_engine();
 	}
@@ -156,7 +156,7 @@ class mysqli implements driver_interface
 	 * @access protected
 	 * @return string The storage engine name
 	 */
-	protected function set_engine()
+	protected function set_engine(): string
 	{
 		$this->engine = '';
 
@@ -185,7 +185,7 @@ class mysqli implements driver_interface
 	 * @param string $table Name of the table
 	 * @return mixed Array with the table info, false if the table does not exist
 	 */
-	protected function get_table_info($table = TOPICS_TABLE)
+	protected function get_table_info(string $table = TOPICS_TABLE): mixed
 	{
 		$result = $this->db->sql_query("SHOW TABLE STATUS LIKE '" . $this->db->sql_escape($table) . "'");
 		$info = $this->db->sql_fetchrow($result);
@@ -200,15 +200,15 @@ class mysqli implements driver_interface
 	 * @access public
 	 * @return bool True if is mysql, false otherwise
 	 */
-	protected function is_mysql()
+	protected function is_mysql(): bool
 	{
-		return strpos($this->db->get_sql_layer(), 'mysql') === 0;
+		return str_starts_with($this->db->get_sql_layer(), 'mysql');
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function has_stopword_support()
+	public function has_stopword_support(): bool
 	{
 		return true;
 	}
@@ -220,7 +220,7 @@ class mysqli implements driver_interface
 	 *
 	 * @return bool True if supported, false otherwise
 	 */
-	protected function supported_engine()
+	protected function supported_engine(): bool
 	{
 		if ($this->get_engine() === 'myisam')
 		{

@@ -10,24 +10,26 @@
 
 namespace vse\similartopics\acp;
 
+use Exception;
+
 class similar_topics_module
 {
 	/** @var string */
-	public $page_title;
+	public string $page_title;
 
 	/** @var string */
-	public $tpl_name;
+	public string $tpl_name;
 
 	/** @var string */
-	public $u_action;
+	public string $u_action = '';
 
 	/**
 	 * Main ACP module
 	 *
 	 * @access public
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function main()
+	public function main(): void
 	{
 		global $phpbb_container;
 

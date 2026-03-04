@@ -10,33 +10,35 @@
 
 namespace vse\similartopics\event;
 
+use phpbb\event\data;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use phpbb\controller\helper;
 use phpbb\template\template;
+use vse\similartopics\core\similar_topics;
 
 /**
  * Event listener
  */
 class listener implements EventSubscriberInterface
 {
-	/** @var \vse\similartopics\core\similar_topics */
-	protected $similar_topics;
+	/** @var similar_topics */
+	protected similar_topics $similar_topics;
 
 	/** @var helper */
-	protected $controller_helper;
+	protected helper $controller_helper;
 
 	/** @var template */
-	protected $template;
+	protected template $template;
 
 	/**
 	 * Constructor
 	 *
 	 * @access public
-	 * @param \vse\similartopics\core\similar_topics $similar_topics
+	 * @param similar_topics $similar_topics
 	 * @param helper $helper
 	 * @param template $template
 	 */
-	public function __construct(\vse\similartopics\core\similar_topics $similar_topics, helper $helper, template $template)
+	public function __construct(similar_topics $similar_topics, helper $helper, template $template)
 	{
 		$this->similar_topics = $similar_topics;
 		$this->controller_helper = $helper;
@@ -50,7 +52,7 @@ class listener implements EventSubscriberInterface
 	 * @access public
 	 * @return array
 	 */
-	public static function getSubscribedEvents()
+	public static function getSubscribedEvents(): array
 	{
 		return [
 			'core.viewtopic_modify_page_title'		=> 'display_similar_topics',
@@ -63,9 +65,9 @@ class listener implements EventSubscriberInterface
 	 * Display similar topics
 	 *
 	 * @access public
-	 * @param \phpbb\event\data $event The event object
+	 * @param data $event The event object
 	 */
-	public function display_similar_topics($event)
+	public function display_similar_topics(data $event): void
 	{
 		// Return early if similar topics is disabled
 		if (!$this->similar_topics->is_available())
@@ -80,9 +82,9 @@ class listener implements EventSubscriberInterface
 	 * Add custom permissions language variables
 	 *
 	 * @access public
-	 * @param \phpbb\event\data $event The event object
+	 * @param data $event The event object
 	 */
-	public function add_permissions($event)
+	public function add_permissions(data $event): void
 	{
 		$event->update_subarray('permissions', 'u_similar_topics', [
 			'lang' => 'ACL_U_SIMILARTOPICS',
@@ -94,9 +96,9 @@ class listener implements EventSubscriberInterface
 	 * Display dynamic similar topics when creating posts
 	 *
 	 * @access public
-	 * @param \phpbb\event\data $event The event object
+	 * @param data $event The event object
 	 */
-	public function dynamic_similar_topics($event)
+	public function dynamic_similar_topics(data $event): void
 	{
 		if ($event['mode'] !== 'post'
 			|| !empty($event['post_data']['topic_id'])
@@ -112,7 +114,7 @@ class listener implements EventSubscriberInterface
 
 		if ($this->template->retrieve_var('FORUM_ID') === null)
 		{
-			$tpl_ary['FORUM_ID'] = isset($event['forum_id']) ? $event['forum_id'] : 0;
+			$tpl_ary['FORUM_ID'] = $event['forum_id'] ?? 0;
 		}
 
 		$this->template->assign_vars($tpl_ary);

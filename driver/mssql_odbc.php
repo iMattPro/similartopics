@@ -18,7 +18,7 @@ class mssql_odbc extends mssql
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name()
+	public function get_name(): string
 	{
 		return 'mssql_odbc';
 	}

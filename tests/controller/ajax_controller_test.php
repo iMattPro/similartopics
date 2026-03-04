@@ -10,41 +10,48 @@
 
 namespace vse\similartopics\tests\controller;
 
-class ajax_controller_test extends \phpbb_test_case
+use phpbb\request\request;
+use phpbb_test_case;
+use PHPUnit\Framework\MockObject\MockObject;
+use vse\similartopics\controller\ajax_controller;
+use vse\similartopics\core\similar_topics;
+use phpbb\exception\http_exception;
+
+class ajax_controller_test extends phpbb_test_case
 {
-	/** @var \phpbb\request\request|\PHPUnit\Framework\MockObject\MockObject */
-	protected $request;
+	/** @var MockObject|request */
+	protected MockObject|request $request;
 
-	/** @var \vse\similartopics\core\similar_topics|\PHPUnit\Framework\MockObject\MockObject */
-	protected $similar_topics;
+	/** @var MockObject|similar_topics */
+	protected MockObject|similar_topics $similar_topics;
 
-	/** @var \vse\similartopics\controller\ajax_controller */
-	protected $controller;
+	/** @var ajax_controller */
+	protected ajax_controller $controller;
 
 	protected function setUp(): void
 	{
 		parent::setUp();
 
-		$this->request = $this->createMock('\phpbb\request\request');
-		$this->similar_topics = $this->createMock('\vse\similartopics\core\similar_topics');
+		$this->request = $this->createMock(request::class);
+		$this->similar_topics = $this->createMock(similar_topics::class);
 
-		$this->controller = new \vse\similartopics\controller\ajax_controller(
+		$this->controller = new ajax_controller(
 			$this->request,
 			$this->similar_topics
 		);
 	}
 
-	public function test_search_similar_topics_not_ajax()
+	public function test_search_similar_topics_not_ajax(): void
 	{
 		$this->request->expects($this->once())
 			->method('is_ajax')
 			->willReturn(false);
 
-		$this->expectException('\phpbb\exception\http_exception');
+		$this->expectException(http_exception::class);
 		$this->controller->search_similar_topics();
 	}
 
-	public function test_search_similar_topics_short_query()
+	public function test_search_similar_topics_short_query(): void
 	{
 		$this->request->expects($this->once())
 			->method('is_ajax')
@@ -55,7 +62,8 @@ class ajax_controller_test extends \phpbb_test_case
 			->method('variable')
 			->willReturnCallback(function($param, $default, $raw = false) use (&$call_count) {
 				$call_count++;
-				if ($call_count === 1) {
+				if ($call_count === 1)
+				{
 					return 'ab';
 				}
 				return 1;
@@ -67,7 +75,7 @@ class ajax_controller_test extends \phpbb_test_case
 		$this->assertEquals(['topics' => []], $data);
 	}
 
-	public function test_search_similar_topics_not_available()
+	public function test_search_similar_topics_not_available(): void
 	{
 		$this->request->expects($this->once())
 			->method('is_ajax')
@@ -78,7 +86,8 @@ class ajax_controller_test extends \phpbb_test_case
 			->method('variable')
 			->willReturnCallback(function($param, $default, $raw = false) use (&$call_count) {
 				$call_count++;
-				if ($call_count === 1) {
+				if ($call_count === 1)
+				{
 					return 'test query';
 				}
 				return 1;
@@ -94,7 +103,7 @@ class ajax_controller_test extends \phpbb_test_case
 		$this->assertEquals(['topics' => []], $data);
 	}
 
-	public function test_search_similar_topics_success()
+	public function test_search_similar_topics_success(): void
 	{
 		$this->request->expects($this->once())
 			->method('is_ajax')
@@ -105,7 +114,8 @@ class ajax_controller_test extends \phpbb_test_case
 			->method('variable')
 			->willReturnCallback(function($param, $default, $raw = false) use (&$call_count) {
 				$call_count++;
-				if ($call_count === 1) {
+				if ($call_count === 1)
+				{
 					return 'test query';
 				}
 				return 1;

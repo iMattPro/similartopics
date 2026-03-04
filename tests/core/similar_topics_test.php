@@ -10,58 +10,82 @@
 
 namespace vse\similartopics\tests\core;
 
-class similar_topics_test extends \phpbb_test_case
+use phpbb\auth\auth;
+use phpbb\cache\service;
+use phpbb\config\config;
+use phpbb\config\db_text;
+use phpbb\content_visibility;
+use phpbb\event\dispatcher;
+use phpbb\language\language;
+use phpbb\language\language_file_loader;
+use phpbb\pagination;
+use phpbb\request\request;
+use phpbb\template\template;
+use phpbb\user;
+use phpbb_mock_cache;
+use phpbb_mock_event_dispatcher;
+use phpbb_mock_extension_manager;
+use phpbb_test_case;
+use PHPUnit\Framework\MockObject\MockObject;
+use vse\similartopics\core\similar_topics;
+use vse\similartopics\core\stop_word_helper;
+use vse\similartopics\driver\driver_interface;
+use vse\similartopics\driver\manager;
+use phpbb\datetime;
+use phpbb\event\dispatcher_interface;
+
+class similar_topics_test extends phpbb_test_case
 {
-	/** @var \phpbb\auth\auth|\PHPUnit\Framework\MockObject\MockObject */
-	protected $auth;
+	/** @var MockObject|auth */
+	protected MockObject|auth $auth;
 
-	/** @var \phpbb\cache\service|\PHPUnit\Framework\MockObject\MockObject */
-	protected $service;
+	/** @var MockObject|service */
+	protected MockObject|service $service;
 
-	/** @var \phpbb\config\config */
-	protected $config;
+	/** @var config */
+	protected config $config;
 
-	/** @var \phpbb\config\db_text|\PHPUnit\Framework\MockObject\MockObject */
-	protected $config_text;
+	/** @var MockObject|db_text */
+	protected MockObject|db_text $config_text;
 
-	/** @var \phpbb\db\driver\driver_interface|\PHPUnit\Framework\MockObject\MockObject */
-	protected $db;
+	/** @var MockObject|\phpbb\db\driver\driver_interface */
+	protected MockObject|\phpbb\db\driver\driver_interface $db;
 
-	/** @var \phpbb\event\dispatcher|\PHPUnit\Framework\MockObject\MockObject */
-	protected $dispatcher;
+	/** @var MockObject|dispatcher */
+	protected MockObject|dispatcher $dispatcher;
 
-	/** @var \phpbb\language\language */
-	protected $language;
+	/** @var language */
+	protected language $language;
 
-	/** @var \phpbb\pagination|\PHPUnit\Framework\MockObject\MockObject */
-	protected $pagination;
+	/** @var MockObject|pagination */
+	protected MockObject|pagination $pagination;
 
-	/** @var \phpbb\request\request|\PHPUnit\Framework\MockObject\MockObject */
-	protected $request;
+	/** @var MockObject|request */
+	protected MockObject|request $request;
 
-	/** @var \phpbb\template\template|\PHPUnit\Framework\MockObject\MockObject */
-	protected $template;
+	/** @var template|MockObject */
+	protected MockObject|template $template;
 
-	/** @var \phpbb\user */
-	protected $user;
+	/** @var user */
+	protected user $user;
 
-	/** @var \phpbb\content_visibility|\PHPUnit\Framework\MockObject\MockObject */
-	protected $content_visibility;
+	/** @var MockObject|content_visibility */
+	protected MockObject|content_visibility $content_visibility;
 
-	/** @var \vse\similartopics\core\stop_word_helper|\PHPUnit\Framework\MockObject\MockObject */
-	protected $stop_word_helper;
+	/** @var MockObject|stop_word_helper */
+	protected MockObject|stop_word_helper $stop_word_helper;
 
-	/** @var \vse\similartopics\driver\manager|\PHPUnit\Framework\MockObject\MockObject */
-	protected $manager;
+	/** @var MockObject|manager */
+	protected MockObject|manager $manager;
 
-	/** @var \vse\similartopics\driver\driver_interface|\PHPUnit\Framework\MockObject\MockObject */
-	protected $driver;
-
-	/** @var string */
-	protected $phpbb_root_path;
+	/** @var MockObject|driver_interface */
+	protected MockObject|driver_interface $driver;
 
 	/** @var string */
-	protected $phpEx;
+	protected string $phpbb_root_path;
+
+	/** @var string */
+	protected string $phpEx;
 
 	protected function setUp(): void
 	{
@@ -70,23 +94,23 @@ class similar_topics_test extends \phpbb_test_case
 		global $phpbb_dispatcher, $cache, $phpbb_root_path, $phpEx;
 
 		// Classes we just need to mock for the constructor
-		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
-		$cache = new \phpbb_mock_cache();
-		$this->service = $this->createMock('\phpbb\cache\service');
+		$phpbb_dispatcher = new phpbb_mock_event_dispatcher();
+		$cache = new phpbb_mock_cache();
+		$this->service = $this->createMock(service::class);
 		$this->service->method('get_driver')->willReturn($cache);
-		$this->config_text = $this->createMock('\phpbb\config\db_text');
-		$this->db = $this->createMock('\phpbb\db\driver\driver_interface');
-		$this->dispatcher = $this->createMock('\phpbb\event\dispatcher_interface');
-		$this->pagination = $this->createMock('\phpbb\pagination');
-		$this->request = $this->createMock('\phpbb\request\request');
-		$this->template = $this->createMock('\phpbb\template\template');
-		$this->content_visibility = $this->createMock('\phpbb\content_visibility');
-		$this->stop_word_helper = $this->createMock('\vse\similartopics\core\stop_word_helper');
-		$this->manager = $this->createMock('\vse\similartopics\driver\manager');
-		$this->driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$this->config_text = $this->createMock(db_text::class);
+		$this->db = $this->createMock(\phpbb\db\driver\driver_interface::class);
+		$this->dispatcher = $this->createMock(dispatcher_interface::class);
+		$this->pagination = $this->createMock(pagination::class);
+		$this->request = $this->createMock(request::class);
+		$this->template = $this->createMock(template::class);
+		$this->content_visibility = $this->createMock(content_visibility::class);
+		$this->stop_word_helper = $this->createMock(stop_word_helper::class);
+		$this->manager = $this->createMock(manager::class);
+		$this->driver = $this->createMock(driver_interface::class);
 
 		// Classes used in the tests
-		$this->extension_manager = new \phpbb_mock_extension_manager(
+		$this->extension_manager = new phpbb_mock_extension_manager(
 			$phpbb_root_path,
 			array(
 				'vse/similartopics' => array(
@@ -95,19 +119,19 @@ class similar_topics_test extends \phpbb_test_case
 					'ext_path' => 'ext/vse/similartopics',
 				),
 			));
-		$this->auth = $this->createMock('\phpbb\auth\auth');
-		$this->config = new \phpbb\config\config([]);
-		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
+		$this->auth = $this->createMock(auth::class);
+		$this->config = new config([]);
+		$lang_loader = new language_file_loader($phpbb_root_path, $phpEx);
 		$lang_loader->set_extension_manager($this->extension_manager);
-		$this->language = new \phpbb\language\language($lang_loader);
-		$this->user = new \phpbb\user($this->language, '\phpbb\datetime');
+		$this->language = new language($lang_loader);
+		$this->user = new user($this->language, datetime::class);
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->phpEx = $phpEx;
 	}
 
-	public function get_similar_topics()
+	public function get_similar_topics(): similar_topics
 	{
-		return new \vse\similartopics\core\similar_topics(
+		return new similar_topics(
 			$this->auth,
 			$this->service,
 			$this->config,
@@ -127,7 +151,7 @@ class similar_topics_test extends \phpbb_test_case
 		);
 	}
 
-	public static function is_available_test_data()
+	public static function is_available_test_data(): array
 	{
 		return [
 			'enabled on mysqli' => [
@@ -440,9 +464,9 @@ class similar_topics_test extends \phpbb_test_case
 	/**
 	 * @dataProvider is_available_test_data
 	 */
-	public function test_is_available($method, $config_data, $user_data, $auth_data, $sql_layer, $expected)
+	public function test_is_available($method, $config_data, $user_data, $auth_data, $sql_layer, $expected): void
 	{
-		$this->config = new \phpbb\config\config($config_data);
+		$this->config = new config($config_data);
 		$this->user->data['user_similar_topics'] = $user_data['user_similar_topics'];
 		$this->auth->method('acl_get')
 			->with(self::stringContains('_'), self::anything())
@@ -462,9 +486,10 @@ class similar_topics_test extends \phpbb_test_case
 		self::assertEquals($expected, $similar_topics->$method());
 	}
 
-	public function test_display_similar_topics_hidden_forum()
+	public function test_display_similar_topics_hidden_forum(): void
 	{
 		$topic_data = ['similar_topics_hide' => true];
+		$this->db->method('get_sql_layer')->willReturn('');
 		$similar_topics = $this->get_similar_topics();
 
 		// Should return early without doing anything
@@ -472,9 +497,10 @@ class similar_topics_test extends \phpbb_test_case
 		$this->addToAssertionCount(1);
 	}
 
-	public function test_display_similar_topics_empty_title()
+	public function test_display_similar_topics_empty_title(): void
 	{
 		$topic_data = ['similar_topics_hide' => false, 'topic_title' => ''];
+		$this->db->method('get_sql_layer')->willReturn('');
 		$this->stop_word_helper->method('clean_text')->willReturn('');
 		$similar_topics = $this->get_similar_topics();
 
@@ -482,8 +508,9 @@ class similar_topics_test extends \phpbb_test_case
 		$this->addToAssertionCount(1);
 	}
 
-	public function test_search_similar_topics_ajax_empty_query()
+	public function test_search_similar_topics_ajax_empty_query(): void
 	{
+		$this->db->method('get_sql_layer')->willReturn('');
 		$this->stop_word_helper->method('clean_text')->willReturn('');
 		$similar_topics = $this->get_similar_topics();
 
@@ -491,19 +518,19 @@ class similar_topics_test extends \phpbb_test_case
 		self::assertEquals([], $result);
 	}
 
-	public function test_search_similar_topics_ajax_with_results()
+	public function test_search_similar_topics_ajax_with_results(): void
 	{
 		global $config, $user, $auth, $cache;
-		$this->config = $config = new \phpbb\config\config(['similar_topics_time' => 86400]);
+		$this->config = $config = new config(['similar_topics_time' => 86400]);
 		$this->stop_word_helper->method('clean_text')->willReturn('test query');
 		$this->db->method('get_sql_layer')->willReturn('mysqli');
 		$this->manager->method('get_driver')->willReturn($this->driver);
 		$this->driver->method('get_query')->willReturn(['SELECT' => 't.topic_id, t.topic_title', 'FROM' => [], 'WHERE' => '1=1']);
-		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums', 'optionget']);
+		$this->user = $user = $this->createPartialMock(user::class, ['get_passworded_forums', 'optionget']);
 		$this->user->method('get_passworded_forums')->willReturn([]);
 		$this->auth->method('acl_get')->willReturn(true);
 		$auth = $this->auth;
-		$cache = new \phpbb_mock_cache();
+		$cache = new phpbb_mock_cache();
 
 		$this->db->expects(self::once())
 			->method('sql_query')
@@ -530,8 +557,9 @@ class similar_topics_test extends \phpbb_test_case
 		self::assertEquals('Test Topic', $result[0]['title']);
 	}
 
-	public function test_add_language()
+	public function test_add_language(): void
 	{
+		$this->db->method('get_sql_layer')->willReturn('');
 		$similar_topics = $this->get_similar_topics();
 		$similar_topics->add_language();
 		$this->assertTrue($this->language->is_set('SIMILAR_TOPICS'));

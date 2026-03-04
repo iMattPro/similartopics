@@ -21,53 +21,54 @@ use phpbb\template\template;
 use phpbb\user;
 use vse\similartopics\driver\manager;
 use vse\similartopics\driver\driver_interface as similartopics;
+use vse\similartopics\driver\postgres;
 
 class similar_topics_admin
 {
 	/** @var cache */
-	protected $cache;
+	protected cache $cache;
 
 	/** @var config */
-	protected $config;
+	protected config $config;
 
 	/** @var db_text */
-	protected $config_text;
+	protected db_text $config_text;
 
 	/** @var dbal */
-	protected $db;
+	protected dbal $db;
 
 	/** @var language */
-	protected $language;
+	protected language $language;
 
 	/** @var log */
-	protected $log;
+	protected log $log;
 
 	/** @var request */
-	protected $request;
+	protected request $request;
 
-	/** @var similartopics */
-	protected $similartopics;
+	/** @var similartopics|null */
+	protected similartopics|null $similartopics;
 
 	/** @var template */
-	protected $template;
+	protected template $template;
 
 	/** @var user */
-	protected $user;
+	protected user $user;
 
 	/** @var string */
-	protected $root_path;
+	protected string $root_path;
 
 	/** @var string */
-	protected $php_ext;
+	protected string $php_ext;
 
 	/** @var array */
-	protected $times;
+	protected array $times;
 
 	/** @var string */
-	protected $form_key;
+	protected string $form_key;
 
 	/** @var string */
-	public $u_action;
+	public string $u_action;
 
 	/**
 	 * Admin controller constructor
@@ -86,7 +87,7 @@ class similar_topics_admin
 	 * @param string   $root_path
 	 * @param string   $php_ext
 	 */
-	public function __construct(cache $cache, config $config, db_text $config_text, dbal $db, manager $similartopics, language $language, log $log, request $request, template $template, user $user, $root_path, $php_ext)
+	public function __construct(cache $cache, config $config, db_text $config_text, dbal $db, manager $similartopics, language $language, log $log, request $request, template $template, user $user, string $root_path, string $php_ext)
 	{
 		$this->cache         = $cache;
 		$this->config        = $config;
@@ -117,7 +118,7 @@ class similar_topics_admin
 	 *
 	 * @return similar_topics_admin $this
 	 */
-	public function set_u_action($u_action)
+	public function set_u_action(string $u_action): static
 	{
 		$this->u_action = $u_action;
 		return $this;
@@ -128,7 +129,7 @@ class similar_topics_admin
 	 *
 	 * @access public
 	 */
-	public function handle()
+	public function handle(): void
 	{
 		$this->language->add_lang('acp_similar_topics', 'vse/similartopics');
 
@@ -149,7 +150,7 @@ class similar_topics_admin
 	 *
 	 * @access protected
 	 */
-	protected function default_settings()
+	protected function default_settings(): void
 	{
 		if ($this->request->is_set_post('submit'))
 		{
@@ -214,14 +215,14 @@ class similar_topics_admin
 			'PST_CACHE'       => $this->isset_or_default($this->config['similar_topics_cache'], ''),
 			'PST_SENSE'       => $this->isset_or_default($this->config['similar_topics_sense'], ''),
 			'PST_WORDS'       => $this->isset_or_default($this->config_text_get('similar_topics_words'), ''),
-			'PST_TIME'        => $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
+			'PST_TIME'        => $this->get_pst_time((int) $this->config['similar_topics_time'], $this->config['similar_topics_type']),
 			'PST_SENSITIVITY' => $this->similartopics && $this->similartopics->get_engine() === 'innodb' ? 1 : 5,
 			'S_PST_NO_COMPAT' => $this->similartopics === null || !$this->similartopics->is_fulltext('topic_title'),
 			'U_ACTION'        => $this->u_action,
 		));
 
 		// If postgresql, we need to make an options list of text search names
-		if ($this->similartopics instanceof \vse\similartopics\driver\postgres)
+		if ($this->similartopics instanceof postgres)
 		{
 			$this->language->add_lang('acp/search');
 			foreach ($this->similartopics->get_cfg_name_list() as $row)
@@ -253,7 +254,7 @@ class similar_topics_admin
 	 *
 	 * @access protected
 	 */
-	protected function advanced_settings()
+	protected function advanced_settings(): void
 	{
 		$forum_id = $this->request->variable('f', 0);
 
@@ -307,7 +308,7 @@ class similar_topics_admin
 	 * @access protected
 	 * @param string $form_key The form key value
 	 */
-	protected function check_form_key($form_key)
+	protected function check_form_key(string $form_key): void
 	{
 		if (!check_form_key($form_key))
 		{
@@ -321,7 +322,7 @@ class similar_topics_admin
 	 * @access protected
 	 * @return array forum data rows
 	 */
-	protected function get_forum_list()
+	protected function get_forum_list(): array
 	{
 		$sql = 'SELECT forum_id, forum_name, similar_topic_forums, similar_topics_hide, similar_topics_ignore
 			FROM ' . FORUMS_TABLE . '
@@ -339,9 +340,9 @@ class similar_topics_admin
 	 *
 	 * @access protected
 	 * @param string $column    The name of the column to update
-	 * @param array  $forum_ids An array of forum_ids
+	 * @param array $forum_ids An array of forum_ids
 	 */
-	protected function update_forum($column, $forum_ids)
+	protected function update_forum(string $column, array $forum_ids): void
 	{
 		$this->db->sql_transaction('begin');
 
@@ -367,7 +368,7 @@ class similar_topics_admin
 	 * @param string $name  Name of a config_text item
 	 * @param string $value Value of a config_text item
 	 */
-	protected function config_text_set($name, $value)
+	protected function config_text_set(string $name, string $value): void
 	{
 		$this->config_text->set($name, $value);
 		$this->cache->put("_$name", $value);
@@ -381,7 +382,7 @@ class similar_topics_admin
 	 * @param string $name Name of a config_text item
 	 * @return string|null Value of a config_text item, either cached or from db
 	 */
-	protected function config_text_get($name)
+	protected function config_text_get(string $name): string|null
 	{
 		if (($value = $this->cache->get("_$name")) === false)
 		{
@@ -397,26 +398,26 @@ class similar_topics_admin
 	 * Calculate the time in seconds based on requested time period length
 	 *
 	 * @access protected
-	 * @param int    $length user entered value
+	 * @param int $length user entered value
 	 * @param string $type   years, months, weeks, days (y|m|w|d)
 	 * @return int time in seconds
 	 */
-	protected function set_pst_time($length, $type = 'y')
+	protected function set_pst_time(int $length, string $type = 'y'): int
 	{
 		$type = isset($this->times[$type]) ? $type : 'y';
 
-		return (int) ($length * $this->times[$type]);
+		return ($length * $this->times[$type]);
 	}
 
 	/**
 	 * Get the correct time period length value for the form
 	 *
 	 * @access protected
-	 * @param int    $time as a timestamp
+	 * @param int $time as a timestamp
 	 * @param string $type years, months, weeks, days (y|m|w|d)
 	 * @return int time converted to the given $type
 	 */
-	protected function get_pst_time($time, $type = '')
+	protected function get_pst_time(int $time, string $type = ''): int
 	{
 		return isset($this->times[$type]) ? (int) round($time / $this->times[$type]) : 0;
 	}
@@ -429,9 +430,9 @@ class similar_topics_admin
 	 * @param mixed $default The default value to use
 	 * @return mixed The value of the variable if set, otherwise default value
 	 */
-	protected function isset_or_default($var, $default)
+	protected function isset_or_default(mixed $var, mixed $default): mixed
 	{
-		return null !== $var ? $var : $default;
+		return $var ?? $default;
 	}
 
 	/**
@@ -439,10 +440,10 @@ class similar_topics_admin
 	 *
 	 * @access protected
 	 * @param string $message Language key string
-	 * @param int    $code    E_USER_NOTICE|E_USER_WARNING
+	 * @param int $code    E_USER_NOTICE|E_USER_WARNING
 	 * @return void
 	 */
-	protected function end($message, $code = E_USER_NOTICE)
+	protected function end(string $message, int $code = E_USER_NOTICE): void
 	{
 		trigger_error($this->language->lang($message) . adm_back_link($this->u_action), $code);
 	}

@@ -18,10 +18,10 @@ use vse\similartopics\core\similar_topics;
 class ajax_controller
 {
 	/** @var request */
-	protected $request;
+	protected request $request;
 
 	/** @var similar_topics */
-	protected $similar_topics;
+	protected similar_topics $similar_topics;
 
 	/**
 	 * Constructor
@@ -41,7 +41,7 @@ class ajax_controller
 	 * @return JsonResponse
 	 * @throws http_exception
 	 */
-	public function search_similar_topics()
+	public function search_similar_topics(): JsonResponse
 	{
 		if (!$this->request->is_ajax())
 		{

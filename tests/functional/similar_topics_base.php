@@ -10,12 +10,14 @@
 
 namespace vse\similartopics\tests\functional;
 
+use phpbb_functional_test_case;
+
 /**
  * @group functional
  */
-class similar_topics_base extends \phpbb_functional_test_case
+class similar_topics_base extends phpbb_functional_test_case
 {
-	protected static function setup_extensions()
+	protected static function setup_extensions(): array
 	{
 		return array('vse/similartopics');
 	}
@@ -29,9 +31,9 @@ class similar_topics_base extends \phpbb_functional_test_case
 	/**
 	 * Enable Similar Topics (it is disabled when installed)
 	 */
-	public function enable_similar_topics()
+	public function enable_similar_topics(): void
 	{
-		$this->get_db();
+		self::get_db();
 
 		$sql = "UPDATE phpbb_config
 			SET config_value = 1

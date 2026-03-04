@@ -10,32 +10,53 @@
 
 namespace vse\similartopics\acp\controller;
 
-class controller_test extends \phpbb_database_test_case
+use phpbb\config\config;
+use phpbb\config\db_text;
+use phpbb\db\driver\driver_interface;
+use phpbb\exception\http_exception;
+use phpbb\language\language;
+use phpbb\language\language_file_loader;
+use phpbb\request\request;
+use phpbb\request\request_interface;
+use phpbb\user;
+use phpbb_database_test_case;
+use phpbb_mock_cache;
+use phpbb_mock_event_dispatcher;
+use PHPUnit\DbUnit\DataSet\DefaultDataSet;
+use PHPUnit\DbUnit\DataSet\XmlDataSet;
+use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionClass;
+use vse\similartopics\driver\manager;
+use phpbb\datetime;
+use phpbb\template\template;
+use phpbb\log\log;
+
+class controller_test extends phpbb_database_test_case
 {
-	protected static function setup_extensions()
+	protected static function setup_extensions(): array
 	{
 		return array('vse/similartopics');
 	}
 
-	public function getDataSet()
+	public function getDataSet(): DefaultDataSet|XmlDataSet
 	{
 		return $this->createXMLDataSet(__DIR__ . '/fixtures/pst_data.xml');
 	}
 
-	/** @var \vse\similartopics\acp\controller\similar_topics_admin */
-	protected $controller;
+	/** @var similar_topics_admin */
+	protected similar_topics_admin $controller;
 
-	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\request\request */
-	protected $request;
+	/** @var MockObject|request */
+	protected MockObject|request $request;
 
-	/** @var \phpbb\config\config */
-	protected $config;
+	/** @var config */
+	protected config $config;
 
-	/** @var \phpbb\config\db_text|\PHPUnit\Framework\MockObject\MockObject */
-	protected $config_text;
+	/** @var db_text|MockObject */
+	protected db_text|MockObject $config_text;
 
-	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
+	/** @var driver_interface */
+	protected driver_interface $db;
 
 	public function setUp(): void
 	{
@@ -43,23 +64,23 @@ class controller_test extends \phpbb_database_test_case
 
 		global $config, $phpbb_dispatcher, $template, $phpbb_root_path, $phpEx;
 
-		$cache = new \phpbb_mock_cache;
-		$config = $this->config = new \phpbb\config\config([]);
-		$this->config_text = $this->createMock('\phpbb\config\db_text');
+		$cache = new phpbb_mock_cache;
+		$config = $this->config = new config([]);
+		$this->config_text = $this->createMock(db_text::class);
 		$this->db = $this->new_dbal();
-		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
-		$log = $this->createMock('\phpbb\log\log');
-		$this->request = $this->createMock('\phpbb\request\request');
-		$template = $this->createMock('\phpbb\template\template');
-		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
-		$language = new \phpbb\language\language($lang_loader);
-		$user = new \phpbb\user($language, '\phpbb\datetime');
+		$phpbb_dispatcher = new phpbb_mock_event_dispatcher();
+		$log = $this->createMock(log::class);
+		$this->request = $this->createMock(request::class);
+		$template = $this->createMock(template::class);
+		$lang_loader = new language_file_loader($phpbb_root_path, $phpEx);
+		$language = new language($lang_loader);
+		$user = new user($language, datetime::class);
 		$user->data['user_id'] = 2;
 		$user->ip = '';
 
-		$pst_manager = $this->createMock('\vse\similartopics\driver\manager');
+		$pst_manager = $this->createMock(manager::class);
 
-		$this->controller = new \vse\similartopics\acp\controller\similar_topics_admin(
+		$this->controller = new similar_topics_admin(
 			$cache,
 			$this->config,
 			$this->config_text,
@@ -75,9 +96,9 @@ class controller_test extends \phpbb_database_test_case
 		);
 	}
 
-	protected function setupDbCapture(&$executed_queries)
+	protected function setupDbCapture(&$executed_queries): void
 	{
-		$mock_db = $this->createMock('\phpbb\db\driver\driver_interface');
+		$mock_db = $this->createMock(driver_interface::class);
 		$mock_db->method('sql_query')
 			->willReturnCallback(function($sql) use (&$executed_queries) {
 				$executed_queries[] = $sql;
@@ -86,13 +107,12 @@ class controller_test extends \phpbb_database_test_case
 		$mock_db->method('sql_escape')->willReturnArgument(0);
 
 		// Use reflection to replace the db dependency in the existing controller
-		$reflection = new \ReflectionClass($this->controller);
+		$reflection = new ReflectionClass($this->controller);
 		$db_property = $reflection->getProperty('db');
-		$db_property->setAccessible(true);
 		$db_property->setValue($this->controller, $mock_db);
 	}
 
-	public function test_handle()
+	public function test_handle(): void
 	{
 		$this->request->expects($this->once())
 			->method('variable');
@@ -100,30 +120,32 @@ class controller_test extends \phpbb_database_test_case
 		$this->controller->set_u_action('u_action')->handle();
 	}
 
-	public function test_set_u_action_returns_self()
+	public function test_set_u_action_returns_self(): void
 	{
-		$result = $this->controller->set_u_action('test_action');
-		$this->assertInstanceOf('\vse\similartopics\acp\controller\similar_topics_admin', $result);
+		$this->controller->set_u_action('test_action');
 		$this->assertEquals('test_action', $this->controller->u_action);
 	}
 
-	public function test_handle_advanced_action()
+	public function test_handle_advanced_action(): void
 	{
 		$call_count = 0;
 		$this->request->expects($this->exactly(2))
 			->method('variable')
 			->willReturnCallback(function($param, $default) use (&$call_count) {
 				$call_count++;
-				if ($call_count === 1) {
+				if ($call_count === 1)
+				{
 					$this->assertEquals('action', $param);
 					$this->assertEquals('', $default);
 					return 'advanced';
 				}
-				if ($call_count === 2) {
+				if ($call_count === 2)
+				{
 					$this->assertEquals('f', $param);
 					$this->assertEquals(0, $default);
 					return 1;
 				}
+				return null;
 			});
 
 		$this->request->expects($this->once())
@@ -134,7 +156,7 @@ class controller_test extends \phpbb_database_test_case
 		$this->controller->set_u_action('u_action')->handle();
 	}
 
-	public static function default_settings_data_provider()
+	public static function default_settings_data_provider(): array
 	{
 		return [
 			'valid settings' => [
@@ -183,26 +205,26 @@ class controller_test extends \phpbb_database_test_case
 	/**
 	 * @dataProvider default_settings_data_provider
 	 */
-	public function test_default_settings_submit_and_verify($input_data, $expected_config)
+	public function test_default_settings_submit_and_verify($input_data, $expected_config): void
 	{
 		$request_map = [['action', '', '']];
 		foreach ($input_data as $key => $value)
 		{
 			$default = ($key === 'pst_words') ? '' : (($key === 'pst_time_type') ? '' : (($key === 'pst_sense') ? 5 : 0));
 			$is_raw = ($key === 'pst_words');
-			$request_map[] = [$key, $default, $is_raw, \phpbb\request\request_interface::REQUEST, $value];
+			$request_map[] = [$key, $default, $is_raw, request_interface::REQUEST, $value];
 		}
-		$request_map[] = ['mark_noshow_forum', [0], true, \phpbb\request\request_interface::REQUEST, []];
-		$request_map[] = ['mark_ignore_forum', [0], true, \phpbb\request\request_interface::REQUEST, []];
+		$request_map[] = ['mark_noshow_forum', [0], true, request_interface::REQUEST, []];
+		$request_map[] = ['mark_ignore_forum', [0], true, request_interface::REQUEST, []];
 
 		$this->request->method('variable')->willReturnMap($request_map);
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
 
 		try
 		{
-			$this->controller->handle();
+			$this->controller->set_u_action('u_action')->handle();
 		}
-		catch (\phpbb\exception\http_exception $e)
+		catch (http_exception)
 		{
 			// Expected exception
 		}
@@ -213,13 +235,13 @@ class controller_test extends \phpbb_database_test_case
 		}
 	}
 
-	public function test_advanced_settings_submit()
+	public function test_advanced_settings_submit(): void
 	{
 		$this->request->method('variable')
 			->willReturnMap([
-				['action', '', false, \phpbb\request\request_interface::REQUEST, 'advanced'],
-				['f', 0, false, \phpbb\request\request_interface::REQUEST, 1],
-				['similar_forums_id', [0], false, \phpbb\request\request_interface::REQUEST, [2, 3]]
+				['action', '', false, request_interface::REQUEST, 'advanced'],
+				['f', 0, false, request_interface::REQUEST, 1],
+				['similar_forums_id', [0], false, request_interface::REQUEST, [2, 3]]
 			]);
 
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
@@ -231,7 +253,7 @@ class controller_test extends \phpbb_database_test_case
 		{
 			$this->controller->set_u_action('u_action')->handle();
 		}
-		catch (\phpbb\exception\http_exception $e)
+		catch (http_exception)
 		{
 			// Expected exception
 		}
@@ -252,7 +274,7 @@ function add_form_key()
 /**
  * Mock check_form_key()
  */
-function check_form_key()
+function check_form_key(): true
 {
 	return true;
 }
@@ -262,13 +284,13 @@ function check_form_key()
  */
 function trigger_error($message, $type = E_USER_ERROR)
 {
-	throw new \phpbb\exception\http_exception(200, $message);
+	throw new http_exception(200, $message);
 }
 
 /**
  * Mock adm_back_link()
  */
-function adm_back_link($u_action)
+function adm_back_link($u_action): string
 {
 	return '';
 }
@@ -276,7 +298,7 @@ function adm_back_link($u_action)
 /**
  * Mock make_forum_select()
  */
-function make_forum_select()
+function make_forum_select(): string
 {
 	return '';
 }

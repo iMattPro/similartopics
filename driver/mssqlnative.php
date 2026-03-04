@@ -18,7 +18,7 @@ class mssqlnative extends mssql
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_name()
+	public function get_name(): string
 	{
 		return 'mssqlnative';
 	}
