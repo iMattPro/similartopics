@@ -14,7 +14,7 @@
 	<a href="{{ similar.U_MCP_QUEUE }}" class="rightside"><img src="{{ T_THEME_PATH }}/images/icon_topic_unapproved.gif" alt=""/></a>{% endif %}
 	{% if similar.S_TOPIC_REPORTED %}
 	<a href="{{ similar.U_MCP_REPORT }}" class="rightside"><img src="{{ T_THEME_PATH }}/images/icon_topic_reported.gif" alt=""/></a>{% endif %}
-	<a href="{{ similar.U_VIEW_TOPIC }}" class="topictitle">{{ similar.TOPIC_TITLE }}</a> <span class="posts">[{% if similar.REPLIES %}{{ similar.REPLIES }}{% else %}1{% endif %}]</span>
+	<a href="{{ similar.U_VIEW_TOPIC }}" class="topictitle">{{ similar.TOPIC_TITLE }}</a> <span class="posts">[{% if similar.TOPIC_REPLIES %}{{ similar.TOPIC_REPLIES }}{% else %}1{% endif %}]</span>
 	{% if not S_IS_BOT %}
 	<br />{{ similar.LAST_POST_AUTHOR_FULL }} &laquo; <a href="{{ similar.U_LAST_POST }}" title="{{ lang('GOTO_LAST_POST') }}">{{ similar.LAST_POST_TIME }}</a>
 	{% endif %}
@@ -25,7 +25,7 @@
 			{% elseif pagination.S_IS_CURRENT %}<span class="active button">{{ pagination.PAGE_NUMBER }}</span>
 			{% elseif pagination.S_IS_ELLIPSIS %}<span class="ellipsis button">{{ lang('ELLIPSIS') }}</span>
 			{% elseif pagination.S_IS_NEXT %}
-			{% else %}<a href="{{ pagination.PAGE_URL }}" class="button">{{ pagination.PAGE_NUMBER }}</a> 
+			{% else %}<a href="{{ pagination.PAGE_URL }}" class="button">{{ pagination.PAGE_NUMBER }}</a>
 			{% endif %}
 		{% endfor %}
 	</div>
