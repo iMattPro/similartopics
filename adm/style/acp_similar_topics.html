@@ -111,18 +111,18 @@
 							<td>
 								<strong><a href="{{ forums.U_FORUM }}">{{ forums.FORUM_NAME }}</a></strong>
 							</td>
-							<td style="text-align: center; width: 20%;" title="{{ lang('PST_NOSHOW_TITLE') }} {{ forums.FORUM_NAME }}">
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_NOSHOW_TITLE')|e('html_attr') }} {{ forums.FORUM_NAME|e('html_attr') }}">
 								<label>
 									<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_NOSHOW_FORUM }}>
 								</label>
 							</td>
-							<td style="text-align: center; width: 20%;" title="{{ lang('PST_IGNORE_TITLE') }} {{ forums.FORUM_NAME }}">
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_IGNORE_TITLE')|e('html_attr') }} {{ forums.FORUM_NAME|e('html_attr') }}">
 								<label>
 									<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_IGNORE_FORUM }}>
 								</label>
 							</td>
-							<td style="text-align: center; width: 20%;" title="{{ lang('PST_ADVANCED_TITLE') }} {{ forums.FORUM_NAME }}">
-							<a href="{{ forums.U_ADVANCED }}">{% if forums.S_IS_ADVANCED %}<strong>{{ lang('PST_ADVANCED') }}</strong>{% else %}{{ lang('PST_STANDARD') }}</a>{% endif %}
+							<td style="text-align: center; width: 20%;" title="{{ lang('PST_ADVANCED_TITLE')|e('html_attr') }} {{ forums.FORUM_NAME|e('html_attr') }}">
+							<a href="{{ forums.U_ADVANCED }}">{% if forums.S_IS_ADVANCED %}<strong>{{ lang('PST_ADVANCED') }}</strong>{% else %}{{ lang('PST_STANDARD') }}{% endif %}</a>
 							</td>
 						</tr>
 						{% endfor %}
