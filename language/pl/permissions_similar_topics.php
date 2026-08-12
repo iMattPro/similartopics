@@ -3,6 +3,7 @@
 *
 * Precise Similar Topics [Polish]
 * Translated by liptonace zonewarez.pl
+* Translated PL by Tomasz Hetman / ToTemat i Głos Obywwateli Forum
 *
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -47,5 +48,5 @@ if (empty($lang) || !is_array($lang))
 
 // User Permissions
 $lang = array_merge($lang, array(
-	'ACL_U_SIMILARTOPICS'	=> 'Może widzieć podobne tematy',
+	'ACL_U_SIMILARTOPICS'	=> 'Może przeglądać podobne tematy',
 ));

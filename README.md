@@ -17,6 +17,7 @@ This is an extension for phpBB that will find and display a list of similar (rel
 * Enable or disable similar topics in each forum.
 * Exclude specific forums from being searched for similar topics.
 * Specify which forums can share similar topics with other forums.
+* Show similar topics to users while typing a title for a new post.
 * A query caching option reduces SQL overhead on large boards.
 * Permission settings for users and groups determine who can view similar topics (i.e.: don't show similar topics to guests).
 * Multilingual support for stop-words (common words that are ignored).

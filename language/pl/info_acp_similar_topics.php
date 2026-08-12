@@ -3,6 +3,7 @@
 *
 * Precise Similar Topics [Polish]
 * Translated by liptonace zonewarez.pl
+* Translated PL by Tomasz Hetman / ToTemat i Głos Obywwateli Forum
 *
 * @copyright (c) 2013 Matt Friedman
 * @license GNU General Public License, version 2 (GPL-2.0)
@@ -39,7 +40,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'PST_TITLE_ACP'		=> 'Precyzyjne podobne tematy',
+	'PST_TITLE_ACP'		=> 'Precise Similar Topics',
 	'PST_SETTINGS'		=> 'Ustawienia podobnych tematów',
 	'PST_LOG_MSG'		=> '<strong>Zmieniono ustawienia podobnych tematów</strong>',
 ));
