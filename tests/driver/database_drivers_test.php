@@ -295,6 +295,106 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertFalse($driver->is_fulltext());
 	}
 
+	public function test_deprecated_fulltext_support_wrapper()
+	{
+		$this->db->method('get_sql_layer')->willReturn('unsupported');
+		$driver = new \vse\similartopics\core\fulltext_support($this->db);
+
+		$this->assertFalse($driver->is_index('subject'));
+	}
+
+	public function test_mssql_fulltext_failures_are_treated_as_unavailable()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mssql');
+		$this->db->method('sql_query')->willThrowException(new \RuntimeException('Full-text unavailable'));
+		$driver = new \vse\similartopics\driver\mssql($this->db);
+
+		$this->assertSame([], $driver->get_fulltext_indexes());
+		$driver->create_fulltext_index();
+		$this->addToAssertionCount(1);
+	}
+
+	public function test_mysqli_unsupported_index_lookup_and_engine_conversion()
+	{
+		$queries = [];
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->db->method('sql_server_info')->willReturn('5.5.0');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			['Engine' => 'InnoDB'],
+			['Engine' => 'InnoDB']
+		);
+		$this->db->method('sql_freeresult');
+
+		$driver = new \vse\similartopics\driver\mysqli($this->db);
+		$this->assertSame([], $driver->get_fulltext_indexes());
+		$driver->create_fulltext_index();
+
+		$this->assertTrue((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'ENGINE = MYISAM') !== false;
+		}));
+		$this->assertTrue((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'ADD FULLTEXT') !== false;
+		}));
+	}
+
+	public function test_mysqli_myisam_is_supported()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->db->method('sql_query')->willReturn(true);
+		$this->db->method('sql_fetchrow')->willReturn(['Type' => 'MyISAM']);
+		$this->db->method('sql_freeresult');
+
+		$this->assertTrue((new \vse\similartopics\driver\mysqli($this->db))->is_supported());
+	}
+
+	public function postgres_existing_indexes_data()
+	{
+		return [
+			'current index retained' => [['phpbb_topics_english_topic_title'], 0],
+			'old index replaced' => [['phpbb_topics_simple_topic_title'], 2],
+		];
+	}
+
+	/**
+	 * @dataProvider postgres_existing_indexes_data
+	 */
+	public function test_postgres_reconciles_existing_indexes($indexes, $expected_writes)
+	{
+		$writes = [];
+		$this->db->method('get_sql_layer')->willReturn('postgres');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$writes) {
+			if (strpos($sql, 'SELECT ') !== 0)
+			{
+				$writes[] = $sql;
+			}
+			return true;
+		});
+		$rows = array_map(function ($index) { return ['relname' => $index]; }, $indexes);
+		$rows[] = false;
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(...$rows);
+		$this->db->method('sql_freeresult');
+
+		(new \vse\similartopics\driver\postgres($this->db, $this->config))->create_fulltext_index();
+
+		$this->assertCount($expected_writes, $writes);
+	}
+
+	public function test_sqlite_existing_index_is_not_recreated()
+	{
+		$this->db->method('get_sql_layer')->willReturn('sqlite3');
+		$this->db->expects($this->once())->method('sql_query')->willReturn(true);
+		$this->db->method('sql_fetchrow')->willReturn(['name' => 'idx_phpbb_topics_topic_title']);
+		$this->db->method('sql_freeresult');
+
+		(new \vse\similartopics\driver\sqlite3($this->db))->create_fulltext_index();
+	}
+
 	protected function create_driver($driver_class)
 	{
 		switch ($driver_class)
