@@ -112,6 +112,13 @@ class controller_test extends phpbb_database_test_case
 		$db_property->setValue($this->controller, $mock_db);
 	}
 
+	protected function setControllerProperty($name, $value): void
+	{
+		$property = (new \ReflectionClass($this->controller))->getProperty($name);
+		$property->setAccessible(true);
+		$property->setValue($this->controller, $value);
+	}
+
 	public function test_handle(): void
 	{
 		$this->request->expects($this->once())
@@ -262,6 +269,86 @@ class controller_test extends phpbb_database_test_case
 		$this->assertStringContainsString('UPDATE ' . FORUMS_TABLE, $executed_queries[0]);
 		$this->assertStringContainsString("similar_topic_forums = '[2,3]'", $executed_queries[0]);
 	}
+
+	public function test_default_settings_displays_postgres_and_forum_options(): void
+	{
+		$db = $this->createMock('\phpbb\db\driver\driver_interface');
+		$db->method('get_sql_layer')->willReturn('postgres');
+		$db->method('sql_query')->willReturn(true);
+		$db->method('sql_fetchrowset')->willReturnOnConsecutiveCalls(
+			[['ts_name' => 'simple'], ['ts_name' => 'english']],
+			[['forum_id' => 2, 'forum_name' => 'Forum', 'similar_topic_forums' => '[3]', 'similar_topics_hide' => 1, 'similar_topics_ignore' => 1]]
+		);
+		$db->method('sql_freeresult');
+		$this->setControllerProperty('db', $db);
+		$this->setControllerProperty('similartopics', new \vse\similartopics\driver\postgres($db, new \phpbb\config\config(['pst_postgres_ts_name' => 'english'])));
+		$this->request->method('variable')->willReturn('');
+		$this->request->method('is_set_post')->willReturn(false);
+
+		$this->controller->set_u_action('u_action')->handle();
+		$this->addToAssertionCount(1);
+	}
+
+	public function test_postgres_setting_rebuilds_index(): void
+	{
+		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$driver->method('get_type')->willReturn('postgres');
+		$driver->expects($this->once())->method('create_fulltext_index')->with('topic_title');
+		$this->setControllerProperty('similartopics', $driver);
+		$this->config['pst_postgres_ts_name'] = 'simple';
+		$this->request->method('variable')->willReturnMap([
+			['action', '', false, \phpbb\request\request_interface::REQUEST, ''],
+			['pst_postgres_ts_name', 'simple', false, \phpbb\request\request_interface::REQUEST, 'english'],
+		]);
+		$this->request->method('is_set_post')->willReturn(true);
+
+		try
+		{
+			$this->controller->set_u_action('u_action')->handle();
+		}
+		catch (\phpbb\exception\http_exception $e)
+		{
+		}
+		$this->assertSame('english', $this->config['pst_postgres_ts_name']);
+	}
+
+	public function test_advanced_settings_loads_saved_forums(): void
+	{
+		$db = $this->createMock('\phpbb\db\driver\driver_interface');
+		$db->method('sql_query')->willReturn(true);
+		$db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			['forum_name' => 'Forum', 'similar_topic_forums' => '[2,3]'],
+			false
+		);
+		$db->method('sql_freeresult');
+		$this->setControllerProperty('db', $db);
+		$this->request->method('variable')->willReturnMap([
+			['action', '', false, \phpbb\request\request_interface::REQUEST, 'advanced'],
+			['f', 0, false, \phpbb\request\request_interface::REQUEST, 1],
+		]);
+		$this->request->method('is_set_post')->willReturn(false);
+
+		$this->controller->set_u_action('u_action')->handle();
+		$this->addToAssertionCount(1);
+	}
+
+	public function test_invalid_form_ends_request(): void
+	{
+		global $similar_topics_form_valid;
+		$similar_topics_form_valid = false;
+		$this->request->method('variable')->willReturn('');
+		$this->request->method('is_set_post')->willReturn(true);
+
+		$this->expectException('\phpbb\exception\http_exception');
+		try
+		{
+			$this->controller->set_u_action('u_action')->handle();
+		}
+		finally
+		{
+			$similar_topics_form_valid = true;
+		}
+	}
 }
 
 /**
@@ -276,7 +363,8 @@ function add_form_key()
  */
 function check_form_key(): true
 {
-	return true;
+	global $similar_topics_form_valid;
+	return $similar_topics_form_valid !== false;
 }
 
 /**

@@ -508,6 +508,126 @@ class similar_topics_test extends phpbb_test_case
 		$this->addToAssertionCount(1);
 	}
 
+	public function test_display_similar_topics_renders_readable_results(): void
+	{
+		global $auth, $cache, $config, $request, $user;
+
+		$this->config = $config = new \phpbb\config\config([
+			'similar_topics_sense' => 5,
+			'similar_topics_time' => 86400,
+			'similar_topics_limit' => 5,
+			'similar_topics_cache' => 0,
+			'load_db_lastread' => true,
+			'load_anon_lastread' => false,
+			'cookie_name' => 'phpbb',
+			'posts_per_page' => 10,
+			'board_startdate' => 0,
+			'hot_threshold' => 0,
+		]);
+		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums', 'format_date', 'img', 'optionget']);
+		$this->user->data = [
+			'is_registered' => true,
+			'user_id' => 2,
+			'user_lastmark' => 0,
+		];
+		$this->user->session_id = 'session';
+		$this->user->lang = [
+			'VIEW_TOPIC_MOVED' => '',
+			'VIEW_TOPIC_GLOBAL' => '',
+			'VIEW_TOPIC_ANNOUNCEMENT' => '',
+			'VIEW_TOPIC_STICKY' => '',
+			'VIEW_TOPIC_LOCKED' => '',
+			'VIEW_TOPIC_POLL' => '',
+		];
+		$this->user->method('get_passworded_forums')->willReturn([9]);
+		$this->user->method('format_date')->willReturn('date');
+		$this->user->method('img')->willReturnArgument(0);
+		$request = $this->request;
+
+		$auth = $this->auth;
+		$this->auth->method('acl_get')->willReturn(true);
+		$cache = new \phpbb_mock_cache();
+		$this->service->method('obtain_icons')->willReturn([
+			1 => ['img' => 'icon.png', 'width' => 16, 'height' => 16],
+		]);
+		$this->content_visibility->method('get_count')->willReturn(2);
+		$this->stop_word_helper->method('clean_text')->with('Current topic')->willReturn('current topic');
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->manager->method('get_driver')->willReturn($this->driver);
+		$this->driver->method('has_stopword_support')->willReturn(true);
+		$this->driver->expects(self::exactly(2))->method('get_query')->willReturn([
+			'SELECT' => 't.*',
+			'FROM' => [],
+			'WHERE' => '1=1',
+		]);
+		$this->dispatcher->method('trigger_event')->willReturnCallback(function ($event_name, $data) {
+			return $data;
+		});
+		$this->db->method('sql_in_set')->willReturn('f.forum_id NOT IN (9)');
+		$this->db->method('sql_build_query')->willReturn('SELECT similar');
+		$this->db->expects(self::exactly(2))->method('sql_query_limit')->with('SELECT similar', 5, 0, 0)->willReturn('result');
+		$this->db->expects(self::exactly(6))->method('sql_fetchrow')->with('result')->willReturnOnConsecutiveCalls(
+			$this->topic_row(['topic_visibility' => ITEM_UNAPPROVED, 'topic_id' => 3]),
+			$this->topic_row(['topic_posts_unapproved' => 1, 'topic_id' => 4]),
+			false,
+			$this->topic_row(['topic_visibility' => ITEM_UNAPPROVED, 'topic_id' => 3]),
+			$this->topic_row(['topic_posts_unapproved' => 1, 'topic_id' => 4]),
+			false
+		);
+		$this->db->expects(self::exactly(2))->method('sql_freeresult')->with('result');
+		$this->template->expects(self::exactly(4))->method('assign_block_vars')->with('similar', self::callback(function ($row) {
+			return $row['TOPIC_TITLE'] === 'Similar topic' && $row['TOPIC_ICON_IMG'] === 'icon.png';
+		}));
+		$this->template->expects(self::exactly(2))->method('assign_vars')->with(self::isType('array'));
+		$this->pagination->expects(self::exactly(4))->method('generate_template_pagination');
+
+		$this->get_similar_topics()->display_similar_topics([
+			'similar_topics_hide' => false,
+			'similar_topic_forums' => '[2,9]',
+			'topic_id' => 1,
+			'topic_title' => 'Current topic',
+		]);
+
+		$this->user->data['is_registered'] = false;
+		$this->config['load_db_lastread'] = false;
+		$this->config['load_anon_lastread'] = true;
+		$this->get_similar_topics()->display_similar_topics([
+			'similar_topics_hide' => false,
+			'similar_topic_forums' => '',
+			'topic_id' => 1,
+			'topic_title' => 'Current topic',
+		]);
+	}
+
+	public function test_display_similar_topics_stops_when_included_forums_are_passworded(): void
+	{
+		global $config, $user;
+
+		$this->config = $config = new \phpbb\config\config([
+			'similar_topics_time' => 86400,
+			'similar_topics_cache' => 0,
+			'load_db_lastread' => false,
+			'load_anon_lastread' => true,
+			'cookie_name' => 'phpbb',
+		]);
+		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums']);
+		$this->user->data = ['is_registered' => false, 'user_id' => ANONYMOUS];
+		$this->user->method('get_passworded_forums')->willReturn([2]);
+		$this->request->expects(self::once())->method('variable')->willReturn('');
+		$this->stop_word_helper->method('clean_text')->willReturn('current topic');
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->manager->method('get_driver')->willReturn($this->driver);
+		$this->driver->method('get_query')->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
+
+		$this->get_similar_topics()->display_similar_topics([
+			'similar_topics_hide' => false,
+			'similar_topic_forums' => '[2]',
+			'topic_id' => 1,
+			'topic_title' => 'Current topic',
+		]);
+		$this->addToAssertionCount(1);
+	}
+
 	public function test_search_similar_topics_ajax_empty_query(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('');
@@ -546,7 +666,7 @@ class similar_topics_test extends phpbb_test_case
 			);
 		$this->db->expects(self::exactly(2))
 			->method('sql_freeresult');
-		$this->db->method('sql_fetchfield')->willReturn(null);
+		$this->db->method('sql_fetchfield')->willReturn('[1]');
 
 		$similar_topics = $this->get_similar_topics();
 		$result = $similar_topics->search_similar_topics_ajax('test query', 1);
@@ -557,11 +677,75 @@ class similar_topics_test extends phpbb_test_case
 		self::assertEquals('Test Topic', $result[0]['title']);
 	}
 
+	public function test_search_similar_topics_ajax_excludes_passworded_forums(): void
+	{
+		global $config, $user;
+		$this->config = $config = new \phpbb\config\config(['similar_topics_time' => 86400]);
+		$this->stop_word_helper->method('clean_text')->willReturn('query');
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->manager->method('get_driver')->willReturn($this->driver);
+		$this->driver->method('get_query')->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
+		$this->db->method('sql_in_set')->willReturn('f.forum_id NOT IN (9)');
+		$this->db->method('sql_build_query')->willReturn('SELECT similar');
+		$this->db->method('sql_query_limit')->willReturn('result');
+		$this->db->method('sql_fetchrow')->willReturn(false);
+		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums']);
+		$this->user->method('get_passworded_forums')->willReturn([9]);
+
+		$this->assertSame([], $this->get_similar_topics()->search_similar_topics_ajax('query'));
+	}
+
+	public function test_search_similar_topics_ajax_rejects_passworded_included_forums(): void
+	{
+		global $config, $user;
+		$this->config = $config = new \phpbb\config\config(['similar_topics_time' => 86400]);
+		$this->stop_word_helper->method('clean_text')->willReturn('query');
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->manager->method('get_driver')->willReturn($this->driver);
+		$this->driver->method('get_query')->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
+		$this->db->method('sql_query')->willReturn(true);
+		$this->db->method('sql_fetchfield')->willReturn('[2]');
+		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums']);
+		$this->user->method('get_passworded_forums')->willReturn([2]);
+
+		$this->assertSame([], $this->get_similar_topics()->search_similar_topics_ajax('query', 1));
+	}
+
 	public function test_add_language(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('');
 		$similar_topics = $this->get_similar_topics();
 		$similar_topics->add_language();
 		$this->assertTrue($this->language->is_set('SIMILAR_TOPICS'));
+	}
+
+	private function topic_row(array $overrides = []): array
+	{
+		return array_replace([
+			'forum_id' => 2,
+			'forum_name' => 'Forum',
+			'topic_id' => 3,
+			'topic_title' => 'Similar topic',
+			'topic_status' => ITEM_UNLOCKED,
+			'topic_type' => POST_NORMAL,
+			'topic_visibility' => ITEM_APPROVED,
+			'topic_posts_unapproved' => 0,
+			'topic_attachment' => 1,
+			'topic_reported' => 1,
+			'topic_posted' => 0,
+			'topic_views' => 10,
+			'topic_poster' => 2,
+			'topic_first_poster_name' => 'Author',
+			'topic_first_poster_colour' => '',
+			'topic_last_poster_id' => 3,
+			'topic_last_poster_name' => 'Last',
+			'topic_last_poster_colour' => '',
+			'topic_time' => 100,
+			'topic_last_post_time' => 200,
+			'topic_last_post_id' => 4,
+			'f_mark_time' => 50,
+			'poll_start' => 0,
+			'icon_id' => 1,
+		], $overrides);
 	}
 }
