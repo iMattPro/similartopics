@@ -59,6 +59,9 @@ class similar_topics_test extends \phpbb_test_case
 	/** @var \vse\similartopics\driver\driver_interface|\PHPUnit\Framework\MockObject\MockObject */
 	protected $driver;
 
+	/** @var \phpbb_mock_extension_manager  */
+	protected  $extension_manager;
+
 	/** @var string */
 	protected $phpbb_root_path;
 
@@ -507,14 +510,6 @@ class similar_topics_test extends \phpbb_test_case
 			'user_lastmark' => 0,
 		];
 		$this->user->session_id = 'session';
-		$this->user->lang = [
-			'VIEW_TOPIC_MOVED' => '',
-			'VIEW_TOPIC_GLOBAL' => '',
-			'VIEW_TOPIC_ANNOUNCEMENT' => '',
-			'VIEW_TOPIC_STICKY' => '',
-			'VIEW_TOPIC_LOCKED' => '',
-			'VIEW_TOPIC_POLL' => '',
-		];
 		$this->user->method('get_passworded_forums')->willReturn([9]);
 		$this->user->method('format_date')->willReturn('date');
 		$this->user->method('img')->willReturnArgument(0);
