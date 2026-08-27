@@ -115,7 +115,6 @@ class controller_test extends phpbb_database_test_case
 	protected function setControllerProperty($name, $value): void
 	{
 		$property = (new \ReflectionClass($this->controller))->getProperty($name);
-		$property->setAccessible(true);
 		$property->setValue($this->controller, $value);
 	}
 
@@ -296,10 +295,9 @@ class controller_test extends phpbb_database_test_case
 		$driver->expects($this->once())->method('create_fulltext_index')->with('topic_title');
 		$this->setControllerProperty('similartopics', $driver);
 		$this->config['pst_postgres_ts_name'] = 'simple';
-		$this->request->method('variable')->willReturnMap([
-			['action', '', false, \phpbb\request\request_interface::REQUEST, ''],
-			['pst_postgres_ts_name', 'simple', false, \phpbb\request\request_interface::REQUEST, 'english'],
-		]);
+		$this->request->method('variable')->willReturnCallback(static function ($name, $default) {
+			return $name === 'pst_postgres_ts_name' ? 'english' : $default;
+		});
 		$this->request->method('is_set_post')->willReturn(true);
 
 		try
@@ -361,7 +359,7 @@ function add_form_key()
 /**
  * Mock check_form_key()
  */
-function check_form_key(): true
+function check_form_key(): bool
 {
 	global $similar_topics_form_valid;
 	return $similar_topics_form_valid !== false;

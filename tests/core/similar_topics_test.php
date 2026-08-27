@@ -10,6 +10,8 @@
 
 namespace vse\similartopics\tests\core;
 
+require_once __DIR__ . '/../../../../../includes/functions_display.php';
+
 use phpbb\auth\auth;
 use phpbb\cache\service;
 use phpbb\config\config;
@@ -81,8 +83,8 @@ class similar_topics_test extends phpbb_test_case
 	/** @var MockObject|driver_interface */
 	protected MockObject|driver_interface $driver;
 
-	/** @var \phpbb_mock_extension_manager  */
-	protected  $extension_manager;
+	/** @var phpbb_mock_extension_manager  */
+	protected phpbb_mock_extension_manager $extension_manager;
 
 	/** @var string */
 	protected string $phpbb_root_path;
