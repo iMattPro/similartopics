@@ -58,6 +58,7 @@ class sqlite3 implements driver_interface
 		}
 
 		$where_condition = '(' . implode(' OR ', $like_conditions) . ')';
+		$sql_time = ($length > 0) ? " AND t.topic_time > (strftime('%s', 'now') - " . (int) $length . ')' : '';
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
@@ -74,8 +75,7 @@ class sqlite3 implements driver_interface
 			'WHERE'		=> $where_condition . "
 				AND t.topic_status <> " . ITEM_MOVED . "
 				AND t.topic_visibility = " . ITEM_APPROVED . "
-				AND t.topic_time > (strftime('%s', 'now') - " . (int) $length . ")
-				AND t.topic_id <> " . (int) $topic_id,
+				AND t.topic_id <> " . (int) $topic_id . $sql_time,
 			'ORDER_BY'	=> 'score DESC, t.topic_time DESC',
 		);
 	}

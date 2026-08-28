@@ -51,6 +51,7 @@ class oracle implements driver_interface
 	{
 		// Clean and prepare the search terms for Oracle Text
 		$search_terms = $this->prepare_search_terms($topic_title);
+		$sql_time = ($length > 0) ? ' AND t.topic_time > (EXTRACT(EPOCH FROM SYSTIMESTAMP) - ' . (int) $length . ')' : '';
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
@@ -69,8 +70,7 @@ class oracle implements driver_interface
 				AND SCORE(1) >= " . (float) $sensitivity . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
-				AND t.topic_time > (EXTRACT(EPOCH FROM SYSTIMESTAMP) - ' . (int) $length . ')
-				AND t.topic_id <> ' . (int) $topic_id,
+				AND t.topic_id <> ' . (int) $topic_id . $sql_time,
 		);
 	}
 

@@ -14,6 +14,7 @@ use phpbb\config\config;
 use phpbb\db\driver\driver_interface;
 use phpbb_test_case;
 use PHPUnit\Framework\MockObject\MockObject;
+use vse\similartopics\driver\mysqli;
 use vse\similartopics\driver\mssql;
 use vse\similartopics\driver\oracle;
 use vse\similartopics\driver\postgres;
@@ -53,6 +54,41 @@ class database_drivers_test extends phpbb_test_case
 
 		$this->assertEquals($expected_name, $driver->get_name());
 		$this->assertEquals($expected_type, $driver->get_type());
+	}
+
+	public static function search_period_data_provider(): array
+	{
+		return [
+			'mysqli unlimited' => ['mysqli', 0, false],
+			'mysqli limited' => ['mysqli', 86400, true],
+			'mssql unlimited' => ['mssql', 0, false],
+			'mssql limited' => ['mssql', 86400, true],
+			'postgres unlimited' => ['postgres', 0, false],
+			'postgres limited' => ['postgres', 86400, true],
+			'oracle unlimited' => ['oracle', 0, false],
+			'oracle limited' => ['oracle', 86400, true],
+			'sqlite3 unlimited' => ['sqlite3', 0, false],
+			'sqlite3 limited' => ['sqlite3', 86400, true],
+		];
+	}
+
+	/**
+	 * @dataProvider search_period_data_provider
+	 */
+	public function test_search_period($driver_class, $length, $has_time_limit)
+	{
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$query = $this->create_driver($driver_class)->get_query(1, 'test topic', $length, 0.5);
+
+		if ($has_time_limit)
+		{
+			$this->assertStringContainsString('t.topic_time >', $query['WHERE']);
+			$this->assertStringContainsString((string) $length, $query['WHERE']);
+		}
+		else
+		{
+			$this->assertStringNotContainsString('t.topic_time >', $query['WHERE']);
+		}
 	}
 
 	public function test_mssql_driver(): void
@@ -406,9 +442,10 @@ class database_drivers_test extends phpbb_test_case
 		(new \vse\similartopics\driver\sqlite3($this->db))->create_fulltext_index();
 	}
 
-	protected function create_driver($driver_class): mssql|oracle|postgres|sqlite3|null
+	protected function create_driver($driver_class): mysqli|mssql|oracle|postgres|sqlite3|null
 	{
 		return match ($driver_class) {
+			'mysqli' => new mysqli($this->db),
 			'mssql' => new mssql($this->db),
 			'oracle' => new oracle($this->db),
 			'postgres' => new postgres($this->db, $this->config),
