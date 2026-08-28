@@ -186,6 +186,8 @@ class similar_topics
 	 *
 	 * @access public
 	 * @param array $topic_data Array with topic data
+	 * @noinspection PhpVarTagWithoutVariableNameInspection
+	 * @noinspection PassingByReferenceCorrectnessInspection
 	 */
 	public function display_similar_topics(array $topic_data): void
 	{
@@ -232,7 +234,8 @@ class similar_topics
 		if (!empty($topic_data['similar_topic_forums']))
 		{
 			// Remove any passworded forums from this group of forums we will be searching
-			$included_forums = array_diff(json_decode($topic_data['similar_topic_forums'], true), $passworded_forums);
+			$configured_forums = json_decode($topic_data['similar_topic_forums'], true);
+			$included_forums = is_array($configured_forums) ? array_diff($configured_forums, $passworded_forums) : array();
 			// if there's nothing left to display (user has no access to the forums we want to search)
 			if (empty($included_forums))
 			{
@@ -318,8 +321,8 @@ class similar_topics
 
 				$view_topic_url_params = 't=' . $similar_topic_id;
 
-				$topic_unapproved = $row['topic_visibility'] == ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $similar_forum_id);
-				$posts_unapproved = $row['topic_visibility'] == ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id);
+				$topic_unapproved = (int) $row['topic_visibility'] === ITEM_UNAPPROVED && $this->auth->acl_get('m_approve', $similar_forum_id);
+				$posts_unapproved = (int) $row['topic_visibility'] === ITEM_APPROVED && $row['topic_posts_unapproved'] && $this->auth->acl_get('m_approve', $similar_forum_id);
 				$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? append_sid("{$this->root_path}mcp.$this->php_ext", 'i=queue&amp;mode=' . ($topic_unapproved ? 'approve_details' : 'unapproved_posts') . "&amp;t=$similar_topic_id", true, $this->user->session_id) : '';
 
 				$base_url = append_sid("{$this->root_path}viewtopic.$this->php_ext", $view_topic_url_params);
@@ -451,7 +454,8 @@ class similar_topics
 
 		if (!empty($similar_topic_forums))
 		{
-			$included_forums = array_diff(json_decode($similar_topic_forums, true), $passworded_forums);
+			$configured_forums = json_decode($similar_topic_forums, true);
+			$included_forums = is_array($configured_forums) ? array_diff($configured_forums, $passworded_forums) : array();
 			if (empty($included_forums))
 			{
 				return [];
