@@ -68,6 +68,7 @@ class mssql implements driver_interface
 				? '(' . implode(' OR ', $like_conditions) . ')'
 				: "t.topic_title LIKE '%" . $this->db->sql_escape($topic_title) . "%'";
 		}
+		$sql_time = ($length > 0) ? " AND t.topic_time > (DATEDIFF(second, '1970-01-01', GETDATE()) - " . (int) $length . ')' : '';
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
@@ -84,8 +85,7 @@ class mssql implements driver_interface
 			'WHERE'		=> $search_condition . "
 				AND t.topic_status <> " . ITEM_MOVED . "
 				AND t.topic_visibility = " . ITEM_APPROVED . "
-				AND t.topic_time > (DATEDIFF(second, '1970-01-01', GETDATE()) - " . (int) $length . ")
-				AND t.topic_id <> " . (int) $topic_id,
+				AND t.topic_id <> " . (int) $topic_id . $sql_time,
 			'ORDER_BY'	=> 'score DESC, t.topic_time DESC',
 		);
 	}

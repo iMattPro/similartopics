@@ -52,6 +52,8 @@ class mysqli implements driver_interface
 	 */
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
+		$sql_time = ($length > 0) ? ' AND t.topic_time > (UNIX_TIMESTAMP() - ' . (int) $length . ')' : '';
+
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
 				MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') AS score",
@@ -68,8 +70,7 @@ class mysqli implements driver_interface
 			'WHERE'		=> "MATCH (t.topic_title) AGAINST ('" . $this->db->sql_escape($topic_title) . "') >= " . (float) $sensitivity . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
-				AND t.topic_time > (UNIX_TIMESTAMP() - ' . (int) $length . ')
-				AND t.topic_id <> ' . (int) $topic_id,
+				AND t.topic_id <> ' . (int) $topic_id . $sql_time,
 		);
 	}
 

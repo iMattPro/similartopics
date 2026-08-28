@@ -62,6 +62,7 @@ class postgres implements driver_interface
 		$ts_name = $this->db->sql_escape($this->ts_name);
 		$ts_query_text = $this->db->sql_escape(preg_replace(['/\s+/', '/\'/'], ['|', ''], $topic_title));
 		$ts_rank_cd = "ts_rank_cd('{1,1,1,1}', to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_name', '$ts_query_text'), 32)";
+		$sql_time = ($length > 0) ? ' AND t.topic_time > (extract(epoch from current_timestamp)::integer - ' . (int) $length . ')' : '';
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*, $ts_rank_cd AS score",
@@ -77,8 +78,7 @@ class postgres implements driver_interface
 			'WHERE'		=> "to_tsquery('$ts_name', '$ts_query_text') @@ to_tsvector('$ts_name', t.topic_title) AND $ts_rank_cd >= " . (float) $sensitivity . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
-				AND t.topic_time > (extract(epoch from current_timestamp)::integer - ' . (int) $length . ')
-				AND t.topic_id <> ' . (int) $topic_id,
+				AND t.topic_id <> ' . (int) $topic_id . $sql_time,
 			'ORDER_BY'	=> 'score DESC, t.topic_time DESC',
 		);
 	}

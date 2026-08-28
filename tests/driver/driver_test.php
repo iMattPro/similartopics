@@ -89,32 +89,47 @@ class driver_test extends \phpbb_database_test_case
 		self::assertSame(0, strpos($this->db->get_sql_layer(), $this->get_driver()->get_type()));
 	}
 
-	public function test_get_query()
+	public function query_data_provider()
+	{
+		return [
+			'unlimited search period' => [0],
+			'limited search period' => [86400],
+		];
+	}
+
+	/**
+	 * @dataProvider query_data_provider
+	 */
+	public function test_get_query($length)
 	{
 		$sql_layer = $this->db->get_sql_layer();
 		$driver = $this->get_driver();
-		$sql = $driver->get_query(1, 'foo bar', 0, 0);
+		$sql = $driver->get_query(1, 'foo bar', $length, 0);
 
 		if ($sql_layer === 'postgres')
 		{
 			$select = "f.forum_id, f.forum_name, t.*, ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) AS score";
-			$where = "to_tsquery('simple', 'foo|bar') @@ to_tsvector('simple', t.topic_title) AND ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (extract(epoch from current_timestamp)::integer - 0) AND t.topic_id <> 1";
+			$sql_time = ($length > 0) ? " AND t.topic_time > (extract(epoch from current_timestamp)::integer - $length)" : '';
+			$where = "to_tsquery('simple', 'foo|bar') @@ to_tsvector('simple', t.topic_title) AND ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
 		}
 		else if (strpos($sql_layer, 'mssql') === 0)
 		{
 			$search_condition = $driver->is_fulltext() ?  "CONTAINS(t.topic_title, 'foo AND bar')" : "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%')";
 			$select = "f.forum_id, f.forum_name, t.*, CASE WHEN " . $search_condition . " THEN 1.0 ELSE 0.0 END AS score";
-			$where = "$search_condition AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (DATEDIFF(second, '1970-01-01', GETDATE()) - 0) AND t.topic_id <> 1";
+			$sql_time = ($length > 0) ? " AND t.topic_time > (DATEDIFF(second, '1970-01-01', GETDATE()) - $length)" : '';
+			$where = "$search_condition AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
 		}
 		else if ($sql_layer === 'sqlite3')
 		{
 			$select = "f.forum_id, f.forum_name, t.*, CASE WHEN (t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%') THEN 1.0 ELSE 0.0 END AS score";
-			$where = "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%') AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (strftime('%s', 'now') - 0) AND t.topic_id <> 1";
+			$sql_time = ($length > 0) ? " AND t.topic_time > (strftime('%s', 'now') - $length)" : '';
+			$where = "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%') AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
 		}
 		else
 		{
 			$select = "f.forum_id, f.forum_name, t.*, MATCH (t.topic_title) AGAINST ('foo bar') AS score";
-			$where = "MATCH (t.topic_title) AGAINST ('foo bar') >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_time > (UNIX_TIMESTAMP() - 0) AND t.topic_id <> 1";
+			$sql_time = ($length > 0) ? " AND t.topic_time > (UNIX_TIMESTAMP() - $length)" : '';
+			$where = "MATCH (t.topic_title) AGAINST ('foo bar') >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
 		}
 
 		self::assertEquals($select, preg_replace('#\s\s+#', ' ', $sql['SELECT']));

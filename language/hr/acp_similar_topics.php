@@ -48,7 +48,7 @@ $lang = array_merge($lang, array(
 	'PST_LIMIT'			=> 'Broj sličnih tema za prikaz',
 	'PST_LIMIT_EXPLAIN'	=> 'Određivanje prikaza broja sličnih tema [zadano=5].',
 	'PST_TIME'			=> 'Razdoblje pretraživanja',
-	'PST_TIME_EXPLAIN'	=> 'Određivanje razdoblje pretraživanja broja sličnih tema [zadano=godina].<br>Npr. ukoliko je vrijednost postavljena na 5, sistem će prikaz(iv)ati slične teme unazad 5 dana.',
+	'PST_TIME_EXPLAIN'	=> 'Određivanje razdoblje pretraživanja broja sličnih tema [zadano=godina].<br>Npr. ukoliko je vrijednost postavljena na 5, sistem će prikaz(iv)ati slične teme unazad 5 dana. Postavite na 0 ako ne želite vremensko ograničenje.',
 	'PST_YEARS'			=> 'Godina/e',
 	'PST_MONTHS'		=> 'Mjesec/a/i',
 	'PST_WEEKS'			=> 'Tjedan/na/a',
