@@ -278,7 +278,7 @@ class similar_topics_admin
 			'U_ACTION'        => $this->u_action,
 		));
 
-		// If postgresql, we need to make an options list of text search names
+		// If PostgreSQL, we need to make an options list of text search names
 		if ($this->similartopics instanceof \vse\similartopics\driver\postgres)
 		{
 			$this->language->add_lang('acp/search');

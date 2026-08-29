@@ -1,236 +1,152 @@
-(function () {
+(() => {
 	'use strict';
 
-	var root = document.getElementById('pst-acp');
+	const root = document.getElementById('pst-acp');
 	if (!root) {
 		return;
 	}
 
-	var form = document.getElementById('acp_similar_topics');
-	var labels = document.getElementById('pst-labels');
-	var forumFilter = document.getElementById('pst-forum-filter');
-	var forumCards = root.querySelectorAll('.pst-forum-card');
-	var noResults = root.querySelector('.pst-no-results');
-	var sensitivity = document.getElementById('pst_sense');
-	var sensitivityOutput = document.getElementById('pst-sense-value');
-	var cacheInput = document.getElementById('pst_cache');
-	var cacheSlider = document.getElementById('pst-cache-slider');
-	var cacheOutput = document.getElementById('pst-cache-value');
-	var cacheOptions = document.querySelectorAll('#pst-cache-options option');
-	var modal = document.getElementById('pst-source-modal');
-	var activeCard = null;
-	var lastTrigger = null;
-	var initialSettingsState = '';
+	const form = document.getElementById('acp_similar_topics');
+	const labels = document.getElementById('pst-labels');
+	const forumFilter = document.getElementById('pst-forum-filter');
+	const forumCards = root.querySelectorAll('.pst-forum-card');
+	const noResults = root.querySelector('.pst-no-results');
+	const sensitivity = document.getElementById('pst_sense');
+	const sensitivityOutput = document.getElementById('pst-sense-value');
+	const cacheInput = document.getElementById('pst_cache');
+	const cacheSlider = document.getElementById('pst-cache-slider');
+	const cacheOutput = document.getElementById('pst-cache-value');
+	const cacheOptions = document.querySelectorAll('#pst-cache-options option');
+	const modal = document.getElementById('pst-source-modal');
+	const modalForum = modal ? document.getElementById('pst-modal-forum') : null;
+	const modeInputs = modal ? modal.querySelectorAll('input[name="pst_source_mode_dialog"]') : [];
+	const sourcePicker = modal ? document.getElementById('pst-source-picker') : null;
+	const sourceFilter = modal ? document.getElementById('pst-source-filter') : null;
+	const sourceOptions = modal ? modal.querySelectorAll('.pst-source-options label') : [];
+	const applyButton = modal ? document.getElementById('pst-apply-sources') : null;
+	const selectAvailable = modal ? document.getElementById('pst-select-available') : null;
+	const clearSources = modal ? document.getElementById('pst-clear-sources') : null;
+	const modalError = modal ? document.getElementById('pst-modal-error') : null;
+	let activeCard = null;
+	let lastTrigger = null;
+	let initialSettingsState = '';
 
-	function each(items, callback) {
-		Array.prototype.forEach.call(items, callback);
-	}
+	const settingsState = () => {
+		const values = [];
 
-	function settingsState() {
-		var values = [];
-
-		each(form.elements, function (field) {
-			var type = (field.type || '').toLowerCase();
-			if (!field.name || field.disabled || field.name === 'pst_source_mode_dialog' || type === 'submit' || type === 'reset' || type === 'button') {
+		Array.from(form.elements).forEach((field) => {
+			const type = (field.type || '').toLowerCase();
+			const ignoredType = ['submit', 'reset', 'button'].includes(type);
+			if (!field.name || field.disabled || field.name === 'pst_source_mode_dialog' || ignoredType) {
 				return;
 			}
 
-			if ((type === 'checkbox' || type === 'radio') && !field.checked) {
+			if (['checkbox', 'radio'].includes(type) && !field.checked) {
 				return;
 			}
 
 			if (field.multiple) {
-				each(field.options, function (option) {
-					if (option.selected) {
-						values.push(encodeURIComponent(field.name) + '=' + encodeURIComponent(option.value));
-					}
-				});
+				Array.from(field.options)
+					.filter((option) => option.selected)
+					.forEach((option) => values.push(`${encodeURIComponent(field.name)}=${encodeURIComponent(option.value)}`));
 				return;
 			}
 
-			values.push(encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value));
+			values.push(`${encodeURIComponent(field.name)}=${encodeURIComponent(field.value)}`);
 		});
 
 		return values.sort().join('&');
-	}
+	};
 
-	function updateDirtyState() {
-		var dirty = settingsState() !== initialSettingsState;
-		form.classList.toggle('is-dirty', dirty);
-	}
+	const updateDirtyState = () => {
+		form.classList.toggle('is-dirty', settingsState() !== initialSettingsState);
+	};
 
-	function updateSensitivity() {
+	const updateSensitivity = () => {
 		if (sensitivity && sensitivityOutput) {
 			sensitivityOutput.value = sensitivity.value;
 			sensitivityOutput.textContent = sensitivity.value;
 		}
-	}
+	};
 
-	if (sensitivity) {
-		sensitivity.addEventListener('input', updateSensitivity);
-	}
-
-	function updateCacheDuration() {
+	const updateCacheDuration = () => {
 		if (!cacheInput || !cacheSlider || !cacheOutput) {
 			return;
 		}
 
-		var option = cacheOptions[parseInt(cacheSlider.value, 10)];
+		const option = cacheOptions[Number.parseInt(cacheSlider.value, 10)];
 		if (option) {
-			cacheInput.value = option.getAttribute('data-seconds');
-			cacheOutput.value = option.getAttribute('data-label');
-			cacheOutput.textContent = option.getAttribute('data-label');
+			cacheInput.value = option.dataset.seconds;
+			cacheOutput.value = option.dataset.label;
+			cacheOutput.textContent = option.dataset.label;
 		}
-	}
+	};
 
-	if (cacheSlider) {
-		cacheSlider.addEventListener('input', updateCacheDuration);
-	}
+	const selectedMode = () => {
+		const selected = Array.from(modeInputs).find((input) => input.checked);
+		return selected ? selected.value : 'all';
+	};
 
-	initialSettingsState = settingsState();
-	each(forumCards, function (card) {
-		var sourceMode = card.querySelector('.pst-source-mode');
-		var sourceValues = card.querySelector('.pst-source-values');
-		sourceMode.setAttribute('data-initial-value', sourceMode.value);
-		sourceValues.setAttribute('data-initial-value', sourceValues.value);
-	});
-	form.classList.add('pst-dirty-tracking');
-	form.addEventListener('input', updateDirtyState);
-	form.addEventListener('change', updateDirtyState);
-	updateDirtyState();
-
-	if (forumFilter) {
-		forumFilter.addEventListener('input', function () {
-			var query = forumFilter.value.toLocaleLowerCase();
-			var visible = 0;
-			each(forumCards, function (card) {
-				var matches = card.getAttribute('data-forum-name').toLocaleLowerCase().indexOf(query) !== -1;
-				card.hidden = !matches;
-				visible += matches ? 1 : 0;
-			});
-			if (noResults) {
-				noResults.hidden = visible !== 0;
-			}
-		});
-	}
-
-	form.addEventListener('reset', function () {
-		window.setTimeout(function () {
-			if (forumFilter) {
-				forumFilter.value = '';
-			}
-			if (noResults) {
-				noResults.hidden = true;
-			}
-			each(forumCards, function (card) {
-				var sourceMode = card.querySelector('.pst-source-mode');
-				var sourceValues = card.querySelector('.pst-source-values');
-				card.hidden = false;
-				sourceMode.value = sourceMode.getAttribute('data-initial-value');
-				sourceValues.value = sourceValues.getAttribute('data-initial-value');
-				updateCardSummary(card);
-			});
-			if (sourceFilter) {
-				sourceFilter.value = '';
-			}
-			if (sourceOptions) {
-				each(sourceOptions, function (option) {
-					option.hidden = false;
-				});
-			}
-			updateSensitivity();
-			if (cacheOutput) {
-				cacheOutput.value = cacheOutput.getAttribute('data-default-label');
-				cacheOutput.textContent = cacheOutput.getAttribute('data-default-label');
-			}
-			if (modal && modal.classList.contains('is-open')) {
-				closeModal();
-			}
-			updateDirtyState();
-		}, 0);
-	});
-
-	if (!modal) {
-		return;
-	}
-
-	var modalForum = document.getElementById('pst-modal-forum');
-	var modeInputs = modal.querySelectorAll('input[name="pst_source_mode_dialog"]');
-	var sourcePicker = document.getElementById('pst-source-picker');
-	var sourceFilter = document.getElementById('pst-source-filter');
-	var sourceOptions = modal.querySelectorAll('.pst-source-options label');
-	var applyButton = document.getElementById('pst-apply-sources');
-	var selectAvailable = document.getElementById('pst-select-available');
-	var clearSources = document.getElementById('pst-clear-sources');
-	var modalError = document.getElementById('pst-modal-error');
-
-	function selectedMode() {
-		var mode = 'all';
-		each(modeInputs, function (input) {
-			if (input.checked) {
-				mode = input.value;
-			}
-		});
-		return mode;
-	}
-
-	function setMode(mode) {
-		each(modeInputs, function (input) {
+	const setMode = (mode) => {
+		modeInputs.forEach((input) => {
 			input.checked = input.value === mode;
 		});
 		sourcePicker.classList.toggle('is-disabled', mode !== 'custom');
 		modalError.hidden = true;
-	}
+	};
 
-	function selectedSourceIds() {
-		var selected = [];
-		each(sourceOptions, function (option) {
-			var checkbox = option.querySelector('input[type="checkbox"]');
-			if (checkbox.checked) {
-				selected.push(checkbox.value);
-			}
-		});
-		return selected;
-	}
+	const selectedSourceIds = () => Array.from(sourceOptions)
+		.map((option) => option.querySelector('input[type="checkbox"]'))
+		.filter((checkbox) => checkbox.checked)
+		.map((checkbox) => checkbox.value);
 
-	function updateAvailability() {
-		each(sourceOptions, function (option) {
-			var id = option.getAttribute('data-source-id');
-			var toggle = document.getElementById('searchable-forum-' + id);
-			var badge = option.querySelector('.pst-availability');
-			var available = toggle ? toggle.checked : false;
-			badge.setAttribute('data-available', available ? '1' : '0');
+	const updateAvailability = () => {
+		sourceOptions.forEach((option) => {
+			const toggle = document.getElementById(`searchable-forum-${option.dataset.sourceId}`);
+			const badge = option.querySelector('.pst-availability');
+			const available = toggle ? toggle.checked : false;
+			badge.dataset.available = available ? '1' : '0';
 			badge.classList.toggle('is-unavailable', !available);
-			badge.textContent = available ? labels.getAttribute('data-available') : labels.getAttribute('data-unavailable');
+			badge.textContent = available ? labels.dataset.available : labels.dataset.unavailable;
 		});
-	}
+	};
 
-	function updateCardSummary(card) {
-		var mode = card.querySelector('.pst-source-mode').value;
-		var values = card.querySelector('.pst-source-values').value;
-		var count = values ? values.split(',').filter(function (value) { return value !== ''; }).length : 0;
-		var summary = card.querySelector('.pst-source-summary');
+	const updateCardSummary = (card) => {
+		const mode = card.querySelector('.pst-source-mode').value;
+		const values = card.querySelector('.pst-source-values').value;
+		const count = values ? values.split(',').filter(Boolean).length : 0;
+		const summary = card.querySelector('.pst-source-summary');
 
 		if (mode !== 'custom' || count === 0) {
-			summary.textContent = labels.getAttribute('data-all');
+			summary.textContent = labels.dataset.all;
 			summary.classList.remove('is-custom');
 			return;
 		}
 
-		summary.textContent = count === 1 ? labels.getAttribute('data-custom-one') : labels.getAttribute('data-custom-many').replace('%d', count);
+		summary.textContent = count === 1 ? labels.dataset.customOne : labels.dataset.customMany.replace('%d', count.toString());
 		summary.classList.add('is-custom');
-	}
+	};
 
-	function openModal(card, trigger) {
+	const closeModal = () => {
+		modal.classList.remove('is-open');
+		modal.setAttribute('aria-hidden', 'true');
+		document.body.classList.remove('pst-modal-open');
+		activeCard = null;
+		if (lastTrigger) {
+			lastTrigger.focus();
+		}
+	};
+
+	const openModal = (card, trigger) => {
 		activeCard = card;
 		lastTrigger = trigger;
-		modalForum.textContent = card.getAttribute('data-forum-name');
-		var mode = card.querySelector('.pst-source-mode').value;
-		var selected = card.querySelector('.pst-source-values').value.split(',');
+		modalForum.textContent = card.dataset.forumName;
+		const mode = card.querySelector('.pst-source-mode').value;
+		const selected = card.querySelector('.pst-source-values').value.split(',');
 
-		each(sourceOptions, function (option) {
-			var checkbox = option.querySelector('input[type="checkbox"]');
-			checkbox.checked = selected.indexOf(checkbox.value) !== -1;
+		sourceOptions.forEach((option) => {
+			const checkbox = option.querySelector('input[type="checkbox"]');
+			checkbox.checked = selected.includes(checkbox.value);
 			option.hidden = false;
 		});
 		sourceFilter.value = '';
@@ -240,56 +156,118 @@
 		modal.setAttribute('aria-hidden', 'false');
 		document.body.classList.add('pst-modal-open');
 		modal.querySelector('input[name="pst_source_mode_dialog"]:checked').focus();
+	};
+
+	const resetForm = () => {
+		window.setTimeout(() => {
+			if (forumFilter) {
+				forumFilter.value = '';
+			}
+			if (noResults) {
+				noResults.hidden = true;
+			}
+
+			forumCards.forEach((card) => {
+				const sourceMode = card.querySelector('.pst-source-mode');
+				const sourceValues = card.querySelector('.pst-source-values');
+				card.hidden = false;
+				sourceMode.value = sourceMode.dataset.initialValue;
+				sourceValues.value = sourceValues.dataset.initialValue;
+				updateCardSummary(card);
+			});
+
+			if (sourceFilter) {
+				sourceFilter.value = '';
+			}
+			sourceOptions.forEach((option) => {
+				option.hidden = false;
+			});
+
+			updateSensitivity();
+			if (cacheOutput) {
+				cacheOutput.value = cacheOutput.dataset.defaultLabel;
+				cacheOutput.textContent = cacheOutput.dataset.defaultLabel;
+			}
+			if (modal && modal.classList.contains('is-open')) {
+				closeModal();
+			}
+			updateDirtyState();
+		}, 0);
+	};
+
+	if (sensitivity) {
+		sensitivity.addEventListener('input', updateSensitivity);
+	}
+	if (cacheSlider) {
+		cacheSlider.addEventListener('input', updateCacheDuration);
 	}
 
-	function closeModal() {
-		modal.classList.remove('is-open');
-		modal.setAttribute('aria-hidden', 'true');
-		document.body.classList.remove('pst-modal-open');
-		activeCard = null;
-		if (lastTrigger) {
-			lastTrigger.focus();
-		}
-	}
+	initialSettingsState = settingsState();
+	forumCards.forEach((card) => {
+		const sourceMode = card.querySelector('.pst-source-mode');
+		const sourceValues = card.querySelector('.pst-source-values');
+		sourceMode.dataset.initialValue = sourceMode.value;
+		sourceValues.dataset.initialValue = sourceValues.value;
+	});
+	form.classList.add('pst-dirty-tracking');
+	form.addEventListener('input', updateDirtyState);
+	form.addEventListener('change', updateDirtyState);
+	form.addEventListener('reset', resetForm);
+	updateDirtyState();
 
-	each(root.querySelectorAll('.pst-source-button'), function (button) {
-		button.addEventListener('click', function () {
-			openModal(button.closest('.pst-forum-card'), button);
+	if (forumFilter) {
+		forumFilter.addEventListener('input', () => {
+			const query = forumFilter.value.toLocaleLowerCase();
+			let visible = 0;
+			forumCards.forEach((card) => {
+				const matches = card.dataset.forumName.toLocaleLowerCase().includes(query);
+				card.hidden = !matches;
+				visible += matches ? 1 : 0;
+			});
+			if (noResults) {
+				noResults.hidden = visible !== 0;
+			}
 		});
+	}
+
+	if (!modal) {
+		return;
+	}
+
+	root.querySelectorAll('.pst-source-button').forEach((button) => {
+		button.addEventListener('click', () => openModal(button.closest('.pst-forum-card'), button));
 	});
 
-	each(root.querySelectorAll('[data-pst-close]'), function (button) {
+	root.querySelectorAll('[data-pst-close]').forEach((button) => {
 		button.addEventListener('click', closeModal);
 	});
 
-	each(modeInputs, function (input) {
-		input.addEventListener('change', function () {
-			setMode(input.value);
+	modeInputs.forEach((input) => {
+		input.addEventListener('change', () => setMode(input.value));
+	});
+
+	sourceFilter.addEventListener('input', () => {
+		const query = sourceFilter.value.toLocaleLowerCase();
+		sourceOptions.forEach((option) => {
+			option.hidden = !option.dataset.sourceName.toLocaleLowerCase().includes(query);
 		});
 	});
 
-	sourceFilter.addEventListener('input', function () {
-		var query = sourceFilter.value.toLocaleLowerCase();
-		each(sourceOptions, function (option) {
-			option.hidden = option.getAttribute('data-source-name').toLocaleLowerCase().indexOf(query) === -1;
+	selectAvailable.addEventListener('click', () => {
+		sourceOptions.forEach((option) => {
+			option.querySelector('input[type="checkbox"]').checked = option.querySelector('.pst-availability').dataset.available === '1';
 		});
 	});
 
-	selectAvailable.addEventListener('click', function () {
-		each(sourceOptions, function (option) {
-			option.querySelector('input[type="checkbox"]').checked = option.querySelector('.pst-availability').getAttribute('data-available') === '1';
-		});
-	});
-
-	clearSources.addEventListener('click', function () {
-		each(sourceOptions, function (option) {
+	clearSources.addEventListener('click', () => {
+		sourceOptions.forEach((option) => {
 			option.querySelector('input[type="checkbox"]').checked = false;
 		});
 	});
 
-	applyButton.addEventListener('click', function () {
-		var mode = selectedMode();
-		var selected = selectedSourceIds();
+	applyButton.addEventListener('click', () => {
+		const mode = selectedMode();
+		const selected = selectedSourceIds();
 
 		if (mode === 'custom' && selected.length === 0) {
 			modalError.hidden = false;
@@ -303,10 +281,9 @@
 		closeModal();
 	});
 
-	document.addEventListener('keydown', function (event) {
+	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape' && modal.classList.contains('is-open')) {
 			closeModal();
 		}
 	});
-
-}());
+})();
