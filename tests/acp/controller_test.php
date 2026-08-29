@@ -47,6 +47,10 @@ class controller_test extends \phpbb_database_test_case
 		$config = $this->config = new \phpbb\config\config([]);
 		$this->config_text = $this->createMock('\phpbb\config\db_text');
 		$this->db = $this->new_dbal();
+		$extension_manager = $this->createMock('\phpbb\extension\manager');
+		$metadata_manager = $this->createMock('\phpbb\extension\metadata_manager');
+		$metadata_manager->method('get_metadata')->with('version')->willReturn('metadata-version');
+		$extension_manager->method('create_extension_metadata_manager')->with('vse/similartopics')->willReturn($metadata_manager);
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 		$log = $this->createMock('\phpbb\log\log');
 		$this->request = $this->createMock('\phpbb\request\request');
@@ -64,6 +68,7 @@ class controller_test extends \phpbb_database_test_case
 			$this->config,
 			$this->config_text,
 			$this->db,
+			$extension_manager,
 			$pst_manager,
 			$language,
 			$log,
@@ -101,10 +106,8 @@ class controller_test extends \phpbb_database_test_case
 
 	public function test_handle()
 	{
-		$this->request->expects($this->once())
-			->method('variable');
-
 		$this->controller->set_u_action('u_action')->handle();
+		$this->addToAssertionCount(1);
 	}
 
 	public function test_set_u_action_returns_self()
@@ -114,22 +117,12 @@ class controller_test extends \phpbb_database_test_case
 		$this->assertEquals('test_action', $this->controller->u_action);
 	}
 
-	public function test_handle_advanced_action()
+	public function test_get_extension_version_from_metadata()
 	{
-		$this->request->expects($this->exactly(2))
-			->method('variable')
-			->withConsecutive(
-				['action', ''],
-				['f', 0]
-			)
-			->willReturnOnConsecutiveCalls('advanced', 1);
+		$method = (new \ReflectionClass($this->controller))->getMethod('get_extension_version');
+		$method->setAccessible(true);
 
-		$this->request->expects($this->once())
-			->method('is_set_post')
-			->with('submit')
-			->willReturn(false);
-
-		$this->controller->set_u_action('u_action')->handle();
+		$this->assertSame('metadata-version', $method->invoke($this->controller));
 	}
 
 	public function default_settings_data_provider()
@@ -183,15 +176,17 @@ class controller_test extends \phpbb_database_test_case
 	 */
 	public function test_default_settings_submit_and_verify($input_data, $expected_config)
 	{
-		$request_map = [['action', '', '']];
+		$request_map = [];
 		foreach ($input_data as $key => $value)
 		{
 			$default = ($key === 'pst_words') ? '' : (($key === 'pst_time_type') ? '' : (($key === 'pst_sense') ? 5 : 0));
 			$is_raw = ($key === 'pst_words');
 			$request_map[] = [$key, $default, $is_raw, \phpbb\request\request_interface::REQUEST, $value];
 		}
-		$request_map[] = ['mark_noshow_forum', [0], true, \phpbb\request\request_interface::REQUEST, []];
-		$request_map[] = ['mark_ignore_forum', [0], true, \phpbb\request\request_interface::REQUEST, []];
+		$request_map[] = ['show_forum', [0], false, \phpbb\request\request_interface::REQUEST, []];
+		$request_map[] = ['searchable_forum', [0], false, \phpbb\request\request_interface::REQUEST, []];
+		$request_map[] = ['forum_source_mode', [0 => ''], false, \phpbb\request\request_interface::REQUEST, []];
+		$request_map[] = ['similar_forums', [0 => ''], false, \phpbb\request\request_interface::REQUEST, []];
 
 		$this->request->method('variable')->willReturnMap($request_map);
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
@@ -211,32 +206,20 @@ class controller_test extends \phpbb_database_test_case
 		}
 	}
 
-	public function test_advanced_settings_submit()
+	public function test_update_forum_sources_saves_sanitized_custom_selection()
 	{
-		$this->request->method('variable')
-			->willReturnMap([
-				['action', '', false, \phpbb\request\request_interface::REQUEST, 'advanced'],
-				['f', 0, false, \phpbb\request\request_interface::REQUEST, 1],
-				['similar_forums_id', [0], false, \phpbb\request\request_interface::REQUEST, [2, 3]]
-			]);
-
-		$this->request->method('is_set_post')->with('submit')->willReturn(true);
-
 		$executed_queries = [];
 		$this->setupDbCapture($executed_queries);
 
-		try
-		{
-			$this->controller->set_u_action('u_action')->handle();
-		}
-		catch (\phpbb\exception\http_exception $e)
-		{
-			// Expected exception
-		}
+		$method = (new \ReflectionClass($this->controller))->getMethod('update_forum_sources');
+		$method->setAccessible(true);
+		$method->invoke($this->controller, [1, 2, 3], [1 => 'custom', 2 => 'all', 3 => 'custom'], [1 => '2,3,99,2', 2 => '1', 3 => '']);
 
-		$this->assertCount(1, $executed_queries);
+		$this->assertCount(3, $executed_queries);
 		$this->assertStringContainsString('UPDATE ' . FORUMS_TABLE, $executed_queries[0]);
 		$this->assertStringContainsString("similar_topic_forums = '[2,3]'", $executed_queries[0]);
+		$this->assertStringContainsString("similar_topic_forums = ''", $executed_queries[1]);
+		$this->assertStringContainsString("similar_topic_forums = ''", $executed_queries[2]);
 	}
 
 	public function test_default_settings_displays_postgres_and_forum_options()
@@ -245,13 +228,12 @@ class controller_test extends \phpbb_database_test_case
 		$db->method('get_sql_layer')->willReturn('postgres');
 		$db->method('sql_query')->willReturn(true);
 		$db->method('sql_fetchrowset')->willReturnOnConsecutiveCalls(
-			[['ts_name' => 'simple'], ['ts_name' => 'english']],
-			[['forum_id' => 2, 'forum_name' => 'Forum', 'similar_topic_forums' => '[3]', 'similar_topics_hide' => 1, 'similar_topics_ignore' => 1]]
+			[['forum_id' => 2, 'forum_name' => 'Forum', 'similar_topic_forums' => '[3]', 'similar_topics_hide' => 1, 'similar_topics_ignore' => 1]],
+			[['ts_name' => 'simple'], ['ts_name' => 'english']]
 		);
 		$db->method('sql_freeresult');
 		$this->setControllerProperty('db', $db);
 		$this->setControllerProperty('similartopics', new \vse\similartopics\driver\postgres($db, new \phpbb\config\config(['pst_postgres_ts_name' => 'english'])));
-		$this->request->method('variable')->willReturn('');
 		$this->request->method('is_set_post')->willReturn(false);
 
 		$this->controller->set_u_action('u_action')->handle();
@@ -266,8 +248,11 @@ class controller_test extends \phpbb_database_test_case
 		$this->setControllerProperty('similartopics', $driver);
 		$this->config['pst_postgres_ts_name'] = 'simple';
 		$this->request->method('variable')->willReturnMap([
-			['action', '', false, \phpbb\request\request_interface::REQUEST, ''],
 			['pst_postgres_ts_name', 'simple', false, \phpbb\request\request_interface::REQUEST, 'english'],
+			['show_forum', [0], false, \phpbb\request\request_interface::REQUEST, []],
+			['searchable_forum', [0], false, \phpbb\request\request_interface::REQUEST, []],
+			['forum_source_mode', [0 => ''], false, \phpbb\request\request_interface::REQUEST, []],
+			['similar_forums', [0 => ''], false, \phpbb\request\request_interface::REQUEST, []],
 		]);
 		$this->request->method('is_set_post')->willReturn(true);
 
@@ -279,26 +264,6 @@ class controller_test extends \phpbb_database_test_case
 		{
 		}
 		$this->assertSame('english', $this->config['pst_postgres_ts_name']);
-	}
-
-	public function test_advanced_settings_loads_saved_forums()
-	{
-		$db = $this->createMock('\phpbb\db\driver\driver_interface');
-		$db->method('sql_query')->willReturn(true);
-		$db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
-			['forum_name' => 'Forum', 'similar_topic_forums' => '[2,3]'],
-			false
-		);
-		$db->method('sql_freeresult');
-		$this->setControllerProperty('db', $db);
-		$this->request->method('variable')->willReturnMap([
-			['action', '', false, \phpbb\request\request_interface::REQUEST, 'advanced'],
-			['f', 0, false, \phpbb\request\request_interface::REQUEST, 1],
-		]);
-		$this->request->method('is_set_post')->willReturn(false);
-
-		$this->controller->set_u_action('u_action')->handle();
-		$this->addToAssertionCount(1);
 	}
 
 	public function test_invalid_form_ends_request()

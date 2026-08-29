@@ -1,168 +1,274 @@
 {% INCLUDE 'overall_header.html' %}
+{% INCLUDECSS '@vse_similartopics/acp_similar_topics.css' %}
 
-{% if S_ADVANCED_SETTINGS %}<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>{% endif %}
-
-<h1>{{ lang('PST_TITLE_ACP') }}</h1>
-
-<p>{{ lang('PST_EXPLAIN') }}</p>
-
-<form id="acp_similar_topics" method="post" action="{{ U_ACTION }}" data-ajax="true">
-
-{% if S_PST_NO_COMPAT %}
-	<div class="errorbox">
-		<h3>{{ lang('WARNING') }}</h3>
-		<p>{{ lang('PST_NO_COMPAT') }}</p>
-	</div>
-{% endif %}
-
-{% if S_ADVANCED_SETTINGS %}
-
-	<fieldset>
-		<legend>{{ lang('PST_ADVANCED_FORUM') }}</legend>
-		<dl>
-			<dt><label for="similar_forums">{{ lang('FORUM') ~ lang('COLON') }} {{ PST_FORUM_NAME }}</label><br><br><span>{{ lang('PST_ADVANCED_EXP', PST_FORUM_NAME) }}</span></dt>
-			<dd><select id="similar_forums" name="similar_forums_id[]" multiple="multiple" size="10">{{ SIMILAR_FORUMS_OPTIONS }}</select></dd>
-			<dd><a href="#" data-selector="false">{{ lang('PST_DESELECT_ALL') }}</a></dd>
-		</dl>
-		<p class="submit-buttons">
-			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}">&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}">
-		</p>
-		{{ S_FORM_TOKEN }}
-	</fieldset>
-
-	<script>
-		document.querySelector("[data-selector]").addEventListener("click", (e) => {
-			e.preventDefault();
-			const table = document.getElementById('similar_forums');
-			const state = e.target.dataset.selector === "true";
-			for (const option of table.options) {
-				option.selected = state;
-			}
-		});
-	</script>
-
-{% else %}
-
-	<fieldset>
-		<legend>{{ lang('PST_LEGEND1') }}</legend>
-		<dl>
-			<dt><label for="pst_enable">{{ lang('PST_ENABLE') ~ lang('COLON') }}</label><br><span>{{ lang('PST_ENABLE_EXPLAIN') }}</span></dt>
-			<dd>
-				<label><input type="radio" class="radio" id="pst_enable" name="pst_enable" value="1"{% if S_PST_ENABLE %} checked="checked"{% endif %}{% if S_PST_NO_COMPAT %} disabled="disabled"{% endif %}> {{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="pst_enable" value="0"{% if not S_PST_ENABLE %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
-			</dd>
-		</dl>
-		<dl>
-			<dt><label for="pst_dynamic">{{ lang('PST_DYNAMIC') ~ lang('COLON') }}</label><br><span>{{ lang('PST_DYNAMIC_EXPLAIN') }}</span></dt>
-			<dd>
-				<label><input type="radio" class="radio" id="pst_dynamic" name="pst_dynamic" value="1"{% if S_PST_DYNAMIC %} checked="checked"{% endif %}> {{ lang('YES') }}</label>
-				<label><input type="radio" class="radio" name="pst_dynamic" value="0"{% if not S_PST_DYNAMIC %} checked="checked"{% endif %}> {{ lang('NO') }}</label>
-			</dd>
-		</dl>
-	</fieldset>
-
-	<fieldset>
-		<legend>{{ lang('PST_LEGEND2') }}</legend>
-		<dl>
-			<dt><label for="pst_limit">{{ lang('PST_LIMIT') ~ lang('COLON') }}</label><br><span>{{ lang('PST_LIMIT_EXPLAIN') }}</span></dt>
-			<dd><input name="pst_limit" id="pst_limit" type="number" min="0" max="999" value="{{ PST_LIMIT }}"></dd>
-		</dl>
-		<dl>
-			<dt><label for="pst_time">{{ lang('PST_TIME') ~ lang('COLON') }}</label><br><span>{{ lang('PST_TIME_EXPLAIN') }}</span></dt>
-			<dd><input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{{ PST_TIME }}">
-				<label>
-					<select name="pst_time_type">
-						{% for similar_time_options in loops.similar_time_options %}
-							<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ lang(similar_time_options.LABEL) }}</option>
-						{% endfor %}
-					</select>
-				</label>
-			</dd>
-		</dl>
-		<dl>
-			<dt><label for="pst_cache">{{ lang('PST_CACHE') ~ lang('COLON') }}</label><br><span>{{ lang('PST_CACHE_EXPLAIN') }}</span></dt>
-			<dd><input name="pst_cache" id="pst_cache" type="number" min="0" max="99999999" value="{{ PST_CACHE }}"> {{ lang('SECONDS') }}</dd>
-		</dl>
-		<dl>
-			<dt><label for="pst_sense">{{ lang('PST_SENSE') ~ lang('COLON') }}</label><br><span>{{ lang('PST_SENSE_EXPLAIN', PST_SENSITIVITY) }}</span></dt>
-			<dd><input name="pst_sense" id="pst_sense" type="number" min="1" max="10" value="{{ PST_SENSE }}"></dd>
-		</dl>
-	</fieldset>
-
-	{% if loops.forums|length %}
-		<fieldset>
-			<legend>{{ lang('PST_LEGEND3') }}</legend>
-			<span class="small">{{ lang('PST_FORUM_INFO') }}</span>
-			<div style="overflow: auto; max-height: 300px;">
-				<table class="table1">
-					<colgroup><col class="row1"><col class="row2"><col class="row1"><col class="row2"></colgroup>
-					<thead>
-						<tr>
-							<th>{{ lang('FORUMS') }}</th>
-							<th style="text-align: center;">{{ lang('PST_NOSHOW_LIST') }}</th>
-							<th style="text-align: center;">{{ lang('PST_IGNORE_SEARCH') }}</th>
-							<th style="text-align: center;">{{ lang('PST_ADVANCED_FORUM') }}</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for forums in loops.forums %}
-						<tr>
-							<td>
-								<strong><a href="{{ forums.U_FORUM }}">{{ forums.FORUM_NAME }}</a></strong>
-							</td>
-							<td style="text-align: center; width: 20%;" title="{{ lang('PST_NOSHOW_TITLE')|e('html_attr') }} {{ forums.FORUM_NAME|e('html_attr') }}">
-								<label>
-									<input type="checkbox" class="radio" name="mark_noshow_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_NOSHOW_FORUM }}>
-								</label>
-							</td>
-							<td style="text-align: center; width: 20%;" title="{{ lang('PST_IGNORE_TITLE')|e('html_attr') }} {{ forums.FORUM_NAME|e('html_attr') }}">
-								<label>
-									<input type="checkbox" class="radio" name="mark_ignore_forum[]" value="{{ forums.FORUM_ID }}" {{ forums.CHECKED_IGNORE_FORUM }}>
-								</label>
-							</td>
-							<td style="text-align: center; width: 20%;" title="{{ lang('PST_ADVANCED_TITLE')|e('html_attr') }} {{ forums.FORUM_NAME|e('html_attr') }}">
-							<a href="{{ forums.U_ADVANCED }}">{% if forums.S_IS_ADVANCED %}<strong>{{ lang('PST_ADVANCED') }}</strong>{% else %}{{ lang('PST_STANDARD') }}{% endif %}</a>
-							</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
+<div id="pst-acp">
+	<header class="pst-hero">
+		<div>
+			<div class="pst-hero-title">
+				<h1>{{ lang('PST_TITLE_ACP') }}</h1>
+				{% if PST_VERSION %}<span class="pst-version">{{ PST_VERSION }}</span>{% endif %}
 			</div>
-		</fieldset>
+			<p>{{ lang('PST_EXPLAIN') }}</p>
+		</div>
+	</header>
+
+	{% if S_PST_NO_COMPAT %}
+		<div class="errorbox">
+			<h3>{{ lang('WARNING') }}</h3>
+			<p>{{ lang('PST_NO_COMPAT') }}</p>
+		</div>
 	{% endif %}
 
-	<fieldset>
-		<legend>{{ lang('PST_LEGEND4') }}</legend>
-		<dl>
-			<dt><label for="pst_words">{{ lang('PST_WORDS') ~ lang('COLON') }}</label><br><span>{{ lang('PST_WORDS_EXPLAIN') }}</span></dt>
-			<dd><textarea name="pst_words" id="pst_words" rows="5" cols="40">{{ PST_WORDS }}</textarea></dd>
-		</dl>
-		{% if loops.postgres_ts_names %}
-			<dl>
-				<dt><label for="pst_postgres_ts_name">{{ lang('FULLTEXT_POSTGRES_TS_NAME') }}</label><br><span>{{ lang('FULLTEXT_POSTGRES_TS_NAME_EXPLAIN') }}</span></dt>
-				<dd>
-					<select name="pst_postgres_ts_name" id="pst_postgres_ts_name">
-						{% for ts_name in loops.postgres_ts_names %}
-							<option value="{{ ts_name.NAME }}"{% if ts_name.S_SELECTED %} selected="selected"{% endif %}>{{ ts_name.NAME }}</option>
-						{% endfor %}
-					</select>
-				</dd>
-			</dl>
+	<form id="acp_similar_topics" method="post" action="{{ U_ACTION }}" data-ajax="true">
+		<section class="pst-panel pst-feature-panel" aria-labelledby="pst-features-title">
+			<div class="pst-section-heading">
+				<div>
+					<span class="pst-step">01</span>
+					<h2 id="pst-features-title">{{ lang('PST_FEATURES') }}</h2>
+					<p>{{ lang('PST_FEATURES_EXPLAIN') }}</p>
+				</div>
+			</div>
+
+			<div class="pst-feature-grid">
+				<label class="pst-feature-card" for="pst_enable">
+					<span class="pst-feature-copy">
+						<strong>{{ lang('PST_ENABLE') }}</strong>
+						<small>{{ lang('PST_ENABLE_EXPLAIN') }}</small>
+					</span>
+					<span class="pst-switch">
+						<input type="checkbox" id="pst_enable" name="pst_enable" value="1"{% if S_PST_ENABLE %} checked="checked"{% endif %}{% if S_PST_NO_COMPAT %} disabled="disabled"{% endif %}>
+						<span aria-hidden="true"></span>
+					</span>
+				</label>
+
+				<label class="pst-feature-card" for="pst_dynamic">
+					<span class="pst-feature-copy">
+						<strong>{{ lang('PST_DYNAMIC') }}</strong>
+						<small>{{ lang('PST_DYNAMIC_EXPLAIN') }}</small>
+					</span>
+					<span class="pst-switch">
+						<input type="checkbox" id="pst_dynamic" name="pst_dynamic" value="1"{% if S_PST_DYNAMIC %} checked="checked"{% endif %}>
+						<span aria-hidden="true"></span>
+					</span>
+				</label>
+			</div>
+		</section>
+
+		<section class="pst-panel" aria-labelledby="pst-results-title">
+			<div class="pst-section-heading">
+				<div>
+					<span class="pst-step">02</span>
+					<h2 id="pst-results-title">{{ lang('PST_RESULTS') }}</h2>
+					<p>{{ lang('PST_RESULTS_EXPLAIN') }}</p>
+				</div>
+			</div>
+
+			<div class="pst-field-grid">
+				<label class="pst-field" for="pst_limit">
+					<span>{{ lang('PST_LIMIT') }}</span>
+					<small>{{ lang('PST_LIMIT_EXPLAIN') }}</small>
+					<input name="pst_limit" id="pst_limit" type="number" min="0" max="999" value="{{ PST_LIMIT }}">
+				</label>
+
+				<label class="pst-field" for="pst_time">
+					<span>{{ lang('PST_TIME') }}</span>
+					<small>{{ lang('PST_TIME_EXPLAIN') }}</small>
+					<span class="pst-input-pair">
+						<input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{{ PST_TIME }}">
+						<select name="pst_time_type" aria-label="{{ lang('PST_TIME_UNIT') }}">
+							{% for similar_time_options in loops.similar_time_options %}
+								<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ lang(similar_time_options.LABEL) }}</option>
+							{% endfor %}
+						</select>
+					</span>
+				</label>
+			</div>
+		</section>
+
+		{% if loops.forums|length %}
+			<section class="pst-panel pst-forum-panel" aria-labelledby="pst-forums-title">
+				<div class="pst-section-heading pst-forum-heading">
+					<div>
+						<span class="pst-step">03</span>
+						<h2 id="pst-forums-title">{{ lang('PST_FORUM_RULES') }}</h2>
+						<p>{{ lang('PST_FORUM_RULES_EXPLAIN') }}</p>
+					</div>
+					<div class="pst-forum-stats">
+						<strong>{{ PST_FORUM_COUNT }}</strong> {{ lang('PST_FORUMS_MANAGED') }}
+						<span aria-hidden="true">&middot;</span>
+						<strong>{{ PST_CUSTOM_FORUM_COUNT }}</strong> {{ lang('PST_CUSTOM_RULES') }}
+					</div>
+				</div>
+
+				<label class="pst-forum-filter" for="pst-forum-filter">
+					<span class="sr-only">{{ lang('PST_FILTER_FORUMS') }}</span>
+					<i class="icon fa-search pst-search-icon" aria-hidden="true"></i>
+					<input type="search" id="pst-forum-filter" placeholder="{{ lang('PST_FILTER_FORUMS') }}" autocomplete="off">
+				</label>
+
+				<div class="pst-forum-list" id="pst-forum-list">
+					{% for forums in loops.forums %}
+						<article class="pst-forum-card" data-forum-id="{{ forums.FORUM_ID }}" data-forum-name="{{ forums.FORUM_NAME|e('html_attr') }}">
+							<header>
+								<div>
+									<span class="pst-forum-dot" aria-hidden="true"></span>
+									<strong><a href="{{ forums.U_FORUM }}">{{ forums.FORUM_NAME }}</a></strong>
+								</div>
+								<span class="pst-source-summary{% if forums.S_CUSTOM_SOURCES %} is-custom{% endif %}">{{ forums.SOURCE_SUMMARY }}</span>
+							</header>
+
+							<div class="pst-forum-controls">
+								<label class="pst-compact-toggle" for="show-forum-{{ forums.FORUM_ID }}">
+									<span><strong>{{ lang('PST_SHOW_HERE') }}</strong><small>{{ lang('PST_SHOW_HERE_EXPLAIN') }}</small></span>
+									<span class="pst-switch pst-switch-small">
+										<input type="checkbox" id="show-forum-{{ forums.FORUM_ID }}" name="show_forum[]" value="{{ forums.FORUM_ID }}"{% if forums.S_SHOW_FORUM %} checked="checked"{% endif %}>
+										<span aria-hidden="true"></span>
+									</span>
+								</label>
+
+								<label class="pst-compact-toggle" for="searchable-forum-{{ forums.FORUM_ID }}">
+									<span><strong>{{ lang('PST_SEARCHABLE') }}</strong><small>{{ lang('PST_SEARCHABLE_EXPLAIN') }}</small></span>
+									<span class="pst-switch pst-switch-small">
+										<input type="checkbox" id="searchable-forum-{{ forums.FORUM_ID }}" class="pst-searchable-toggle" name="searchable_forum[]" value="{{ forums.FORUM_ID }}"{% if forums.S_SEARCHABLE_FORUM %} checked="checked"{% endif %}>
+										<span aria-hidden="true"></span>
+									</span>
+								</label>
+
+								<div class="pst-source-control">
+									<span><strong>{{ lang('PST_SEARCH_SOURCES') }}</strong><small>{{ lang('PST_SEARCH_SOURCES_EXPLAIN') }}</small></span>
+									<button type="button" class="pst-button pst-button-secondary pst-source-button">{{ lang('PST_CHOOSE_SOURCES') }}</button>
+								</div>
+							</div>
+
+							<input type="hidden" class="pst-source-mode" name="forum_source_mode[{{ forums.FORUM_ID }}]" value="{% if forums.S_CUSTOM_SOURCES %}custom{% else %}all{% endif %}">
+							<input type="hidden" class="pst-source-values" name="similar_forums[{{ forums.FORUM_ID }}]" value="{{ forums.SOURCE_FORUMS }}">
+						</article>
+					{% endfor %}
+				</div>
+
+				<p class="pst-no-results" hidden>{{ lang('PST_NO_FORUM_MATCH') }}</p>
+			</section>
 		{% endif %}
-	</fieldset>
 
-	<fieldset>
-		<legend>{{ lang('ACP_SUBMIT_CHANGES') }}</legend>
-		<p class="submit-buttons">
-			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}">&nbsp;
-			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}">
-		</p>
+		<section class="pst-panel" aria-labelledby="pst-tuning-title">
+			<div class="pst-section-heading">
+				<div>
+					<span class="pst-step">04</span>
+					<h2 id="pst-tuning-title">{{ lang('PST_TUNING') }}</h2>
+					<p>{{ lang('PST_TUNING_EXPLAIN') }}</p>
+				</div>
+			</div>
+
+			<div class="pst-field-grid">
+					<label class="pst-field" for="pst_sense">
+						<span>{{ lang('PST_SENSE') }}</span>
+						<small>{{ lang('PST_SENSE_EXPLAIN', PST_SENSITIVITY) }}</small>
+						<span class="pst-range-row">
+							<input name="pst_sense" id="pst_sense" type="range" min="1" max="10" value="{{ PST_SENSE }}">
+							<output for="pst_sense" id="pst-sense-value">{{ PST_SENSE }}</output>
+						</span>
+					</label>
+
+					<label class="pst-field" for="pst-cache-slider">
+						<span>{{ lang('PST_CACHE') }}</span>
+						<small>{{ lang('PST_CACHE_EXPLAIN') }}</small>
+						<input name="pst_cache" id="pst_cache" type="hidden" value="{{ PST_CACHE }}">
+						<span class="pst-range-row pst-cache-range-row">
+							<input id="pst-cache-slider" type="range" min="0" max="9" step="1" value="{{ PST_CACHE_STEP }}" list="pst-cache-options">
+							<output for="pst-cache-slider" id="pst-cache-value" data-default-label="{{ PST_CACHE_LABEL|e('html_attr') }}">{{ PST_CACHE_LABEL }}</output>
+						</span>
+						<datalist id="pst-cache-options">
+							{% for cache_option in loops.cache_duration_options %}
+								<option value="{{ cache_option.INDEX }}" data-seconds="{{ cache_option.SECONDS }}" data-label="{{ cache_option.LABEL|e('html_attr') }}"></option>
+							{% endfor %}
+						</datalist>
+					</label>
+
+					<label class="pst-field pst-field-wide" for="pst_words">
+						<span>{{ lang('PST_WORDS') }}</span>
+						<small>{{ lang('PST_WORDS_EXPLAIN') }}</small>
+						<textarea name="pst_words" id="pst_words" rows="4">{{ PST_WORDS }}</textarea>
+					</label>
+
+					{% if loops.postgres_ts_names %}
+						<label class="pst-field" for="pst_postgres_ts_name">
+							<span>{{ lang('FULLTEXT_POSTGRES_TS_NAME') }}</span>
+							<small>{{ lang('FULLTEXT_POSTGRES_TS_NAME_EXPLAIN') }}</small>
+							<select name="pst_postgres_ts_name" id="pst_postgres_ts_name">
+								{% for ts_name in loops.postgres_ts_names %}
+									<option value="{{ ts_name.NAME }}"{% if ts_name.S_SELECTED %} selected="selected"{% endif %}>{{ ts_name.NAME }}</option>
+								{% endfor %}
+							</select>
+						</label>
+					{% endif %}
+			</div>
+		</section>
+
+		<div class="pst-save-bar">
+			<div><strong>{{ lang('PST_READY_TO_SAVE') }}</strong><span>{{ lang('PST_SAVE_EXPLAIN') }}</span></div>
+			<div>
+				<input class="pst-button pst-button-ghost" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}">
+				<input class="pst-button pst-button-primary pst-save-button" type="submit" id="submit" name="submit" value="{{ lang('PST_SAVE_SETTINGS') }}">
+			</div>
+		</div>
 		{{ S_FORM_TOKEN }}
-	</fieldset>
 
-{% endif %}
+		{% if loops.source_forums|length %}
+			<div class="pst-modal" id="pst-source-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="pst-modal-title">
+				<div class="pst-modal-backdrop" data-pst-close></div>
+				<div class="pst-modal-card" role="document">
+					<header>
+						<div><span class="pst-eyebrow">{{ lang('PST_SEARCH_SOURCES') }}</span><h2 id="pst-modal-title">{{ lang('PST_CHOOSE_FORUM_SOURCES') }}</h2><p id="pst-modal-forum"></p></div>
+						<button type="button" class="pst-modal-close" data-pst-close aria-label="{{ lang('CLOSE_WINDOW') }}">&times;</button>
+					</header>
 
-</form>
+					<p class="pst-modal-intro">{{ lang('PST_SOURCE_MODAL_EXPLAIN') }}</p>
 
+					<div class="pst-mode-options">
+						<label><input type="radio" name="pst_source_mode_dialog" value="all"><span><strong>{{ lang('PST_SOURCE_ALL') }}</strong><small>{{ lang('PST_SOURCE_ALL_EXPLAIN') }}</small></span></label>
+						<label><input type="radio" name="pst_source_mode_dialog" value="custom"><span><strong>{{ lang('PST_SOURCE_CUSTOM') }}</strong><small>{{ lang('PST_SOURCE_CUSTOM_EXPLAIN') }}</small></span></label>
+					</div>
+
+					<div class="pst-source-picker" id="pst-source-picker">
+						<div class="pst-picker-tools">
+							<label class="pst-source-filter" for="pst-source-filter">
+								<span class="sr-only">{{ lang('PST_FILTER_SOURCES') }}</span>
+								<i class="icon fa-search pst-search-icon" aria-hidden="true"></i>
+								<input type="search" id="pst-source-filter" placeholder="{{ lang('PST_FILTER_SOURCES') }}" autocomplete="off">
+							</label>
+							<div><button type="button" class="pst-text-button" id="pst-select-available">{{ lang('PST_SELECT_AVAILABLE') }}</button><button type="button" class="pst-text-button" id="pst-clear-sources">{{ lang('PST_CLEAR') }}</button></div>
+						</div>
+
+						<div class="pst-source-options">
+							{% for source in loops.source_forums %}
+								<label data-source-id="{{ source.FORUM_ID }}" data-source-name="{{ source.FORUM_NAME|e('html_attr') }}">
+									<input type="checkbox" value="{{ source.FORUM_ID }}">
+									<span>{{ source.FORUM_NAME }}</span>
+									<small class="pst-availability{% if not source.S_SEARCHABLE %} is-unavailable{% endif %}" data-available="{{ source.S_SEARCHABLE ? '1' : '0' }}">{% if source.S_SEARCHABLE %}{{ lang('PST_GLOBALLY_AVAILABLE') }}{% else %}{{ lang('PST_GLOBALLY_UNAVAILABLE') }}{% endif %}</small>
+								</label>
+							{% endfor %}
+						</div>
+						<p class="pst-picker-note">{{ lang('PST_CUSTOM_OVERRIDE_NOTE') }}</p>
+					</div>
+
+					<p class="pst-modal-error" id="pst-modal-error" hidden>{{ lang('PST_SELECT_ONE_SOURCE') }}</p>
+					<footer>
+						<button type="button" class="pst-button pst-button-ghost" data-pst-close>{{ lang('CANCEL') }}</button>
+						<button type="button" class="pst-button pst-button-primary" id="pst-apply-sources">{{ lang('PST_APPLY_SOURCES') }}</button>
+					</footer>
+				</div>
+			</div>
+		{% endif %}
+	</form>
+</div>
+
+<span id="pst-labels"
+	data-all="{{ lang('PST_SOURCE_ALL')|e('html_attr') }}"
+	data-custom-one="{{ lang('PST_SOURCE_CUSTOM_ONE')|e('html_attr') }}"
+	data-custom-many="{{ lang('PST_SOURCE_CUSTOM_MANY')|e('html_attr') }}"
+	data-available="{{ lang('PST_GLOBALLY_AVAILABLE')|e('html_attr') }}"
+	data-unavailable="{{ lang('PST_GLOBALLY_UNAVAILABLE')|e('html_attr') }}"
+	hidden></span>
+
+{% INCLUDEJS '@vse_similartopics/acp_similar_topics.js' %}
 {% INCLUDE 'overall_footer.html' %}
