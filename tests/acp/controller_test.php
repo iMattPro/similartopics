@@ -1,4 +1,7 @@
-<?php
+<?php /** @noinspection NestedTernaryOperatorInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection JsonEncodingApiUsageInspection */
+
 /**
  *
  * Precise Similar Topics
@@ -14,6 +17,7 @@ use phpbb\config\config;
 use phpbb\config\db_text;
 use phpbb\db\driver\driver_interface;
 use phpbb\exception\http_exception;
+use phpbb\extension\exception;
 use phpbb\language\language;
 use phpbb\language\language_file_loader;
 use phpbb\request\request;
@@ -30,6 +34,8 @@ use vse\similartopics\driver\manager;
 use phpbb\datetime;
 use phpbb\template\template;
 use phpbb\log\log;
+use phpbb\extension\metadata_manager;
+use vse\similartopics\driver\postgres;
 
 class controller_test extends phpbb_database_test_case
 {
@@ -58,8 +64,8 @@ class controller_test extends phpbb_database_test_case
 	/** @var driver_interface */
 	protected driver_interface $db;
 
-	/** @var \phpbb\template\template|\PHPUnit\Framework\MockObject\MockObject */
-	protected $template;
+	/** @var template|MockObject */
+	protected template|MockObject $template;
 
 	public function setUp(): void
 	{
@@ -71,8 +77,8 @@ class controller_test extends phpbb_database_test_case
 		$config = $this->config = new config([]);
 		$this->config_text = $this->createMock(db_text::class);
 		$this->db = $this->new_dbal();
-		$extension_manager = $this->createMock('\phpbb\extension\manager');
-		$metadata_manager = $this->createMock('\phpbb\extension\metadata_manager');
+		$extension_manager = $this->createMock(\phpbb\extension\manager::class);
+		$metadata_manager = $this->createMock(metadata_manager::class);
 		$metadata_manager->method('get_metadata')->with('version')->willReturn('metadata-version');
 		$extension_manager->method('create_extension_metadata_manager')->with('vse/similartopics')->willReturn($metadata_manager);
 		$phpbb_dispatcher = new phpbb_mock_event_dispatcher();
@@ -102,6 +108,7 @@ class controller_test extends phpbb_database_test_case
 			$phpbb_root_path,
 			$phpEx
 		);
+		$this->controller->set_u_action('u_action');
 	}
 
 	protected function setupDbCapture(&$executed_queries): void
@@ -122,7 +129,7 @@ class controller_test extends phpbb_database_test_case
 
 	protected function setControllerProperty($name, $value): void
 	{
-		$property = (new \ReflectionClass($this->controller))->getProperty($name);
+		$property = (new ReflectionClass($this->controller))->getProperty($name);
 		$property->setValue($this->controller, $value);
 	}
 
@@ -140,22 +147,20 @@ class controller_test extends phpbb_database_test_case
 
 	public function test_get_extension_version_from_metadata(): void
 	{
-		$method = (new \ReflectionClass($this->controller))->getMethod('get_extension_version');
-		$method->setAccessible(true);
+		$method = (new ReflectionClass($this->controller))->getMethod('get_extension_version');
 
 		$this->assertSame('metadata-version', $method->invoke($this->controller));
 	}
 
 	public function test_get_extension_version_returns_empty_string_on_metadata_exception(): void
 	{
-		$extension_manager = $this->createMock('\phpbb\extension\manager');
+		$extension_manager = $this->createMock(\phpbb\extension\manager::class);
 		$extension_manager->method('create_extension_metadata_manager')
 			->with('vse/similartopics')
-			->willThrowException(new \phpbb\extension\exception('INVALID_EXTENSION_NAME'));
+			->willThrowException(new exception('INVALID_EXTENSION_NAME'));
 		$this->setControllerProperty('ext_manager', $extension_manager);
 
-		$method = (new \ReflectionClass($this->controller))->getMethod('get_extension_version');
-		$method->setAccessible(true);
+		$method = (new ReflectionClass($this->controller))->getMethod('get_extension_version');
 
 		$this->assertSame('', $method->invoke($this->controller));
 	}
@@ -218,7 +223,7 @@ class controller_test extends phpbb_database_test_case
 			$is_raw = ($key === 'pst_words');
 			$request_map[] = [$key, $default, $is_raw, request_interface::REQUEST, $value];
 		}
-		$request_map[] = ['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'];
+		$request_map[] = ['forum_rules', '', false, request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'];
 		$this->request->method('variable')->willReturnMap($request_map);
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
 
@@ -242,8 +247,7 @@ class controller_test extends phpbb_database_test_case
 		$executed_queries = [];
 		$this->setupDbCapture($executed_queries);
 
-		$method = (new \ReflectionClass($this->controller))->getMethod('update_forum_sources');
-		$method->setAccessible(true);
+		$method = (new ReflectionClass($this->controller))->getMethod('update_forum_sources');
 		$method->invoke($this->controller, [1, 2, 3], [1 => 'custom', 2 => 'all', 3 => 'custom'], [1 => '2,3,99,2', 2 => '1', 3 => '']);
 
 		$this->assertCount(3, $executed_queries);
@@ -253,10 +257,9 @@ class controller_test extends phpbb_database_test_case
 		$this->assertStringContainsString("similar_topic_forums = ''", $executed_queries[2]);
 	}
 
-	public function test_parse_forum_rules_returns_complete_normalized_rules()
+	public function test_parse_forum_rules_returns_complete_normalized_rules(): void
 	{
-		$method = (new \ReflectionClass($this->controller))->getMethod('parse_forum_rules');
-		$method->setAccessible(true);
+		$method = (new ReflectionClass($this->controller))->getMethod('parse_forum_rules');
 		$payload = '{"1":{"show":1,"searchable":0,"mode":"custom","sources":[2,3]},"2":{"show":0,"searchable":1,"mode":"all","sources":[]},"3":{"show":1,"searchable":1,"mode":"all","sources":[]}}';
 
 		$this->assertSame([
@@ -267,10 +270,9 @@ class controller_test extends phpbb_database_test_case
 		], $method->invoke($this->controller, $payload, [1, 2, 3]));
 	}
 
-	public function test_parse_forum_rules_accepts_empty_forum_list()
+	public function test_parse_forum_rules_accepts_empty_forum_list(): void
 	{
-		$method = (new \ReflectionClass($this->controller))->getMethod('parse_forum_rules');
-		$method->setAccessible(true);
+		$method = (new ReflectionClass($this->controller))->getMethod('parse_forum_rules');
 
 		$this->assertSame([
 			'shown' => [],
@@ -280,7 +282,7 @@ class controller_test extends phpbb_database_test_case
 		], $method->invoke($this->controller, '{}', []));
 	}
 
-	public function invalid_forum_rules_data_provider()
+	public static function invalid_forum_rules_data_provider(): array
 	{
 		$valid = ['show' => 1, 'searchable' => 1, 'mode' => 'all', 'sources' => []];
 
@@ -306,16 +308,15 @@ class controller_test extends phpbb_database_test_case
 	/**
 	 * @dataProvider invalid_forum_rules_data_provider
 	 */
-	public function test_parse_forum_rules_rejects_invalid_payload($payload, $forum_ids)
+	public function test_parse_forum_rules_rejects_invalid_payload($payload, $forum_ids): void
 	{
-		$method = (new \ReflectionClass($this->controller))->getMethod('parse_forum_rules');
-		$method->setAccessible(true);
+		$method = (new ReflectionClass($this->controller))->getMethod('parse_forum_rules');
 
-		$this->expectException('\phpbb\exception\http_exception');
+		$this->expectException(http_exception::class);
 		$method->invoke($this->controller, $payload, $forum_ids);
 	}
 
-	public function test_display_builds_initial_forum_rules_payload()
+	public function test_display_builds_initial_forum_rules_payload(): void
 	{
 		$assigned_vars = [];
 		$this->template->method('assign_vars')->willReturnCallback(function($vars) use (&$assigned_vars) {
@@ -332,11 +333,11 @@ class controller_test extends phpbb_database_test_case
 		);
 	}
 
-	public function test_incomplete_forum_rules_are_rejected_before_settings_saved()
+	public function test_incomplete_forum_rules_are_rejected_before_settings_saved(): void
 	{
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
 		$this->request->method('variable')->willReturnMap([
-			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{}'],
+			['forum_rules', '', false, request_interface::POST, '{}'],
 		]);
 
 		try
@@ -352,7 +353,7 @@ class controller_test extends phpbb_database_test_case
 
 	public function test_default_settings_displays_postgres_and_forum_options(): void
 	{
-		$db = $this->createMock('\phpbb\db\driver\driver_interface');
+		$db = $this->createMock(driver_interface::class);
 		$db->method('get_sql_layer')->willReturn('postgres');
 		$db->method('sql_query')->willReturn(true);
 		$db->method('sql_fetchrowset')->willReturnOnConsecutiveCalls(
@@ -361,7 +362,7 @@ class controller_test extends phpbb_database_test_case
 		);
 		$db->method('sql_freeresult');
 		$this->setControllerProperty('db', $db);
-		$this->setControllerProperty('similartopics', new \vse\similartopics\driver\postgres($db, new \phpbb\config\config(['pst_postgres_ts_name' => 'english'])));
+		$this->setControllerProperty('similartopics', new postgres($db, new config(['pst_postgres_ts_name' => 'english'])));
 		$this->request->method('is_set_post')->willReturn(false);
 
 		$this->controller->set_u_action('u_action')->handle();
@@ -370,22 +371,25 @@ class controller_test extends phpbb_database_test_case
 
 	public function test_postgres_setting_rebuilds_index(): void
 	{
-		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$driver = $this->createMock(\vse\similartopics\driver\driver_interface::class);
 		$driver->method('get_type')->willReturn('postgres');
 		$driver->expects($this->once())->method('create_fulltext_index')->with('topic_title');
 		$this->setControllerProperty('similartopics', $driver);
 		$this->config['pst_postgres_ts_name'] = 'simple';
-		$this->request->method('variable')->willReturnMap([
-			['pst_postgres_ts_name', 'simple', false, \phpbb\request\request_interface::REQUEST, 'english'],
-			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'],
-		]);
+		$this->request->method('variable')->willReturnCallback(static function($name, $default) {
+			return match ($name) {
+				'pst_postgres_ts_name' => 'english',
+				'forum_rules' => '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}',
+				default => $default,
+			};
+		});
 		$this->request->method('is_set_post')->willReturn(true);
 
 		try
 		{
 			$this->controller->set_u_action('u_action')->handle();
 		}
-		catch (\phpbb\exception\http_exception $e)
+		catch (http_exception $e)
 		{
 		}
 		$this->assertSame('english', $this->config['pst_postgres_ts_name']);
@@ -398,7 +402,7 @@ class controller_test extends phpbb_database_test_case
 		$this->request->method('variable')->willReturn('');
 		$this->request->method('is_set_post')->willReturn(true);
 
-		$this->expectException('\phpbb\exception\http_exception');
+		$this->expectException(http_exception::class);
 		try
 		{
 			$this->controller->set_u_action('u_action')->handle();
