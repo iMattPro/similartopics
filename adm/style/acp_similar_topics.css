@@ -263,6 +263,16 @@
 	min-height: 32px;
 }
 
+#pst-acp .pst-field > input[type="number"],
+#pst-acp .pst-field > .pst-select-control {
+	min-height: 38px;
+	width: 100%;
+}
+
+#pst-acp .pst-field > .pst-select-control select {
+	height: 38px;
+}
+
 #pst-acp input[type="number"],
 #pst-acp input[type="search"],
 #pst-acp select,
@@ -290,10 +300,34 @@
 }
 
 #pst-acp .pst-input-pair input { border-radius: 6px 0 0 6px; width: 38%; }
-#pst-acp .pst-input-pair select {
+#pst-acp .pst-select-control {
+	display: flex;
+	flex: 1;
+	min-width: 0;
+	position: relative;
+}
+
+#pst-acp .pst-select-control select {
+	-webkit-appearance: none;
+	appearance: none;
+	flex: 1;
+	padding-right: 32px;
+	width: 100%;
+}
+
+#pst-acp .pst-input-pair .pst-select-control select {
 	border-left: 0;
 	border-radius: 0 6px 6px 0;
-	flex: 1;
+}
+
+#pst-acp .pst-select-control .pst-select-icon {
+	color: #64748b;
+	font-size: 12px;
+	pointer-events: none;
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-50%);
 }
 
 #pst-acp .pst-forum-heading {

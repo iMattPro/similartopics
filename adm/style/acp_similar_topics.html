@@ -75,11 +75,14 @@
 					<small>{{ lang('PST_TIME_EXPLAIN') }}</small>
 					<span class="pst-input-pair">
 						<input name="pst_time" id="pst_time" type="number" min="0" max="999" value="{{ PST_TIME }}">
-						<select name="pst_time_type" aria-label="{{ lang('PST_TIME_UNIT') }}">
-							{% for similar_time_options in loops.similar_time_options %}
-								<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ lang(similar_time_options.LABEL) }}</option>
-							{% endfor %}
-						</select>
+						<span class="pst-select-control">
+							<select name="pst_time_type" aria-label="{{ lang('PST_TIME_UNIT') }}">
+								{% for similar_time_options in loops.similar_time_options %}
+									<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ lang(similar_time_options.LABEL) }}</option>
+								{% endfor %}
+							</select>
+							<i class="icon fa-caret-down pst-select-icon" aria-hidden="true"></i>
+						</span>
 					</span>
 				</label>
 			</div>
@@ -194,11 +197,14 @@
 						<label class="pst-field" for="pst_postgres_ts_name">
 							<span>{{ lang('FULLTEXT_POSTGRES_TS_NAME') }}</span>
 							<small>{{ lang('FULLTEXT_POSTGRES_TS_NAME_EXPLAIN') }}</small>
-							<select name="pst_postgres_ts_name" id="pst_postgres_ts_name">
-								{% for ts_name in loops.postgres_ts_names %}
-									<option value="{{ ts_name.NAME }}"{% if ts_name.S_SELECTED %} selected="selected"{% endif %}>{{ ts_name.NAME }}</option>
-								{% endfor %}
-							</select>
+							<span class="pst-select-control">
+								<select name="pst_postgres_ts_name" id="pst_postgres_ts_name">
+									{% for ts_name in loops.postgres_ts_names %}
+										<option value="{{ ts_name.NAME }}"{% if ts_name.S_SELECTED %} selected="selected"{% endif %}>{{ ts_name.NAME }}</option>
+									{% endfor %}
+								</select>
+								<i class="icon fa-caret-down pst-select-icon" aria-hidden="true"></i>
+							</span>
 						</label>
 					{% endif %}
 			</div>
