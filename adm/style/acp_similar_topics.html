@@ -270,11 +270,11 @@
 
 <span id="pst-labels"
 	data-all="{{ lang('PST_SOURCE_ALL')|e('html_attr') }}"
-	data-custom-one="{{ lang('PST_SOURCE_CUSTOM_ONE')|e('html_attr') }}"
-	data-custom-many="{{ lang('PST_SOURCE_CUSTOM_MANY')|e('html_attr') }}"
 	data-available="{{ lang('PST_GLOBALLY_AVAILABLE')|e('html_attr') }}"
 	data-unavailable="{{ lang('PST_GLOBALLY_UNAVAILABLE')|e('html_attr') }}"
-	hidden></span>
+	hidden>
+	{% for count_label in loops.source_count_labels %}<span data-source-count="{{ count_label.COUNT }}">{{ count_label.LABEL }}</span>{% endfor %}
+</span>
 
 {% INCLUDEJS '@vse_similartopics/acp_similar_topics.js' %}
 {% INCLUDE 'overall_footer.html' %}

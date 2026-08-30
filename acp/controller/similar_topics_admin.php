@@ -297,6 +297,13 @@ class similar_topics_admin
 		{
 			$valid_forum_ids[] = (int) $forum['forum_id'];
 		}
+		for ($source_count = 1, $forum_count = count($forum_list); $source_count <= $forum_count; $source_count++)
+		{
+			$this->template->assign_block_vars('source_count_labels', array(
+				'COUNT' => $source_count,
+				'LABEL' => $this->language->lang('PST_SOURCE_CUSTOM_COUNT', $source_count),
+			));
+		}
 
 		foreach ($forum_list as $row)
 		{

@@ -106,9 +106,10 @@ $lang = array_merge($lang, array(
 	'PST_SEARCH_SOURCES_EXPLAIN' => 'Use every available forum or choose a custom set.',
 	'PST_CHOOSE_SOURCES' => 'Choose sources',
 	'PST_SOURCE_ALL'		=> 'All available forums',
-	'PST_SOURCE_CUSTOM_COUNT' => '%d selected forums',
-	'PST_SOURCE_CUSTOM_ONE' => '1 selected forum',
-	'PST_SOURCE_CUSTOM_MANY' => '%d selected forums',
+	'PST_SOURCE_CUSTOM_COUNT' => array(
+		1 => '%d selected forum',
+		2 => '%d selected forums',
+	),
 	'PST_CHOOSE_FORUM_SOURCES' => 'Choose where similar topics come from',
 	'PST_SOURCE_MODAL_EXPLAIN' => 'This choice applies only to the forum shown above. It does not change any other forum.',
 	'PST_SOURCE_ALL_EXPLAIN' => 'Search every forum whose “available as a source” switch is on. New forums join automatically.',

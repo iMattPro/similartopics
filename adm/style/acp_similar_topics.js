@@ -8,6 +8,8 @@
 
 	const form = document.getElementById('acp_similar_topics');
 	const labels = document.getElementById('pst-labels');
+	const sourceCountLabels = new Map(Array.from(labels.querySelectorAll('[data-source-count]'))
+		.map((label) => [Number.parseInt(label.dataset.sourceCount, 10), label.textContent]));
 	const forumFilter = document.getElementById('pst-forum-filter');
 	const forumCards = root.querySelectorAll('.pst-forum-card');
 	const noResults = root.querySelector('.pst-no-results');
@@ -123,7 +125,7 @@
 			return;
 		}
 
-		summary.textContent = count === 1 ? labels.dataset.customOne : labels.dataset.customMany.replace('%d', count.toString());
+		summary.textContent = sourceCountLabels.get(count) || count.toString();
 		summary.classList.add('is-custom');
 	};
 
