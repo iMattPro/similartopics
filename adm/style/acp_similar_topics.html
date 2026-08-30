@@ -89,7 +89,7 @@
 									<option value="{{ similar_time_options.VALUE }}"{% if similar_time_options.S_SELECTED %} selected="selected"{% endif %}>{{ lang(similar_time_options.LABEL) }}</option>
 								{% endfor %}
 							</select>
-							<i class="icon fa-caret-down pst-select-icon" aria-hidden="true"></i>
+							{{ Icon('font', 'caret-down', '', true, 'pst-select-icon') }}
 						</span>
 					</span>
 				</label>
@@ -113,7 +113,7 @@
 
 				<label class="pst-forum-filter" for="pst-forum-filter">
 					<span class="sr-only">{{ lang('PST_FILTER_FORUMS') }}</span>
-					<i class="icon fa-search pst-search-icon" aria-hidden="true"></i>
+					{{ Icon('font', 'search', '', true, 'pst-search-icon') }}
 					<input type="search" id="pst-forum-filter" placeholder="{{ lang('PST_FILTER_FORUMS') }}" autocomplete="off">
 				</label>
 
@@ -211,7 +211,7 @@
 										<option value="{{ ts_name.NAME }}"{% if ts_name.S_SELECTED %} selected="selected"{% endif %}>{{ ts_name.NAME }}</option>
 									{% endfor %}
 								</select>
-								<i class="icon fa-caret-down pst-select-icon" aria-hidden="true"></i>
+								{{ Icon('font', 'caret-down', '', true, 'pst-select-icon') }}
 							</span>
 						</label>
 					{% endif %}
@@ -247,7 +247,7 @@
 						<div class="pst-picker-tools">
 							<label class="pst-source-filter" for="pst-source-filter">
 								<span class="sr-only">{{ lang('PST_FILTER_SOURCES') }}</span>
-								<i class="icon fa-search pst-search-icon" aria-hidden="true"></i>
+								{{ Icon('font', 'search', '', true, 'pst-search-icon') }}
 								<input type="search" id="pst-source-filter" placeholder="{{ lang('PST_FILTER_SOURCES') }}" autocomplete="off">
 							</label>
 							<div><button type="button" class="pst-text-button" id="pst-select-available">{{ lang('PST_SELECT_AVAILABLE') }}</button><button type="button" class="pst-text-button" id="pst-clear-sources">{{ lang('PST_CLEAR') }}</button></div>
