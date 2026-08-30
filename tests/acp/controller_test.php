@@ -89,7 +89,7 @@ class controller_test extends \phpbb_database_test_case
 				return true;
 			});
 		$mock_db->method('sql_escape')->willReturnArgument(0);
-		
+
 		// Use reflection to replace the db dependency in the existing controller
 		$reflection = new \ReflectionClass($this->controller);
 		$db_property = $reflection->getProperty('db');
@@ -123,6 +123,20 @@ class controller_test extends \phpbb_database_test_case
 		$method->setAccessible(true);
 
 		$this->assertSame('metadata-version', $method->invoke($this->controller));
+	}
+
+	public function test_get_extension_version_returns_empty_string_on_metadata_exception()
+	{
+		$extension_manager = $this->createMock('\phpbb\extension\manager');
+		$extension_manager->method('create_extension_metadata_manager')
+			->with('vse/similartopics')
+			->willThrowException(new \phpbb\extension\exception('INVALID_EXTENSION_NAME'));
+		$this->setControllerProperty('ext_manager', $extension_manager);
+
+		$method = (new \ReflectionClass($this->controller))->getMethod('get_extension_version');
+		$method->setAccessible(true);
+
+		$this->assertSame('', $method->invoke($this->controller));
 	}
 
 	public function default_settings_data_provider()
