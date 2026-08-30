@@ -14,6 +14,7 @@ use phpbb\cache\driver\driver_interface as cache;
 use phpbb\config\config;
 use phpbb\config\db_text;
 use phpbb\db\driver\driver_interface as dbal;
+use phpbb\extension\manager as ext_manager;
 use phpbb\language\language;
 use phpbb\log\log;
 use phpbb\request\request;
@@ -36,6 +37,9 @@ class similar_topics_admin
 
 	/** @var dbal */
 	protected dbal $db;
+
+	/** @var ext_manager */
+	protected $ext_manager;
 
 	/** @var language */
 	protected language $language;
@@ -78,6 +82,7 @@ class similar_topics_admin
 	 * @param config   $config
 	 * @param db_text  $config_text
 	 * @param dbal     $db
+	 * @param ext_manager $extension_manager
 	 * @param manager  $similartopics
 	 * @param language $language
 	 * @param log      $log
@@ -87,12 +92,13 @@ class similar_topics_admin
 	 * @param string   $root_path
 	 * @param string   $php_ext
 	 */
-	public function __construct(cache $cache, config $config, db_text $config_text, dbal $db, manager $similartopics, language $language, log $log, request $request, template $template, user $user, string $root_path, string $php_ext)
+	public function __construct(cache $cache, config $config, db_text $config_text, dbal $db, ext_manager $extension_manager, manager $similartopics, language $language, log $log, request $request, template $template, user $user, string $root_path, string $php_ext)
 	{
 		$this->cache         = $cache;
 		$this->config        = $config;
 		$this->config_text   = $config_text;
 		$this->db            = $db;
+		$this->ext_manager   = $extension_manager;
 		$this->similartopics = $similartopics->get_driver($this->db->get_sql_layer());
 		$this->language      = $language;
 		$this->log           = $log;
@@ -135,14 +141,7 @@ class similar_topics_admin
 
 		add_form_key($this->form_key);
 
-		if ($this->request->variable('action', '') === 'advanced')
-		{
-			$this->advanced_settings();
-		}
-		else
-		{
-			$this->default_settings();
-		}
+		$this->default_settings();
 	}
 
 	/**
@@ -152,9 +151,26 @@ class similar_topics_admin
 	 */
 	protected function default_settings(): void
 	{
+		$forum_list = $this->get_forum_list();
+
 		if ($this->request->is_set_post('submit'))
 		{
 			$this->check_form_key($this->form_key);
+
+			$forum_ids = array();
+			foreach ($forum_list as $forum)
+			{
+				$forum_ids[] = (int) $forum['forum_id'];
+			}
+			// request::variable() HTML-escapes JSON quotes. Decode only that escaping
+			// before validation so unfiltered raw request data never reaches a query.
+			$forum_rules_payload = htmlspecialchars_decode($this->request->variable(
+				'forum_rules',
+				'',
+				false,
+				\phpbb\request\request_interface::POST
+			), ENT_COMPAT);
+			$forum_rules = $this->parse_forum_rules($forum_rules_payload, $forum_ids);
 
 			// Set basic config settings
 			$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
@@ -173,9 +189,13 @@ class similar_topics_admin
 			$this->config->set('similar_topics_type', $pst_time_type);
 			$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 
-			// Set checkbox array form data
-			$this->update_forum('similar_topics_hide', $this->request->variable('mark_noshow_forum', array(0), true));
-			$this->update_forum('similar_topics_ignore', $this->request->variable('mark_ignore_forum', array(0), true));
+			// Forum controls use positive language in the UI. Convert unchecked
+			// forums to the inverse values stored by the existing database schema.
+			$this->update_forum('similar_topics_hide', array_diff($forum_ids, $forum_rules['shown']));
+			$this->update_forum('similar_topics_ignore', array_diff($forum_ids, $forum_rules['searchable']));
+
+			// Save per-forum source overrides from the inline source picker.
+			$this->update_forum_sources($forum_ids, $forum_rules['modes'], $forum_rules['sources']);
 
 			// Set PostgreSQL TS Name
 			if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
@@ -186,6 +206,7 @@ class similar_topics_admin
 			}
 
 			$this->cache->destroy('sql', TOPICS_TABLE);
+			$this->cache->destroy('sql', FORUMS_TABLE);
 
 			$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
 
@@ -208,11 +229,54 @@ class similar_topics_admin
 			));
 		}
 
+		// Build stepped cache duration options. Keep seconds in the submitted
+		// value so existing storage and custom values remain compatible.
+		$cache_durations = array(
+			0     => 'PST_CACHE_OFF',
+			300   => 'PST_CACHE_5_MINUTES',
+			900   => 'PST_CACHE_15_MINUTES',
+			1800  => 'PST_CACHE_30_MINUTES',
+			3600  => 'PST_CACHE_1_HOUR',
+			7200  => 'PST_CACHE_2_HOURS',
+			14400 => 'PST_CACHE_4_HOURS',
+			28800 => 'PST_CACHE_8_HOURS',
+			43200 => 'PST_CACHE_12_HOURS',
+			86400 => 'PST_CACHE_24_HOURS',
+		);
+		$cache_value = (int) $this->isset_or_default($this->config['similar_topics_cache'], 0);
+		$cache_step = 0;
+		$cache_distance = null;
+		$cache_label = $this->language->lang('PST_CACHE_CUSTOM', $cache_value);
+		$step = 0;
+		foreach ($cache_durations as $seconds => $label)
+		{
+			$distance = abs($cache_value - $seconds);
+			if ($cache_distance === null || $distance < $cache_distance)
+			{
+				$cache_step = $step;
+				$cache_distance = $distance;
+			}
+			if ($cache_value === $seconds)
+			{
+				$cache_label = $this->language->lang($label);
+			}
+
+			$this->template->assign_block_vars('cache_duration_options', array(
+				'INDEX'   => $step,
+				'SECONDS' => $seconds,
+				'LABEL'   => $this->language->lang($label),
+			));
+			$step++;
+		}
+
 		$this->template->assign_vars(array(
+			'PST_VERSION'     => $this->get_extension_version(),
 			'S_PST_ENABLE'    => $this->isset_or_default($this->config['similar_topics'], false),
 			'S_PST_DYNAMIC'   => $this->isset_or_default($this->config['similar_topics_dynamic'], false),
 			'PST_LIMIT'       => $this->isset_or_default($this->config['similar_topics_limit'], ''),
 			'PST_CACHE'       => $this->isset_or_default($this->config['similar_topics_cache'], ''),
+			'PST_CACHE_STEP'  => $cache_step,
+			'PST_CACHE_LABEL' => $cache_label,
 			'PST_SENSE'       => $this->isset_or_default($this->config['similar_topics_sense'], ''),
 			'PST_WORDS'       => $this->isset_or_default($this->config_text_get('similar_topics_words'), ''),
 			'PST_TIME'        => $this->get_pst_time((int) $this->config['similar_topics_time'], $this->config['similar_topics_type']),
@@ -221,7 +285,7 @@ class similar_topics_admin
 			'U_ACTION'        => $this->u_action,
 		));
 
-		// If postgresql, we need to make an options list of text search names
+		// If PostgreSQL, we need to make an options list of text search names
 		if ($this->similartopics instanceof postgres)
 		{
 			$this->language->add_lang('acp/search');
@@ -234,72 +298,156 @@ class similar_topics_admin
 			}
 		}
 
-		$forum_list = $this->get_forum_list();
+		$custom_forum_count = 0;
+		$forum_rules = array();
+		$valid_forum_ids = array();
+		foreach ($forum_list as $forum)
+		{
+			$valid_forum_ids[] = (int) $forum['forum_id'];
+		}
+		for ($source_count = 1, $forum_count = count($forum_list); $source_count <= $forum_count; $source_count++)
+		{
+			$this->template->assign_block_vars('source_count_labels', array(
+				'COUNT' => $source_count,
+				'LABEL' => $this->language->lang('PST_SOURCE_CUSTOM_COUNT', $source_count),
+			));
+		}
+
 		foreach ($forum_list as $row)
 		{
+			$selected_forums = json_decode($row['similar_topic_forums'], true);
+			$selected_forums = is_array($selected_forums) ? array_map('intval', $selected_forums) : array();
+			$selected_forums = array_values(array_unique(array_intersect($selected_forums, $valid_forum_ids)));
+			$selected_count = count($selected_forums);
+			$custom_forum_count += $selected_count > 0 ? 1 : 0;
+			$forum_rules[(int) $row['forum_id']] = array(
+				'show'       => (int) !$row['similar_topics_hide'],
+				'searchable' => (int) !$row['similar_topics_ignore'],
+				'mode'       => $selected_count > 0 ? 'custom' : 'all',
+				'sources'    => $selected_forums,
+			);
+
 			$this->template->assign_block_vars('forums', array(
 				'FORUM_NAME'           => $row['forum_name'],
 				'FORUM_ID'             => $row['forum_id'],
-				'CHECKED_IGNORE_FORUM' => $row['similar_topics_ignore'] ? 'checked="checked"' : '',
-				'CHECKED_NOSHOW_FORUM' => $row['similar_topics_hide'] ? 'checked="checked"' : '',
-				'S_IS_ADVANCED'        => (bool) $row['similar_topic_forums'],
-				'U_ADVANCED'           => "$this->u_action&amp;action=advanced&amp;f=" . $row['forum_id'],
+				'S_SHOW_FORUM'         => !$row['similar_topics_hide'],
+				'S_SEARCHABLE_FORUM'   => !$row['similar_topics_ignore'],
+				'S_CUSTOM_SOURCES'     => $selected_count > 0,
+				'SOURCE_FORUMS'        => implode(',', $selected_forums),
+				'SOURCE_COUNT'         => $selected_count,
+				'SOURCE_SUMMARY'       => $selected_count > 0 ? $this->language->lang('PST_SOURCE_CUSTOM_COUNT', $selected_count) : $this->language->lang('PST_SOURCE_ALL'),
 				'U_FORUM'              => append_sid("{$this->root_path}viewforum.$this->php_ext", 'f=' . $row['forum_id']),
 			));
-		}
-	}
 
-	/**
-	 * Display/Save advanced settings
-	 *
-	 * @access protected
-	 */
-	protected function advanced_settings(): void
-	{
-		$forum_id = $this->request->variable('f', 0);
-
-		if ($this->request->is_set_post('submit'))
-		{
-			$this->check_form_key($this->form_key);
-
-			$similar_topic_forums = $this->request->variable('similar_forums_id', array(0));
-			$similar_topic_forums = !empty($similar_topic_forums) ? json_encode($similar_topic_forums) : '';
-
-			$sql = 'UPDATE ' . FORUMS_TABLE . "
-				SET similar_topic_forums = '" . $this->db->sql_escape($similar_topic_forums) . "'
-				WHERE forum_id = $forum_id";
-			$this->db->sql_query($sql);
-
-			$this->cache->destroy('sql', FORUMS_TABLE);
-
-			$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PST_LOG_MSG');
-
-			$this->end('PST_SAVED');
-		}
-
-		$forum_name = '';
-		$selected = array();
-		if ($forum_id > 0)
-		{
-			$sql = 'SELECT forum_name, similar_topic_forums
-				FROM ' . FORUMS_TABLE . "
-				WHERE forum_id = $forum_id";
-			$result = $this->db->sql_query($sql);
-			while ($fid = $this->db->sql_fetchrow($result))
-			{
-				$selected = json_decode($fid['similar_topic_forums'], true);
-				$forum_name = $fid['forum_name'];
-			}
-			$this->db->sql_freeresult($result);
+			$this->template->assign_block_vars('source_forums', array(
+				'FORUM_NAME'   => $row['forum_name'],
+				'FORUM_ID'     => $row['forum_id'],
+				'S_SEARCHABLE' => !$row['similar_topics_ignore'],
+			));
 		}
 
 		$this->template->assign_vars(array(
-			'S_ADVANCED_SETTINGS'    => true,
-			'SIMILAR_FORUMS_OPTIONS' => make_forum_select($selected, false, false, true),
-			'PST_FORUM_NAME'         => $forum_name,
-			'U_ACTION'               => $this->u_action . '&amp;action=advanced&amp;f=' . $forum_id,
-			'U_BACK'                 => $this->u_action,
+			'PST_FORUM_COUNT'        => count($forum_list),
+			'PST_CUSTOM_FORUM_COUNT' => $custom_forum_count,
+			'PST_FORUM_RULES'        => json_encode($forum_rules),
 		));
+	}
+
+	/**
+	 * Decode and validate compact per-forum rules before any settings are saved.
+	 *
+	 * @param string $payload   JSON forum rules keyed by forum ID
+	 * @param array  $forum_ids Valid posting forum IDs
+	 * @return array Normalized rule collections
+	 */
+	protected function parse_forum_rules($payload, array $forum_ids)
+	{
+		$rules = json_decode($payload, true);
+		$normalized = array(
+			'shown'      => array(),
+			'searchable' => array(),
+			'modes'      => array(),
+			'sources'    => array(),
+		);
+
+		if (!is_array($rules) || count($rules) !== count($forum_ids))
+		{
+			$this->end('FORM_INVALID', E_USER_WARNING);
+		}
+
+		foreach ($rules as $forum_id => $rule)
+		{
+			if ((string) (int) $forum_id !== (string) $forum_id)
+			{
+				$this->end('FORM_INVALID', E_USER_WARNING);
+			}
+			$forum_id = (int) $forum_id;
+			$valid_shape = false;
+			if (is_array($rule))
+			{
+				$rule_keys = array_keys($rule);
+				sort($rule_keys);
+				$valid_shape = $rule_keys === array('mode', 'searchable', 'show', 'sources');
+			}
+			if (!in_array($forum_id, $forum_ids, true) || !$valid_shape
+				|| !in_array($rule['show'], array(0, 1), true)
+				|| !in_array($rule['searchable'], array(0, 1), true)
+				|| !in_array($rule['mode'], array('all', 'custom'), true)
+				|| !is_array($rule['sources']))
+			{
+				$this->end('FORM_INVALID', E_USER_WARNING);
+			}
+
+			$sources = array();
+			foreach ($rule['sources'] as $source_id)
+			{
+				if (!is_int($source_id) || !in_array($source_id, $forum_ids, true) || in_array($source_id, $sources, true))
+				{
+					$this->end('FORM_INVALID', E_USER_WARNING);
+				}
+				$sources[] = $source_id;
+			}
+			if (($rule['mode'] === 'custom') !== !empty($sources))
+			{
+				$this->end('FORM_INVALID', E_USER_WARNING);
+			}
+
+			if ($rule['show'])
+			{
+				$normalized['shown'][] = $forum_id;
+			}
+			if ($rule['searchable'])
+			{
+				$normalized['searchable'][] = $forum_id;
+			}
+			$normalized['modes'][$forum_id] = $rule['mode'];
+			$normalized['sources'][$forum_id] = implode(',', $sources);
+		}
+
+		if (count($normalized['modes']) !== count($forum_ids))
+		{
+			$this->end('FORM_INVALID', E_USER_WARNING);
+		}
+
+		return $normalized;
+	}
+
+	/**
+	 * Get extension version from composer metadata.
+	 *
+	 * @return string
+	 */
+	protected function get_extension_version()
+	{
+		try
+		{
+			$metadata_manager = $this->ext_manager->create_extension_metadata_manager('vse/similartopics');
+			return $metadata_manager->get_metadata('version');
+		}
+		catch (\phpbb\extension\exception $e)
+		{
+			return '';
+		}
 	}
 
 	/**
@@ -357,6 +505,39 @@ class similar_topics_admin
 			SET $column = 0
 			WHERE " . $this->db->sql_in_set('forum_id', $forum_ids, true, true);
 		$this->db->sql_query($sql);
+
+		$this->db->sql_transaction('commit');
+	}
+
+	/**
+	 * Update source overrides for every posting forum.
+	 *
+	 * Empty overrides mean "all globally searchable forums". Custom source IDs
+	 * are restricted to known posting forums before being stored.
+	 *
+	 * @param array $forum_ids     Valid posting forum IDs
+	 * @param array $source_modes  Per-forum all/custom modes
+	 * @param array $source_forums Per-forum comma-separated source IDs
+	 */
+	protected function update_forum_sources(array $forum_ids, array $source_modes, array $source_forums)
+	{
+		$this->db->sql_transaction('begin');
+
+		foreach ($forum_ids as $forum_id)
+		{
+			$selected = array();
+			if (isset($source_modes[$forum_id]) && $source_modes[$forum_id] === 'custom' && !empty($source_forums[$forum_id]))
+			{
+				$selected = array_filter(array_map('intval', explode(',', $source_forums[$forum_id])));
+				$selected = array_values(array_unique(array_intersect($selected, $forum_ids)));
+			}
+
+			$value = !empty($selected) ? json_encode($selected) : '';
+			$sql = 'UPDATE ' . FORUMS_TABLE . "
+				SET similar_topic_forums = '" . $this->db->sql_escape($value) . "'
+				WHERE forum_id = " . (int) $forum_id;
+			$this->db->sql_query($sql);
+		}
 
 		$this->db->sql_transaction('commit');
 	}
