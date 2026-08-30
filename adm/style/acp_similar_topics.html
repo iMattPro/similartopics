@@ -19,7 +19,15 @@
 		</div>
 	{% endif %}
 
+	<noscript>
+		<div class="errorbox">
+			<h3>{{ lang('WARNING') }}</h3>
+			<p>{{ lang('PST_JAVASCRIPT_REQUIRED') }}</p>
+		</div>
+	</noscript>
+
 	<form id="acp_similar_topics" method="post" action="{{ U_ACTION }}" data-ajax="true">
+		<input type="hidden" id="pst-forum-rules" name="forum_rules" value="{{ PST_FORUM_RULES|e('html_attr') }}">
 		<section class="pst-panel pst-feature-panel" aria-labelledby="pst-features-title">
 			<div class="pst-section-heading">
 				<div>
@@ -124,7 +132,7 @@
 								<label class="pst-compact-toggle" for="show-forum-{{ forums.FORUM_ID }}">
 									<span><strong>{{ lang('PST_SHOW_HERE') }}</strong><small>{{ lang('PST_SHOW_HERE_EXPLAIN') }}</small></span>
 									<span class="pst-switch pst-switch-small">
-										<input type="checkbox" id="show-forum-{{ forums.FORUM_ID }}" name="show_forum[]" value="{{ forums.FORUM_ID }}"{% if forums.S_SHOW_FORUM %} checked="checked"{% endif %}>
+										<input type="checkbox" id="show-forum-{{ forums.FORUM_ID }}" value="{{ forums.FORUM_ID }}"{% if forums.S_SHOW_FORUM %} checked="checked"{% endif %}>
 										<span aria-hidden="true"></span>
 									</span>
 								</label>
@@ -132,7 +140,7 @@
 								<label class="pst-compact-toggle" for="searchable-forum-{{ forums.FORUM_ID }}">
 									<span><strong>{{ lang('PST_SEARCHABLE') }}</strong><small>{{ lang('PST_SEARCHABLE_EXPLAIN') }}</small></span>
 									<span class="pst-switch pst-switch-small">
-										<input type="checkbox" id="searchable-forum-{{ forums.FORUM_ID }}" class="pst-searchable-toggle" name="searchable_forum[]" value="{{ forums.FORUM_ID }}"{% if forums.S_SEARCHABLE_FORUM %} checked="checked"{% endif %}>
+										<input type="checkbox" id="searchable-forum-{{ forums.FORUM_ID }}" class="pst-searchable-toggle" value="{{ forums.FORUM_ID }}"{% if forums.S_SEARCHABLE_FORUM %} checked="checked"{% endif %}>
 										<span aria-hidden="true"></span>
 									</span>
 								</label>
@@ -143,8 +151,8 @@
 								</div>
 							</div>
 
-							<input type="hidden" class="pst-source-mode" name="forum_source_mode[{{ forums.FORUM_ID }}]" value="{% if forums.S_CUSTOM_SOURCES %}custom{% else %}all{% endif %}">
-							<input type="hidden" class="pst-source-values" name="similar_forums[{{ forums.FORUM_ID }}]" value="{{ forums.SOURCE_FORUMS }}">
+							<input type="hidden" class="pst-source-mode" value="{% if forums.S_CUSTOM_SOURCES %}custom{% else %}all{% endif %}">
+							<input type="hidden" class="pst-source-values" value="{{ forums.SOURCE_FORUMS }}">
 						</article>
 					{% endfor %}
 				</div>

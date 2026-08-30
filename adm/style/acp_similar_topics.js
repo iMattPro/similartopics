@@ -12,6 +12,7 @@
 		.map((label) => [Number.parseInt(label.dataset.sourceCount, 10), label.textContent]));
 	const forumFilter = document.getElementById('pst-forum-filter');
 	const forumCards = root.querySelectorAll('.pst-forum-card');
+	const forumRulesInput = document.getElementById('pst-forum-rules');
 	const noResults = root.querySelector('.pst-no-results');
 	const sensitivity = document.getElementById('pst_sense');
 	const sensitivityOutput = document.getElementById('pst-sense-value');
@@ -60,7 +61,25 @@
 		return values.sort().join('&');
 	};
 
+	const updateForumRulesPayload = () => {
+		const rules = {};
+
+		forumCards.forEach((card) => {
+			const forumId = card.dataset.forumId;
+			const sourceValues = card.querySelector('.pst-source-values').value;
+			rules[forumId] = {
+				show: document.getElementById(`show-forum-${forumId}`).checked ? 1 : 0,
+				searchable: document.getElementById(`searchable-forum-${forumId}`).checked ? 1 : 0,
+				mode: card.querySelector('.pst-source-mode').value,
+				sources: sourceValues ? sourceValues.split(',').filter(Boolean).map(Number) : [],
+			};
+		});
+
+		forumRulesInput.value = JSON.stringify(rules);
+	};
+
 	const updateDirtyState = () => {
+		updateForumRulesPayload();
 		form.classList.toggle('is-dirty', settingsState() !== initialSettingsState);
 	};
 
@@ -208,6 +227,7 @@
 		cacheSlider.addEventListener('input', updateCacheDuration);
 	}
 
+	updateForumRulesPayload();
 	initialSettingsState = settingsState();
 	forumCards.forEach((card) => {
 		const sourceMode = card.querySelector('.pst-source-mode');
@@ -219,6 +239,7 @@
 	form.addEventListener('input', updateDirtyState);
 	form.addEventListener('change', updateDirtyState);
 	form.addEventListener('reset', resetForm);
+	form.addEventListener('submit', updateForumRulesPayload, true);
 	updateDirtyState();
 
 	if (forumFilter) {

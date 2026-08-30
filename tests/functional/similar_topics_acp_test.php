@@ -54,9 +54,11 @@ class similar_topics_acp_test extends similar_topics_base
 			$this->assertCount(1, $crawler->filter('textarea[name="pst_words"]'));
 			$this->assertGreaterThan(0, $crawler->filter('.pst-forum-card')->count());
 			$this->assertCount(1, $crawler->filter('#pst-source-modal'));
-			$this->assertCount(1, $crawler->filter('#pst-forum-filter'));
-			$this->assertGreaterThan(0, $crawler->filter('input[name="show_forum[]"]')->count());
-			$this->assertGreaterThan(0, $crawler->filter('input[name="searchable_forum[]"]')->count());
+				$this->assertCount(1, $crawler->filter('#pst-forum-filter'));
+				$this->assertCount(1, $crawler->filter('noscript .errorbox'));
+				$this->assertCount(1, $crawler->filter('input[name="forum_rules"]'));
+				$this->assertGreaterThan(0, $crawler->filter('input[id^="show-forum-"]')->count());
+				$this->assertGreaterThan(0, $crawler->filter('input[id^="searchable-forum-"]')->count());
 			if ($this->get_db()->get_sql_layer() === 'postgres')
 			{
 				$this->assertCount(1, $crawler->filter('select[name="pst_postgres_ts_name"]'));

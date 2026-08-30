@@ -37,6 +37,9 @@ class controller_test extends \phpbb_database_test_case
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\template\template|\PHPUnit\Framework\MockObject\MockObject */
+	protected $template;
+
 	public function setUp(): void
 	{
 		parent::setUp();
@@ -54,7 +57,7 @@ class controller_test extends \phpbb_database_test_case
 		$phpbb_dispatcher = new \phpbb_mock_event_dispatcher();
 		$log = $this->createMock('\phpbb\log\log');
 		$this->request = $this->createMock('\phpbb\request\request');
-		$template = $this->createMock('\phpbb\template\template');
+		$template = $this->template = $this->createMock('\phpbb\template\template');
 		$lang_loader = new \phpbb\language\language_file_loader($phpbb_root_path, $phpEx);
 		$language = new \phpbb\language\language($lang_loader);
 		$user = new \phpbb\user($language, '\phpbb\datetime');
@@ -197,11 +200,7 @@ class controller_test extends \phpbb_database_test_case
 			$is_raw = ($key === 'pst_words');
 			$request_map[] = [$key, $default, $is_raw, \phpbb\request\request_interface::REQUEST, $value];
 		}
-		$request_map[] = ['show_forum', [0], false, \phpbb\request\request_interface::REQUEST, []];
-		$request_map[] = ['searchable_forum', [0], false, \phpbb\request\request_interface::REQUEST, []];
-		$request_map[] = ['forum_source_mode', [0 => ''], false, \phpbb\request\request_interface::REQUEST, []];
-		$request_map[] = ['similar_forums', [0 => ''], false, \phpbb\request\request_interface::REQUEST, []];
-
+		$request_map[] = ['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'];
 		$this->request->method('variable')->willReturnMap($request_map);
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
 
@@ -236,6 +235,103 @@ class controller_test extends \phpbb_database_test_case
 		$this->assertStringContainsString("similar_topic_forums = ''", $executed_queries[2]);
 	}
 
+	public function test_parse_forum_rules_returns_complete_normalized_rules()
+	{
+		$method = (new \ReflectionClass($this->controller))->getMethod('parse_forum_rules');
+		$method->setAccessible(true);
+		$payload = '{"1":{"show":1,"searchable":0,"mode":"custom","sources":[2,3]},"2":{"show":0,"searchable":1,"mode":"all","sources":[]},"3":{"show":1,"searchable":1,"mode":"all","sources":[]}}';
+
+		$this->assertSame([
+			'shown' => [1, 3],
+			'searchable' => [2, 3],
+			'modes' => [1 => 'custom', 2 => 'all', 3 => 'all'],
+			'sources' => [1 => '2,3', 2 => '', 3 => ''],
+		], $method->invoke($this->controller, $payload, [1, 2, 3]));
+	}
+
+	public function test_parse_forum_rules_accepts_empty_forum_list()
+	{
+		$method = (new \ReflectionClass($this->controller))->getMethod('parse_forum_rules');
+		$method->setAccessible(true);
+
+		$this->assertSame([
+			'shown' => [],
+			'searchable' => [],
+			'modes' => [],
+			'sources' => [],
+		], $method->invoke($this->controller, '{}', []));
+	}
+
+	public function invalid_forum_rules_data_provider()
+	{
+		$valid = ['show' => 1, 'searchable' => 1, 'mode' => 'all', 'sources' => []];
+
+		return [
+			'malformed JSON' => ['{', [1]],
+			'missing forum' => [json_encode([1 => $valid]), [1, 2]],
+			'unknown forum' => [json_encode([2 => $valid]), [1]],
+			'noncanonical forum ID' => ['{"01":{"show":1,"searchable":1,"mode":"all","sources":[]}}', [1]],
+			'missing property' => [json_encode([1 => ['show' => 1, 'searchable' => 1, 'mode' => 'all']]), [1]],
+			'extra property' => [json_encode([1 => $valid + ['extra' => 1]]), [1]],
+			'invalid show flag' => [json_encode([1 => array_merge($valid, ['show' => true])]), [1]],
+			'invalid searchable flag' => [json_encode([1 => array_merge($valid, ['searchable' => '1'])]), [1]],
+			'invalid mode' => [json_encode([1 => array_merge($valid, ['mode' => 'invalid'])]), [1]],
+			'non-array sources' => [json_encode([1 => array_merge($valid, ['sources' => '1'])]), [1]],
+			'non-integer source' => [json_encode([1 => array_merge($valid, ['mode' => 'custom', 'sources' => ['1']])]), [1]],
+			'unknown source' => [json_encode([1 => array_merge($valid, ['mode' => 'custom', 'sources' => [2]])]), [1]],
+			'duplicate source' => [json_encode([1 => array_merge($valid, ['mode' => 'custom', 'sources' => [1, 1]])]), [1]],
+			'custom mode without sources' => [json_encode([1 => array_merge($valid, ['mode' => 'custom'])]), [1]],
+			'all mode with sources' => [json_encode([1 => array_merge($valid, ['sources' => [1]])]), [1]],
+		];
+	}
+
+	/**
+	 * @dataProvider invalid_forum_rules_data_provider
+	 */
+	public function test_parse_forum_rules_rejects_invalid_payload($payload, $forum_ids)
+	{
+		$method = (new \ReflectionClass($this->controller))->getMethod('parse_forum_rules');
+		$method->setAccessible(true);
+
+		$this->expectException('\phpbb\exception\http_exception');
+		$method->invoke($this->controller, $payload, $forum_ids);
+	}
+
+	public function test_display_builds_initial_forum_rules_payload()
+	{
+		$assigned_vars = [];
+		$this->template->method('assign_vars')->willReturnCallback(function($vars) use (&$assigned_vars) {
+			$assigned_vars = array_merge($assigned_vars, $vars);
+		});
+		$this->request->method('is_set_post')->willReturn(false);
+
+		$this->controller->handle();
+
+		$this->assertArrayHasKey('PST_FORUM_RULES', $assigned_vars);
+		$this->assertJsonStringEqualsJsonString(
+			'{"2":{"show":0,"searchable":0,"mode":"all","sources":[]}}',
+			$assigned_vars['PST_FORUM_RULES']
+		);
+	}
+
+	public function test_incomplete_forum_rules_are_rejected_before_settings_saved()
+	{
+		$this->request->method('is_set_post')->with('submit')->willReturn(true);
+		$this->request->method('variable')->willReturnMap([
+			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{}'],
+		]);
+
+		try
+		{
+			$this->controller->handle();
+			$this->fail('Incomplete forum rules should be rejected.');
+		}
+		catch (\phpbb\exception\http_exception $e)
+		{
+			$this->assertFalse(isset($this->config['similar_topics']));
+		}
+	}
+
 	public function test_default_settings_displays_postgres_and_forum_options()
 	{
 		$db = $this->createMock('\phpbb\db\driver\driver_interface');
@@ -263,10 +359,7 @@ class controller_test extends \phpbb_database_test_case
 		$this->config['pst_postgres_ts_name'] = 'simple';
 		$this->request->method('variable')->willReturnMap([
 			['pst_postgres_ts_name', 'simple', false, \phpbb\request\request_interface::REQUEST, 'english'],
-			['show_forum', [0], false, \phpbb\request\request_interface::REQUEST, []],
-			['searchable_forum', [0], false, \phpbb\request\request_interface::REQUEST, []],
-			['forum_source_mode', [0 => ''], false, \phpbb\request\request_interface::REQUEST, []],
-			['similar_forums', [0 => ''], false, \phpbb\request\request_interface::REQUEST, []],
+			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'],
 		]);
 		$this->request->method('is_set_post')->willReturn(true);
 

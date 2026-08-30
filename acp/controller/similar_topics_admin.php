@@ -156,6 +156,21 @@ class similar_topics_admin
 		{
 			$this->check_form_key($this->form_key);
 
+			$forum_ids = array();
+			foreach ($forum_list as $forum)
+			{
+				$forum_ids[] = (int) $forum['forum_id'];
+			}
+			// request::variable() HTML-escapes JSON quotes. Decode only that escaping
+			// before validation so unfiltered raw request data never reaches a query.
+			$forum_rules_payload = htmlspecialchars_decode($this->request->variable(
+				'forum_rules',
+				'',
+				false,
+				\phpbb\request\request_interface::POST
+			), ENT_COMPAT);
+			$forum_rules = $this->parse_forum_rules($forum_rules_payload, $forum_ids);
+
 			// Set basic config settings
 			$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
 			$this->config->set('similar_topics_dynamic', $this->request->variable('pst_dynamic', 0));
@@ -175,20 +190,11 @@ class similar_topics_admin
 
 			// Forum controls use positive language in the UI. Convert unchecked
 			// forums to the inverse values stored by the existing database schema.
-			$forum_ids = array();
-			foreach ($forum_list as $forum)
-			{
-				$forum_ids[] = (int) $forum['forum_id'];
-			}
-			$shown_forums = $this->request->variable('show_forum', array(0));
-			$searchable_forums = $this->request->variable('searchable_forum', array(0));
-			$this->update_forum('similar_topics_hide', array_diff($forum_ids, $shown_forums));
-			$this->update_forum('similar_topics_ignore', array_diff($forum_ids, $searchable_forums));
+			$this->update_forum('similar_topics_hide', array_diff($forum_ids, $forum_rules['shown']));
+			$this->update_forum('similar_topics_ignore', array_diff($forum_ids, $forum_rules['searchable']));
 
 			// Save per-forum source overrides from the inline source picker.
-			$source_modes = $this->request->variable('forum_source_mode', array(0 => ''));
-			$source_forums = $this->request->variable('similar_forums', array(0 => ''));
-			$this->update_forum_sources($forum_ids, $source_modes, $source_forums);
+			$this->update_forum_sources($forum_ids, $forum_rules['modes'], $forum_rules['sources']);
 
 			// Set PostgreSQL TS Name
 			if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
@@ -292,6 +298,7 @@ class similar_topics_admin
 		}
 
 		$custom_forum_count = 0;
+		$forum_rules = array();
 		$valid_forum_ids = array();
 		foreach ($forum_list as $forum)
 		{
@@ -312,6 +319,12 @@ class similar_topics_admin
 			$selected_forums = array_values(array_unique(array_intersect($selected_forums, $valid_forum_ids)));
 			$selected_count = count($selected_forums);
 			$custom_forum_count += $selected_count > 0 ? 1 : 0;
+			$forum_rules[(int) $row['forum_id']] = array(
+				'show'       => (int) !$row['similar_topics_hide'],
+				'searchable' => (int) !$row['similar_topics_ignore'],
+				'mode'       => $selected_count > 0 ? 'custom' : 'all',
+				'sources'    => $selected_forums,
+			);
 
 			$this->template->assign_block_vars('forums', array(
 				'FORUM_NAME'           => $row['forum_name'],
@@ -335,7 +348,87 @@ class similar_topics_admin
 		$this->template->assign_vars(array(
 			'PST_FORUM_COUNT'        => count($forum_list),
 			'PST_CUSTOM_FORUM_COUNT' => $custom_forum_count,
+			'PST_FORUM_RULES'        => json_encode($forum_rules),
 		));
+	}
+
+	/**
+	 * Decode and validate compact per-forum rules before any settings are saved.
+	 *
+	 * @param string $payload   JSON forum rules keyed by forum ID
+	 * @param array  $forum_ids Valid posting forum IDs
+	 * @return array Normalized rule collections
+	 */
+	protected function parse_forum_rules($payload, array $forum_ids)
+	{
+		$rules = json_decode($payload, true);
+		$normalized = array(
+			'shown'      => array(),
+			'searchable' => array(),
+			'modes'      => array(),
+			'sources'    => array(),
+		);
+
+		if (!is_array($rules) || count($rules) !== count($forum_ids))
+		{
+			$this->end('FORM_INVALID', E_USER_WARNING);
+		}
+
+		foreach ($rules as $forum_id => $rule)
+		{
+			if ((string) (int) $forum_id !== (string) $forum_id)
+			{
+				$this->end('FORM_INVALID', E_USER_WARNING);
+			}
+			$forum_id = (int) $forum_id;
+			$valid_shape = false;
+			if (is_array($rule))
+			{
+				$rule_keys = array_keys($rule);
+				sort($rule_keys);
+				$valid_shape = $rule_keys === array('mode', 'searchable', 'show', 'sources');
+			}
+			if (!in_array($forum_id, $forum_ids, true) || !$valid_shape
+				|| !in_array($rule['show'], array(0, 1), true)
+				|| !in_array($rule['searchable'], array(0, 1), true)
+				|| !in_array($rule['mode'], array('all', 'custom'), true)
+				|| !is_array($rule['sources']))
+			{
+				$this->end('FORM_INVALID', E_USER_WARNING);
+			}
+
+			$sources = array();
+			foreach ($rule['sources'] as $source_id)
+			{
+				if (!is_int($source_id) || !in_array($source_id, $forum_ids, true) || in_array($source_id, $sources, true))
+				{
+					$this->end('FORM_INVALID', E_USER_WARNING);
+				}
+				$sources[] = $source_id;
+			}
+			if (($rule['mode'] === 'custom') !== !empty($sources))
+			{
+				$this->end('FORM_INVALID', E_USER_WARNING);
+			}
+
+			if ($rule['show'])
+			{
+				$normalized['shown'][] = $forum_id;
+			}
+			if ($rule['searchable'])
+			{
+				$normalized['searchable'][] = $forum_id;
+			}
+			$normalized['modes'][$forum_id] = $rule['mode'];
+			$normalized['sources'][$forum_id] = implode(',', $sources);
+		}
+
+		if (count($normalized['modes']) !== count($forum_ids))
+		{
+			$this->end('FORM_INVALID', E_USER_WARNING);
+		}
+
+		return $normalized;
 	}
 
 	/**
