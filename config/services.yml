@@ -52,6 +52,7 @@ services:
             - '@config'
             - '@config_text'
             - '@dbal.conn'
+            - '@ext.manager'
             - '@vse.similartopics.driver.manager'
             - '@language'
             - '@log'
