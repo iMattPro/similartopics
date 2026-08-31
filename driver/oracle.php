@@ -51,7 +51,7 @@ class oracle implements driver_interface
 	{
 		// Clean and prepare the search terms for Oracle Text
 		$search_terms = $this->prepare_search_terms($topic_title);
-		$sql_time = ($length > 0) ? ' AND t.topic_time > (EXTRACT(EPOCH FROM SYSTIMESTAMP) - ' . (int) $length . ')' : '';
+		$sql_time = ($length > 0) ? " AND t.topic_time > ((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE '1970-01-01') * 86400 - " . (int) $length . ')' : '';
 
 		return array(
 			'SELECT'	=> "f.forum_id, f.forum_name, t.*,
@@ -102,27 +102,23 @@ class oracle implements driver_interface
 			return $indexes;
 		}
 
-		$sql = "SELECT index_name
-			FROM user_indexes
-			WHERE table_name = UPPER('" . $this->db->sql_escape($table) . "')
-			AND index_type = 'DOMAIN'
-			AND domidx_opstatus = 'VALID'";
+		$sql = "SELECT i.index_name
+			FROM user_indexes i
+			WHERE i.table_name = UPPER('" . $this->db->sql_escape($table) . "')
+			AND i.index_type = 'DOMAIN'
+			AND i.domidx_opstatus = 'VALID'
+			AND EXISTS (
+				SELECT 1
+				FROM user_ind_columns c
+				WHERE c.index_name = i.index_name
+				AND c.table_name = i.table_name
+				AND c.column_name = UPPER('" . $this->db->sql_escape($column) . "')
+			)";
 		$result = $this->db->sql_query($sql);
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			// Check if this is a text index on our column
-			$check_sql = "SELECT column_name
-				FROM user_ind_columns
-				WHERE index_name = '" . $this->db->sql_escape($row['index_name']) . "'
-				AND column_name = UPPER('" . $this->db->sql_escape($column) . "')";
-			$check_result = $this->db->sql_query($check_sql);
-
-			if ($this->db->sql_fetchrow($check_result))
-			{
-				$indexes[] = strtolower($column);
-			}
-			$this->db->sql_freeresult($check_result);
+			$indexes[] = strtolower($column);
 		}
 
 		$this->db->sql_freeresult($result);

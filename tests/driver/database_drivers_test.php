@@ -168,6 +168,17 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString('SCORE(1)', $query['SELECT']);
 	}
 
+	public function test_oracle_search_period_uses_unix_timestamp()
+	{
+		$this->db->method('sql_escape')->willReturnArgument(0);
+
+		$driver = new \vse\similartopics\driver\oracle($this->db);
+		$query = $driver->get_query(1, 'test topic', 86400, 0.5);
+
+		$this->assertStringContainsString('SYS_EXTRACT_UTC(SYSTIMESTAMP)', $query['WHERE']);
+		$this->assertStringContainsString("DATE '1970-01-01'", $query['WHERE']);
+	}
+
 	public function test_sqlite3_driver()
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');
@@ -271,12 +282,15 @@ class database_drivers_test extends \phpbb_test_case
 	{
 		$this->db->method('get_sql_layer')->willReturn('oracle');
 		$this->db->method('sql_escape')->willReturnArgument(0);
-		$this->db->method('sql_query')->willReturn(true);
+		$this->db->expects($this->once())
+			->method('sql_query')
+			->with($this->callback(function ($sql) {
+				return strpos($sql, 'EXISTS') !== false && strpos($sql, 'user_ind_columns') !== false;
+			}))
+			->willReturn(true);
 		$this->db->method('sql_fetchrow')
 			->willReturnOnConsecutiveCalls(
 				['index_name' => 'topics_topic_title_ctx_idx'],
-				['column_name' => 'TOPIC_TITLE'],
-				false,
 				false
 			);
 		$this->db->method('sql_freeresult');
