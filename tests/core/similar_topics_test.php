@@ -637,8 +637,12 @@ class similar_topics_test extends phpbb_test_case
 
 	public function test_search_similar_topics_ajax_with_results(): void
 	{
-		global $config, $user, $auth, $cache;
+		global $config, $user, $auth, $cache, $_SID, $_EXTRA_URL;
 		$this->config = $config = new config(['similar_topics_time' => 86400]);
+		$original_sid = $_SID;
+		$original_extra_url = $_EXTRA_URL;
+		$_SID = '';
+		$_EXTRA_URL = ['style=2'];
 		$this->stop_word_helper->method('clean_text')->willReturn('test query');
 		$this->db->method('get_sql_layer')->willReturn('mysqli');
 		$this->manager->method('get_driver')->willReturn($this->driver);
@@ -667,11 +671,14 @@ class similar_topics_test extends phpbb_test_case
 
 		$similar_topics = $this->get_similar_topics();
 		$result = $similar_topics->search_similar_topics_ajax('test query', 1);
+		$_SID = $original_sid;
+		$_EXTRA_URL = $original_extra_url;
 
 		self::assertIsArray($result);
 		self::assertCount(1, $result);
 		self::assertEquals(1, $result[0]['id']);
 		self::assertEquals('Test Topic', $result[0]['title']);
+		self::assertEquals('phpBB/viewtopic.php?style=2&t=1', $result[0]['url']);
 	}
 
 	public function test_search_similar_topics_ajax_excludes_passworded_forums(): void
