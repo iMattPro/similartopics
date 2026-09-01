@@ -475,7 +475,7 @@ class similar_topics
 				$topics[] = [
 					'id' => (int) $row['topic_id'],
 					'title' => censor_text($row['topic_title']),
-					'url' => append_sid("{$this->root_path}viewtopic.$this->php_ext", 't=' . $row['topic_id'])
+					'url' => append_sid("{$this->root_path}viewtopic.$this->php_ext", 't=' . $row['topic_id'], false)
 				];
 			}
 		}
