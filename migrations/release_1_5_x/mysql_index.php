@@ -42,27 +42,14 @@ class mysql_index extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Add a MYSQLI FULLTEXT index to phpbb_topics.topic_title (if needed).
-	 *
-	 * This is a retry of the similar action in release_1_1_0_data.
-	 * The first attempt would miss older InnoDB tables that do not support
-	 * FULLTEXT. If that happened, then this will convert the table to
-	 * MyISAM so we can then create the fulltext index. The old storage
-	 * engine will be stored so it can be reverted on uninstall.
-	 * Data is reverted in the release_1_3_0_fulltext migration.
+	 * Legacy create callback retained for migration compatibility
 	 */
 	public function add_topic_title_fulltext()
 	{
-		$driver = $this->get_driver();
-
-		if (!$driver->is_fulltext('topic_title'))
-		{
-			// Store the original database storage engine in a config var for recovery on uninstall
-			$this->config->set('similar_topics_fulltext', (string) $driver->get_engine());
-
-			// Create the FULLTEXT index
-			$driver->create_fulltext_index('topic_title');
-		}
+		// Existing installations have this migration recorded complete, so phpBB
+		// does not rerun this changed callback during upgrade. On fresh installs,
+		// driver creates only a missing index and records ownership after verification.
+		$this->get_driver()->create_fulltext_index('topic_title', TOPICS_TABLE);
 	}
 
 	/**
@@ -72,6 +59,6 @@ class mysql_index extends \phpbb\db\migration\migration
 	 */
 	protected function get_driver()
 	{
-		return new \vse\similartopics\driver\mysqli($this->db);
+		return new \vse\similartopics\driver\mysqli($this->db, $this->config);
 	}
 }

@@ -12,6 +12,12 @@ namespace vse\similartopics\migrations;
 
 class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 {
+	/**
+	 * phpBB records an effectively installed migration with both schema and data
+	 * complete. Its revert_data() therefore still runs during purge. This matters
+	 * for legacy installs where release_1_5_x\mysql_index added the engine marker
+	 * after this migration had been recorded as effectively installed.
+	 */
 	public function effectively_installed()
 	{
 		return !isset($this->config['similar_topics_fulltext']);
@@ -24,6 +30,8 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 
 	public function revert_data()
 	{
+		// Conditions are evaluated when purge runs, not when migration was installed.
+		// A legacy marker added later by release_1_5_x\mysql_index is therefore seen.
 		return array(
 			// Revert the storage engine back to the original setting if it was stored
 			array('if', array(

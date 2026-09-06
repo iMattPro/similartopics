@@ -15,17 +15,24 @@ namespace vse\similartopics\driver;
  */
 class mssql implements driver_interface
 {
+	const OWNED_INDEX_CONFIG = 'pst_mssql_owned_index';
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
+
+	/** @var \phpbb\config\config|null */
+	protected $config;
 
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -163,6 +170,32 @@ class mssql implements driver_interface
 			KEY INDEX PK_" . $this->db->sql_escape($table) . "
 			ON phpbb_catalog";
 		$this->db->sql_query($sql);
+
+		if ($this->config !== null && $this->is_fulltext($column, $table))
+		{
+			$this->config->set(self::OWNED_INDEX_CONFIG, $column);
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		if ($this->config[self::OWNED_INDEX_CONFIG] === $column
+			&& $this->get_fulltext_indexes($column, $table) === array($column))
+		{
+			// SQL Server's DROP FULLTEXT INDEX is table-wide. Preserve it when
+			// another column was added after this extension created it.
+			$this->db->sql_query('DROP FULLTEXT INDEX ON ' . $table);
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**

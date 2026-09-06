@@ -55,33 +55,30 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Add a FULLTEXT index to phpbb_topics.topic_title
+	 * Legacy create callback retained for migration compatibility
 	 */
 	public function add_topic_title_fulltext()
 	{
 		$fulltext = $this->get_fulltext();
 
-		// FULLTEXT is supported and topic_title IS NOT an index
+		// Existing installations have this migration recorded complete, so phpBB
+		// does not rerun this changed create callback during upgrade. Fresh installs
+		// use the ownership-aware driver; pre-existing indexes are never claimed.
 		if ($fulltext->is_supported() && !$fulltext->is_index('topic_title'))
 		{
-			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
-			$this->db->sql_query($sql);
+			$fulltext->create_fulltext_index('topic_title', TOPICS_TABLE);
 		}
 	}
 
 	/**
-	 * Drop the FULLTEXT index on phpbb_topics.topic_title
+	 * Legacy drop callback retained for migration compatibility
 	 */
 	public function drop_topic_title_fulltext()
 	{
-		$fulltext = $this->get_fulltext();
-
-		// FULLTEXT is supported and topic_title IS an index
-		if ($fulltext->is_supported() && $fulltext->is_index('topic_title'))
-		{
-			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
-			$this->db->sql_query($sql);
-		}
+		// phpBB uses this historical class again during purge. A later migration
+		// cannot replace its revert callback, so this existing callback must delegate
+		// to the driver. No marker means no DDL; all legacy/unowned indexes remain.
+		$this->get_fulltext()->drop_owned_fulltext_index('topic_title', TOPICS_TABLE);
 	}
 
 	/**
@@ -91,6 +88,6 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	 */
 	public function get_fulltext()
 	{
-		return new \vse\similartopics\core\fulltext_support($this->db);
+		return new \vse\similartopics\core\fulltext_support($this->db, $this->config);
 	}
 }

@@ -57,20 +57,23 @@ class sqlite3_index extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Create a FULLTEXT index for the topic_title in the topic table
+	 * Legacy create callback retained for migration compatibility
 	 */
 	public function create_sqlite3_index()
 	{
+		// Completed migrations are not rerun on upgrade. Fresh installs reach this
+		// ownership-aware driver and record a marker only after verified creation.
 		$this->get_driver()->create_fulltext_index('topic_title', TOPICS_TABLE);
 	}
 
 	/**
-	 * Drop the FULLTEXT index we created from the topic table
+	 * Legacy drop callback retained for migration compatibility
 	 */
 	public function drop_sqlite3_index()
 	{
-		$sql = 'DROP INDEX IF EXISTS idx_' . TOPICS_TABLE . '_topic_title';
-		$this->db->sql_query($sql);
+		// phpBB uses this historical callback during purge; a new migration cannot
+		// replace it. Driver performs no DDL without exact recorded ownership.
+		$this->get_driver()->drop_owned_fulltext_index('topic_title', TOPICS_TABLE);
 	}
 
 	/**
@@ -80,7 +83,7 @@ class sqlite3_index extends \phpbb\db\migration\migration
 	{
 		if ($this->driver === null)
 		{
-			$this->driver = new sqlite3($this->db);
+			$this->driver = new sqlite3($this->db, $this->config);
 		}
 		return $this->driver;
 	}

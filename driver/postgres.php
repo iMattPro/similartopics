@@ -15,6 +15,9 @@ namespace vse\similartopics\driver;
  */
 class postgres implements driver_interface
 {
+	/** Config key containing exact name of index created by this extension */
+	const OWNED_INDEX_CONFIG = 'pst_postgres_owned_index';
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
@@ -28,14 +31,14 @@ class postgres implements driver_interface
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\config\config              $config
+	 * @param \phpbb\config\config $config
 	 */
 	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config)
 	{
 		$this->db = $db;
 		$this->config = $config;
 
-		$this->set_ts_name($config['pst_postgres_ts_name']);
+		$this->set_ts_name($config->offsetExists('pst_postgres_ts_name') ? $config['pst_postgres_ts_name'] : 'simple');
 	}
 
 	/**
@@ -137,32 +140,62 @@ class postgres implements driver_interface
 	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
 	{
 		// Make sure ts_name is current
-		$this->set_ts_name($this->config['pst_postgres_ts_name']);
+		$this->set_ts_name($this->config->offsetExists('pst_postgres_ts_name') ? $this->config['pst_postgres_ts_name'] : 'simple');
 
 		$new_index = $this->get_index_name($table, $column);
+		$indexes = $this->get_fulltext_indexes($column, $table);
+		$owned_index = $this->config->offsetExists(self::OWNED_INDEX_CONFIG) ? $this->config[self::OWNED_INDEX_CONFIG] : '';
 
-		$indexed = false;
-
-		foreach ($this->get_fulltext_indexes($column, $table) as $index)
+		// A dictionary change may obsolete an index we previously created. Never
+		// remove other matching expression indexes: existence does not prove ownership.
+		if ($owned_index && $owned_index !== $new_index)
 		{
-			if ($index === $new_index)
+			if (in_array($owned_index, $indexes, true))
 			{
-				$indexed = true;
-			}
-			else
-			{
-				$sql = 'DROP INDEX ' . $this->quote_identifier($index);
+				$sql = 'DROP INDEX ' . $this->quote_identifier($owned_index);
 				$this->db->sql_query($sql);
+				$indexes = array_values(array_diff($indexes, array($owned_index)));
 			}
+			$this->config->delete(self::OWNED_INDEX_CONFIG);
 		}
 
-		if (!$indexed)
+		if (!in_array($new_index, $indexes, true))
 		{
 			$sql = 'CREATE INDEX ' . $this->quote_identifier($new_index) . '
 				ON '  . $this->quote_identifier($table) . "
 				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->quote_identifier($column) . '))';
 			$this->db->sql_query($sql);
+
+			// Record ownership only after catalog lookup confirms creation. If DDL
+			// succeeds but verification fails, later cleanup safely preserves it.
+			if (in_array($new_index, $this->get_fulltext_indexes($column, $table), true))
+			{
+				$this->config->set(self::OWNED_INDEX_CONFIG, $new_index);
+			}
 		}
+	}
+
+	/**
+	 * Drop only the PostgreSQL index whose ownership was recorded at creation.
+	 *
+	 * @param string $column Column name
+	 * @param string $table  Table name
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if (!$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		$owned_index = $this->config[self::OWNED_INDEX_CONFIG];
+		if (in_array($owned_index, $this->get_fulltext_indexes($column, $table), true))
+		{
+			$sql = 'DROP INDEX ' . $this->quote_identifier($owned_index);
+			$this->db->sql_query($sql);
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**
