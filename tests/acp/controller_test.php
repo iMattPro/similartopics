@@ -228,11 +228,24 @@ class controller_test extends \phpbb_database_test_case
 		$method->setAccessible(true);
 		$method->invoke($this->controller, [1, 2, 3], [1 => 'custom', 2 => 'all', 3 => 'custom'], [1 => '2,3,99,2', 2 => '1', 3 => '']);
 
-		$this->assertCount(3, $executed_queries);
+		$this->assertCount(1, $executed_queries);
 		$this->assertStringContainsString('UPDATE ' . FORUMS_TABLE, $executed_queries[0]);
-		$this->assertStringContainsString("similar_topic_forums = '[2,3]'", $executed_queries[0]);
-		$this->assertStringContainsString("similar_topic_forums = ''", $executed_queries[1]);
-		$this->assertStringContainsString("similar_topic_forums = ''", $executed_queries[2]);
+		$this->assertStringContainsString("WHEN 1 THEN '[2,3]'", $executed_queries[0]);
+		$this->assertStringContainsString("WHEN 2 THEN ''", $executed_queries[0]);
+		$this->assertStringContainsString("WHEN 3 THEN ''", $executed_queries[0]);
+	}
+
+	public function test_update_forum_sources_batches_large_forum_lists()
+	{
+		$executed_queries = [];
+		$this->setupDbCapture($executed_queries);
+		$forum_ids = range(1, 101);
+
+		$method = (new \ReflectionClass($this->controller))->getMethod('update_forum_sources');
+		$method->setAccessible(true);
+		$method->invoke($this->controller, $forum_ids, [], []);
+
+		$this->assertCount(2, $executed_queries);
 	}
 
 	public function test_parse_forum_rules_returns_complete_normalized_rules()

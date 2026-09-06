@@ -533,8 +533,7 @@ class similar_topics_admin
 	 */
 	protected function update_forum_sources(array $forum_ids, array $source_modes, array $source_forums)
 	{
-		$this->db->sql_transaction('begin');
-
+		$updates = array();
 		foreach ($forum_ids as $forum_id)
 		{
 			$selected = array();
@@ -544,10 +543,22 @@ class similar_topics_admin
 				$selected = array_values(array_unique(array_intersect($selected, $forum_ids)));
 			}
 
-			$value = !empty($selected) ? json_encode($selected) : '';
-			$sql = 'UPDATE ' . FORUMS_TABLE . "
-				SET similar_topic_forums = '" . $this->db->sql_escape($value) . "'
-				WHERE forum_id = " . (int) $forum_id;
+			$updates[(int) $forum_id] = !empty($selected) ? json_encode($selected) : '';
+		}
+
+		$this->db->sql_transaction('begin');
+
+		foreach (array_chunk($updates, 100, true) as $batch)
+		{
+			$cases = array();
+			foreach ($batch as $forum_id => $value)
+			{
+				$cases[] = 'WHEN ' . $forum_id . " THEN '" . $this->db->sql_escape($value) . "'";
+			}
+
+			$sql = 'UPDATE ' . FORUMS_TABLE . '
+				SET similar_topic_forums = CASE forum_id ' . implode(' ', $cases) . ' END
+				WHERE ' . $this->db->sql_in_set('forum_id', array_keys($batch));
 			$this->db->sql_query($sql);
 		}
 
