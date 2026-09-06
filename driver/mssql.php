@@ -120,10 +120,10 @@ class mssql implements driver_interface
 
 		try
 		{
-			$sql = "SELECT i.name
-				FROM sys.fulltext_indexes fi
-				INNER JOIN sys.indexes i ON fi.object_id = i.object_id AND fi.unique_index_id = i.index_id
-				INNER JOIN sys.objects o ON fi.object_id = o.object_id
+			$sql = "SELECT c.name
+				FROM sys.fulltext_index_columns fic
+				INNER JOIN sys.columns c ON fic.object_id = c.object_id AND fic.column_id = c.column_id
+				INNER JOIN sys.objects o ON fic.object_id = o.object_id
 				WHERE o.name = '" . $this->db->sql_escape($table) . "'";
 			$result = $this->db->sql_query($sql);
 

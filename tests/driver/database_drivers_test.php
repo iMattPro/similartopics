@@ -104,6 +104,24 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString('CONTAINS', $query['WHERE']);
 	}
 
+	public function test_mssql_fulltext_lookup_reads_indexed_columns()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mssqlnative');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->expects($this->once())
+			->method('sql_query')
+			->with($this->callback(function ($sql) {
+				return strpos($sql, 'sys.fulltext_index_columns') !== false
+					&& strpos($sql, 'sys.columns') !== false
+					&& strpos($sql, 'sys.indexes') === false;
+			}))
+			->willReturn(true);
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(['name' => 'topic_title'], false);
+		$this->db->method('sql_freeresult');
+
+		$this->assertTrue((new \vse\similartopics\driver\mssql($this->db))->is_fulltext('topic_title'));
+	}
+
 	public function test_mssql_driver_without_fulltext()
 	{
 		$this->db->method('get_sql_layer')->willReturn('mssql');
