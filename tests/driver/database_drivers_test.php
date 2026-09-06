@@ -452,6 +452,30 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertCount($expected_writes, $writes);
 	}
 
+	public function test_postgres_quotes_and_sanitizes_index_identifiers()
+	{
+		$writes = [];
+		$this->config['pst_postgres_ts_name'] = 'english;DROP_INDEX';
+		$this->db->method('get_sql_layer')->willReturn('postgres');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$writes) {
+			if (strpos($sql, 'SELECT ') !== 0)
+			{
+				$writes[] = $sql;
+			}
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturn(false);
+		$this->db->method('sql_freeresult');
+
+		(new \vse\similartopics\driver\postgres($this->db, $this->config))->create_fulltext_index();
+
+		$this->assertCount(1, $writes);
+		$this->assertStringContainsString('CREATE INDEX "phpbb_topics_english_DROP_INDEX_topic_title"', $writes[0]);
+		$this->assertStringContainsString('ON "phpbb_topics"', $writes[0]);
+		$this->assertStringContainsString(', "topic_title"))', $writes[0]);
+	}
+
 	public function test_sqlite_existing_index_is_not_recreated()
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');

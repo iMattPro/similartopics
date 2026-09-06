@@ -156,6 +156,17 @@ class similar_topics_admin
 		{
 			$this->check_form_key($this->form_key);
 
+			$postgres_ts_name = null;
+			if ($this->similartopics instanceof \vse\similartopics\driver\postgres)
+			{
+				$postgres_ts_name = $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
+				$valid_ts_names = array_column($this->similartopics->get_cfg_name_list(), 'ts_name');
+				if (!in_array($postgres_ts_name, $valid_ts_names, true))
+				{
+					$this->end('FORM_INVALID', E_USER_WARNING);
+				}
+			}
+
 			$forum_ids = array();
 			foreach ($forum_list as $forum)
 			{
@@ -199,8 +210,10 @@ class similar_topics_admin
 			// Set PostgreSQL TS Name
 			if ($this->similartopics && $this->similartopics->get_type() === 'postgres')
 			{
-				$ts_name = $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
-				$this->config->set('pst_postgres_ts_name', $ts_name);
+				$postgres_ts_name = $postgres_ts_name !== null
+					? $postgres_ts_name
+					: $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
+				$this->config->set('pst_postgres_ts_name', $postgres_ts_name);
 				$this->similartopics->create_fulltext_index('topic_title');
 			}
 

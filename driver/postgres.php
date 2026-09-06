@@ -96,7 +96,7 @@ class postgres implements driver_interface
 	 */
 	public function is_fulltext($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		return in_array($table . '_' . $this->ts_name . '_' . $column, $this->get_fulltext_indexes($column, $table), true);
+		return in_array($this->get_index_name($table, $column), $this->get_fulltext_indexes($column, $table), true);
 	}
 
 	/**
@@ -139,7 +139,7 @@ class postgres implements driver_interface
 		// Make sure ts_name is current
 		$this->set_ts_name($this->config['pst_postgres_ts_name']);
 
-		$new_index = $table . '_' . $this->ts_name . '_' . $column;
+		$new_index = $this->get_index_name($table, $column);
 
 		$indexed = false;
 
@@ -151,18 +151,51 @@ class postgres implements driver_interface
 			}
 			else
 			{
-				$sql = 'DROP INDEX ' . $index;
+				$sql = 'DROP INDEX ' . $this->quote_identifier($index);
 				$this->db->sql_query($sql);
 			}
 		}
 
 		if (!$indexed)
 		{
-			$sql = 'CREATE INDEX ' . $this->db->sql_escape($new_index) . '
-				ON '  . $this->db->sql_escape($table) . "
-				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->db->sql_escape($column) . '))';
+			$sql = 'CREATE INDEX ' . $this->quote_identifier($new_index) . '
+				ON '  . $this->quote_identifier($table) . "
+				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->quote_identifier($column) . '))';
 			$this->db->sql_query($sql);
 		}
+	}
+
+	/**
+	 * Build a safe, deterministic PostgreSQL index name.
+	 *
+	 * PostgreSQL limits identifiers to 63 bytes by default. Keep generated names
+	 * within that limit so catalog lookups match names PostgreSQL stores.
+	 *
+	 * @param string $table  Table name
+	 * @param string $column Column name
+	 * @return string
+	 */
+	protected function get_index_name($table, $column)
+	{
+		$name = preg_replace('/[^a-zA-Z0-9_]/', '_', $table . '_' . $this->ts_name . '_' . $column);
+
+		if (strlen($name) > 63)
+		{
+			$name = substr($name, 0, 46) . '_' . substr(hash('sha256', $name), 0, 16);
+		}
+
+		return $name;
+	}
+
+	/**
+	 * Quote a PostgreSQL identifier.
+	 *
+	 * @param string $identifier Identifier
+	 * @return string
+	 */
+	protected function quote_identifier($identifier)
+	{
+		return '"' . str_replace('"', '""', $identifier) . '"';
 	}
 
 	/**
