@@ -635,7 +635,7 @@ class similar_topics_test extends \phpbb_test_case
 		$this->db->expects(self::exactly(2))
 			->method('sql_fetchrow')
 			->willReturnOnConsecutiveCalls(
-				['topic_id' => 1, 'topic_title' => 'Test Topic', 'forum_id' => 1],
+				['topic_id' => 1, 'topic_title' => 'Test &quot;Topic&quot; &amp; More', 'forum_id' => 1],
 				false
 			);
 		$this->db->expects(self::exactly(2))
@@ -650,7 +650,7 @@ class similar_topics_test extends \phpbb_test_case
 		self::assertIsArray($result);
 		self::assertCount(1, $result);
 		self::assertEquals(1, $result[0]['id']);
-		self::assertEquals('Test Topic', $result[0]['title']);
+		self::assertEquals('Test "Topic" & More', $result[0]['title']);
 		self::assertEquals('phpBB/viewtopic.php?style=2&t=1', $result[0]['url']);
 	}
 
