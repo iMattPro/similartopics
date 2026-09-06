@@ -160,7 +160,11 @@ class similar_topics_admin
 			if ($this->similartopics instanceof \vse\similartopics\driver\postgres)
 			{
 				$postgres_ts_name = $this->request->variable('pst_postgres_ts_name', ($this->config['pst_postgres_ts_name'] ?: 'simple'));
-				$valid_ts_names = array_column($this->similartopics->get_cfg_name_list(), 'ts_name');
+				$valid_ts_names = array();
+				foreach ($this->similartopics->get_cfg_name_list() as $row)
+				{
+					$valid_ts_names[] = $row['ts_name'];
+				}
 				if (!in_array($postgres_ts_name, $valid_ts_names, true))
 				{
 					$this->end('FORM_INVALID', E_USER_WARNING);
