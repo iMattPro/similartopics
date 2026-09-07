@@ -478,29 +478,39 @@ class database_drivers_test extends \phpbb_test_case
 		(new \vse\similartopics\driver\postgres($this->db, $this->config))->create_fulltext_index();
 
 		$this->assertCount($expected_writes, $writes);
+		$this->assertSame(
+			'phpbb_topics_english_topic_title',
+			$this->config[\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG]
+		);
 	}
 
-	public function test_postgres_drops_only_managed_indexes()
+	public function test_postgres_drops_only_owned_index()
 	{
+		$this->config[\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG] = 'phpbb_topics_simple_topic_title';
 		$this->db->method('get_sql_layer')->willReturn('postgres');
 		$this->db->method('sql_escape')->willReturnArgument(0);
-		$this->db->expects($this->exactly(3))->method('sql_query')
+		$this->db->expects($this->exactly(2))->method('sql_query')
 			->withConsecutive(
 				[$this->stringContains('SELECT c2.relname')],
-				['SELECT cfgname AS ts_name FROM pg_ts_config'],
 				['DROP INDEX "phpbb_topics_simple_topic_title"']
 			)
 			->willReturn(true);
 		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
 			['relname' => 'phpbb_topics_simple_topic_title'],
+			['relname' => 'phpbb_topics_english_topic_title'],
 			['relname' => 'admin_topic_title_search'],
 			false
 		);
-		$this->db->method('sql_fetchrowset')->willReturn([
-			['ts_name' => 'simple'],
-			['ts_name' => 'english'],
-		]);
 		$this->db->method('sql_freeresult');
+
+		(new \vse\similartopics\driver\postgres($this->db, $this->config))->drop_fulltext_indexes();
+
+		$this->assertFalse($this->config->offsetExists(\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG));
+	}
+
+	public function test_postgres_does_not_drop_index_without_ownership()
+	{
+		$this->db->expects($this->never())->method('sql_query');
 
 		(new \vse\similartopics\driver\postgres($this->db, $this->config))->drop_fulltext_indexes();
 	}

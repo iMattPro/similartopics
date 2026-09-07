@@ -188,10 +188,22 @@ class postgres implements driver_interface
 				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->quote_identifier($column) . '))';
 			$this->db->sql_query($sql);
 		}
+
+		// Existing matching topic_title indexes are treated as ours. phpBB does not
+		// create one, and this keeps upgraded and fresh installs in the same state.
+		$this->config->set(self::OWNED_INDEX_CONFIG, $new_index);
 	}
 
 	/**
-	 * Drop indexes managed by Similar Topics' deterministic naming scheme.
+	 * {@inheritdoc}
+	 */
+	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		$this->create_fulltext_index($column, $table);
+	}
+
+	/**
+	 * Compatibility entry point used by released migrations.
 	 *
 	 * @param string $column Column name
 	 * @param string $table  Table name
@@ -199,10 +211,30 @@ class postgres implements driver_interface
 	 */
 	public function drop_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		foreach ($this->get_managed_fulltext_indexes($column, $table) as $index)
+		$this->drop_owned_fulltext_index($column, $table);
+	}
+
+	/**
+	 * Drop only the exact PostgreSQL index recorded as owned.
+	 *
+	 * @param string $column Column name
+	 * @param string $table  Table name
+	 * @return void
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if (!$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
 		{
-			$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($index));
+			return;
 		}
+
+		$owned_index = $this->config[self::OWNED_INDEX_CONFIG];
+		if (in_array($owned_index, $this->get_fulltext_indexes($column, $table), true))
+		{
+			$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($owned_index));
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**

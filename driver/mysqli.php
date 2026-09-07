@@ -18,6 +18,9 @@ class mysqli implements driver_interface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\config\config|null */
+	protected $config;
+
 	/** @var string */
 	protected $engine;
 
@@ -25,10 +28,12 @@ class mysqli implements driver_interface
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -141,6 +146,47 @@ class mysqli implements driver_interface
 				ADD FULLTEXT (' . $this->db->sql_escape($column) . ')';
 			$this->db->sql_query($sql);
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config !== null && $this->is_fulltext($column, $table))
+		{
+			$this->config->set(self::OWNED_INDEX_CONFIG, $column);
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		if ($this->config[self::OWNED_INDEX_CONFIG] === $column && $this->is_fulltext($column, $table))
+		{
+			$this->db->sql_query('ALTER TABLE ' . $this->quote_identifier($table) .
+				' DROP INDEX ' . $this->quote_identifier($column));
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
+	}
+
+	/**
+	 * Quote a MySQL identifier.
+	 *
+	 * @param string $identifier Identifier
+	 * @return string
+	 */
+	protected function quote_identifier($identifier)
+	{
+		return '`' . str_replace('`', '``', $identifier) . '`';
 	}
 
 	/**
