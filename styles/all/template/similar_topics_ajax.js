@@ -75,6 +75,7 @@
 			link.className = 'similar-topic-title';
 			link.textContent = topic.title;
 			link.target = '_blank';
+			link.rel = 'noopener noreferrer';
 			item.appendChild(link);
 			listContainer.appendChild(item);
 		});
@@ -95,7 +96,7 @@
 	// Open currently selected topic in new tab
 	function openSelectedTopic() {
 		if (selectedIndex >= 0 && selectedIndex < cachedItems.length) {
-			window.open(cachedItems[selectedIndex].querySelector('a').href, '_blank');
+			window.open(cachedItems[selectedIndex].querySelector('a').href, '_blank', 'noopener,noreferrer');
 			hideDropdown();
 		}
 	}
