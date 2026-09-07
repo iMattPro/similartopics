@@ -515,6 +515,41 @@ class database_drivers_test extends \phpbb_test_case
 		(new \vse\similartopics\driver\postgres($this->db, $this->config))->drop_fulltext_indexes();
 	}
 
+	public function ownership_guard_driver_data()
+	{
+		return [
+			['mysqli'],
+			['mssql'],
+			['oracle'],
+			['sqlite3'],
+		];
+	}
+
+	/**
+	 * @dataProvider ownership_guard_driver_data
+	 */
+	public function test_drop_owned_index_without_config_does_nothing($driver_class)
+	{
+		$this->db->expects($this->never())->method('sql_query');
+		$class = '\\vse\\similartopics\\driver\\' . $driver_class;
+
+		$this->assertNull((new $class($this->db))->drop_owned_fulltext_index());
+	}
+
+	/**
+	 * @dataProvider ownership_guard_driver_data
+	 */
+	public function test_drop_owned_index_without_ownership_config_does_nothing($driver_class)
+	{
+		$this->db->expects($this->never())->method('sql_query');
+		$class = '\\vse\\similartopics\\driver\\' . $driver_class;
+
+		$this->assertNull((new $class($this->db, $this->config))->drop_owned_fulltext_index());
+		$this->assertFalse($this->config->offsetExists(
+			\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG
+		));
+	}
+
 	public function test_postgres_replaces_truncated_legacy_index()
 	{
 		$ts_name = str_repeat('x', 60);
