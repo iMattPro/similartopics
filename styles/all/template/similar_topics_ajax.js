@@ -26,12 +26,27 @@
 		const isRTL = document.documentElement.dir === 'rtl' || document.body.classList.contains('rtl');
 
 		Object.assign(dropdown.style, {
-			left: isRTL ? 'auto' : rect.left + 'px',
+			left: isRTL ? 'auto' : (rect.left + window.scrollX) + 'px',
 			right: 'auto',
-			top: (rect.bottom + window.scrollY) + 'px',
+			top: 'auto',
 			width: rect.width + 'px',
 			display: 'block'
 		});
+
+		const offsetParent = dropdown.offsetParent;
+		if (offsetParent) {
+			const parentRect = offsetParent.getBoundingClientRect();
+			const isRoot = offsetParent === document.body || offsetParent === document.documentElement;
+			const scrollTop = isRoot ? 0 : offsetParent.scrollTop;
+
+			// Absolute offsets use the offset parent's padding box, not the viewport.
+			dropdown.style.top = (rect.bottom - parentRect.top - offsetParent.clientTop + scrollTop) + 'px';
+		}
+
+		// Preserve browser's natural RTL placement, then make its offset explicit.
+		if (isRTL && offsetParent) {
+			dropdown.style.right = (offsetParent.clientWidth - dropdown.offsetLeft - dropdown.offsetWidth) + 'px';
+		}
 	}
 
 	// AJAX search for similar topics (minimum 3 characters)
