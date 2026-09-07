@@ -17,9 +17,6 @@ use phpbb\config\config;
  */
 class postgres implements driver_interface
 {
-	/** Config key containing exact name of index created by this extension */
-	const OWNED_INDEX_CONFIG = 'pst_postgres_owned_index';
-
 	/** @var \phpbb\db\driver\driver_interface */
 	protected \phpbb\db\driver\driver_interface $db;
 
@@ -65,8 +62,8 @@ class postgres implements driver_interface
 	public function get_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array
 	{
 		$ts_name = $this->db->sql_escape($this->ts_name);
-		$ts_query_text = $this->db->sql_escape(preg_replace(['/\s+/', '/\'/'], ['|', ''], $topic_title));
-		$ts_rank_cd = "ts_rank_cd('{1,1,1,1}', to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_name', '$ts_query_text'), 32)";
+		$ts_query = $this->get_plain_ts_query($topic_title, $ts_name);
+		$ts_rank_cd = "ts_rank_cd('{1,1,1,1}', to_tsvector('$ts_name', t.topic_title), $ts_query, 32)";
 		$sql_time = ($length > 0) ? ' AND t.topic_time > (extract(epoch from current_timestamp)::integer - ' . (int) $length . ')' : '';
 
 		return array(
@@ -80,12 +77,38 @@ class postgres implements driver_interface
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-			'WHERE'		=> "to_tsquery('$ts_name', '$ts_query_text') @@ to_tsvector('$ts_name', t.topic_title) AND $ts_rank_cd >= " . (float) $sensitivity . '
+			'WHERE'		=> "$ts_query @@ to_tsvector('$ts_name', t.topic_title) AND $ts_rank_cd >= " . (float) $sensitivity . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_id <> ' . (int) $topic_id . $sql_time,
 			'ORDER_BY'	=> 'score DESC, t.topic_time DESC',
 		);
+	}
+
+	/**
+	 * Build an OR query from plain title words without exposing tsquery syntax.
+	 *
+	 * phpBB's PostgreSQL search parser supports advanced search operators and is
+	 * coupled to the search backend. Similar-topic titles are plain text, so each
+	 * word is normalized with PostgreSQL's punctuation-safe plainto_tsquery().
+	 *
+	 * @param string $topic_title Topic title
+	 * @param string $ts_name     Escaped PostgreSQL text-search configuration
+	 * @return string SQL expression producing a tsquery
+	 */
+	protected function get_plain_ts_query($topic_title, $ts_name)
+	{
+		$matches = array();
+		preg_match_all("#[\\p{L}\\p{N}]+(?:['’][\\p{L}\\p{N}]+)*#u", $topic_title, $matches);
+		$words = !empty($matches[0]) ? array_values(array_unique($matches[0])) : array('');
+		$queries = array();
+
+		foreach ($words as $word)
+		{
+			$queries[] = "plainto_tsquery('$ts_name', '" . $this->db->sql_escape($word) . "')";
+		}
+
+		return '(' . implode(' || ', $queries) . ')';
 	}
 
 	/**
@@ -120,16 +143,14 @@ class postgres implements driver_interface
 			FROM pg_catalog.pg_class c1, pg_catalog.pg_index i, pg_catalog.pg_class c2
 			WHERE c1.relname = '" . $this->db->sql_escape($table) . "'
 				AND position('to_tsvector' in pg_catalog.pg_get_indexdef(i.indexrelid, 0, true)) > 0
+				AND position('" . $this->db->sql_escape($column) . "' in pg_catalog.pg_get_indexdef(i.indexrelid, 0, true)) > 0
 				AND pg_catalog.pg_table_is_visible(c1.oid)
 				AND c1.oid = i.indrelid
 				AND i.indexrelid = c2.oid";
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			if (str_contains($row['relname'], $column))
-			{
-				$indexes[] = $row['relname'];
-			}
+			$indexes[] = $row['relname'];
 		}
 		$this->db->sql_freeresult($result);
 
@@ -146,58 +167,75 @@ class postgres implements driver_interface
 
 		$new_index = $this->get_index_name($table, $column);
 		$indexes = $this->get_fulltext_indexes($column, $table);
-		$owned_index = $this->config->offsetExists(self::OWNED_INDEX_CONFIG) ? $this->config[self::OWNED_INDEX_CONFIG] : '';
+		$indexed = false;
 
-		// A dictionary change may obsolete an index we previously created. Never
-		// remove other matching expression indexes: existence does not prove ownership.
-		if ($owned_index && $owned_index !== $new_index)
+		// Reconcile only indexes using this extension's deterministic naming scheme.
+		// Other expression indexes on topic_title remain untouched.
+		foreach ($this->get_managed_fulltext_indexes($column, $table, $indexes) as $index)
 		{
-			if (in_array($owned_index, $indexes, true))
+			if ($index === $new_index)
 			{
-				$sql = 'DROP INDEX ' . $this->quote_identifier($owned_index);
-				$this->db->sql_query($sql);
-				$indexes = array_values(array_diff($indexes, array($owned_index)));
+				$indexed = true;
 			}
-			$this->config->delete(self::OWNED_INDEX_CONFIG);
+			else
+			{
+				$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($index));
+			}
 		}
 
-		if (!in_array($new_index, $indexes, true))
+		if (!$indexed)
 		{
 			$sql = 'CREATE INDEX ' . $this->quote_identifier($new_index) . '
 				ON '  . $this->quote_identifier($table) . "
 				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->quote_identifier($column) . '))';
 			$this->db->sql_query($sql);
-
-			// Record ownership only after catalog lookup confirms creation. If DDL
-			// succeeds but verification fails, later cleanup safely preserves it.
-			if (in_array($new_index, $this->get_fulltext_indexes($column, $table), true))
-			{
-				$this->config->set(self::OWNED_INDEX_CONFIG, $new_index);
-			}
 		}
 	}
 
 	/**
-	 * Drop only the PostgreSQL index whose ownership was recorded at creation.
+	 * Drop indexes managed by Similar Topics' deterministic naming scheme.
 	 *
 	 * @param string $column Column name
 	 * @param string $table  Table name
+	 * @return void
 	 */
-	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function drop_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		if (!$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		foreach ($this->get_managed_fulltext_indexes($column, $table) as $index)
 		{
-			return;
+			$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($index));
+		}
+	}
+
+	/**
+	 * Filter catalog results to names Similar Topics can generate.
+	 *
+	 * @param string     $column  Column name
+	 * @param string     $table   Table name
+	 * @param array|null $indexes Previously fetched catalog indexes
+	 * @return array
+	 */
+	protected function get_managed_fulltext_indexes($column, $table, array $indexes = null)
+	{
+		if ($indexes === null)
+		{
+			$indexes = $this->get_fulltext_indexes($column, $table);
 		}
 
-		$owned_index = $this->config[self::OWNED_INDEX_CONFIG];
-		if (in_array($owned_index, $this->get_fulltext_indexes($column, $table), true))
+		$managed_names = array(
+			$this->get_index_name($table, $column),
+			$this->get_legacy_index_name($table, $column, $this->ts_name),
+		);
+		foreach ((array) $this->get_cfg_name_list() as $row)
 		{
-			$sql = 'DROP INDEX ' . $this->quote_identifier($owned_index);
-			$this->db->sql_query($sql);
+			if (isset($row['ts_name']))
+			{
+				$managed_names[] = $this->get_index_name($table, $column, $row['ts_name']);
+				$managed_names[] = $this->get_legacy_index_name($table, $column, $row['ts_name']);
+			}
 		}
 
-		$this->config->delete(self::OWNED_INDEX_CONFIG);
+		return array_values(array_intersect($indexes, array_unique($managed_names)));
 	}
 
 	/**
@@ -208,11 +246,13 @@ class postgres implements driver_interface
 	 *
 	 * @param string $table  Table name
 	 * @param string $column Column name
+	 * @param string|null $ts_name PostgreSQL text-search configuration
 	 * @return string
 	 */
-	protected function get_index_name($table, $column)
+	protected function get_index_name($table, $column, $ts_name = null)
 	{
-		$name = preg_replace('/[^a-zA-Z0-9_]/', '_', $table . '_' . $this->ts_name . '_' . $column);
+		$ts_name = $ts_name === null ? $this->ts_name : $ts_name;
+		$name = preg_replace('/[^a-zA-Z0-9_]/', '_', $table . '_' . $ts_name . '_' . $column);
 
 		if (strlen($name) > 63)
 		{
@@ -220,6 +260,20 @@ class postgres implements driver_interface
 		}
 
 		return $name;
+	}
+
+	/**
+	 * Build the name generated before 1.8, including PostgreSQL's default
+	 * 63-byte identifier truncation, so legacy indexes remain manageable.
+	 *
+	 * @param string $table   Table name
+	 * @param string $column  Column name
+	 * @param string $ts_name PostgreSQL text-search configuration
+	 * @return string
+	 */
+	protected function get_legacy_index_name($table, $column, $ts_name)
+	{
+		return substr($table . '_' . $ts_name . '_' . $column, 0, 63);
 	}
 
 	/**

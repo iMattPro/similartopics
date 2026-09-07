@@ -15,24 +15,17 @@ namespace vse\similartopics\driver;
  */
 class oracle implements driver_interface
 {
-	const OWNED_INDEX_CONFIG = 'pst_oracle_owned_index';
-
 	/** @var \phpbb\db\driver\driver_interface */
 	protected \phpbb\db\driver\driver_interface $db;
-
-	/** @var \phpbb\config\config|null */
-	protected $config;
 
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
+	public function __construct(\phpbb\db\driver\driver_interface $db)
 	{
 		$this->db = $db;
-		$this->config = $config;
 	}
 
 	/**
@@ -183,32 +176,23 @@ class oracle implements driver_interface
 				INDEXTYPE IS CTXSYS.CONTEXT
 				PARAMETERS ('STOPLIST CTXSYS.DEFAULT_STOPLIST SYNC (ON COMMIT)')";
 			$this->db->sql_query($sql);
-
-			if ($this->config !== null && $this->has_fulltext_index(strtoupper($index_name), $column, $table))
-			{
-				$this->config->set(self::OWNED_INDEX_CONFIG, strtoupper($index_name));
-			}
 		}
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * Drop the canonical Similar Topics Oracle Text index when it exists.
+	 *
+	 * @param string $column Name of the column
+	 * @param string $table  Name of the table
+	 * @return void
 	 */
-	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function drop_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
-		{
-			return;
-		}
-
 		$expected_index = strtoupper($table . '_' . $column . '_ctx_idx');
-		if ($this->config[self::OWNED_INDEX_CONFIG] === $expected_index
-			&& $this->has_fulltext_index($expected_index, $column, $table))
+		if ($this->has_fulltext_index($expected_index, $column, $table))
 		{
 			$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($expected_index));
 		}
-
-		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**

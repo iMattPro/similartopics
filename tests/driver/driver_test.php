@@ -115,9 +115,10 @@ class driver_test extends phpbb_database_test_case
 
 		if ($sql_layer === 'postgres')
 		{
-			$select = "f.forum_id, f.forum_name, t.*, ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) AS score";
+			$ts_query = "(plainto_tsquery('simple', 'foo') || plainto_tsquery('simple', 'bar'))";
+			$select = "f.forum_id, f.forum_name, t.*, ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), $ts_query, 32) AS score";
 			$sql_time = ($length > 0) ? " AND t.topic_time > (extract(epoch from current_timestamp)::integer - $length)" : '';
-			$where = "to_tsquery('simple', 'foo|bar') @@ to_tsvector('simple', t.topic_title) AND ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), to_tsquery('simple', 'foo|bar'), 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
+			$where = "$ts_query @@ to_tsvector('simple', t.topic_title) AND ts_rank_cd('{1,1,1,1}', to_tsvector('simple', t.topic_title), $ts_query, 32) >= 0 AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
 		}
 		else if (str_starts_with($sql_layer, 'mssql'))
 		{
