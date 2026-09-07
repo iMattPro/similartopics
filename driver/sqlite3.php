@@ -15,24 +15,17 @@ namespace vse\similartopics\driver;
  */
 class sqlite3 implements driver_interface
 {
-	const OWNED_INDEX_CONFIG = 'pst_sqlite3_owned_index';
-
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
-
-	/** @var \phpbb\config\config|null */
-	protected $config;
 
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
+	public function __construct(\phpbb\db\driver\driver_interface $db)
 	{
 		$this->db = $db;
-		$this->config = $config;
 	}
 
 	/**
@@ -148,30 +141,22 @@ class sqlite3 implements driver_interface
 		$sql = 'CREATE INDEX idx_' . $escaped_table . '_' . $escaped_column . '
 			ON ' . $escaped_table . ' (' . $escaped_column . ')';
 		$this->db->sql_query($sql);
-
-		if ($this->config !== null && $this->is_fulltext($column, $table))
-		{
-			$this->config->set(self::OWNED_INDEX_CONFIG, 'idx_' . $table . '_' . $column);
-		}
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * Drop the canonical Similar Topics index when it exists.
+	 *
+	 * @param string $column Name of the column
+	 * @param string $table  Name of the table
+	 * @return void
 	 */
-	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function drop_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
-		{
-			return;
-		}
-
 		$expected_index = 'idx_' . $table . '_' . $column;
-		if ($this->config[self::OWNED_INDEX_CONFIG] === $expected_index && $this->is_fulltext($column, $table))
+		if ($this->is_fulltext($column, $table))
 		{
 			$this->db->sql_query('DROP INDEX IF EXISTS ' . $this->quote_identifier($expected_index));
 		}
-
-		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**

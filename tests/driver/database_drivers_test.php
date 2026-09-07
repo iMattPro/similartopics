@@ -445,22 +445,18 @@ class database_drivers_test extends \phpbb_test_case
 	public function postgres_existing_indexes_data()
 	{
 		return [
-			'current unowned index retained' => [['phpbb_topics_english_topic_title'], '', 0],
-			'old unowned index retained' => [['phpbb_topics_simple_topic_title'], '', 1],
-			'old owned index replaced' => [['phpbb_topics_simple_topic_title'], 'phpbb_topics_simple_topic_title', 2],
+			'current managed index retained' => [['phpbb_topics_english_topic_title'], 0],
+			'old managed index replaced' => [['phpbb_topics_simple_topic_title'], 2],
+			'unrelated expression index retained' => [['admin_topic_title_search'], 1],
 		];
 	}
 
 	/**
 	 * @dataProvider postgres_existing_indexes_data
 	 */
-	public function test_postgres_reconciles_existing_indexes($indexes, $owned_index, $expected_writes)
+	public function test_postgres_reconciles_managed_indexes($indexes, $expected_writes)
 	{
 		$writes = [];
-		if ($owned_index)
-		{
-			$this->config[\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG] = $owned_index;
-		}
 		$this->db->method('get_sql_layer')->willReturn('postgres');
 		$this->db->method('sql_escape')->willReturnArgument(0);
 		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$writes) {
@@ -472,44 +468,73 @@ class database_drivers_test extends \phpbb_test_case
 		});
 		$rows = array_map(function ($index) { return ['relname' => $index]; }, $indexes);
 		$rows[] = false;
-		if (!in_array('phpbb_topics_english_topic_title', $indexes, true))
-		{
-			$rows[] = ['relname' => 'phpbb_topics_english_topic_title'];
-			$rows[] = false;
-		}
 		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(...$rows);
+		$this->db->method('sql_fetchrowset')->willReturn([
+			['ts_name' => 'simple'],
+			['ts_name' => 'english'],
+		]);
 		$this->db->method('sql_freeresult');
 
 		(new \vse\similartopics\driver\postgres($this->db, $this->config))->create_fulltext_index();
 
 		$this->assertCount($expected_writes, $writes);
-		if (!in_array('phpbb_topics_english_topic_title', $indexes, true))
-		{
-			$this->assertSame('phpbb_topics_english_topic_title', $this->config[\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG]);
-		}
 	}
 
-	public function test_postgres_drops_only_recorded_index()
+	public function test_postgres_drops_only_managed_indexes()
 	{
-		$owned_index = 'phpbb_topics_old"_topic_title';
-		$this->config[\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG] = $owned_index;
 		$this->db->method('get_sql_layer')->willReturn('postgres');
 		$this->db->method('sql_escape')->willReturnArgument(0);
-		$this->db->expects($this->exactly(2))->method('sql_query')
+		$this->db->expects($this->exactly(3))->method('sql_query')
 			->withConsecutive(
 				[$this->stringContains('SELECT c2.relname')],
-				['DROP INDEX "phpbb_topics_old""_topic_title"']
+				['SELECT cfgname AS ts_name FROM pg_ts_config'],
+				['DROP INDEX "phpbb_topics_simple_topic_title"']
 			)
 			->willReturn(true);
 		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
-			['relname' => $owned_index],
+			['relname' => 'phpbb_topics_simple_topic_title'],
+			['relname' => 'admin_topic_title_search'],
 			false
 		);
+		$this->db->method('sql_fetchrowset')->willReturn([
+			['ts_name' => 'simple'],
+			['ts_name' => 'english'],
+		]);
 		$this->db->method('sql_freeresult');
 
-		(new \vse\similartopics\driver\postgres($this->db, $this->config))->drop_owned_fulltext_index();
+		(new \vse\similartopics\driver\postgres($this->db, $this->config))->drop_fulltext_indexes();
+	}
 
-		$this->assertFalse($this->config->offsetExists(\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG));
+	public function test_postgres_replaces_truncated_legacy_index()
+	{
+		$ts_name = str_repeat('x', 60);
+		$legacy_index = substr('phpbb_topics_' . $ts_name . '_topic_title', 0, 63);
+		$this->config['pst_postgres_ts_name'] = $ts_name;
+		$this->db->method('get_sql_layer')->willReturn('postgres');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$writes = [];
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$writes) {
+			if (strpos($sql, 'SELECT ') !== 0)
+			{
+				$writes[] = $sql;
+			}
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			['relname' => $legacy_index],
+			false
+		);
+		$this->db->method('sql_fetchrowset')->willReturn([
+			['ts_name' => $ts_name],
+		]);
+		$this->db->method('sql_freeresult');
+
+		(new \vse\similartopics\driver\postgres($this->db, $this->config))->create_fulltext_index();
+
+		$this->assertCount(2, $writes);
+		$this->assertSame('DROP INDEX "' . $legacy_index . '"', $writes[0]);
+		$this->assertSame(0, strpos($writes[1], 'CREATE INDEX "'));
+		$this->assertStringNotContainsString('CREATE INDEX "' . $legacy_index . '"', $writes[1]);
 	}
 
 	public function test_postgres_quotes_and_sanitizes_index_identifiers()
@@ -526,10 +551,11 @@ class database_drivers_test extends \phpbb_test_case
 			return true;
 		});
 		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
-			false,
-			['relname' => 'phpbb_topics_english_DROP_INDEX_topic_title'],
 			false
 		);
+		$this->db->method('sql_fetchrowset')->willReturn([
+			['ts_name' => 'english;DROP_INDEX'],
+		]);
 		$this->db->method('sql_freeresult');
 
 		(new \vse\similartopics\driver\postgres($this->db, $this->config))->create_fulltext_index();
@@ -538,7 +564,6 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString('CREATE INDEX "phpbb_topics_english_DROP_INDEX_topic_title"', $writes[0]);
 		$this->assertStringContainsString('ON "phpbb_topics"', $writes[0]);
 		$this->assertStringContainsString(', "topic_title"))', $writes[0]);
-		$this->assertSame('phpbb_topics_english_DROP_INDEX_topic_title', $this->config[\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG]);
 	}
 
 	public function test_sqlite_existing_index_is_not_recreated()

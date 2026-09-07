@@ -97,7 +97,6 @@ services:
         class: vse\similartopics\driver\mysqli
         arguments:
             - '@dbal.conn'
-            - '@config'
         tags:
             - { name: vse.similartopics.driver }
 
@@ -111,7 +110,6 @@ services:
         class: vse\similartopics\driver\sqlite3
         arguments:
             - '@dbal.conn'
-            - '@config'
         tags:
             - { name: vse.similartopics.driver }
 
@@ -119,7 +117,6 @@ services:
         class: vse\similartopics\driver\mssql
         arguments:
             - '@dbal.conn'
-            - '@config'
         tags:
             - { name: vse.similartopics.driver }
 
@@ -139,6 +136,5 @@ services:
         class: vse\similartopics\driver\oracle
         arguments:
             - '@dbal.conn'
-            - '@config'
         tags:
             - { name: vse.similartopics.driver }
