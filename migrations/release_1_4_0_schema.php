@@ -14,7 +14,7 @@ class release_1_4_0_schema extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return $this->db_tools->sql_column_exists($this->table_prefix . 'forums', 'similar_topics_hidden');
+		return $this->db_tools->sql_column_exists($this->table_prefix . 'forums', 'similar_topics_hide');
 	}
 
 	public static function depends_on()

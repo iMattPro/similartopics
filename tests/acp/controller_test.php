@@ -250,11 +250,24 @@ class controller_test extends phpbb_database_test_case
 		$method = (new ReflectionClass($this->controller))->getMethod('update_forum_sources');
 		$method->invoke($this->controller, [1, 2, 3], [1 => 'custom', 2 => 'all', 3 => 'custom'], [1 => '2,3,99,2', 2 => '1', 3 => '']);
 
-		$this->assertCount(3, $executed_queries);
+		$this->assertCount(1, $executed_queries);
 		$this->assertStringContainsString('UPDATE ' . FORUMS_TABLE, $executed_queries[0]);
-		$this->assertStringContainsString("similar_topic_forums = '[2,3]'", $executed_queries[0]);
-		$this->assertStringContainsString("similar_topic_forums = ''", $executed_queries[1]);
-		$this->assertStringContainsString("similar_topic_forums = ''", $executed_queries[2]);
+		$this->assertStringContainsString("WHEN 1 THEN '[2,3]'", $executed_queries[0]);
+		$this->assertStringContainsString("WHEN 2 THEN ''", $executed_queries[0]);
+		$this->assertStringContainsString("WHEN 3 THEN ''", $executed_queries[0]);
+	}
+
+	public function test_update_forum_sources_batches_large_forum_lists()
+	{
+		$executed_queries = [];
+		$this->setupDbCapture($executed_queries);
+		$forum_ids = range(1, 101);
+
+		$method = (new \ReflectionClass($this->controller))->getMethod('update_forum_sources');
+		$method->setAccessible(true);
+		$method->invoke($this->controller, $forum_ids, [], []);
+
+		$this->assertCount(2, $executed_queries);
 	}
 
 	public function test_parse_forum_rules_returns_complete_normalized_rules(): void
@@ -393,6 +406,36 @@ class controller_test extends phpbb_database_test_case
 		{
 		}
 		$this->assertSame('english', $this->config['pst_postgres_ts_name']);
+	}
+
+	public function test_postgres_setting_rejects_unknown_dictionary_before_saving()
+	{
+		$db = $this->createMock('\phpbb\db\driver\driver_interface');
+		$db->method('get_sql_layer')->willReturn('postgres');
+		$db->method('sql_query')->willReturn(true);
+		$db->method('sql_fetchrowset')->willReturnOnConsecutiveCalls(
+			[['forum_id' => 2, 'forum_name' => 'Forum', 'similar_topic_forums' => '', 'similar_topics_hide' => 0, 'similar_topics_ignore' => 0]],
+			[['ts_name' => 'simple'], ['ts_name' => 'english']]
+		);
+		$db->method('sql_freeresult');
+		$this->setControllerProperty('db', $db);
+		$this->setControllerProperty('similartopics', new \vse\similartopics\driver\postgres($db, new \phpbb\config\config(['pst_postgres_ts_name' => 'simple'])));
+		$this->config['pst_postgres_ts_name'] = 'simple';
+		$this->request->method('variable')->willReturnMap([
+			['pst_postgres_ts_name', 'simple', false, \phpbb\request\request_interface::REQUEST, 'english; DROP TABLE phpbb_topics'],
+		]);
+		$this->request->method('is_set_post')->with('submit')->willReturn(true);
+
+		try
+		{
+			$this->controller->handle();
+			$this->fail('Unknown PostgreSQL dictionary should be rejected.');
+		}
+		catch (\phpbb\exception\http_exception $e)
+		{
+			$this->assertSame('simple', $this->config['pst_postgres_ts_name']);
+			$this->assertFalse(isset($this->config['similar_topics']));
+		}
 	}
 
 	public function test_invalid_form_ends_request(): void

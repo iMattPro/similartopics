@@ -67,6 +67,7 @@ interface driver_interface
 
 	/**
 	 * Make a column into a FULLTEXT index in topics table
+	 * Implementations with config access also record ownership when they create it.
 	 *
 	 * @access public
 	 * @param string $column Name of the column
@@ -74,6 +75,15 @@ interface driver_interface
 	 * @return void
 	 */
 	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void;
+
+	/**
+	 * Drop only a FULLTEXT index whose ownership was recorded during creation.
+	 *
+	 * @param string $column Name of the column
+	 * @param string $table  Name of the table
+	 * @return void
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
 
 	/**
 	 * Get the database storage engine name

@@ -49,26 +49,25 @@ class postgres_index extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Create PostgreSQL FULLTEXT index for the topic_title
+	 * Legacy create callback retained for migration compatibility
 	 */
 	public function create_postgres_index()
 	{
-		$driver = $this->get_driver();
-		$driver->create_fulltext_index();
+		// Existing installations have this migration recorded complete, so phpBB
+		// does not rerun this changed callback during upgrade. On fresh installs,
+		// driver creates only a missing index and records exact ownership.
+		$this->get_driver()->create_fulltext_index();
 	}
 
 	/**
-	 * Drop the PostgreSQL FULLTEXT index on phpbb_topics.topic_title
+	 * Legacy drop callback retained for migration compatibility
 	 */
 	public function drop_postgres_changes()
 	{
-		$driver = $this->get_driver();
-
-		foreach ($driver->get_fulltext_indexes() as $index)
-		{
-			$sql = 'DROP INDEX ' . $index;
-			$this->db->sql_query($sql);
-		}
+		// phpBB uses this historical class again during purge. A later migration
+		// cannot replace its revert callback, so this existing callback must delegate
+		// to the driver. No exact ownership marker means no DROP statement.
+		$this->get_driver()->drop_owned_fulltext_index();
 	}
 
 	/**

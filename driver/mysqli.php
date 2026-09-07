@@ -15,8 +15,14 @@ namespace vse\similartopics\driver;
  */
 class mysqli implements driver_interface
 {
+	const OWNED_INDEX_CONFIG = 'pst_mysql_owned_index';
+	const ORIGINAL_ENGINE_CONFIG = 'pst_mysql_original_engine';
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected \phpbb\db\driver\driver_interface $db;
+
+	/** @var \phpbb\config\config|null */
+	protected $config;
 
 	/** @var string */
 	protected string $engine;
@@ -25,10 +31,12 @@ class mysqli implements driver_interface
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -132,6 +140,10 @@ class mysqli implements driver_interface
 			// First see if we need to update the table engine to support fulltext indexes
 			if (!$this->is_supported())
 			{
+				if ($this->config !== null)
+				{
+					$this->config->set(self::ORIGINAL_ENGINE_CONFIG, (string) $this->get_engine());
+				}
 				$sql = 'ALTER TABLE ' . $this->db->sql_escape($table) . ' ENGINE = MYISAM';
 				$this->db->sql_query($sql);
 				$this->set_engine();
@@ -140,7 +152,63 @@ class mysqli implements driver_interface
 			$sql = 'ALTER TABLE ' . $this->db->sql_escape($table) . '
 				ADD FULLTEXT (' . $this->db->sql_escape($column) . ')';
 			$this->db->sql_query($sql);
+
+			if ($this->config !== null && $this->is_fulltext($column, $table))
+			{
+				$this->config->set(self::OWNED_INDEX_CONFIG, $column);
+			}
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null)
+		{
+			return;
+		}
+		if (!$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			// A failed/unverified creation may leave only this extension-owned
+			// bookkeeping value. Remove it without touching table or index.
+			$this->config->delete(self::ORIGINAL_ENGINE_CONFIG);
+			return;
+		}
+
+		$owns_index = $this->config[self::OWNED_INDEX_CONFIG] === $column;
+		if ($owns_index && $this->is_fulltext($column, $table))
+		{
+			$sql = 'ALTER TABLE ' . $this->quote_identifier($table) .
+				' DROP INDEX ' . $this->quote_identifier($column);
+			$this->db->sql_query($sql);
+		}
+
+		$original_engine = $this->config->offsetExists(self::ORIGINAL_ENGINE_CONFIG)
+			? $this->config[self::ORIGINAL_ENGINE_CONFIG]
+			: '';
+		if ($owns_index
+			&& preg_match('/^[a-zA-Z0-9_]+$/D', $original_engine)
+			&& strtolower($this->get_engine()) === 'myisam')
+		{
+			$sql = 'ALTER TABLE ' . $this->quote_identifier($table) . ' ENGINE = ' . strtoupper($original_engine);
+			$this->db->sql_query($sql);
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
+		$this->config->delete(self::ORIGINAL_ENGINE_CONFIG);
+	}
+
+	/**
+	 * Quote a MySQL identifier.
+	 *
+	 * @param string $identifier Identifier
+	 * @return string
+	 */
+	protected function quote_identifier($identifier)
+	{
+		return '`' . str_replace('`', '``', $identifier) . '`';
 	}
 
 	/**

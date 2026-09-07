@@ -15,17 +15,24 @@ namespace vse\similartopics\driver;
  */
 class oracle implements driver_interface
 {
+	const OWNED_INDEX_CONFIG = 'pst_oracle_owned_index';
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected \phpbb\db\driver\driver_interface $db;
+
+	/** @var \phpbb\config\config|null */
+	protected $config;
 
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -127,6 +134,41 @@ class oracle implements driver_interface
 	}
 
 	/**
+	 * Check for one exact valid Oracle Text index.
+	 *
+	 * @param string $index_name Index name as stored by Oracle
+	 * @param string $column     Column name
+	 * @param string $table      Table name
+	 * @return bool
+	 */
+	public function has_fulltext_index($index_name, $column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if (!$this->is_supported())
+		{
+			return false;
+		}
+
+		$sql = "SELECT i.index_name
+			FROM user_indexes i
+			WHERE i.index_name = UPPER('" . $this->db->sql_escape($index_name) . "')
+			AND i.table_name = UPPER('" . $this->db->sql_escape($table) . "')
+			AND i.index_type = 'DOMAIN'
+			AND i.domidx_opstatus = 'VALID'
+			AND EXISTS (
+				SELECT 1
+				FROM user_ind_columns c
+				WHERE c.index_name = i.index_name
+				AND c.table_name = i.table_name
+				AND c.column_name = UPPER('" . $this->db->sql_escape($column) . "')
+			)";
+		$result = $this->db->sql_query($sql);
+		$exists = (bool) $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return $exists;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
@@ -141,7 +183,43 @@ class oracle implements driver_interface
 				INDEXTYPE IS CTXSYS.CONTEXT
 				PARAMETERS ('STOPLIST CTXSYS.DEFAULT_STOPLIST SYNC (ON COMMIT)')";
 			$this->db->sql_query($sql);
+
+			if ($this->config !== null && $this->has_fulltext_index(strtoupper($index_name), $column, $table))
+			{
+				$this->config->set(self::OWNED_INDEX_CONFIG, strtoupper($index_name));
+			}
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		$expected_index = strtoupper($table . '_' . $column . '_ctx_idx');
+		if ($this->config[self::OWNED_INDEX_CONFIG] === $expected_index
+			&& $this->has_fulltext_index($expected_index, $column, $table))
+		{
+			$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($expected_index));
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
+	}
+
+	/**
+	 * Quote an Oracle identifier.
+	 *
+	 * @param string $identifier Identifier
+	 * @return string
+	 */
+	protected function quote_identifier($identifier)
+	{
+		return '"' . str_replace('"', '""', $identifier) . '"';
 	}
 
 	/**

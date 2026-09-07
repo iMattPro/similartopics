@@ -481,7 +481,7 @@ class similar_topics
 			{
 				$topics[] = [
 					'id' => (int) $row['topic_id'],
-					'title' => censor_text($row['topic_title']),
+					'title' => html_entity_decode(censor_text($row['topic_title']), ENT_COMPAT, 'UTF-8'),
 					'url' => append_sid("{$this->root_path}viewtopic.$this->php_ext", 't=' . $row['topic_id'], false)
 				];
 			}
