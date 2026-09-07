@@ -3,8 +3,8 @@
 <script>
 // Dynamic Similar Topics - Real-time search as user types in the subject field
 (function() {
-	// State variables: debounce timer, keyboard selection index, cached DOM elements
-	let searchTimeout, selectedIndex = -1, cachedItems = [];
+	// State variables: debounce timer, request sequence, keyboard selection index, cached DOM elements
+	let searchTimeout, searchSequence = 0, selectedIndex = -1, cachedItems = [];
 	const dropdown = document.getElementById('similar-topics-dropdown');
 	const subjectField = document.getElementById('subject');
 	const listContainer = document.getElementById('similar-topics-list');
@@ -36,7 +36,7 @@
 	}
 
 	// AJAX search for similar topics (minimum 3 characters)
-	function searchSimilarTopics(query) {
+	function searchSimilarTopics(query, sequence) {
 		if (query.length < 3) {
 			hideDropdown();
 			return;
@@ -49,7 +49,8 @@
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
 		xhr.onreadystatechange = () => {
-			if (xhr.readyState === 4 && xhr.status === 200) {
+			if (xhr.readyState === 4 && xhr.status === 200
+				&& sequence === searchSequence && query === subjectField.value.trim()) {
 				try {
 					const response = JSON.parse(xhr.responseText);
 					displayResults(response.topics);
@@ -104,9 +105,15 @@
 	subjectField.addEventListener('input', () => {
 		clearTimeout(searchTimeout);
 		const query = subjectField.value.trim();
+		const sequence = ++searchSequence;
+
+		if (query.length < 3) {
+			hideDropdown();
+			return;
+		}
 
 		searchTimeout = setTimeout(() => {
-			searchSimilarTopics(query);
+			searchSimilarTopics(query, sequence);
 		}, 300);
 	});
 
