@@ -484,12 +484,20 @@ class database_drivers_test extends phpbb_test_case
 		$this->config[\vse\similartopics\driver\postgres::OWNED_INDEX_CONFIG] = $owned_index;
 		$this->db->method('get_sql_layer')->willReturn('postgres');
 		$this->db->method('sql_escape')->willReturnArgument(0);
+		$invocations = 0;
 		$this->db->expects($this->exactly(2))->method('sql_query')
-			->withConsecutive(
-				[$this->stringContains('SELECT c2.relname')],
-				['DROP INDEX "phpbb_topics_old""_topic_title"']
-			)
-			->willReturn(true);
+			->willReturnCallback(function ($arg) use (&$invocations) {
+				if ($invocations++ === 0)
+				{
+					self::assertStringContainsString('SELECT c2.relname', $arg);
+				}
+				else
+				{
+					self::assertSame('DROP INDEX "phpbb_topics_old""_topic_title"', $arg);
+				}
+
+				return true;
+			});
 		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
 			['relname' => $owned_index],
 			false

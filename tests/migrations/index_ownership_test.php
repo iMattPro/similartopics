@@ -25,7 +25,7 @@ class index_ownership_test extends \phpbb_test_case
 		$this->db_tools = $this->createMock('\phpbb\db\tools\tools_interface');
 	}
 
-	public function unowned_migration_data()
+	public static function unowned_migration_data()
 	{
 		return [
 			'mysql drop' => ['\vse\similartopics\migrations\release_1_1_0_data', 'drop_topic_title_fulltext'],
@@ -43,7 +43,7 @@ class index_ownership_test extends \phpbb_test_case
 	{
 		$this->db->expects($this->never())->method('sql_query');
 		$config = new \phpbb\config\config([]);
-		$migration = new $class($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new $class($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->$method();
 	}
@@ -62,7 +62,7 @@ class index_ownership_test extends \phpbb_test_case
 		});
 		$this->db->method('sql_fetchrow')->willReturn(['name' => 'idx_' . TOPICS_TABLE . '_topic_title']);
 		$this->db->method('sql_freeresult');
-		$migration = new \vse\similartopics\migrations\release_1_7_x\sqlite3_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new \vse\similartopics\migrations\release_1_7_x\sqlite3_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->drop_sqlite3_index();
 
@@ -85,7 +85,7 @@ class index_ownership_test extends \phpbb_test_case
 			['name' => 'idx_' . TOPICS_TABLE . '_topic_title']
 		);
 		$this->db->method('sql_freeresult');
-		$migration = new \vse\similartopics\migrations\release_1_7_x\sqlite3_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new \vse\similartopics\migrations\release_1_7_x\sqlite3_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->create_sqlite3_index();
 
@@ -103,7 +103,7 @@ class index_ownership_test extends \phpbb_test_case
 		$this->db->expects($this->once())->method('sql_query')->willReturn(true);
 		$this->db->method('sql_fetchrow')->willReturn(['name' => 'idx_' . TOPICS_TABLE . '_topic_title']);
 		$this->db->method('sql_freeresult');
-		$migration = new \vse\similartopics\migrations\release_1_7_x\sqlite3_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new \vse\similartopics\migrations\release_1_7_x\sqlite3_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->create_sqlite3_index();
 
@@ -128,7 +128,7 @@ class index_ownership_test extends \phpbb_test_case
 			false
 		);
 		$this->db->method('sql_freeresult');
-		$migration = new \vse\similartopics\migrations\release_1_5_x\mysql_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new \vse\similartopics\migrations\release_1_5_x\mysql_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->add_topic_title_fulltext();
 
@@ -158,7 +158,7 @@ class index_ownership_test extends \phpbb_test_case
 			false
 		);
 		$this->db->method('sql_freeresult');
-		$migration = new \vse\similartopics\migrations\release_1_1_0_data($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new \vse\similartopics\migrations\release_1_1_0_data($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->drop_topic_title_fulltext();
 
@@ -171,7 +171,7 @@ class index_ownership_test extends \phpbb_test_case
 	public function test_effectively_installed_legacy_mysql_migration_sees_later_marker_on_revert()
 	{
 		$config = new \phpbb\config\config([]);
-		$migration = new \vse\similartopics\migrations\release_1_3_0_fulltext($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new \vse\similartopics\migrations\release_1_3_0_fulltext($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$this->assertTrue($migration->effectively_installed());
 		$config['similar_topics_fulltext'] = 'innodb';
@@ -240,7 +240,7 @@ class index_ownership_test extends \phpbb_test_case
 			false
 		);
 		$this->db->method('sql_freeresult');
-		$migration = new \vse\similartopics\migrations\release_1_7_x\mssql_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new \vse\similartopics\migrations\release_1_7_x\mssql_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->drop_mssql_fulltext_index();
 
@@ -264,7 +264,7 @@ class index_ownership_test extends \phpbb_test_case
 		});
 		$this->db->method('sql_fetchrow')->willReturn(['index_name' => $index_name]);
 		$this->db->method('sql_freeresult');
-		$migration = new \vse\similartopics\migrations\release_1_7_x\oracle_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new \vse\similartopics\migrations\release_1_7_x\oracle_index($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->drop_oracle_fulltext_index();
 
