@@ -362,6 +362,29 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertFalse($driver->is_fulltext());
 	}
 
+	public function test_postgres_query_treats_tsquery_punctuation_as_plain_text()
+	{
+		$this->db->method('sql_escape')->willReturnCallback(function ($value) {
+			return str_replace("'", "''", $value);
+		});
+		$query = (new \vse\similartopics\driver\postgres($this->db, $this->config))
+			->get_query(1, "alpha | beta & gamma:* (!delta) O'Reilly", 0, 0.5);
+
+		$expected = "(plainto_tsquery('english', 'alpha') || plainto_tsquery('english', 'beta') || plainto_tsquery('english', 'gamma') || plainto_tsquery('english', 'delta') || plainto_tsquery('english', 'O''Reilly'))";
+		$this->assertStringContainsString($expected . " @@ to_tsvector('english', t.topic_title)", $query['WHERE']);
+		$this->assertStringNotContainsString('alpha|||beta', $query['WHERE']);
+		$this->assertStringNotContainsString('gamma:*', $query['WHERE']);
+	}
+
+	public function test_postgres_query_handles_punctuation_only_title()
+	{
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$query = (new \vse\similartopics\driver\postgres($this->db, $this->config))
+			->get_query(1, '| & ! :* ()', 0, 0.5);
+
+		$this->assertStringContainsString("(plainto_tsquery('english', '')) @@", $query['WHERE']);
+	}
+
 	public function test_deprecated_fulltext_support_wrapper()
 	{
 		$this->db->method('get_sql_layer')->willReturn('unsupported');

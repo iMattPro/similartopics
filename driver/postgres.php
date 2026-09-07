@@ -63,8 +63,8 @@ class postgres implements driver_interface
 	public function get_query($topic_id, $topic_title, $length, $sensitivity)
 	{
 		$ts_name = $this->db->sql_escape($this->ts_name);
-		$ts_query_text = $this->db->sql_escape(preg_replace(['/\s+/', '/\'/'], ['|', ''], $topic_title));
-		$ts_rank_cd = "ts_rank_cd('{1,1,1,1}', to_tsvector('$ts_name', t.topic_title), to_tsquery('$ts_name', '$ts_query_text'), 32)";
+		$ts_query = $this->get_plain_ts_query($topic_title, $ts_name);
+		$ts_rank_cd = "ts_rank_cd('{1,1,1,1}', to_tsvector('$ts_name', t.topic_title), $ts_query, 32)";
 		$sql_time = ($length > 0) ? ' AND t.topic_time > (extract(epoch from current_timestamp)::integer - ' . (int) $length . ')' : '';
 
 		return array(
@@ -78,12 +78,38 @@ class postgres implements driver_interface
 					'ON'	=> 'f.forum_id = t.forum_id',
 				),
 			),
-			'WHERE'		=> "to_tsquery('$ts_name', '$ts_query_text') @@ to_tsvector('$ts_name', t.topic_title) AND $ts_rank_cd >= " . (float) $sensitivity . '
+			'WHERE'		=> "$ts_query @@ to_tsvector('$ts_name', t.topic_title) AND $ts_rank_cd >= " . (float) $sensitivity . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_id <> ' . (int) $topic_id . $sql_time,
 			'ORDER_BY'	=> 'score DESC, t.topic_time DESC',
 		);
+	}
+
+	/**
+	 * Build an OR query from plain title words without exposing tsquery syntax.
+	 *
+	 * phpBB's PostgreSQL search parser supports advanced search operators and is
+	 * coupled to the search backend. Similar-topic titles are plain text, so each
+	 * word is normalized with PostgreSQL's punctuation-safe plainto_tsquery().
+	 *
+	 * @param string $topic_title Topic title
+	 * @param string $ts_name     Escaped PostgreSQL text-search configuration
+	 * @return string SQL expression producing a tsquery
+	 */
+	protected function get_plain_ts_query($topic_title, $ts_name)
+	{
+		$matches = array();
+		preg_match_all("#[\\p{L}\\p{N}]+(?:['’][\\p{L}\\p{N}]+)*#u", $topic_title, $matches);
+		$words = !empty($matches[0]) ? array_values(array_unique($matches[0])) : array('');
+		$queries = array();
+
+		foreach ($words as $word)
+		{
+			$queries[] = "plainto_tsquery('$ts_name', '" . $this->db->sql_escape($word) . "')";
+		}
+
+		return '(' . implode(' || ', $queries) . ')';
 	}
 
 	/**
