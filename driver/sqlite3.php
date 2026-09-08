@@ -18,14 +18,19 @@ class sqlite3 implements driver_interface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\config\config|null */
+	protected $config;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -141,6 +146,36 @@ class sqlite3 implements driver_interface
 		$sql = 'CREATE INDEX idx_' . $escaped_table . '_' . $escaped_column . '
 			ON ' . $escaped_table . ' (' . $escaped_column . ')';
 		$this->db->sql_query($sql);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config !== null && $this->index_exists($table, $column))
+		{
+			$this->config->set(self::OWNED_INDEX_CONFIG, 'idx_' . $table . '_' . $column);
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		$index = 'idx_' . $table . '_' . $column;
+		if ($this->config[self::OWNED_INDEX_CONFIG] === $index)
+		{
+			$this->drop_fulltext_index($column, $table);
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**

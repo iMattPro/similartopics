@@ -12,6 +12,9 @@ namespace vse\similartopics\driver;
 
 interface driver_interface
 {
+	/** Config key containing exact index identifier owned by this extension */
+	const OWNED_INDEX_CONFIG = 'pst_owned_index';
+
 	/**
 	 * Get the name of the driver
 	 *
@@ -74,6 +77,24 @@ interface driver_interface
 	 * @return void
 	 */
 	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
+
+	/**
+	 * Adopt the required index and record its exact identifier as owned.
+	 *
+	 * @param string $column Name of the column
+	 * @param string $table  Name of the table
+	 * @return void
+	 */
+	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
+
+	/**
+	 * Drop only the exact index recorded as owned.
+	 *
+	 * @param string $column Name of the column
+	 * @param string $table  Name of the table
+	 * @return void
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
 
 	/**
 	 * Get the database storage engine name

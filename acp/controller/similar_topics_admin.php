@@ -186,6 +186,12 @@ class similar_topics_admin
 			), ENT_COMPAT);
 			$forum_rules = $this->parse_forum_rules($forum_rules_payload, $forum_ids);
 
+			$pst_time_type = $this->request->variable('pst_time_type', '');
+			if (!isset($this->times[$pst_time_type]))
+			{
+				$this->end('FORM_INVALID', E_USER_WARNING);
+			}
+
 			// Set basic config settings
 			$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
 			$this->config->set('similar_topics_dynamic', $this->request->variable('pst_dynamic', 0));
@@ -199,7 +205,6 @@ class similar_topics_admin
 
 			// Set date/time config settings
 			$pst_time = abs($this->request->variable('pst_time', 0)); // use abs for positive values only
-			$pst_time_type = $this->request->variable('pst_time_type', '');
 			$this->config->set('similar_topics_type', $pst_time_type);
 			$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 

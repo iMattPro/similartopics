@@ -18,14 +18,19 @@ class mssql implements driver_interface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\config\config|null */
+	protected $config;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -163,6 +168,36 @@ class mssql implements driver_interface
 			KEY INDEX PK_" . $this->db->sql_escape($table) . "
 			ON phpbb_catalog";
 		$this->db->sql_query($sql);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config !== null && $this->is_fulltext($column, $table))
+		{
+			// SQL Server identifies its full-text index by indexed table.
+			$this->config->set(self::OWNED_INDEX_CONFIG, $table);
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		if ($this->config[self::OWNED_INDEX_CONFIG] === $table)
+		{
+			$this->drop_fulltext_index($column, $table);
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**

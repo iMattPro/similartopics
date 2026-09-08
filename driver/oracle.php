@@ -18,14 +18,19 @@ class oracle implements driver_interface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
+	/** @var \phpbb\config\config|null */
+	protected $config;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -177,6 +182,37 @@ class oracle implements driver_interface
 				PARAMETERS ('STOPLIST CTXSYS.DEFAULT_STOPLIST SYNC (ON COMMIT)')";
 			$this->db->sql_query($sql);
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		$index = strtoupper($table . '_' . $column . '_ctx_idx');
+		if ($this->config !== null && $this->has_fulltext_index($index, $column, $table))
+		{
+			$this->config->set(self::OWNED_INDEX_CONFIG, $index);
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		$index = strtoupper($table . '_' . $column . '_ctx_idx');
+		if ($this->config[self::OWNED_INDEX_CONFIG] === $index)
+		{
+			$this->drop_fulltext_index($column, $table);
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**
