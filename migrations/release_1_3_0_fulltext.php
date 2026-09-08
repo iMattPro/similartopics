@@ -45,14 +45,9 @@ class release_1_3_0_fulltext extends \phpbb\db\migration\migration
 	 */
 	public function revert_fulltext_changes()
 	{
-		$fulltext = new \vse\similartopics\core\fulltext_support($this->db);
-
-		// Drop the FULLTEXT index
-		if ($fulltext->is_index('topic_title'))
-		{
-			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
-			$this->db->sql_query($sql);
-		}
+		// Safety fix: current revert code runs on purge; no marker means no proven ownership.
+		$fulltext = new \vse\similartopics\core\fulltext_support($this->db, $this->config);
+		$fulltext->drop_owned_fulltext_index('topic_title', TOPICS_TABLE);
 
 		// Revert the storage engine back to its original setting
 		$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ENGINE = ' . $this->db->sql_escape(strtoupper($this->config['similar_topics_fulltext']));

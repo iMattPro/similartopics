@@ -61,6 +61,7 @@ class oracle_index extends \phpbb\db\migration\migration
 	 */
 	public function create_oracle_fulltext_index()
 	{
+		// Safety fix: fresh creation records ownership; completed legacy updates stay unmarked.
 		$this->get_driver()->create_fulltext_index('topic_title', TOPICS_TABLE);
 	}
 
@@ -69,7 +70,8 @@ class oracle_index extends \phpbb\db\migration\migration
 	 */
 	public function drop_oracle_fulltext_index()
 	{
-		$this->get_driver()->drop_fulltext_index('topic_title', TOPICS_TABLE);
+		// Safety fix: current revert code runs on purge; unmarked legacy indexes survive.
+		$this->get_driver()->drop_owned_fulltext_index('topic_title', TOPICS_TABLE);
 	}
 
 	/**
@@ -79,7 +81,7 @@ class oracle_index extends \phpbb\db\migration\migration
 	{
 		if ($this->driver === null)
 		{
-			$this->driver = new oracle($this->db);
+			$this->driver = new oracle($this->db, $this->config);
 		}
 		return $this->driver;
 	}

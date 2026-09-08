@@ -50,24 +50,42 @@ class index_ownership_test extends \phpbb_test_case
 	public function ownership_data()
 	{
 		return array(
-			'mysql' => array('mysqli', 'topic_title', 'ALTER TABLE `' . TOPICS_TABLE . '` DROP INDEX `topic_title`'),
-			'postgres' => array('postgres', TOPICS_TABLE . '_english_topic_title', 'DROP INDEX "' . TOPICS_TABLE . '_english_topic_title"'),
-			'mssql' => array('mssql', TOPICS_TABLE, 'DROP FULLTEXT INDEX ON ' . TOPICS_TABLE),
-			'oracle' => array('oracle', strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx'), 'DROP INDEX "' . strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx') . '"'),
-			'sqlite3' => array('sqlite3', 'idx_' . TOPICS_TABLE . '_topic_title', 'DROP INDEX IF EXISTS "idx_' . TOPICS_TABLE . '_topic_title"'),
+			'mysql' => array('mysqli', 'topic_title', 'ALTER TABLE `' . TOPICS_TABLE . '` DROP INDEX `topic_title`', 'ADD FULLTEXT'),
+			'postgres' => array('postgres', TOPICS_TABLE . '_english_topic_title', 'DROP INDEX "' . TOPICS_TABLE . '_english_topic_title"', 'CREATE INDEX'),
+			'mssql' => array('mssql', TOPICS_TABLE, 'DROP FULLTEXT INDEX ON ' . TOPICS_TABLE, 'CREATE FULLTEXT INDEX'),
+			'oracle' => array('oracle', strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx'), 'DROP INDEX "' . strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx') . '"', 'CREATE INDEX'),
+			'sqlite3' => array('sqlite3', 'idx_' . TOPICS_TABLE . '_topic_title', 'DROP INDEX IF EXISTS "idx_' . TOPICS_TABLE . '_topic_title"', 'CREATE INDEX'),
 		);
 	}
 
 	/**
 	 * @dataProvider ownership_data
 	 */
-	public function test_records_existing_required_index($sql_layer, $index)
+	public function test_existing_required_index_is_not_claimed($sql_layer, $index, $drop_sql, $create_sql)
 	{
 		$this->configure_index_lookup($sql_layer, $index);
 
-		$this->get_migration()->record_index_ownership();
+		$this->get_migration()->ensure_index_ownership();
+
+		$this->assertFalse($this->config->offsetExists(driver_interface::OWNED_INDEX_CONFIG));
+		$this->assertFalse((bool) array_filter($this->queries, function ($sql) use ($create_sql) {
+			return strpos($sql, $create_sql) !== false;
+		}));
+	}
+
+	/**
+	 * @dataProvider ownership_data
+	 */
+	public function test_missing_required_index_is_created_and_owned($sql_layer, $index, $drop_sql, $create_sql)
+	{
+		$this->configure_missing_index_lookup($sql_layer);
+
+		$this->get_migration()->ensure_index_ownership();
 
 		$this->assertSame($index, $this->config[driver_interface::OWNED_INDEX_CONFIG]);
+		$this->assertTrue((bool) array_filter($this->queries, function ($sql) use ($create_sql) {
+			return strpos($sql, $create_sql) !== false;
+		}));
 	}
 
 	/**
@@ -105,9 +123,9 @@ class index_ownership_test extends \phpbb_test_case
 	/**
 	 * @dataProvider supported_database_data
 	 */
-	public function test_supported_database_always_reconciles_ownership($sql_layer)
+	public function test_supported_database_runs_even_with_creation_marker($sql_layer)
 	{
-		$this->config[driver_interface::OWNED_INDEX_CONFIG] = 'stale_index';
+		$this->config[driver_interface::OWNED_INDEX_CONFIG] = 'created_index';
 		$this->db->method('get_sql_layer')->willReturn($sql_layer);
 
 		$this->assertFalse($this->get_migration()->effectively_installed());
@@ -159,12 +177,54 @@ class index_ownership_test extends \phpbb_test_case
 			break;
 
 			case 'oracle':
-				$this->db->method('sql_fetchrow')->willReturn(array('index_name' => $index));
+				$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+					array('index_name' => $index),
+					false
+				);
 			break;
 
 			case 'sqlite3':
 				$this->db->method('sql_fetchrow')->willReturn(array('name' => $index));
 			break;
+		}
+
+		$this->db->method('sql_freeresult');
+	}
+
+	/**
+	 * Configure catalog responses showing no required index.
+	 *
+	 * @param string $sql_layer Database SQL layer
+	 * @return void
+	 */
+	protected function configure_missing_index_lookup($sql_layer)
+	{
+		$this->db->method('get_sql_layer')->willReturn($sql_layer);
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_server_info')->willReturn('5.7.0');
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) {
+			$this->queries[] = $sql;
+			return true;
+		});
+
+		switch ($sql_layer)
+		{
+			case 'mysqli':
+				$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+					array('Engine' => 'InnoDB'),
+					false
+				);
+			break;
+
+			case 'mssql':
+				$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+					false,
+					array('IsFullTextInstalled' => 1)
+				);
+			break;
+
+			default:
+				$this->db->method('sql_fetchrow')->willReturn(false);
 		}
 
 		$this->db->method('sql_freeresult');

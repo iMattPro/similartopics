@@ -146,14 +146,8 @@ class sqlite3 implements driver_interface
 		$sql = 'CREATE INDEX idx_' . $escaped_table . '_' . $escaped_column . '
 			ON ' . $escaped_table . ' (' . $escaped_column . ')';
 		$this->db->sql_query($sql);
-	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
-	{
-		if ($this->config !== null && $this->index_exists($table, $column))
+		if ($this->config !== null)
 		{
 			$this->config->set(self::OWNED_INDEX_CONFIG, 'idx_' . $table . '_' . $column);
 		}

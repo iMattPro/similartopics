@@ -181,18 +181,11 @@ class oracle implements driver_interface
 				INDEXTYPE IS CTXSYS.CONTEXT
 				PARAMETERS ('STOPLIST CTXSYS.DEFAULT_STOPLIST SYNC (ON COMMIT)')";
 			$this->db->sql_query($sql);
-		}
-	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
-	{
-		$index = strtoupper($table . '_' . $column . '_ctx_idx');
-		if ($this->config !== null && $this->has_fulltext_index($index, $column, $table))
-		{
-			$this->config->set(self::OWNED_INDEX_CONFIG, $index);
+			if ($this->config !== null)
+			{
+				$this->config->set(self::OWNED_INDEX_CONFIG, strtoupper($index_name));
+			}
 		}
 	}
 

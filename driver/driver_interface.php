@@ -69,7 +69,8 @@ interface driver_interface
 	public function get_fulltext_indexes($column = 'topic_title', $table = TOPICS_TABLE);
 
 	/**
-	 * Make a column into a FULLTEXT index in topics table
+	 * Create a FULLTEXT index when missing.
+	 * Implementations with config record only an index created by this call as owned.
 	 *
 	 * @access public
 	 * @param string $column Name of the column
@@ -77,15 +78,6 @@ interface driver_interface
 	 * @return void
 	 */
 	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
-
-	/**
-	 * Adopt the required index and record its exact identifier as owned.
-	 *
-	 * @param string $column Name of the column
-	 * @param string $table  Name of the table
-	 * @return void
-	 */
-	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
 
 	/**
 	 * Drop only the exact index recorded as owned.

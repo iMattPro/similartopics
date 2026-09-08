@@ -72,6 +72,7 @@ class mysql_index extends \phpbb\db\migration\migration
 	 */
 	protected function get_driver()
 	{
-		return new \vse\similartopics\driver\mysqli($this->db);
+		// Safety fix: fresh creation records ownership; completed legacy updates stay unmarked.
+		return new \vse\similartopics\driver\mysqli($this->db, $this->config);
 	}
 }

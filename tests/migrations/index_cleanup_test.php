@@ -10,6 +10,8 @@
 
 namespace vse\similartopics\tests\migrations;
 
+use vse\similartopics\driver\driver_interface;
+
 class index_cleanup_test extends \phpbb_test_case
 {
 	/** @var \phpbb\db\driver\driver_interface|\PHPUnit\Framework\MockObject\MockObject */
@@ -36,8 +38,11 @@ class index_cleanup_test extends \phpbb_test_case
 		});
 		$this->db->method('sql_fetchrow')->willReturn(array('name' => 'idx_' . TOPICS_TABLE . '_topic_title'));
 		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array(
+			driver_interface::OWNED_INDEX_CONFIG => 'idx_' . TOPICS_TABLE . '_topic_title',
+		));
 		$migration = new \vse\similartopics\migrations\release_1_7_x\sqlite3_index(
-			new \phpbb\config\config(array()), $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
 		);
 
 		$migration->drop_sqlite3_index();
@@ -60,8 +65,11 @@ class index_cleanup_test extends \phpbb_test_case
 			false
 		);
 		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array(
+			driver_interface::OWNED_INDEX_CONFIG => TOPICS_TABLE,
+		));
 		$migration = new \vse\similartopics\migrations\release_1_7_x\mssql_index(
-			new \phpbb\config\config(array()), $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
 		);
 
 		$migration->drop_mssql_fulltext_index();
@@ -82,13 +90,94 @@ class index_cleanup_test extends \phpbb_test_case
 		});
 		$this->db->method('sql_fetchrow')->willReturn(array('index_name' => $index_name));
 		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array(
+			driver_interface::OWNED_INDEX_CONFIG => $index_name,
+		));
 		$migration = new \vse\similartopics\migrations\release_1_7_x\oracle_index(
-			new \phpbb\config\config(array()), $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
 		);
 
 		$migration->drop_oracle_fulltext_index();
 
 		$this->assertSame('DROP INDEX "' . $index_name . '"', $queries[1]);
+	}
+
+	public function legacy_revert_data()
+	{
+		return array(
+			array('\vse\similartopics\migrations\release_1_5_x\postgres_index', 'drop_postgres_changes'),
+			array('\vse\similartopics\migrations\release_1_7_x\mssql_index', 'drop_mssql_fulltext_index'),
+			array('\vse\similartopics\migrations\release_1_7_x\oracle_index', 'drop_oracle_fulltext_index'),
+			array('\vse\similartopics\migrations\release_1_7_x\sqlite3_index', 'drop_sqlite3_index'),
+		);
+	}
+
+	/**
+	 * @dataProvider legacy_revert_data
+	 */
+	public function test_released_migration_preserves_unowned_index($class, $method)
+	{
+		$this->db->expects($this->never())->method('sql_query');
+		$config = new \phpbb\config\config(array('pst_postgres_ts_name' => 'english'));
+		$migration = new $class($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+
+		$migration->$method();
+	}
+
+	public function test_legacy_mysql_migration_preserves_unowned_index()
+	{
+		$this->db->expects($this->never())->method('sql_query');
+		$migration = new \vse\similartopics\migrations\release_1_1_0_data(
+			new \phpbb\config\config(array()), $this->db, $this->db_tools, '', 'php', 'phpbb_'
+		);
+
+		$migration->drop_topic_title_fulltext();
+	}
+
+	public function test_fresh_mysql_creation_records_ownership()
+	{
+		$config = new \phpbb\config\config(array());
+		$queries = array();
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->db->method('sql_server_info')->willReturn('5.7.0');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			array('Engine' => 'InnoDB'),
+			false
+		);
+		$this->db->method('sql_freeresult');
+		$migration = new \vse\similartopics\migrations\release_1_1_0_data(
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
+		);
+
+		$migration->add_topic_title_fulltext();
+
+		$this->assertSame('topic_title', $config[driver_interface::OWNED_INDEX_CONFIG]);
+		$this->assertStringContainsString('ADD FULLTEXT', end($queries));
+	}
+
+	public function test_mysql_engine_revert_preserves_unowned_index()
+	{
+		$config = new \phpbb\config\config(array('similar_topics_fulltext' => 'innodb'));
+		$queries = array();
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$migration = new \vse\similartopics\migrations\release_1_3_0_fulltext(
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
+		);
+
+		$migration->revert_fulltext_changes();
+
+		$this->assertCount(1, $queries);
+		$this->assertStringContainsString('ENGINE = INNODB', $queries[0]);
+		$this->assertStringNotContainsString('DROP INDEX', $queries[0]);
 	}
 
 	public function test_effectively_installed_mysql_migration_sees_later_engine_marker_on_revert()

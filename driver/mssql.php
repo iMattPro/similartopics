@@ -152,7 +152,7 @@ class mssql implements driver_interface
 	 */
 	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		if (!$this->is_supported() || !$this->fulltext_available() || $this->is_fulltext($column, $table))
+		if (!$this->is_supported() || $this->is_fulltext($column, $table) || !$this->fulltext_available())
 		{
 			return;
 		}
@@ -168,14 +168,8 @@ class mssql implements driver_interface
 			KEY INDEX PK_" . $this->db->sql_escape($table) . "
 			ON phpbb_catalog";
 		$this->db->sql_query($sql);
-	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
-	{
-		if ($this->config !== null && $this->is_fulltext($column, $table))
+		if ($this->config !== null)
 		{
 			// SQL Server identifies its full-text index by indexed table.
 			$this->config->set(self::OWNED_INDEX_CONFIG, $table);
