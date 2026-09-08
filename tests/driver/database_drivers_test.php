@@ -283,17 +283,94 @@ class database_drivers_test extends \phpbb_test_case
 	public function test_mssql_create_fulltext_index()
 	{
 		$this->db->method('get_sql_layer')->willReturn('mssql');
-		$this->db->method('sql_query')->willReturn(true);
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
 		$this->db->method('sql_fetchrow')
 			->willReturnOnConsecutiveCalls(
-				['IsFullTextInstalled' => 1],
-				false
+				false,
+				['IsFullTextInstalled' => 1]
 			);
 		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array());
 
-		$driver = new \vse\similartopics\driver\mssql($this->db);
+		$driver = new \vse\similartopics\driver\mssql($this->db, $config);
 		$driver->create_fulltext_index();
-		$this->addToAssertionCount(1);
+
+		$this->assertTrue((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'CREATE FULLTEXT INDEX') !== false;
+		}));
+		$this->assertSame(TOPICS_TABLE, $config[\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG]);
+	}
+
+	public function test_mssql_preserves_existing_fulltext_index_on_other_column()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mssql');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			array('name' => 'topic_body'),
+			false
+		);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array());
+
+		(new \vse\similartopics\driver\mssql($this->db, $config))->create_fulltext_index();
+
+		$this->assertFalse((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'CREATE FULLTEXT') !== false;
+		}));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG));
+	}
+
+	public function test_mysqli_uses_differently_named_single_column_fulltext_index()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->db->method('sql_server_info')->willReturn('5.7.0');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			array('Engine' => 'InnoDB'),
+			array('Index_type' => 'FULLTEXT', 'Key_name' => 'custom_title_ft', 'Seq_in_index' => 1, 'Column_name' => 'topic_title'),
+			false
+		);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array());
+
+		$driver = new \vse\similartopics\driver\mysqli($this->db, $config);
+		$driver->create_fulltext_index();
+
+		$this->assertFalse((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'ADD FULLTEXT') !== false;
+		}));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG));
+	}
+
+	public function test_mysqli_rejects_composite_fulltext_index_for_single_column_match()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->db->method('sql_server_info')->willReturn('5.7.0');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_query')->willReturn(true);
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			array('Engine' => 'InnoDB'),
+			array('Index_type' => 'FULLTEXT', 'Key_name' => 'combined_ft', 'Seq_in_index' => 1, 'Column_name' => 'topic_title'),
+			array('Index_type' => 'FULLTEXT', 'Key_name' => 'combined_ft', 'Seq_in_index' => 2, 'Column_name' => 'topic_body'),
+			false
+		);
+		$this->db->method('sql_freeresult');
+
+		$this->assertSame(array(), (new \vse\similartopics\driver\mysqli($this->db))->get_fulltext_indexes());
 	}
 
 	public function test_oracle_get_fulltext_indexes()
@@ -303,7 +380,10 @@ class database_drivers_test extends \phpbb_test_case
 		$this->db->expects($this->once())
 			->method('sql_query')
 			->with($this->callback(function ($sql) {
-				return strpos($sql, 'EXISTS') !== false && strpos($sql, 'user_ind_columns') !== false;
+				return strpos($sql, 'EXISTS') !== false
+					&& strpos($sql, 'user_ind_columns') !== false
+					&& strpos($sql, "i.ityp_owner = 'CTXSYS'") !== false
+					&& strpos($sql, "i.ityp_name = 'CONTEXT'") !== false;
 			}))
 			->willReturn(true);
 		$this->db->method('sql_fetchrow')

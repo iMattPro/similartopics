@@ -111,6 +111,8 @@ class oracle implements driver_interface
 			FROM user_indexes i
 			WHERE i.table_name = UPPER('" . $this->db->sql_escape($table) . "')
 			AND i.index_type = 'DOMAIN'
+			AND i.ityp_owner = 'CTXSYS'
+			AND i.ityp_name = 'CONTEXT'
 			AND i.domidx_opstatus = 'VALID'
 			AND EXISTS (
 				SELECT 1
@@ -151,6 +153,8 @@ class oracle implements driver_interface
 			WHERE i.index_name = UPPER('" . $this->db->sql_escape($index_name) . "')
 			AND i.table_name = UPPER('" . $this->db->sql_escape($table) . "')
 			AND i.index_type = 'DOMAIN'
+			AND i.ityp_owner = 'CTXSYS'
+			AND i.ityp_name = 'CONTEXT'
 			AND i.domidx_opstatus = 'VALID'
 			AND EXISTS (
 				SELECT 1

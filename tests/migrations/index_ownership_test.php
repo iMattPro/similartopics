@@ -153,7 +153,7 @@ class index_ownership_test extends \phpbb_test_case
 			case 'mysqli':
 				$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
 					array('Engine' => 'InnoDB'),
-					array('Index_type' => 'FULLTEXT', 'Key_name' => $index),
+					array('Index_type' => 'FULLTEXT', 'Key_name' => $index, 'Seq_in_index' => 1, 'Column_name' => 'topic_title'),
 					false
 				);
 			break;

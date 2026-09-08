@@ -152,7 +152,14 @@ class mssql implements driver_interface
 	 */
 	public function create_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		if (!$this->is_supported() || $this->is_fulltext($column, $table) || !$this->fulltext_available())
+		if (!$this->is_supported())
+		{
+			return;
+		}
+
+		// SQL Server permits only one full-text index per table. Preserve an
+		// existing index and use the LIKE fallback when it lacks this column.
+		if (!empty($this->get_fulltext_indexes($column, $table)) || !$this->fulltext_available())
 		{
 			return;
 		}

@@ -3,7 +3,7 @@
 	'use strict';
 
 	// State variables: debounce timer, request sequence, keyboard selection index, cached DOM elements
-	let searchTimeout, searchSequence = 0, selectedIndex = -1, cachedItems = [];
+	let searchTimeout, activeRequest, searchSequence = 0, selectedIndex = -1, cachedItems = [];
 	const dropdown = document.getElementById('similar-topics-dropdown');
 	const subjectField = document.getElementById('subject');
 	const listContainer = document.getElementById('similar-topics-list');
@@ -15,6 +15,11 @@
 
 	// Hide dropdown and reset selection state
 	function hideDropdown() {
+		searchSequence++;
+		if (activeRequest) {
+			activeRequest.abort();
+			activeRequest = null;
+		}
 		dropdown.style.display = 'none';
 		selectedIndex = -1;
 		cachedItems = [];
@@ -56,21 +61,34 @@
 			return;
 		}
 
-		const xhr = new XMLHttpRequest();
+		const xhr = activeRequest = new XMLHttpRequest();
 		const baseUrl = dropdown.dataset.searchUrl;
 		const separator = baseUrl.includes('?') ? '&' : '?';
 		xhr.open('GET', baseUrl + separator + 'q=' + encodeURIComponent(query) + '&f=' + encodeURIComponent(dropdown.dataset.forumId));
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
 		xhr.onreadystatechange = () => {
-			if (xhr.readyState === 4 && xhr.status === 200
-				&& sequence === searchSequence && query === subjectField.value.trim()) {
-				try {
-					const response = JSON.parse(xhr.responseText);
-					displayResults(response.topics);
-				} catch (e) {
-					hideDropdown();
-				}
+			if (xhr.readyState !== 4) {
+				return;
+			}
+
+			if (activeRequest === xhr) {
+				activeRequest = null;
+			}
+			if (sequence !== searchSequence || query !== subjectField.value.trim()) {
+				return;
+			}
+
+			if (xhr.status !== 200) {
+				hideDropdown();
+				return;
+			}
+
+			try {
+				const response = JSON.parse(xhr.responseText);
+				displayResults(response.topics);
+			} catch (e) {
+				hideDropdown();
 			}
 		};
 
@@ -119,11 +137,11 @@
 	// Debounced search on input (300 ms delay)
 	subjectField.addEventListener('input', () => {
 		clearTimeout(searchTimeout);
+		hideDropdown();
 		const query = subjectField.value.trim();
-		const sequence = ++searchSequence;
+		const sequence = searchSequence;
 
 		if (query.length < 3) {
-			hideDropdown();
 			return;
 		}
 
