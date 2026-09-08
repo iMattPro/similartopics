@@ -11,12 +11,16 @@
 namespace vse\similartopics\controller;
 
 use phpbb\exception\http_exception;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use phpbb\request\request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use vse\similartopics\core\similar_topics;
 
 class ajax_controller
 {
+	const MIN_QUERY_LENGTH = 3;
+	const MAX_QUERY_LENGTH = 120;
+	const MAX_QUERY_TERMS = 12;
+
 	/** @var request */
 	protected request $request;
 
@@ -51,7 +55,7 @@ class ajax_controller
 		$query = $this->request->variable('q', '', true);
 		$forum_id = $this->request->variable('f', 0);
 
-		if (utf8_strlen($query) < 3 || !$this->similar_topics->is_dynamic_available())
+		if (!$this->is_query_valid($query) || !$this->similar_topics->is_dynamic_available())
 		{
 			return new JsonResponse(['topics' => []]);
 		}
@@ -59,5 +63,25 @@ class ajax_controller
 		$topics = $this->similar_topics->search_similar_topics_ajax($query, $forum_id);
 
 		return new JsonResponse(['topics' => $topics]);
+	}
+
+	/**
+	 * Validate query bounds before any database search.
+	 *
+	 * @param string $query Search query
+	 * @return bool
+	 */
+	protected function is_query_valid($query)
+	{
+		$length = utf8_strlen($query);
+		if ($length < self::MIN_QUERY_LENGTH || $length > self::MAX_QUERY_LENGTH)
+		{
+			return false;
+		}
+
+		$matches = array();
+		$term_count = preg_match_all('#[\p{L}\p{N}]+#u', $query, $matches);
+
+		return $term_count > 0 && $term_count <= self::MAX_QUERY_TERMS;
 	}
 }

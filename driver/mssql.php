@@ -20,14 +20,19 @@ class mssql implements driver_interface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected \phpbb\db\driver\driver_interface $db;
 
+	/** @var \phpbb\config\config|null */
+	protected $config;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -149,7 +154,14 @@ class mssql implements driver_interface
 	 */
 	public function create_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
 	{
-		if (!$this->is_supported() || !$this->fulltext_available() || $this->is_fulltext($column, $table))
+		if (!$this->is_supported())
+		{
+			return;
+		}
+
+		// SQL Server permits only one full-text index per table. Preserve an
+		// existing index and use the LIKE fallback when it lacks this column.
+		if (!empty($this->get_fulltext_indexes($column, $table)) || !$this->fulltext_available())
 		{
 			return;
 		}
@@ -165,6 +177,30 @@ class mssql implements driver_interface
 			KEY INDEX PK_" . $this->db->sql_escape($table) . "
 			ON phpbb_catalog";
 		$this->db->sql_query($sql);
+
+		if ($this->config !== null)
+		{
+			// SQL Server identifies its full-text index by indexed table.
+			$this->config->set(self::OWNED_INDEX_CONFIG, $table);
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		if ($this->config[self::OWNED_INDEX_CONFIG] === $table)
+		{
+			$this->drop_fulltext_index($column, $table);
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**

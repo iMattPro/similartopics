@@ -1,5 +1,5 @@
 {% if S_DYNAMIC_SIMILAR_TOPICS and S_IN_POSTING and not S_EDIT_POST %}
-<div id="similar-topics-dropdown" class="similar-topics-dropdown" style="display: none;">
+<div id="similar-topics-dropdown" class="similar-topics-dropdown" style="display: none;" data-search-url="{{ U_PST_AJAX_SEARCH|e('html_attr') }}" data-forum-id="{{ FORUM_ID|e('html_attr') }}">
 	<div class="similar-topics-header">{{ lang('SIMILAR_TOPICS') }}</div>
 	<div id="similar-topics-list" class="similar-topics-list"></div>
 </div>

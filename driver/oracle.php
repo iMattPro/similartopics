@@ -18,14 +18,19 @@ class oracle implements driver_interface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected \phpbb\db\driver\driver_interface $db;
 
+	/** @var \phpbb\config\config|null */
+	protected $config;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -106,6 +111,8 @@ class oracle implements driver_interface
 			FROM user_indexes i
 			WHERE i.table_name = UPPER('" . $this->db->sql_escape($table) . "')
 			AND i.index_type = 'DOMAIN'
+			AND i.ityp_owner = 'CTXSYS'
+			AND i.ityp_name = 'CONTEXT'
 			AND i.domidx_opstatus = 'VALID'
 			AND EXISTS (
 				SELECT 1
@@ -146,6 +153,8 @@ class oracle implements driver_interface
 			WHERE i.index_name = UPPER('" . $this->db->sql_escape($index_name) . "')
 			AND i.table_name = UPPER('" . $this->db->sql_escape($table) . "')
 			AND i.index_type = 'DOMAIN'
+			AND i.ityp_owner = 'CTXSYS'
+			AND i.ityp_name = 'CONTEXT'
 			AND i.domidx_opstatus = 'VALID'
 			AND EXISTS (
 				SELECT 1
@@ -176,7 +185,31 @@ class oracle implements driver_interface
 				INDEXTYPE IS CTXSYS.CONTEXT
 				PARAMETERS ('STOPLIST CTXSYS.DEFAULT_STOPLIST SYNC (ON COMMIT)')";
 			$this->db->sql_query($sql);
+
+			if ($this->config !== null)
+			{
+				$this->config->set(self::OWNED_INDEX_CONFIG, strtoupper($index_name));
+			}
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		$index = strtoupper($table . '_' . $column . '_ctx_idx');
+		if ($this->config[self::OWNED_INDEX_CONFIG] === $index)
+		{
+			$this->drop_fulltext_index($column, $table);
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**

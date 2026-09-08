@@ -364,6 +364,26 @@ class controller_test extends phpbb_database_test_case
 		}
 	}
 
+	public function test_invalid_time_type_is_rejected_before_settings_saved(): void
+	{
+		$this->request->method('is_set_post')->with('submit')->willReturn(true);
+		$this->request->method('variable')->willReturnMap([
+			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'],
+			['pst_time_type', '', false, \phpbb\request\request_interface::REQUEST, 'invalid'],
+		]);
+
+		try
+		{
+			$this->controller->handle();
+			$this->fail('Invalid time type should be rejected.');
+		}
+		catch (\phpbb\exception\http_exception $e)
+		{
+			$this->assertFalse(isset($this->config['similar_topics']));
+			$this->assertFalse(isset($this->config['similar_topics_type']));
+		}
+	}
+
 	public function test_default_settings_displays_postgres_and_forum_options(): void
 	{
 		$db = $this->createMock(driver_interface::class);
@@ -389,13 +409,11 @@ class controller_test extends phpbb_database_test_case
 		$driver->expects($this->once())->method('create_fulltext_index')->with('topic_title');
 		$this->setControllerProperty('similartopics', $driver);
 		$this->config['pst_postgres_ts_name'] = 'simple';
-		$this->request->method('variable')->willReturnCallback(static function($name, $default) {
-			return match ($name) {
-				'pst_postgres_ts_name' => 'english',
-				'forum_rules' => '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}',
-				default => $default,
-			};
-		});
+		$this->request->method('variable')->willReturnMap([
+			['pst_postgres_ts_name', 'simple', false, \phpbb\request\request_interface::REQUEST, 'english'],
+			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'],
+			['pst_time_type', '', false, \phpbb\request\request_interface::REQUEST, 'y'],
+		]);
 		$this->request->method('is_set_post')->willReturn(true);
 
 		try

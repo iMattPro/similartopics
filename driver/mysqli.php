@@ -18,6 +18,9 @@ class mysqli implements driver_interface
 	/** @var \phpbb\db\driver\driver_interface */
 	protected \phpbb\db\driver\driver_interface $db;
 
+	/** @var \phpbb\config\config|null */
+	protected $config;
+
 	/** @var string */
 	protected string $engine;
 
@@ -25,10 +28,12 @@ class mysqli implements driver_interface
 	 * Constructor
 	 *
 	 * @param \phpbb\db\driver\driver_interface $db
+	 * @param \phpbb\config\config|null $config
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config = null)
 	{
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -87,7 +92,7 @@ class mysqli implements driver_interface
 	 */
 	public function is_fulltext(string $column = 'topic_title', string $table = TOPICS_TABLE): bool
 	{
-		return in_array($column, $this->get_fulltext_indexes($column, $table), true);
+		return !empty($this->get_fulltext_indexes($column, $table));
 	}
 
 	/**
@@ -96,6 +101,7 @@ class mysqli implements driver_interface
 	public function get_fulltext_indexes(string $column = 'topic_title', string $table = TOPICS_TABLE): array
 	{
 		$indexes = array();
+		$fulltext_indexes = array();
 
 		if (!$this->is_supported())
 		{
@@ -111,13 +117,24 @@ class mysqli implements driver_interface
 			// Older MySQL versions didn't use Index_type, so fallback to Comment
 			$index_type = $row['Index_type'] ?? $row['Comment'];
 
-			if ($index_type === 'FULLTEXT' && $row['Key_name'] === $column)
+			if ($index_type === 'FULLTEXT')
 			{
-				$indexes[] = $row['Key_name'];
+				$index_columns = isset($fulltext_indexes[$row['Key_name']]) ? $fulltext_indexes[$row['Key_name']] : array();
+				$sequence = isset($row['Seq_in_index']) ? (int) $row['Seq_in_index'] : count($index_columns) + 1;
+				$fulltext_indexes[$row['Key_name']][$sequence] = $row['Column_name'];
 			}
 		}
 
 		$this->db->sql_freeresult($result);
+
+		foreach ($fulltext_indexes as $index_name => $columns)
+		{
+			ksort($columns);
+			if (array_values($columns) === array($column))
+			{
+				$indexes[] = $index_name;
+			}
+		}
 
 		return $indexes;
 	}
@@ -140,7 +157,43 @@ class mysqli implements driver_interface
 			$sql = 'ALTER TABLE ' . $this->db->sql_escape($table) . '
 				ADD FULLTEXT (' . $this->db->sql_escape($column) . ')';
 			$this->db->sql_query($sql);
+
+			if ($this->config !== null)
+			{
+				$this->config->set(self::OWNED_INDEX_CONFIG, $column);
+			}
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	{
+		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		{
+			return;
+		}
+
+		$owned_index = $this->config[self::OWNED_INDEX_CONFIG];
+		if ($owned_index === $column && in_array($owned_index, $this->get_fulltext_indexes($column, $table), true))
+		{
+			$this->db->sql_query('ALTER TABLE ' . $this->quote_identifier($table) .
+				' DROP INDEX ' . $this->quote_identifier($owned_index));
+		}
+
+		$this->config->delete(self::OWNED_INDEX_CONFIG);
+	}
+
+	/**
+	 * Quote a MySQL identifier.
+	 *
+	 * @param string $identifier Identifier
+	 * @return string
+	 */
+	protected function quote_identifier($identifier)
+	{
+		return '`' . str_replace('`', '``', $identifier) . '`';
 	}
 
 	/**

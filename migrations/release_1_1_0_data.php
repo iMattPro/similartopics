@@ -10,6 +10,8 @@
 
 namespace vse\similartopics\migrations;
 
+use vse\similartopics\driver\driver_interface;
+
 class release_1_1_0_data extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
@@ -66,6 +68,9 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 		{
 			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' ADD FULLTEXT (topic_title)';
 			$this->db->sql_query($sql);
+
+			// Safety fix: fresh creation proves ownership; completed legacy updates do not rerun.
+			$this->config->set(driver_interface::OWNED_INDEX_CONFIG, 'topic_title');
 		}
 	}
 
@@ -74,14 +79,8 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	 */
 	public function drop_topic_title_fulltext()
 	{
-		$fulltext = $this->get_fulltext();
-
-		// FULLTEXT is supported and topic_title IS an index
-		if ($fulltext->is_supported() && $fulltext->is_index('topic_title'))
-		{
-			$sql = 'ALTER TABLE ' . TOPICS_TABLE . ' DROP INDEX topic_title';
-			$this->db->sql_query($sql);
-		}
+		// Safety fix: purge runs current revert code; unmarked legacy indexes must survive.
+		$this->get_fulltext()->drop_owned_fulltext_index('topic_title', TOPICS_TABLE);
 	}
 
 	/**
@@ -91,6 +90,6 @@ class release_1_1_0_data extends \phpbb\db\migration\migration
 	 */
 	public function get_fulltext()
 	{
-		return new \vse\similartopics\core\fulltext_support($this->db);
+		return new \vse\similartopics\core\fulltext_support($this->db, $this->config);
 	}
 }

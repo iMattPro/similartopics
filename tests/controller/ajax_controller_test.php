@@ -103,6 +103,29 @@ class ajax_controller_test extends phpbb_test_case
 		$this->assertEquals(['topics' => []], $data);
 	}
 
+	public function invalid_query_data(): void
+	{
+		return [
+			'too long' => [str_repeat('a', 121)],
+			'too many terms' => [implode(' ', array_fill(0, 13, 'term'))],
+			'no searchable terms' => ['---'],
+		];
+	}
+
+	/**
+	 * @dataProvider invalid_query_data
+	 */
+	public function test_search_similar_topics_rejects_invalid_query($query)
+	{
+		$this->configure_request($query);
+		$this->similar_topics->expects($this->never())->method('is_dynamic_available');
+		$this->similar_topics->expects($this->never())->method('search_similar_topics_ajax');
+
+		$response = $this->controller->search_similar_topics();
+
+		$this->assertSame(['topics' => []], json_decode($response->getContent(), true));
+	}
+
 	public function test_search_similar_topics_success(): void
 	{
 		$this->request->expects($this->once())
@@ -133,10 +156,23 @@ class ajax_controller_test extends phpbb_test_case
 			->method('search_similar_topics_ajax')
 			->with('test query', 1)
 			->willReturn($expected_topics);
-
 		$response = $this->controller->search_similar_topics();
 		$data = json_decode($response->getContent(), true);
 
 		$this->assertEquals(['topics' => $expected_topics], $data);
+	}
+
+	/**
+	 * Configure a valid AJAX request.
+	 *
+	 * @param string $query Search query
+	 * @param int $forum_id Forum ID
+	 */
+	protected function configure_request($query, $forum_id = 1)
+	{
+		$this->request->method('is_ajax')->willReturn(true);
+		$this->request->method('variable')->willReturnCallback(function ($name) use ($query, $forum_id) {
+			return $name === 'q' ? $query : $forum_id;
+		});
 	}
 }
