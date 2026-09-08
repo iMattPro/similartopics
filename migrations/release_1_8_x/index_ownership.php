@@ -18,10 +18,10 @@ use vse\similartopics\driver\postgres;
 use vse\similartopics\driver\sqlite3;
 
 /**
- * Record the Similar Topics index so uninstall removes only the index we claim.
+ * Ensure newly created Similar Topics indexes have exact ownership markers.
  *
- * Existing indexes are adopted during upgrades. This does not prove historical
- * provenance because legacy releases did not record which index they created.
+ * Existing indexes are never adopted. Historical provenance is unavailable for
+ * legacy installs because older releases recorded no ownership evidence.
  */
 class index_ownership extends \phpbb\db\migration\migration
 {
@@ -49,7 +49,7 @@ class index_ownership extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('custom', array(array($this, 'record_index_ownership'))),
+			array('custom', array(array($this, 'ensure_index_ownership'))),
 		);
 	}
 
@@ -61,14 +61,14 @@ class index_ownership extends \phpbb\db\migration\migration
 	}
 
 	/**
-	 * Adopt required index so upgraded and fresh installs have same ownership.
+	 * Create a missing index; driver records ownership only when creation occurs.
 	 */
-	public function record_index_ownership()
+	public function ensure_index_ownership()
 	{
 		$driver = $this->get_driver();
 		if ($driver !== null)
 		{
-			$driver->claim_fulltext_index('topic_title', TOPICS_TABLE);
+			$driver->create_fulltext_index('topic_title', TOPICS_TABLE);
 		}
 	}
 

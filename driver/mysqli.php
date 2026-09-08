@@ -145,17 +145,11 @@ class mysqli implements driver_interface
 			$sql = 'ALTER TABLE ' . $this->db->sql_escape($table) . '
 				ADD FULLTEXT (' . $this->db->sql_escape($column) . ')';
 			$this->db->sql_query($sql);
-		}
-	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
-	{
-		if ($this->config !== null && $this->is_fulltext($column, $table))
-		{
-			$this->config->set(self::OWNED_INDEX_CONFIG, $column);
+			if ($this->config !== null)
+			{
+				$this->config->set(self::OWNED_INDEX_CONFIG, $column);
+			}
 		}
 	}
 

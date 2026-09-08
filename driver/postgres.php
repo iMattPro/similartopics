@@ -165,41 +165,30 @@ class postgres implements driver_interface
 
 		$new_index = $this->get_index_name($table, $column);
 		$indexes = $this->get_fulltext_indexes($column, $table);
-		$indexed = false;
 
-		// Reconcile only indexes using this extension's deterministic naming scheme.
-		// Other expression indexes on topic_title remain untouched.
-		foreach ($this->get_managed_fulltext_indexes($column, $table, $indexes) as $index)
+		if (in_array($new_index, $indexes, true))
 		{
-			if ($index === $new_index)
+			// Never adopt a pre-existing index. Remove only an older proven-owned index.
+			if ($this->config->offsetExists(self::OWNED_INDEX_CONFIG)
+				&& $this->config[self::OWNED_INDEX_CONFIG] !== $new_index)
 			{
-				$indexed = true;
+				$this->drop_owned_fulltext_index($column, $table);
 			}
-			else
-			{
-				$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($index));
-			}
+			return;
 		}
 
-		if (!$indexed)
+		if ($this->config->offsetExists(self::OWNED_INDEX_CONFIG))
 		{
-			$sql = 'CREATE INDEX ' . $this->quote_identifier($new_index) . '
-				ON '  . $this->quote_identifier($table) . "
-				USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->quote_identifier($column) . '))';
-			$this->db->sql_query($sql);
+			$this->drop_owned_fulltext_index($column, $table);
 		}
 
-		// Existing matching topic_title indexes are treated as ours. phpBB does not
-		// create one, and this keeps upgraded and fresh installs in the same state.
+		$sql = 'CREATE INDEX ' . $this->quote_identifier($new_index) . '
+			ON '  . $this->quote_identifier($table) . "
+			USING gin (to_tsvector ('" . $this->db->sql_escape($this->ts_name) . "', " . $this->quote_identifier($column) . '))';
+		$this->db->sql_query($sql);
+
+		// Ownership is proven only when this call creates the index.
 		$this->config->set(self::OWNED_INDEX_CONFIG, $new_index);
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function claim_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
-	{
-		$this->create_fulltext_index($column, $table);
 	}
 
 	/**
@@ -238,37 +227,6 @@ class postgres implements driver_interface
 	}
 
 	/**
-	 * Filter catalog results to names Similar Topics can generate.
-	 *
-	 * @param string     $column  Column name
-	 * @param string     $table   Table name
-	 * @param array|null $indexes Previously fetched catalog indexes
-	 * @return array
-	 */
-	protected function get_managed_fulltext_indexes($column, $table, array $indexes = null)
-	{
-		if ($indexes === null)
-		{
-			$indexes = $this->get_fulltext_indexes($column, $table);
-		}
-
-		$managed_names = array(
-			$this->get_index_name($table, $column),
-			$this->get_legacy_index_name($table, $column, $this->ts_name),
-		);
-		foreach ((array) $this->get_cfg_name_list() as $row)
-		{
-			if (isset($row['ts_name']))
-			{
-				$managed_names[] = $this->get_index_name($table, $column, $row['ts_name']);
-				$managed_names[] = $this->get_legacy_index_name($table, $column, $row['ts_name']);
-			}
-		}
-
-		return array_values(array_intersect($indexes, array_unique($managed_names)));
-	}
-
-	/**
 	 * Build a safe, deterministic PostgreSQL index name.
 	 *
 	 * PostgreSQL limits identifiers to 63 bytes by default. Keep generated names
@@ -290,20 +248,6 @@ class postgres implements driver_interface
 		}
 
 		return $name;
-	}
-
-	/**
-	 * Build the name generated before 1.8, including PostgreSQL's default
-	 * 63-byte identifier truncation, so legacy indexes remain manageable.
-	 *
-	 * @param string $table   Table name
-	 * @param string $column  Column name
-	 * @param string $ts_name PostgreSQL text-search configuration
-	 * @return string
-	 */
-	protected function get_legacy_index_name($table, $column, $ts_name)
-	{
-		return substr($table . '_' . $ts_name . '_' . $column, 0, 63);
 	}
 
 	/**

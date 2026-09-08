@@ -53,6 +53,7 @@ class postgres_index extends \phpbb\db\migration\migration
 	 */
 	public function create_postgres_index()
 	{
+		// Safety fix: fresh creation records ownership; completed legacy updates stay unmarked.
 		$this->get_driver()->create_fulltext_index();
 	}
 
@@ -61,6 +62,7 @@ class postgres_index extends \phpbb\db\migration\migration
 	 */
 	public function drop_postgres_changes()
 	{
+		// Safety fix: current revert code runs on purge; unmarked legacy indexes survive.
 		$this->get_driver()->drop_fulltext_indexes();
 	}
 
