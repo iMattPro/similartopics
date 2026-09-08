@@ -103,7 +103,7 @@ class ajax_controller_test extends phpbb_test_case
 		$this->assertEquals(['topics' => []], $data);
 	}
 
-	public function invalid_query_data(): void
+	public static function invalid_query_data(): array
 	{
 		return [
 			'too long' => [str_repeat('a', 121)],

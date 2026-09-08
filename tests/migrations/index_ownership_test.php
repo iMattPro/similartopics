@@ -47,7 +47,7 @@ class index_ownership_test extends \phpbb_test_case
 		), index_ownership::depends_on());
 	}
 
-	public function ownership_data()
+	public static function ownership_data()
 	{
 		return array(
 			'mysql' => array('mysqli', 'topic_title', 'ALTER TABLE `' . TOPICS_TABLE . '` DROP INDEX `topic_title`', 'ADD FULLTEXT'),
@@ -109,7 +109,7 @@ class index_ownership_test extends \phpbb_test_case
 		$this->assertTrue($this->get_migration()->effectively_installed());
 	}
 
-	public function supported_database_data()
+	public static function supported_database_data()
 	{
 		return array(
 			array('mysqli'),
@@ -241,7 +241,8 @@ class index_ownership_test extends \phpbb_test_case
 			$this->db_tools,
 			'',
 			'php',
-			'phpbb_'
+			'phpbb_',
+			[]
 		);
 	}
 }

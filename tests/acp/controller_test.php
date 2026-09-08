@@ -264,7 +264,6 @@ class controller_test extends phpbb_database_test_case
 		$forum_ids = range(1, 101);
 
 		$method = (new \ReflectionClass($this->controller))->getMethod('update_forum_sources');
-		$method->setAccessible(true);
 		$method->invoke($this->controller, $forum_ids, [], []);
 
 		$this->assertCount(2, $executed_queries);
@@ -409,11 +408,14 @@ class controller_test extends phpbb_database_test_case
 		$driver->expects($this->once())->method('create_fulltext_index')->with('topic_title');
 		$this->setControllerProperty('similartopics', $driver);
 		$this->config['pst_postgres_ts_name'] = 'simple';
-		$this->request->method('variable')->willReturnMap([
-			['pst_postgres_ts_name', 'simple', false, \phpbb\request\request_interface::REQUEST, 'english'],
-			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'],
-			['pst_time_type', '', false, \phpbb\request\request_interface::REQUEST, 'y'],
-		]);
+		$this->request->method('variable')->willReturnCallback(function ($name, $default) {
+			return match ($name) {
+				'pst_postgres_ts_name' => 'english',
+				'forum_rules' => '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}',
+				'pst_time_type' => 'y',
+				default => $default,
+			};
+		});
 		$this->request->method('is_set_post')->willReturn(true);
 
 		try

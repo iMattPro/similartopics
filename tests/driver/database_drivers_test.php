@@ -584,7 +584,7 @@ class database_drivers_test extends phpbb_test_case
 		$this->db->method('get_sql_layer')->willReturn('postgres');
 		$this->db->method('sql_escape')->willReturnArgument(0);
 		$invocations = 0;
-		$this->db->expects($this->exactly(3))->method('sql_query')
+		$this->db->expects($this->exactly(2))->method('sql_query')
 			->willReturnCallback(function ($arg) use (&$invocations) {
 				if ($invocations++ === 0)
 				{
@@ -592,7 +592,7 @@ class database_drivers_test extends phpbb_test_case
 				}
 				else
 				{
-					self::assertSame('DROP INDEX "phpbb_topics_old""_topic_title"', $arg);
+					self::assertSame('DROP INDEX "phpbb_topics_simple_topic_title"', $arg);
 				}
 
 				return true;
@@ -701,7 +701,7 @@ class database_drivers_test extends phpbb_test_case
 		));
 	}
 
-	public function ownership_guard_driver_data()
+	public static function ownership_guard_driver_data()
 	{
 		return [
 			['mysqli'],

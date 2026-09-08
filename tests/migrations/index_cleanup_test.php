@@ -42,7 +42,7 @@ class index_cleanup_test extends \phpbb_test_case
 			driver_interface::OWNED_INDEX_CONFIG => 'idx_' . TOPICS_TABLE . '_topic_title',
 		));
 		$migration = new \vse\similartopics\migrations\release_1_7_x\sqlite3_index(
-			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []
 		);
 
 		$migration->drop_sqlite3_index();
@@ -69,7 +69,7 @@ class index_cleanup_test extends \phpbb_test_case
 			driver_interface::OWNED_INDEX_CONFIG => TOPICS_TABLE,
 		));
 		$migration = new \vse\similartopics\migrations\release_1_7_x\mssql_index(
-			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []
 		);
 
 		$migration->drop_mssql_fulltext_index();
@@ -94,7 +94,7 @@ class index_cleanup_test extends \phpbb_test_case
 			driver_interface::OWNED_INDEX_CONFIG => $index_name,
 		));
 		$migration = new \vse\similartopics\migrations\release_1_7_x\oracle_index(
-			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []
 		);
 
 		$migration->drop_oracle_fulltext_index();
@@ -102,7 +102,7 @@ class index_cleanup_test extends \phpbb_test_case
 		$this->assertSame('DROP INDEX "' . $index_name . '"', $queries[1]);
 	}
 
-	public function legacy_revert_data()
+	public static function legacy_revert_data()
 	{
 		return array(
 			array('\vse\similartopics\migrations\release_1_5_x\postgres_index', 'drop_postgres_changes'),
@@ -119,7 +119,7 @@ class index_cleanup_test extends \phpbb_test_case
 	{
 		$this->db->expects($this->never())->method('sql_query');
 		$config = new \phpbb\config\config(array('pst_postgres_ts_name' => 'english'));
-		$migration = new $class($config, $this->db, $this->db_tools, '', 'php', 'phpbb_');
+		$migration = new $class($config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []);
 
 		$migration->$method();
 	}
@@ -128,7 +128,7 @@ class index_cleanup_test extends \phpbb_test_case
 	{
 		$this->db->expects($this->never())->method('sql_query');
 		$migration = new \vse\similartopics\migrations\release_1_1_0_data(
-			new \phpbb\config\config(array()), $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			new \phpbb\config\config(array()), $this->db, $this->db_tools, '', 'php', 'phpbb_', []
 		);
 
 		$migration->drop_topic_title_fulltext();
@@ -151,7 +151,7 @@ class index_cleanup_test extends \phpbb_test_case
 		);
 		$this->db->method('sql_freeresult');
 		$migration = new \vse\similartopics\migrations\release_1_1_0_data(
-			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []
 		);
 
 		$migration->add_topic_title_fulltext();
@@ -170,7 +170,7 @@ class index_cleanup_test extends \phpbb_test_case
 			return true;
 		});
 		$migration = new \vse\similartopics\migrations\release_1_3_0_fulltext(
-			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []
 		);
 
 		$migration->revert_fulltext_changes();
@@ -184,7 +184,7 @@ class index_cleanup_test extends \phpbb_test_case
 	{
 		$config = new \phpbb\config\config(array());
 		$migration = new \vse\similartopics\migrations\release_1_3_0_fulltext(
-			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_'
+			$config, $this->db, $this->db_tools, '', 'php', 'phpbb_', []
 		);
 
 		$this->assertTrue($migration->effectively_installed());
@@ -202,9 +202,10 @@ class index_cleanup_test extends \phpbb_test_case
 				'php',
 				'phpbb_',
 				array(),
+				array(),
 				new \phpbb\db\migration\helper(),
 			))
-			->setMethods(array('load_migration_state', 'set_migration_state', 'process_data_step', 'get_migration'))
+			->onlyMethods(array('load_migration_state', 'set_migration_state', 'process_data_step', 'get_migration'))
 			->getMock();
 		$migrator->method('get_migration')->willReturn($migration);
 		$captured_steps = null;
@@ -216,7 +217,6 @@ class index_cleanup_test extends \phpbb_test_case
 		$migration_name = get_class($migration);
 		$reflection = new \ReflectionClass($migrator);
 		$state = $reflection->getProperty('migration_state');
-		$state->setAccessible(true);
 		$state->setValue($migrator, array(
 			$migration_name => array(
 				'migration_depends_on' => $migration->depends_on(),
@@ -228,7 +228,6 @@ class index_cleanup_test extends \phpbb_test_case
 			),
 		));
 		$try_revert = $reflection->getMethod('try_revert');
-		$try_revert->setAccessible(true);
 		$try_revert->invoke($migrator, $migration_name);
 
 		$this->assertTrue($captured_steps[0][1][0]);
