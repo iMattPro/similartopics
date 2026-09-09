@@ -49,11 +49,16 @@ class index_ownership_test extends \phpbb_test_case
 
 	public function ownership_data()
 	{
+		$oracle_canonical_name = TOPICS_TABLE . '_topic_title_ctx_idx';
+		$oracle_index = strtoupper(strlen($oracle_canonical_name) <= 30
+			? $oracle_canonical_name
+			: 'pst_' . substr(hash('sha256', $oracle_canonical_name), 0, 26));
+
 		return array(
 			'mysql' => array('mysqli', 'topic_title', 'ALTER TABLE `' . TOPICS_TABLE . '` DROP INDEX `topic_title`', 'ADD FULLTEXT'),
 			'postgres' => array('postgres', TOPICS_TABLE . '_english_topic_title', 'DROP INDEX "' . TOPICS_TABLE . '_english_topic_title"', 'CREATE INDEX'),
 			'mssql' => array('mssql', TOPICS_TABLE, 'DROP FULLTEXT INDEX ON ' . TOPICS_TABLE, 'CREATE FULLTEXT INDEX'),
-			'oracle' => array('oracle', strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx'), 'DROP INDEX "' . strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx') . '"', 'CREATE INDEX'),
+			'oracle' => array('oracle', $oracle_index, 'DROP INDEX "' . $oracle_index . '"', 'CREATE INDEX'),
 		);
 	}
 

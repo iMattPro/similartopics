@@ -224,6 +224,51 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString("DATE '1970-01-01'", $query['WHERE']);
 	}
 
+	public function oracle_sensitivity_data()
+	{
+		return array(
+			array(0.1, 10),
+			array(0.5, 50),
+			array(1.0, 100),
+		);
+	}
+
+	/**
+	 * @dataProvider oracle_sensitivity_data
+	 */
+	public function test_oracle_scales_sensitivity_to_text_score_range($sensitivity, $expected)
+	{
+		$this->db->method('sql_escape')->willReturnArgument(0);
+
+		$query = (new \vse\similartopics\driver\oracle($this->db))
+			->get_query(1, 'test topic', 0, $sensitivity);
+
+		$this->assertStringContainsString("SCORE(1) >= $expected\n", $query['WHERE']);
+	}
+
+	public function test_oracle_generated_index_name_fits_legacy_limit()
+	{
+		$this->db->method('get_sql_layer')->willReturn('oracle');
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturn(false);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array());
+		$table = 'custom_prefix_that_is_far_too_long_topics';
+
+		(new \vse\similartopics\driver\oracle($this->db, $config))
+			->create_fulltext_index('topic_title', $table);
+
+		$this->assertSame(1, preg_match('/CREATE INDEX (pst_[a-f0-9]{26})/', $queries[1], $matches));
+		$this->assertSame('pst_' . substr(hash('sha256', $table . '_topic_title_ctx_idx'), 0, 26), $matches[1]);
+		$this->assertSame(30, strlen($matches[1]));
+		$this->assertSame(strtoupper($matches[1]), $config[\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG]);
+	}
+
 	public function test_sqlite3_driver()
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');

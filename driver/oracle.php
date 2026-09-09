@@ -56,6 +56,8 @@ class oracle implements driver_interface
 	{
 		// Clean and prepare the search terms for Oracle Text
 		$search_terms = $this->prepare_search_terms($topic_title);
+		// Oracle Text relevance scores range from 0 through 100.
+		$score_threshold = (float) $sensitivity * 100;
 		$sql_time = ($length > 0) ? " AND t.topic_time > ((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE '1970-01-01') * 86400 - " . (int) $length . ')' : '';
 
 		return array(
@@ -72,7 +74,7 @@ class oracle implements driver_interface
 				),
 			),
 			'WHERE'		=> "CONTAINS(t.topic_title, '" . $this->db->sql_escape($search_terms) . "', 1) > 0
-				AND SCORE(1) >= " . (float) $sensitivity . '
+				AND SCORE(1) >= " . $score_threshold . '
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_id <> ' . (int) $topic_id . $sql_time,
@@ -185,7 +187,7 @@ class oracle implements driver_interface
 	{
 		if (!$this->is_fulltext($column, $table))
 		{
-			$index_name = $table . '_' . $column . '_ctx_idx';
+			$index_name = $this->get_index_name($table, $column);
 
 			// Create Oracle Text index
 			$sql = "CREATE INDEX " . $this->db->sql_escape($index_name) . "
@@ -211,29 +213,32 @@ class oracle implements driver_interface
 			return;
 		}
 
-		$index = strtoupper($table . '_' . $column . '_ctx_idx');
-		if ($this->config[self::OWNED_INDEX_CONFIG] === $index)
+		$index = $this->config[self::OWNED_INDEX_CONFIG];
+		if ($this->has_fulltext_index($index, $column, $table))
 		{
-			$this->drop_fulltext_index($column, $table);
+			$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($index));
 		}
 
 		$this->config->delete(self::OWNED_INDEX_CONFIG);
 	}
 
 	/**
-	 * Drop the canonical Similar Topics Oracle Text index when it exists.
+	 * Build a deterministic Oracle index name no longer than 30 bytes.
 	 *
-	 * @param string $column Name of the column
-	 * @param string $table  Name of the table
-	 * @return void
+	 * Keep legacy names when they already fit. Longer names use a fixed ASCII
+	 * prefix and hash so custom, including multibyte, table prefixes stay safe.
+	 *
+	 * @param string $table  Table name
+	 * @param string $column Column name
+	 * @return string
 	 */
-	public function drop_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	protected function get_index_name($table, $column)
 	{
-		$expected_index = strtoupper($table . '_' . $column . '_ctx_idx');
-		if ($this->has_fulltext_index($expected_index, $column, $table))
-		{
-			$this->db->sql_query('DROP INDEX ' . $this->quote_identifier($expected_index));
-		}
+		$name = $table . '_' . $column . '_ctx_idx';
+
+		return strlen($name) <= 30
+			? $name
+			: 'pst_' . substr(hash('sha256', $name), 0, 26);
 	}
 
 	/**

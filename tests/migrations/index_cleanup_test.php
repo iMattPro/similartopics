@@ -70,9 +70,24 @@ class index_cleanup_test extends \phpbb_test_case
 		$this->assertStringContainsString('sys.fulltext_index_columns', $queries[0]);
 	}
 
-	public function test_oracle_uninstall_drops_canonical_quoted_index()
+	public function oracle_owned_index_data()
 	{
-		$index_name = strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx');
+		$canonical_name = TOPICS_TABLE . '_topic_title_ctx_idx';
+		$current_name = strtoupper(strlen($canonical_name) <= 30
+			? $canonical_name
+			: 'pst_' . substr(hash('sha256', $canonical_name), 0, 26));
+
+		return array(
+			'current name' => array($current_name),
+			'legacy name' => array(strtoupper($canonical_name)),
+		);
+	}
+
+	/**
+	 * @dataProvider oracle_owned_index_data
+	 */
+	public function test_oracle_uninstall_drops_owned_quoted_index($index_name)
+	{
 		$this->db->method('get_sql_layer')->willReturn('oracle');
 		$this->db->method('sql_escape')->willReturnArgument(0);
 		$queries = array();
