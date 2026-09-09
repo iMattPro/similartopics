@@ -255,6 +255,13 @@ class similar_topics
 			$sql_array['WHERE'] .= ' AND f.similar_topics_ignore = 0';
 		}
 
+		$readable_forums = array_keys($this->auth->acl_getf('f_read', true));
+		if (empty($readable_forums))
+		{
+			return;
+		}
+		$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $readable_forums);
+
 		/**
 		 * Event to modify the sql_array for similar topics
 		 *
@@ -463,6 +470,13 @@ class similar_topics
 			}
 			$sql_array['WHERE'] .= ' AND f.similar_topics_ignore = 0';
 		}
+
+		$readable_forums = array_keys($this->auth->acl_getf('f_read', true));
+		if (empty($readable_forums))
+		{
+			return [];
+		}
+		$sql_array['WHERE'] .= ' AND ' . $this->db->sql_in_set('f.forum_id', $readable_forums);
 
 		$topics = [];
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
