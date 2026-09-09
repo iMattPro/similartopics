@@ -233,6 +233,9 @@ class controller_test extends \phpbb_database_test_case
 	 */
 	public function test_default_settings_submit_and_verify($input_data, $expected_config)
 	{
+		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$driver->method('get_type')->willReturn('mysql');
+		$this->setControllerProperty('similartopics', $driver);
 		$request_map = [];
 		foreach ($input_data as $key => $value)
 		{
@@ -257,6 +260,29 @@ class controller_test extends \phpbb_database_test_case
 		{
 			$this->assertEquals($expected_value, $this->config[$key]);
 		}
+	}
+
+	public function test_unsupported_sensitivity_is_not_overwritten_on_submit()
+	{
+		$this->config['similar_topics_sense'] = 7;
+		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$driver->method('get_type')->willReturn('sqlite');
+		$this->setControllerProperty('similartopics', $driver);
+		$this->request->method('variable')->willReturnMap([
+			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'],
+			['pst_time_type', '', false, \phpbb\request\request_interface::REQUEST, 'y'],
+		]);
+		$this->request->method('is_set_post')->with('submit')->willReturn(true);
+
+		try
+		{
+			$this->controller->handle();
+		}
+		catch (\phpbb\exception\http_exception $e)
+		{
+		}
+
+		$this->assertSame(7, $this->config['similar_topics_sense']);
 	}
 
 	public function test_update_forum_sources_saves_sanitized_custom_selection()
@@ -377,11 +403,13 @@ class controller_test extends \phpbb_database_test_case
 
 		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
 		$driver->method('is_fulltext')->with('topic_title')->willReturn(true);
+		$driver->method('get_type')->willReturn('sqlite');
 		$this->setControllerProperty('similartopics', $driver);
 
 		$this->controller->handle();
 
 		$this->assertFalse($assigned_vars['S_PST_NO_COMPAT']);
+		$this->assertFalse($assigned_vars['S_PST_SENSITIVITY']);
 	}
 
 	public function test_incomplete_forum_rules_are_rejected_before_settings_saved()

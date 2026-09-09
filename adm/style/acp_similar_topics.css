@@ -264,6 +264,14 @@
 	min-height: 32px;
 }
 
+#pst-acp .pst-field-disabled {
+	opacity: .55;
+}
+
+#pst-acp .pst-field-disabled input {
+	cursor: not-allowed;
+}
+
 #pst-acp .pst-field > input[type="number"],
 #pst-acp .pst-field > .pst-select-control {
 	min-height: 38px;

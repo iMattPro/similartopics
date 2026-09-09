@@ -172,11 +172,11 @@
 			</div>
 
 			<div class="pst-field-grid">
-					<label class="pst-field" for="pst_sense">
+					<label class="pst-field{% if not S_PST_SENSITIVITY %} pst-field-disabled{% endif %}" for="pst_sense">
 						<span>{{ lang('PST_SENSE') }}</span>
-						<small>{{ lang('PST_SENSE_EXPLAIN', PST_SENSITIVITY) }}</small>
+						<small>{% if S_PST_SENSITIVITY %}{{ lang('PST_SENSE_EXPLAIN', PST_SENSITIVITY) }}{% else %}{{ lang('PST_SENSE_UNAVAILABLE') }}{% endif %}</small>
 						<span class="pst-range-row">
-							<input name="pst_sense" id="pst_sense" type="range" min="1" max="10" value="{{ PST_SENSE }}">
+							<input name="pst_sense" id="pst_sense" type="range" min="1" max="10" value="{{ PST_SENSE }}"{% if not S_PST_SENSITIVITY %} disabled="disabled"{% endif %}>
 							<output for="pst_sense" id="pst-sense-value">{{ PST_SENSE }}</output>
 						</span>
 					</label>

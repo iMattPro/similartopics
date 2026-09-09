@@ -151,6 +151,8 @@ class similar_topics_admin
 	protected function default_settings()
 	{
 		$forum_list = $this->get_forum_list();
+		$uses_sensitivity = $this->similartopics !== null
+			&& !in_array($this->similartopics->get_type(), array('mssql', 'sqlite'), true);
 
 		if ($this->request->is_set_post('submit'))
 		{
@@ -199,9 +201,13 @@ class similar_topics_admin
 			$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0)));
 			$this->config_text_set('similar_topics_words', $this->request->variable('pst_words', '', true));
 
-			// Set sensitivity
-			$pst_sense = max(1, min($this->request->variable('pst_sense', 5), 10));
-			$this->config->set('similar_topics_sense', $pst_sense);
+			// Disabled controls are not submitted. Preserve the stored value when
+			// the active database driver does not use search sensitivity.
+			if ($uses_sensitivity)
+			{
+				$pst_sense = max(1, min($this->request->variable('pst_sense', 5), 10));
+				$this->config->set('similar_topics_sense', $pst_sense);
+			}
 
 			// Set date/time config settings
 			$pst_time = max(0, min($this->request->variable('pst_time', 0), 999));
@@ -302,6 +308,7 @@ class similar_topics_admin
 			'PST_WORDS'       => $this->isset_or_default($this->config_text_get('similar_topics_words'), ''),
 			'PST_TIME'        => $this->get_pst_time($this->config['similar_topics_time'], $this->config['similar_topics_type']),
 			'PST_SENSITIVITY' => $this->similartopics && $this->similartopics->get_engine() === 'innodb' ? 1 : 5,
+			'S_PST_SENSITIVITY' => $uses_sensitivity,
 			'S_PST_NO_COMPAT' => $this->similartopics === null || !$this->similartopics->is_fulltext('topic_title'),
 			'U_ACTION'        => $this->u_action,
 		));
