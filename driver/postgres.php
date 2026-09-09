@@ -88,7 +88,7 @@ class postgres implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity)
+	public function get_ajax_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array
 	{
 		return $this->get_query($topic_id, $topic_title, $length, $sensitivity);
 	}
@@ -220,7 +220,7 @@ class postgres implements driver_interface
 	 * @param string $table  Table name
 	 * @return void
 	 */
-	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function drop_owned_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
 	{
 		if (!$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
 		{

@@ -94,13 +94,13 @@ class sqlite3 implements driver_interface
 	/**
 	 * Generate a bounded SQLite query for live AJAX suggestions.
 	 *
-	 * @param int    $topic_id    The ID of the main topic
+	 * @param int $topic_id    The ID of the main topic
 	 * @param string $topic_title The title of the main topic
-	 * @param int    $length      The length of time of the search period
-	 * @param float  $sensitivity The search score weighting
+	 * @param int $length      The length of time of the search period
+	 * @param float $sensitivity The search score weighting
 	 * @return array An SQL query array
 	 */
-	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity)
+	public function get_ajax_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array
 	{
 		$sql_array = $this->get_query($topic_id, $topic_title, $length, $sensitivity);
 		$candidate_floor = '(SELECT COALESCE(MAX(recent.topic_id), 0) - ' . self::SEARCH_CANDIDATE_LIMIT . ' FROM ' . TOPICS_TABLE . ' recent)';
@@ -147,7 +147,7 @@ class sqlite3 implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
+	public function drop_owned_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void
 	{
 		// Preserve any legacy B-tree. Only discard obsolete ownership metadata.
 		if ($this->config !== null && $this->config->offsetExists(self::OWNED_INDEX_CONFIG))

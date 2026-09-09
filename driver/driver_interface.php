@@ -13,7 +13,7 @@ namespace vse\similartopics\driver;
 interface driver_interface
 {
 	/** Config key containing exact index identifier owned by this extension */
-	const OWNED_INDEX_CONFIG = 'pst_owned_index';
+	public const OWNED_INDEX_CONFIG = 'pst_owned_index';
 
 	/**
 	 * Get the name of the driver
@@ -43,13 +43,13 @@ interface driver_interface
 	/**
 	 * Generate the SQL query for live AJAX similar-topic suggestions
 	 *
-	 * @param int    $topic_id    The ID of the main topic
+	 * @param int $topic_id    The ID of the main topic
 	 * @param string $topic_title The title of the main topic
-	 * @param int    $length      The length of time of the search period
-	 * @param float  $sensitivity The search score weighting
+	 * @param int $length      The length of time of the search period
+	 * @param float $sensitivity The search score weighting
 	 * @return array An SQL query array
 	 */
-	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity);
+	public function get_ajax_query(int $topic_id, string $topic_title, int $length, float $sensitivity): array;
 
 	/**
 	 * Check for database support
@@ -97,7 +97,7 @@ interface driver_interface
 	 * @param string $table  Name of the table
 	 * @return void
 	 */
-	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE);
+	public function drop_owned_fulltext_index(string $column = 'topic_title', string $table = TOPICS_TABLE): void;
 
 	/**
 	 * Get the database storage engine name

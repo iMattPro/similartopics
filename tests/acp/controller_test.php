@@ -291,10 +291,13 @@ class controller_test extends phpbb_database_test_case
 		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
 		$driver->method('get_type')->willReturn('sqlite');
 		$this->setControllerProperty('similartopics', $driver);
-		$this->request->method('variable')->willReturnMap([
-			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'],
-			['pst_time_type', '', false, \phpbb\request\request_interface::REQUEST, 'y'],
-		]);
+		$this->request->method('variable')->willReturnCallback(function ($name, $default) {
+			return match ($name) {
+				'forum_rules' => '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}',
+				'pst_time_type' => 'y',
+				default => $default,
+			};
+		});
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
 
 		try

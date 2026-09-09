@@ -221,7 +221,8 @@ class index_ownership_test extends \phpbb_test_case
 			case 'mssql':
 				$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
 					false,
-					array('IsFullTextInstalled' => 1)
+					array('IsFullTextInstalled' => 1),
+					false
 				);
 			break;
 
