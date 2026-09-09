@@ -195,16 +195,16 @@ class similar_topics_admin
 			// Set basic config settings
 			$this->config->set('similar_topics', $this->request->variable('pst_enable', 0));
 			$this->config->set('similar_topics_dynamic', $this->request->variable('pst_dynamic', 0));
-			$this->config->set('similar_topics_limit', abs($this->request->variable('pst_limit', 0))); // use abs for positive values only
-			$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0))); // use abs for positive values only
+			$this->config->set('similar_topics_limit', max(0, min($this->request->variable('pst_limit', 0), 999)));
+			$this->config->set('similar_topics_cache', abs($this->request->variable('pst_cache', 0)));
 			$this->config_text_set('similar_topics_words', $this->request->variable('pst_words', '', true));
 
 			// Set sensitivity
-			$pst_sense = min(abs($this->request->variable('pst_sense', 5)), 10); // use abs for positive values only
+			$pst_sense = max(1, min($this->request->variable('pst_sense', 5), 10));
 			$this->config->set('similar_topics_sense', $pst_sense);
 
 			// Set date/time config settings
-			$pst_time = abs($this->request->variable('pst_time', 0)); // use abs for positive values only
+			$pst_time = max(0, min($this->request->variable('pst_time', 0), 999));
 			$this->config->set('similar_topics_type', $pst_time_type);
 			$this->config->set('similar_topics_time', $this->set_pst_time($pst_time, $pst_time_type));
 

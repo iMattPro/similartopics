@@ -165,7 +165,7 @@ class controller_test extends \phpbb_database_test_case
 					'similar_topics_time' => 2592000
 				]
 			],
-			'negative values' => [
+			'values below minimum' => [
 				[
 					'pst_enable' => 1,
 					'pst_dynamic' => 1,
@@ -179,10 +179,50 @@ class controller_test extends \phpbb_database_test_case
 				[
 					'similar_topics' => 1,
 					'similar_topics_dynamic' => 1,
-					'similar_topics_limit' => 5,
+					'similar_topics_limit' => 0,
 					'similar_topics_cache' => 100,
-					'similar_topics_sense' => 3,
-					'similar_topics_time' => 6048000
+					'similar_topics_sense' => 1,
+					'similar_topics_time' => 0
+				]
+			],
+			'values above maximum' => [
+				[
+					'pst_enable' => 1,
+					'pst_dynamic' => 1,
+					'pst_limit' => 1000,
+					'pst_cache' => 3600,
+					'pst_words' => 'test',
+					'pst_sense' => 11,
+					'pst_time' => 1000,
+					'pst_time_type' => 'd'
+				],
+				[
+					'similar_topics' => 1,
+					'similar_topics_dynamic' => 1,
+					'similar_topics_limit' => 999,
+					'similar_topics_cache' => 3600,
+					'similar_topics_sense' => 10,
+					'similar_topics_time' => 86313600
+				]
+			],
+			'zero sensitivity' => [
+				[
+					'pst_enable' => 1,
+					'pst_dynamic' => 1,
+					'pst_limit' => 5,
+					'pst_cache' => 3600,
+					'pst_words' => 'test',
+					'pst_sense' => 0,
+					'pst_time' => 30,
+					'pst_time_type' => 'd'
+				],
+				[
+					'similar_topics' => 1,
+					'similar_topics_dynamic' => 1,
+					'similar_topics_limit' => 5,
+					'similar_topics_cache' => 3600,
+					'similar_topics_sense' => 1,
+					'similar_topics_time' => 2592000
 				]
 			]
 		];
