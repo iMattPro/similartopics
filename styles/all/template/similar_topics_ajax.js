@@ -63,7 +63,8 @@
 			return;
 		}
 
-		const xhr = activeRequest = new XMLHttpRequest();
+		const xhr = new XMLHttpRequest();
+		activeRequest = xhr;
 		const baseUrl = dropdown.dataset.searchUrl;
 		const separator = baseUrl.includes('?') ? '&' : '?';
 		xhr.open('GET', baseUrl + separator + 'q=' + encodeURIComponent(query) + '&f=' + encodeURIComponent(dropdown.dataset.forumId));
