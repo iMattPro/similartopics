@@ -27,17 +27,10 @@ class index_cleanup_test extends \phpbb_test_case
 		$this->db_tools = $this->createMock('\phpbb\db\tools\tools_interface');
 	}
 
-	public function test_sqlite_uninstall_drops_canonical_quoted_index()
+	public function test_sqlite_uninstall_does_not_manage_indexes()
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');
-		$this->db->method('sql_escape')->willReturnArgument(0);
-		$queries = array();
-		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
-			$queries[] = $sql;
-			return true;
-		});
-		$this->db->method('sql_fetchrow')->willReturn(array('name' => 'idx_' . TOPICS_TABLE . '_topic_title'));
-		$this->db->method('sql_freeresult');
+		$this->db->expects($this->never())->method('sql_query');
 		$config = new \phpbb\config\config(array(
 			driver_interface::OWNED_INDEX_CONFIG => 'idx_' . TOPICS_TABLE . '_topic_title',
 		));
@@ -46,8 +39,7 @@ class index_cleanup_test extends \phpbb_test_case
 		);
 
 		$migration->drop_sqlite3_index();
-
-		$this->assertSame('DROP INDEX IF EXISTS "idx_' . TOPICS_TABLE . '_topic_title"', $queries[1]);
+		$this->assertFalse($config->offsetExists(driver_interface::OWNED_INDEX_CONFIG));
 	}
 
 	public function test_mssql_uninstall_preserves_index_with_additional_column()

@@ -91,7 +91,34 @@ class database_drivers_test extends phpbb_test_case
 		}
 	}
 
-	public function test_mssql_driver(): void
+	public function ajax_passthrough_driver_data()
+	{
+		return [
+			'mysqli' => ['mysqli'],
+			'mssql' => ['mssql'],
+			'postgres' => ['postgres'],
+			'oracle' => ['oracle'],
+		];
+	}
+
+	/**
+	 * @dataProvider ajax_passthrough_driver_data
+	 */
+	public function test_ajax_query_matches_standard_query($driver_class)
+	{
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_query')->willReturn(true);
+		$this->db->method('sql_fetchrow')->willReturn(false);
+		$this->db->method('sql_freeresult');
+		$driver = $this->create_driver($driver_class);
+
+		$this->assertSame(
+			$driver->get_query(1, 'test topic', 86400, 0.5),
+			$driver->get_ajax_query(1, 'test topic', 86400, 0.5)
+		);
+	}
+
+	public function test_mssql_driver()
 	{
 		$this->db->method('get_sql_layer')->willReturn('mssql');
 		$this->db->method('sql_escape')->willReturnArgument(0);
@@ -211,15 +238,6 @@ class database_drivers_test extends phpbb_test_case
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');
 		$this->db->method('sql_escape')->willReturnArgument(0);
-		$this->db->method('sql_query')->willReturn(true);
-		$this->db->method('sql_fetchrow')
-			->willReturnOnConsecutiveCalls(
-				['name' => 'topics_fts'],
-				false,
-				['name' => 'idx_topics_topic_title'],
-				false
-			);
-		$this->db->method('sql_freeresult');
 
 		$driver = new sqlite3($this->db);
 
@@ -229,7 +247,15 @@ class database_drivers_test extends phpbb_test_case
 
 		$query = $driver->get_query(1, 'test topic', 86400, 0.5);
 		$this->assertArrayHasKey('SELECT', $query);
+		$this->assertStringContainsString("CASE WHEN t.topic_title LIKE '%test%' THEN 1 ELSE 0 END", $query['SELECT']);
+		$this->assertStringContainsString("CASE WHEN t.topic_title LIKE '%topic%' THEN 1 ELSE 0 END", $query['SELECT']);
 		$this->assertStringContainsString('LIKE', $query['WHERE']);
+
+		$ajax_query = $driver->get_ajax_query(0, 'test topic', 86400, 0.5);
+		$this->assertStringContainsString(
+			'SELECT COALESCE(MAX(recent.topic_id), 0) - ' . \vse\similartopics\driver\sqlite3::SEARCH_CANDIDATE_LIMIT . ' FROM ' . TOPICS_TABLE . ' recent',
+			$ajax_query['WHERE']
+		);
 	}
 
 	public function test_fulltext_index_operations(): void
@@ -301,7 +327,8 @@ class database_drivers_test extends phpbb_test_case
 		$this->db->method('sql_fetchrow')
 			->willReturnOnConsecutiveCalls(
 				false,
-				['IsFullTextInstalled' => 1]
+				['IsFullTextInstalled' => 1],
+				false
 			);
 		$this->db->method('sql_freeresult');
 		$config = new \phpbb\config\config(array());
@@ -313,6 +340,79 @@ class database_drivers_test extends phpbb_test_case
 			return strpos($sql, 'CREATE FULLTEXT INDEX') !== false;
 		}));
 		$this->assertSame(TOPICS_TABLE, $config[\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG]);
+		$this->assertSame('phpbb_catalog', $config[\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG]);
+	}
+
+	public function test_mssql_does_not_claim_existing_fulltext_catalog()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mssql');
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			false,
+			['IsFullTextInstalled' => 1],
+			['fulltext_catalog_id' => 1]
+		);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array());
+
+		(new \vse\similartopics\driver\mssql($this->db, $config))->create_fulltext_index();
+
+		$this->assertFalse((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'CREATE FULLTEXT CATALOG') !== false;
+		}));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG));
+	}
+
+	public function test_mssql_drops_owned_unused_fulltext_catalog()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mssql');
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			['name' => 'topic_title'],
+			false,
+			['index_count' => 0]
+		);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array(
+			\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG => TOPICS_TABLE,
+			\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG => 'phpbb_catalog',
+		));
+
+		(new \vse\similartopics\driver\mssql($this->db, $config))->drop_owned_fulltext_index();
+
+		$this->assertTrue(in_array('DROP FULLTEXT INDEX ON ' . TOPICS_TABLE, $queries, true));
+		$this->assertTrue(in_array('DROP FULLTEXT CATALOG phpbb_catalog', $queries, true));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG));
+	}
+
+	public function test_mssql_preserves_owned_fulltext_catalog_still_in_use()
+	{
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturn(['index_count' => 1]);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array(
+			\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG => 'phpbb_catalog',
+		));
+
+		(new \vse\similartopics\driver\mssql($this->db, $config))->drop_owned_fulltext_index();
+
+		$this->assertFalse((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'DROP FULLTEXT') === 0;
+		}));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG));
 	}
 
 	public function test_mssql_preserves_existing_fulltext_index_on_other_column()
@@ -412,23 +512,14 @@ class database_drivers_test extends phpbb_test_case
 	public function test_sqlite3_fulltext_methods(): void
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');
-		$this->db->method('sql_escape')->willReturnArgument(0);
-		$this->db->method('sql_query')->willReturn(true);
-		$this->db->method('sql_fetchrow')
-			->willReturnOnConsecutiveCalls(
-				['name' => 'topics_fts'],
-				false,
-				['name' => 'idx_topics_topic_title'],
-				false
-			);
-		$this->db->method('sql_freeresult');
+		$this->db->expects($this->never())->method('sql_query');
 
 		$driver = new sqlite3($this->db);
 
-		$indexes = $driver->get_fulltext_indexes();
-		$this->assertIsArray($indexes);
-
+		$this->assertSame(array(), $driver->get_fulltext_indexes());
 		$this->assertTrue($driver->is_fulltext());
+		$this->assertNull($driver->create_fulltext_index());
+		$this->assertNull($driver->drop_owned_fulltext_index());
 	}
 
 	public function test_postgres_fulltext_methods(): void
@@ -798,16 +889,6 @@ class database_drivers_test extends phpbb_test_case
 		$this->assertStringContainsString('CREATE INDEX "phpbb_topics_english_DROP_INDEX_topic_title"', $writes[0]);
 		$this->assertStringContainsString('ON "phpbb_topics"', $writes[0]);
 		$this->assertStringContainsString(', "topic_title"))', $writes[0]);
-	}
-
-	public function test_sqlite_existing_index_is_not_recreated(): void
-	{
-		$this->db->method('get_sql_layer')->willReturn('sqlite3');
-		$this->db->expects($this->once())->method('sql_query')->willReturn(true);
-		$this->db->method('sql_fetchrow')->willReturn(['name' => 'idx_phpbb_topics_topic_title']);
-		$this->db->method('sql_freeresult');
-
-		(new \vse\similartopics\driver\sqlite3($this->db))->create_fulltext_index();
 	}
 
 	protected function create_driver($driver_class): mysqli|mssql|oracle|postgres|sqlite3|null

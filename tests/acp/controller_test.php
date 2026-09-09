@@ -188,7 +188,7 @@ class controller_test extends phpbb_database_test_case
 					'similar_topics_time' => 2592000
 				]
 			],
-			'negative values' => [
+			'values below minimum' => [
 				[
 					'pst_enable' => 1,
 					'pst_dynamic' => 1,
@@ -202,10 +202,50 @@ class controller_test extends phpbb_database_test_case
 				[
 					'similar_topics' => 1,
 					'similar_topics_dynamic' => 1,
-					'similar_topics_limit' => 5,
+					'similar_topics_limit' => 0,
 					'similar_topics_cache' => 100,
-					'similar_topics_sense' => 3,
-					'similar_topics_time' => 6048000
+					'similar_topics_sense' => 1,
+					'similar_topics_time' => 0
+				]
+			],
+			'values above maximum' => [
+				[
+					'pst_enable' => 1,
+					'pst_dynamic' => 1,
+					'pst_limit' => 1000,
+					'pst_cache' => 3600,
+					'pst_words' => 'test',
+					'pst_sense' => 11,
+					'pst_time' => 1000,
+					'pst_time_type' => 'd'
+				],
+				[
+					'similar_topics' => 1,
+					'similar_topics_dynamic' => 1,
+					'similar_topics_limit' => 999,
+					'similar_topics_cache' => 3600,
+					'similar_topics_sense' => 10,
+					'similar_topics_time' => 86313600
+				]
+			],
+			'zero sensitivity' => [
+				[
+					'pst_enable' => 1,
+					'pst_dynamic' => 1,
+					'pst_limit' => 5,
+					'pst_cache' => 3600,
+					'pst_words' => 'test',
+					'pst_sense' => 0,
+					'pst_time' => 30,
+					'pst_time_type' => 'd'
+				],
+				[
+					'similar_topics' => 1,
+					'similar_topics_dynamic' => 1,
+					'similar_topics_limit' => 5,
+					'similar_topics_cache' => 3600,
+					'similar_topics_sense' => 1,
+					'similar_topics_time' => 2592000
 				]
 			]
 		];
@@ -216,6 +256,9 @@ class controller_test extends phpbb_database_test_case
 	 */
 	public function test_default_settings_submit_and_verify($input_data, $expected_config): void
 	{
+		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$driver->method('get_type')->willReturn('mysql');
+		$this->setControllerProperty('similartopics', $driver);
 		$request_map = [];
 		foreach ($input_data as $key => $value)
 		{
@@ -242,7 +285,30 @@ class controller_test extends phpbb_database_test_case
 		}
 	}
 
-	public function test_update_forum_sources_saves_sanitized_custom_selection(): void
+	public function test_unsupported_sensitivity_is_not_overwritten_on_submit()
+	{
+		$this->config['similar_topics_sense'] = 7;
+		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$driver->method('get_type')->willReturn('sqlite');
+		$this->setControllerProperty('similartopics', $driver);
+		$this->request->method('variable')->willReturnMap([
+			['forum_rules', '', false, \phpbb\request\request_interface::POST, '{&quot;2&quot;:{&quot;show&quot;:0,&quot;searchable&quot;:0,&quot;mode&quot;:&quot;all&quot;,&quot;sources&quot;:[]}}'],
+			['pst_time_type', '', false, \phpbb\request\request_interface::REQUEST, 'y'],
+		]);
+		$this->request->method('is_set_post')->with('submit')->willReturn(true);
+
+		try
+		{
+			$this->controller->handle();
+		}
+		catch (\phpbb\exception\http_exception $e)
+		{
+		}
+
+		$this->assertSame(7, $this->config['similar_topics_sense']);
+	}
+
+	public function test_update_forum_sources_saves_sanitized_custom_selection()
 	{
 		$executed_queries = [];
 		$this->setupDbCapture($executed_queries);
@@ -345,7 +411,26 @@ class controller_test extends phpbb_database_test_case
 		);
 	}
 
-	public function test_incomplete_forum_rules_are_rejected_before_settings_saved(): void
+	public function test_sqlite_without_index_is_compatible()
+	{
+		$assigned_vars = array();
+		$this->template->method('assign_vars')->willReturnCallback(function($vars) use (&$assigned_vars) {
+			$assigned_vars = array_merge($assigned_vars, $vars);
+		});
+		$this->request->method('is_set_post')->willReturn(false);
+
+		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$driver->method('is_fulltext')->with('topic_title')->willReturn(true);
+		$driver->method('get_type')->willReturn('sqlite');
+		$this->setControllerProperty('similartopics', $driver);
+
+		$this->controller->handle();
+
+		$this->assertFalse($assigned_vars['S_PST_NO_COMPAT']);
+		$this->assertFalse($assigned_vars['S_PST_SENSITIVITY']);
+	}
+
+	public function test_incomplete_forum_rules_are_rejected_before_settings_saved()
 	{
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
 		$this->request->method('variable')->willReturnMap([

@@ -17,6 +17,12 @@ use Exception;
  */
 class mssql implements driver_interface
 {
+	/** Config key containing the full-text catalog owned by this extension */
+	const OWNED_CATALOG_CONFIG = 'pst_owned_mssql_catalog';
+
+	/** Full-text catalog used by this extension */
+	const FULLTEXT_CATALOG = 'phpbb_catalog';
+
 	/** @var \phpbb\db\driver\driver_interface */
 	protected \phpbb\db\driver\driver_interface $db;
 
@@ -100,6 +106,14 @@ class mssql implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
+	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity)
+	{
+		return $this->get_query($topic_id, $topic_title, $length, $sensitivity);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function is_supported(): bool
 	{
 		return (str_starts_with($this->db->get_sql_layer(), 'mssql'));
@@ -166,16 +180,21 @@ class mssql implements driver_interface
 			return;
 		}
 
-		// Create fulltext catalog if it doesn't exist
-		$sql = "IF NOT EXISTS (SELECT * FROM sys.fulltext_catalogs WHERE name = 'phpbb_catalog')
-			CREATE FULLTEXT CATALOG phpbb_catalog";
-		$this->db->sql_query($sql);
+		// Record ownership only when this extension creates the catalog.
+		if (!$this->fulltext_catalog_exists())
+		{
+			$this->db->sql_query('CREATE FULLTEXT CATALOG ' . self::FULLTEXT_CATALOG);
+			if ($this->config !== null)
+			{
+				$this->config->set(self::OWNED_CATALOG_CONFIG, self::FULLTEXT_CATALOG);
+			}
+		}
 
 		// Create fulltext index
 		$sql = "CREATE FULLTEXT INDEX ON " . $this->db->sql_escape($table) . "
 			(" . $this->db->sql_escape($column) . ")
 			KEY INDEX PK_" . $this->db->sql_escape($table) . "
-			ON phpbb_catalog";
+			ON " . self::FULLTEXT_CATALOG;
 		$this->db->sql_query($sql);
 
 		if ($this->config !== null)
@@ -190,17 +209,22 @@ class mssql implements driver_interface
 	 */
 	public function drop_owned_fulltext_index($column = 'topic_title', $table = TOPICS_TABLE)
 	{
-		if ($this->config === null || !$this->config->offsetExists(self::OWNED_INDEX_CONFIG))
+		if ($this->config === null)
 		{
 			return;
 		}
 
-		if ($this->config[self::OWNED_INDEX_CONFIG] === $table)
+		if ($this->config->offsetExists(self::OWNED_INDEX_CONFIG))
 		{
-			$this->drop_fulltext_index($column, $table);
+			if ($this->config[self::OWNED_INDEX_CONFIG] === $table)
+			{
+				$this->drop_fulltext_index($column, $table);
+			}
+
+			$this->config->delete(self::OWNED_INDEX_CONFIG);
 		}
 
-		$this->config->delete(self::OWNED_INDEX_CONFIG);
+		$this->drop_owned_fulltext_catalog();
 	}
 
 	/**
@@ -234,6 +258,51 @@ class mssql implements driver_interface
 	public function has_stopword_support(): bool
 	{
 		return false;
+	}
+
+	/**
+	 * Check whether the extension's full-text catalog exists.
+	 *
+	 * @return bool
+	 */
+	protected function fulltext_catalog_exists()
+	{
+		$sql = "SELECT fulltext_catalog_id
+			FROM sys.fulltext_catalogs
+			WHERE name = '" . self::FULLTEXT_CATALOG . "'";
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		return (bool) $row;
+	}
+
+	/**
+	 * Drop the owned catalog only when no full-text indexes still use it.
+	 */
+	protected function drop_owned_fulltext_catalog()
+	{
+		if (!$this->config->offsetExists(self::OWNED_CATALOG_CONFIG)
+			|| $this->config[self::OWNED_CATALOG_CONFIG] !== self::FULLTEXT_CATALOG)
+		{
+			return;
+		}
+
+		$sql = "SELECT COUNT(fi.object_id) AS index_count
+			FROM sys.fulltext_catalogs fc
+			LEFT JOIN sys.fulltext_indexes fi ON fi.fulltext_catalog_id = fc.fulltext_catalog_id
+			WHERE fc.name = '" . self::FULLTEXT_CATALOG . "'
+			GROUP BY fc.fulltext_catalog_id";
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		if ($row && (int) $row['index_count'] === 0)
+		{
+			$this->db->sql_query('DROP FULLTEXT CATALOG ' . self::FULLTEXT_CATALOG);
+		}
+
+		$this->config->delete(self::OWNED_CATALOG_CONFIG);
 	}
 
 	protected function fulltext_available(): bool

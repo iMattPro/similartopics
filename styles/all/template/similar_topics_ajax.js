@@ -8,7 +8,9 @@
 	const subjectField = document.getElementById('subject');
 	const listContainer = document.getElementById('similar-topics-list');
 
-	if (!subjectField || !dropdown) return;
+	if (!subjectField || !dropdown) {
+		return;
+	}
 
 	// Disable browser autocomplete to prevent interference with our dropdown
 	subjectField.setAttribute('autocomplete', 'off');
@@ -61,7 +63,8 @@
 			return;
 		}
 
-		const xhr = activeRequest = new XMLHttpRequest();
+		const xhr = new XMLHttpRequest();
+		activeRequest = xhr;
 		const baseUrl = dropdown.dataset.searchUrl;
 		const separator = baseUrl.includes('?') ? '&' : '?';
 		xhr.open('GET', baseUrl + separator + 'q=' + encodeURIComponent(query) + '&f=' + encodeURIComponent(dropdown.dataset.forumId));
@@ -97,7 +100,9 @@
 
 	// Build and display topic results in a dropdown
 	function displayResults(topics) {
-		if (!topics || topics.length === 0) return hideDropdown();
+		if (!topics || topics.length === 0) {
+			return hideDropdown();
+		}
 
 		listContainer.innerHTML = '';
 		topics.forEach(topic => {
@@ -152,7 +157,9 @@
 
 	// Keyboard navigation: Arrow keys to select, Enter to open
 	subjectField.addEventListener('keydown', (e) => {
-		if (dropdown.style.display === 'none' || !cachedItems.length) return;
+		if (dropdown.style.display === 'none' || !cachedItems.length) {
+			return;
+		}
 
 		const { key, shiftKey, ctrlKey, altKey, metaKey } = e;
 		if ((key === 'ArrowDown' || key === 'ArrowUp') && !shiftKey && !ctrlKey && !altKey && !metaKey) {

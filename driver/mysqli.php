@@ -82,6 +82,14 @@ class mysqli implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
+	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity)
+	{
+		return $this->get_query($topic_id, $topic_title, $length, $sensitivity);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function is_supported(): bool
 	{
 		return $this->is_mysql() && $this->supported_engine();

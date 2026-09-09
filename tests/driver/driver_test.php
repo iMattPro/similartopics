@@ -129,7 +129,7 @@ class driver_test extends phpbb_database_test_case
 		}
 		else if ($sql_layer === 'sqlite3')
 		{
-			$select = "f.forum_id, f.forum_name, t.*, CASE WHEN (t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%') THEN 1.0 ELSE 0.0 END AS score";
+			$select = "f.forum_id, f.forum_name, t.*, (CASE WHEN t.topic_title LIKE '%foo%' THEN 1 ELSE 0 END + CASE WHEN t.topic_title LIKE '%bar%' THEN 1 ELSE 0 END) AS score";
 			$sql_time = ($length > 0) ? " AND t.topic_time > (strftime('%s', 'now') - $length)" : '';
 			$where = "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%') AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
 		}
@@ -190,6 +190,15 @@ class driver_test extends phpbb_database_test_case
 		$sql_layer = $this->db->get_sql_layer();
 
 		$column = 'topic_title';
+
+		if ($sql_layer === 'sqlite3')
+		{
+			// SQLite LIKE search is ready without an auxiliary index.
+			self::assertTrue($driver->is_fulltext($column));
+			$driver->create_fulltext_index($column);
+			self::assertTrue($driver->is_fulltext($column));
+			return;
+		}
 
 		// Check that the topic_title is NOT a fulltext index
 		self::assertFalse($driver->is_fulltext($column));

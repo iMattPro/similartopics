@@ -543,6 +543,7 @@ class similar_topics_test extends phpbb_test_case
 
 		$auth = $this->auth;
 		$this->auth->method('acl_get')->willReturn(true);
+		$this->auth->expects(self::exactly(2))->method('acl_getf')->with('f_read', true)->willReturn([2 => ['f_read' => 1]]);
 		$cache = new \phpbb_mock_cache();
 		$this->service->method('obtain_icons')->willReturn([
 			1 => ['img' => 'icon.png', 'width' => 16, 'height' => 16],
@@ -560,8 +561,12 @@ class similar_topics_test extends phpbb_test_case
 		$this->dispatcher->method('trigger_event')->willReturnCallback(function ($event_name, $data) {
 			return $data;
 		});
-		$this->db->method('sql_in_set')->willReturn('f.forum_id NOT IN (9)');
-		$this->db->method('sql_build_query')->willReturn('SELECT similar');
+		$this->db->method('sql_in_set')->willReturnCallback(function ($field, $values, $negate = false) {
+			return $field . ($negate ? ' NOT' : '') . ' IN (' . implode(', ', $values) . ')';
+		});
+		$this->db->expects(self::exactly(2))->method('sql_build_query')->with('SELECT', self::callback(function ($sql_array) {
+			return strpos($sql_array['WHERE'], 'f.forum_id IN (2)') !== false;
+		}))->willReturn('SELECT similar');
 		$this->db->expects(self::exactly(2))->method('sql_query_limit')->with('SELECT similar', 5, 0, 0)->willReturn('result');
 		$this->db->expects(self::exactly(6))->method('sql_fetchrow')->with('result')->willReturnOnConsecutiveCalls(
 			$this->topic_row(['topic_visibility' => ITEM_UNAPPROVED, 'topic_id' => 3]),
@@ -625,7 +630,37 @@ class similar_topics_test extends phpbb_test_case
 		$this->addToAssertionCount(1);
 	}
 
-	public function test_search_similar_topics_ajax_empty_query(): void
+	public function test_display_similar_topics_stops_when_no_forums_are_readable()
+	{
+		global $config, $user;
+
+		$this->config = $config = new \phpbb\config\config([
+			'similar_topics_time' => 86400,
+			'similar_topics_cache' => 0,
+			'load_db_lastread' => false,
+			'load_anon_lastread' => false,
+			'cookie_name' => 'phpbb',
+		]);
+		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums']);
+		$this->user->data = ['is_registered' => false, 'user_id' => ANONYMOUS];
+		$this->user->method('get_passworded_forums')->willReturn([]);
+		$this->stop_word_helper->method('clean_text')->willReturn('current topic');
+		$this->db->method('get_sql_layer')->willReturn('mysqli');
+		$this->manager->method('get_driver')->willReturn($this->driver);
+		$this->driver->method('get_query')->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
+		$this->auth->expects(self::once())->method('acl_getf')->with('f_read', true)->willReturn([]);
+		$this->db->expects(self::never())->method('sql_build_query');
+		$this->template->expects(self::never())->method('assign_block_vars');
+
+		$this->assertNull($this->get_similar_topics()->display_similar_topics([
+			'similar_topics_hide' => false,
+			'similar_topic_forums' => '',
+			'topic_id' => 1,
+			'topic_title' => 'Current topic',
+		]));
+	}
+
+	public function test_search_similar_topics_ajax_empty_query()
 	{
 		$this->db->method('get_sql_layer')->willReturn('');
 		$this->stop_word_helper->method('clean_text')->willReturn('');
@@ -635,7 +670,30 @@ class similar_topics_test extends phpbb_test_case
 		self::assertEquals([], $result);
 	}
 
-	public function test_search_similar_topics_ajax_with_results(): void
+	public function test_search_similar_topics_ajax_uses_bounded_sqlite_query()
+	{
+		global $config, $user;
+
+		$this->config = $config = new \phpbb\config\config(['similar_topics_time' => 86400]);
+		$this->stop_word_helper->method('clean_text')->willReturn('test query');
+		$this->db->method('get_sql_layer')->willReturn('sqlite3');
+		$sqlite = $this->getMockBuilder('\vse\similartopics\driver\sqlite3')
+			->disableOriginalConstructor()
+			->onlyMethods(['get_ajax_query'])
+			->getMock();
+		$sqlite->expects(self::once())
+			->method('get_ajax_query')
+			->with(0, 'test query', 86400, '0.5')
+			->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
+		$this->manager->method('get_driver')->willReturn($sqlite);
+		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums']);
+		$this->user->method('get_passworded_forums')->willReturn([]);
+		$this->auth->method('acl_getf')->with('f_read', true)->willReturn([]);
+
+		$this->assertSame([], $this->get_similar_topics()->search_similar_topics_ajax('test query'));
+	}
+
+	public function test_search_similar_topics_ajax_with_results()
 	{
 		global $config, $user, $auth, $cache, $_SID, $_EXTRA_URL;
 		$this->config = $config = new config(['similar_topics_time' => 86400]);
@@ -646,12 +704,19 @@ class similar_topics_test extends phpbb_test_case
 		$this->stop_word_helper->method('clean_text')->willReturn('test query');
 		$this->db->method('get_sql_layer')->willReturn('mysqli');
 		$this->manager->method('get_driver')->willReturn($this->driver);
-		$this->driver->method('get_query')->willReturn(['SELECT' => 't.topic_id, t.topic_title', 'FROM' => [], 'WHERE' => '1=1']);
+		$this->driver->method('get_ajax_query')->willReturn(['SELECT' => 't.topic_id, t.topic_title', 'FROM' => [], 'WHERE' => '1=1']);
 		$this->user = $user = $this->createPartialMock(user::class, ['get_passworded_forums', 'optionget']);
 		$this->user->method('get_passworded_forums')->willReturn([]);
 		$this->auth->method('acl_get')->willReturn(true);
+		$this->auth->expects(self::once())->method('acl_getf')->with('f_read', true)->willReturn([1 => ['f_read' => 1]]);
 		$auth = $this->auth;
 		$cache = new phpbb_mock_cache();
+		$this->db->method('sql_in_set')->willReturnCallback(function ($field, $values, $negate = false) {
+			return $field . ($negate ? ' NOT' : '') . ' IN (' . implode(', ', $values) . ')';
+		});
+		$this->db->expects(self::once())->method('sql_build_query')->with('SELECT', self::callback(function ($sql_array) {
+			return strpos($sql_array['WHERE'], 'f.forum_id IN (1)') !== false;
+		}))->willReturn('SELECT similar');
 
 		$this->db->expects(self::once())
 			->method('sql_query')
@@ -688,11 +753,12 @@ class similar_topics_test extends phpbb_test_case
 		$this->stop_word_helper->method('clean_text')->willReturn('query');
 		$this->db->method('get_sql_layer')->willReturn('mysqli');
 		$this->manager->method('get_driver')->willReturn($this->driver);
-		$this->driver->method('get_query')->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
+		$this->driver->method('get_ajax_query')->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
 		$this->db->method('sql_in_set')->willReturn('f.forum_id NOT IN (9)');
 		$this->db->method('sql_build_query')->willReturn('SELECT similar');
 		$this->db->method('sql_query_limit')->willReturn('result');
 		$this->db->method('sql_fetchrow')->willReturn(false);
+		$this->auth->expects(self::once())->method('acl_getf')->with('f_read', true)->willReturn([1 => ['f_read' => 1]]);
 		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums']);
 		$this->user->method('get_passworded_forums')->willReturn([9]);
 
@@ -706,7 +772,7 @@ class similar_topics_test extends phpbb_test_case
 		$this->stop_word_helper->method('clean_text')->willReturn('query');
 		$this->db->method('get_sql_layer')->willReturn('mysqli');
 		$this->manager->method('get_driver')->willReturn($this->driver);
-		$this->driver->method('get_query')->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
+		$this->driver->method('get_ajax_query')->willReturn(['SELECT' => 't.*', 'FROM' => [], 'WHERE' => '1=1']);
 		$this->db->method('sql_query')->willReturn(true);
 		$this->db->method('sql_fetchfield')->willReturn('[2]');
 		$this->user = $user = $this->createPartialMock('\phpbb\user', ['get_passworded_forums']);
