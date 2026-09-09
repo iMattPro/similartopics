@@ -81,6 +81,33 @@ class database_drivers_test extends \phpbb_test_case
 		}
 	}
 
+	public function ajax_passthrough_driver_data()
+	{
+		return [
+			'mysqli' => ['mysqli'],
+			'mssql' => ['mssql'],
+			'postgres' => ['postgres'],
+			'oracle' => ['oracle'],
+		];
+	}
+
+	/**
+	 * @dataProvider ajax_passthrough_driver_data
+	 */
+	public function test_ajax_query_matches_standard_query($driver_class)
+	{
+		$this->db->method('sql_escape')->willReturnArgument(0);
+		$this->db->method('sql_query')->willReturn(true);
+		$this->db->method('sql_fetchrow')->willReturn(false);
+		$this->db->method('sql_freeresult');
+		$driver = $this->create_driver($driver_class);
+
+		$this->assertSame(
+			$driver->get_query(1, 'test topic', 86400, 0.5),
+			$driver->get_ajax_query(1, 'test topic', 86400, 0.5)
+		);
+	}
+
 	public function test_mssql_driver()
 	{
 		$this->db->method('get_sql_layer')->willReturn('mssql');
