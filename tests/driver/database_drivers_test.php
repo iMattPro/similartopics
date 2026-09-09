@@ -291,7 +291,8 @@ class database_drivers_test extends \phpbb_test_case
 		$this->db->method('sql_fetchrow')
 			->willReturnOnConsecutiveCalls(
 				false,
-				['IsFullTextInstalled' => 1]
+				['IsFullTextInstalled' => 1],
+				false
 			);
 		$this->db->method('sql_freeresult');
 		$config = new \phpbb\config\config(array());
@@ -303,6 +304,79 @@ class database_drivers_test extends \phpbb_test_case
 			return strpos($sql, 'CREATE FULLTEXT INDEX') !== false;
 		}));
 		$this->assertSame(TOPICS_TABLE, $config[\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG]);
+		$this->assertSame('phpbb_catalog', $config[\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG]);
+	}
+
+	public function test_mssql_does_not_claim_existing_fulltext_catalog()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mssql');
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			false,
+			['IsFullTextInstalled' => 1],
+			['fulltext_catalog_id' => 1]
+		);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array());
+
+		(new \vse\similartopics\driver\mssql($this->db, $config))->create_fulltext_index();
+
+		$this->assertFalse((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'CREATE FULLTEXT CATALOG') !== false;
+		}));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG));
+	}
+
+	public function test_mssql_drops_owned_unused_fulltext_catalog()
+	{
+		$this->db->method('get_sql_layer')->willReturn('mssql');
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturnOnConsecutiveCalls(
+			['name' => 'topic_title'],
+			false,
+			['index_count' => 0]
+		);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array(
+			\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG => TOPICS_TABLE,
+			\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG => 'phpbb_catalog',
+		));
+
+		(new \vse\similartopics\driver\mssql($this->db, $config))->drop_owned_fulltext_index();
+
+		$this->assertTrue(in_array('DROP FULLTEXT INDEX ON ' . TOPICS_TABLE, $queries, true));
+		$this->assertTrue(in_array('DROP FULLTEXT CATALOG phpbb_catalog', $queries, true));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\driver_interface::OWNED_INDEX_CONFIG));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG));
+	}
+
+	public function test_mssql_preserves_owned_fulltext_catalog_still_in_use()
+	{
+		$queries = array();
+		$this->db->method('sql_query')->willReturnCallback(function ($sql) use (&$queries) {
+			$queries[] = $sql;
+			return true;
+		});
+		$this->db->method('sql_fetchrow')->willReturn(['index_count' => 1]);
+		$this->db->method('sql_freeresult');
+		$config = new \phpbb\config\config(array(
+			\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG => 'phpbb_catalog',
+		));
+
+		(new \vse\similartopics\driver\mssql($this->db, $config))->drop_owned_fulltext_index();
+
+		$this->assertFalse((bool) array_filter($queries, function ($sql) {
+			return strpos($sql, 'DROP FULLTEXT') === 0;
+		}));
+		$this->assertFalse($config->offsetExists(\vse\similartopics\driver\mssql::OWNED_CATALOG_CONFIG));
 	}
 
 	public function test_mssql_preserves_existing_fulltext_index_on_other_column()
