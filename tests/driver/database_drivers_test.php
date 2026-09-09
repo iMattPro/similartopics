@@ -212,9 +212,11 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertArrayHasKey('SELECT', $query);
 		$this->assertSame('f.forum_id, f.forum_name, t.*, 1.0 AS score', $query['SELECT']);
 		$this->assertStringContainsString('LIKE', $query['WHERE']);
+
+		$ajax_query = $driver->get_ajax_query(0, 'test topic', 86400, 0.5);
 		$this->assertStringContainsString(
 			'SELECT COALESCE(MAX(recent.topic_id), 0) - ' . \vse\similartopics\driver\sqlite3::SEARCH_CANDIDATE_LIMIT . ' FROM ' . TOPICS_TABLE . ' recent',
-			$query['WHERE']
+			$ajax_query['WHERE']
 		);
 	}
 

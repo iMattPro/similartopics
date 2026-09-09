@@ -67,7 +67,6 @@ class sqlite3 implements driver_interface
 
 		$where_condition = '(' . implode(' OR ', $like_conditions) . ')';
 		$sql_time = ($length > 0) ? " AND t.topic_time > (strftime('%s', 'now') - " . (int) $length . ')' : '';
-		$candidate_floor = '(SELECT COALESCE(MAX(recent.topic_id), 0) - ' . self::SEARCH_CANDIDATE_LIMIT . ' FROM ' . TOPICS_TABLE . ' recent)';
 
 		return array(
 			'SELECT'	=> 'f.forum_id, f.forum_name, t.*, 1.0 AS score',
@@ -83,10 +82,28 @@ class sqlite3 implements driver_interface
 			'WHERE'		=> $where_condition . "
 				AND t.topic_status <> " . ITEM_MOVED . "
 				AND t.topic_visibility = " . ITEM_APPROVED . "
-				AND t.topic_id <> " . (int) $topic_id . "
-				AND t.topic_id > " . $candidate_floor . $sql_time,
+				AND t.topic_id <> " . (int) $topic_id . $sql_time,
 			'ORDER_BY'	=> 'score DESC, t.topic_time DESC',
 		);
+	}
+
+	/**
+	 * Generate a bounded SQLite query for live AJAX suggestions.
+	 *
+	 * @param int    $topic_id    The ID of the main topic
+	 * @param string $topic_title The title of the main topic
+	 * @param int    $length      The length of time of the search period
+	 * @param float  $sensitivity The search score weighting
+	 * @return array An SQL query array
+	 */
+	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity)
+	{
+		$sql_array = $this->get_query($topic_id, $topic_title, $length, $sensitivity);
+		$candidate_floor = '(SELECT COALESCE(MAX(recent.topic_id), 0) - ' . self::SEARCH_CANDIDATE_LIMIT . ' FROM ' . TOPICS_TABLE . ' recent)';
+		$sql_array['WHERE'] .= "
+			AND t.topic_id > " . $candidate_floor;
+
+		return $sql_array;
 	}
 
 	/**

@@ -41,6 +41,17 @@ interface driver_interface
 	public function get_query($topic_id, $topic_title, $length, $sensitivity);
 
 	/**
+	 * Generate the SQL query for live AJAX similar-topic suggestions
+	 *
+	 * @param int    $topic_id    The ID of the main topic
+	 * @param string $topic_title The title of the main topic
+	 * @param int    $length      The length of time of the search period
+	 * @param float  $sensitivity The search score weighting
+	 * @return array An SQL query array
+	 */
+	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity);
+
+	/**
 	 * Check for database support
 	 *
 	 * @access public

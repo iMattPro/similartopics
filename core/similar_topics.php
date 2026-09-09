@@ -437,7 +437,7 @@ class similar_topics
 		}
 
 		$sensitivity = $this->config->offsetExists('similar_topics_sense') ? number_format($this->config['similar_topics_sense'] / 10, 1, '.', '') : '0.5';
-		$sql_array = $this->similartopics->get_query(0, $cleaned_query, $this->config['similar_topics_time'], $sensitivity);
+		$sql_array = $this->similartopics->get_ajax_query(0, $cleaned_query, $this->config['similar_topics_time'], $sensitivity);
 
 		$similar_topic_forums = null;
 		if ($forum_id > 0)

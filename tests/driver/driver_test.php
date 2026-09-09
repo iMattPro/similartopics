@@ -124,7 +124,7 @@ class driver_test extends \phpbb_database_test_case
 		{
 			$select = 'f.forum_id, f.forum_name, t.*, 1.0 AS score';
 			$sql_time = ($length > 0) ? " AND t.topic_time > (strftime('%s', 'now') - $length)" : '';
-			$where = "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%') AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1 AND t.topic_id > (SELECT COALESCE(MAX(recent.topic_id), 0) - " . \vse\similartopics\driver\sqlite3::SEARCH_CANDIDATE_LIMIT . " FROM " . TOPICS_TABLE . " recent)$sql_time";
+			$where = "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%') AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
 		}
 		else
 		{
