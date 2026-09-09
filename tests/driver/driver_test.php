@@ -122,7 +122,7 @@ class driver_test extends \phpbb_database_test_case
 		}
 		else if ($sql_layer === 'sqlite3')
 		{
-			$select = 'f.forum_id, f.forum_name, t.*, 1.0 AS score';
+			$select = "f.forum_id, f.forum_name, t.*, (CASE WHEN t.topic_title LIKE '%foo%' THEN 1 ELSE 0 END + CASE WHEN t.topic_title LIKE '%bar%' THEN 1 ELSE 0 END) AS score";
 			$sql_time = ($length > 0) ? " AND t.topic_time > (strftime('%s', 'now') - $length)" : '';
 			$where = "(t.topic_title LIKE '%foo%' OR t.topic_title LIKE '%bar%') AND t.topic_status <> 2 AND t.topic_visibility = 1 AND t.topic_id <> 1$sql_time";
 		}

@@ -59,17 +59,21 @@ class sqlite3 implements driver_interface
 	{
 		$words = explode(' ', $topic_title);
 		$like_conditions = array();
+		$score_conditions = array();
 
 		foreach ($words as $word)
 		{
-			$like_conditions[] = "t.topic_title LIKE '%" . $this->db->sql_escape(trim($word)) . "%'";
+			$like_condition = "t.topic_title LIKE '%" . $this->db->sql_escape(trim($word)) . "%'";
+			$like_conditions[] = $like_condition;
+			$score_conditions[] = 'CASE WHEN ' . $like_condition . ' THEN 1 ELSE 0 END';
 		}
 
 		$where_condition = '(' . implode(' OR ', $like_conditions) . ')';
+		$score = '(' . implode(' + ', $score_conditions) . ')';
 		$sql_time = ($length > 0) ? " AND t.topic_time > (strftime('%s', 'now') - " . (int) $length . ')' : '';
 
 		return array(
-			'SELECT'	=> 'f.forum_id, f.forum_name, t.*, 1.0 AS score',
+			'SELECT'	=> "f.forum_id, f.forum_name, t.*, $score AS score",
 			'FROM'		=> array(
 				TOPICS_TABLE	=> 't',
 			),

@@ -210,7 +210,8 @@ class database_drivers_test extends \phpbb_test_case
 
 		$query = $driver->get_query(1, 'test topic', 86400, 0.5);
 		$this->assertArrayHasKey('SELECT', $query);
-		$this->assertSame('f.forum_id, f.forum_name, t.*, 1.0 AS score', $query['SELECT']);
+		$this->assertStringContainsString("CASE WHEN t.topic_title LIKE '%test%' THEN 1 ELSE 0 END", $query['SELECT']);
+		$this->assertStringContainsString("CASE WHEN t.topic_title LIKE '%topic%' THEN 1 ELSE 0 END", $query['SELECT']);
 		$this->assertStringContainsString('LIKE', $query['WHERE']);
 
 		$ajax_query = $driver->get_ajax_query(0, 'test topic', 86400, 0.5);
