@@ -185,7 +185,8 @@
 #pst-acp .pst-feature-copy strong,
 #pst-acp .pst-compact-toggle strong,
 #pst-acp .pst-source-control strong,
-#pst-acp .pst-field > span:first-child {
+#pst-acp .pst-field > span:first-child,
+#pst-acp .pst-field > label:first-child {
 	color: var(--pst-ink);
 	font-size: 13px;
 	font-weight: 700;
@@ -261,6 +262,14 @@
 
 #pst-acp .pst-field > small {
 	min-height: 32px;
+}
+
+#pst-acp .pst-field-disabled {
+	opacity: .55;
+}
+
+#pst-acp .pst-field-disabled input {
+	cursor: not-allowed;
 }
 
 #pst-acp .pst-field > input[type="number"],

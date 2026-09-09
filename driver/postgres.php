@@ -84,6 +84,14 @@ class postgres implements driver_interface
 	}
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity)
+	{
+		return $this->get_query($topic_id, $topic_title, $length, $sensitivity);
+	}
+
+	/**
 	 * Build an OR query from plain title words without exposing tsquery syntax.
 	 *
 	 * phpBB's PostgreSQL search parser supports advanced search operators and is

@@ -82,6 +82,14 @@ class oracle implements driver_interface
 	/**
 	 * {@inheritdoc}
 	 */
+	public function get_ajax_query($topic_id, $topic_title, $length, $sensitivity)
+	{
+		return $this->get_query($topic_id, $topic_title, $length, $sensitivity);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function is_supported()
 	{
 		return $this->is_oracle();

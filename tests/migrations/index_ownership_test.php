@@ -54,7 +54,6 @@ class index_ownership_test extends \phpbb_test_case
 			'postgres' => array('postgres', TOPICS_TABLE . '_english_topic_title', 'DROP INDEX "' . TOPICS_TABLE . '_english_topic_title"', 'CREATE INDEX'),
 			'mssql' => array('mssql', TOPICS_TABLE, 'DROP FULLTEXT INDEX ON ' . TOPICS_TABLE, 'CREATE FULLTEXT INDEX'),
 			'oracle' => array('oracle', strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx'), 'DROP INDEX "' . strtoupper(TOPICS_TABLE . '_topic_title_ctx_idx') . '"', 'CREATE INDEX'),
-			'sqlite3' => array('sqlite3', 'idx_' . TOPICS_TABLE . '_topic_title', 'DROP INDEX IF EXISTS "idx_' . TOPICS_TABLE . '_topic_title"', 'CREATE INDEX'),
 		);
 	}
 
@@ -88,6 +87,13 @@ class index_ownership_test extends \phpbb_test_case
 		}));
 	}
 
+	public function test_sqlite_has_no_managed_index_migration()
+	{
+		$this->db->method('get_sql_layer')->willReturn('sqlite3');
+
+		$this->assertTrue($this->get_migration()->effectively_installed());
+	}
+
 	/**
 	 * @dataProvider ownership_data
 	 */
@@ -116,7 +122,6 @@ class index_ownership_test extends \phpbb_test_case
 			array('postgres'),
 			array('mssqlnative'),
 			array('oracle'),
-			array('sqlite3'),
 		);
 	}
 
@@ -183,9 +188,6 @@ class index_ownership_test extends \phpbb_test_case
 				);
 			break;
 
-			case 'sqlite3':
-				$this->db->method('sql_fetchrow')->willReturn(array('name' => $index));
-			break;
 		}
 
 		$this->db->method('sql_freeresult');
