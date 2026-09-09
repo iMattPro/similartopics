@@ -15,7 +15,6 @@ use vse\similartopics\driver\mssql;
 use vse\similartopics\driver\mysqli;
 use vse\similartopics\driver\oracle;
 use vse\similartopics\driver\postgres;
-use vse\similartopics\driver\sqlite3;
 
 /**
  * Ensure newly created Similar Topics indexes have exact ownership markers.
@@ -26,7 +25,7 @@ use vse\similartopics\driver\sqlite3;
 class index_ownership extends \phpbb\db\migration\migration
 {
 	/**
-	 * Do not run when DB has no index migration.
+	 * Do not run when DB has no managed search index.
 	 *
 	 * @return bool
 	 */
@@ -102,16 +101,13 @@ class index_ownership extends \phpbb\db\migration\migration
 
 			case 'oracle':
 				return new oracle($this->db, $this->config);
-
-			case 'sqlite3':
-				return new sqlite3($this->db, $this->config);
 		}
 
 		return null;
 	}
 
 	/**
-	 * @return string mysql|postgres|mssql|oracle|sqlite3, or empty string
+	 * @return string mysql|postgres|mssql|oracle, or empty string
 	 */
 	protected function get_database_type()
 	{
@@ -133,11 +129,6 @@ class index_ownership extends \phpbb\db\migration\migration
 		{
 			return 'oracle';
 		}
-		if ($sql_layer === 'sqlite3')
-		{
-			return 'sqlite3';
-		}
-
 		return '';
 	}
 }

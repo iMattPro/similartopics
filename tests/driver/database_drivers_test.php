@@ -201,15 +201,6 @@ class database_drivers_test extends \phpbb_test_case
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');
 		$this->db->method('sql_escape')->willReturnArgument(0);
-		$this->db->method('sql_query')->willReturn(true);
-		$this->db->method('sql_fetchrow')
-			->willReturnOnConsecutiveCalls(
-				['name' => 'topics_fts'],
-				false,
-				['name' => 'idx_topics_topic_title'],
-				false
-			);
-		$this->db->method('sql_freeresult');
 
 		$driver = new \vse\similartopics\driver\sqlite3($this->db);
 
@@ -219,7 +210,12 @@ class database_drivers_test extends \phpbb_test_case
 
 		$query = $driver->get_query(1, 'test topic', 86400, 0.5);
 		$this->assertArrayHasKey('SELECT', $query);
+		$this->assertSame('f.forum_id, f.forum_name, t.*, 1.0 AS score', $query['SELECT']);
 		$this->assertStringContainsString('LIKE', $query['WHERE']);
+		$this->assertStringContainsString(
+			'SELECT COALESCE(MAX(recent.topic_id), 0) - ' . \vse\similartopics\driver\sqlite3::SEARCH_CANDIDATE_LIMIT . ' FROM ' . TOPICS_TABLE . ' recent',
+			$query['WHERE']
+		);
 	}
 
 	public function test_fulltext_index_operations()
@@ -476,23 +472,14 @@ class database_drivers_test extends \phpbb_test_case
 	public function test_sqlite3_fulltext_methods()
 	{
 		$this->db->method('get_sql_layer')->willReturn('sqlite3');
-		$this->db->method('sql_escape')->willReturnArgument(0);
-		$this->db->method('sql_query')->willReturn(true);
-		$this->db->method('sql_fetchrow')
-			->willReturnOnConsecutiveCalls(
-				['name' => 'topics_fts'],
-				false,
-				['name' => 'idx_topics_topic_title'],
-				false
-			);
-		$this->db->method('sql_freeresult');
+		$this->db->expects($this->never())->method('sql_query');
 
 		$driver = new \vse\similartopics\driver\sqlite3($this->db);
 
-		$indexes = $driver->get_fulltext_indexes();
-		$this->assertIsArray($indexes);
-
+		$this->assertSame(array(), $driver->get_fulltext_indexes());
 		$this->assertTrue($driver->is_fulltext());
+		$this->assertNull($driver->create_fulltext_index());
+		$this->assertNull($driver->drop_owned_fulltext_index());
 	}
 
 	public function test_postgres_fulltext_methods()
@@ -852,16 +839,6 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertStringContainsString('CREATE INDEX "phpbb_topics_english_DROP_INDEX_topic_title"', $writes[0]);
 		$this->assertStringContainsString('ON "phpbb_topics"', $writes[0]);
 		$this->assertStringContainsString(', "topic_title"))', $writes[0]);
-	}
-
-	public function test_sqlite_existing_index_is_not_recreated()
-	{
-		$this->db->method('get_sql_layer')->willReturn('sqlite3');
-		$this->db->expects($this->once())->method('sql_query')->willReturn(true);
-		$this->db->method('sql_fetchrow')->willReturn(['name' => 'idx_phpbb_topics_topic_title']);
-		$this->db->method('sql_freeresult');
-
-		(new \vse\similartopics\driver\sqlite3($this->db))->create_fulltext_index();
 	}
 
 	protected function create_driver($driver_class)

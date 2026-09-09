@@ -367,6 +367,23 @@ class controller_test extends \phpbb_database_test_case
 		);
 	}
 
+	public function test_sqlite_without_index_is_compatible()
+	{
+		$assigned_vars = array();
+		$this->template->method('assign_vars')->willReturnCallback(function($vars) use (&$assigned_vars) {
+			$assigned_vars = array_merge($assigned_vars, $vars);
+		});
+		$this->request->method('is_set_post')->willReturn(false);
+
+		$driver = $this->createMock('\vse\similartopics\driver\driver_interface');
+		$driver->method('is_fulltext')->with('topic_title')->willReturn(true);
+		$this->setControllerProperty('similartopics', $driver);
+
+		$this->controller->handle();
+
+		$this->assertFalse($assigned_vars['S_PST_NO_COMPAT']);
+	}
+
 	public function test_incomplete_forum_rules_are_rejected_before_settings_saved()
 	{
 		$this->request->method('is_set_post')->with('submit')->willReturn(true);
