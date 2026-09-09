@@ -211,6 +211,7 @@ class database_drivers_test extends \phpbb_test_case
 		$this->assertArrayHasKey('SELECT', $query);
 		$this->assertStringContainsString('CONTAINS', $query['WHERE']);
 		$this->assertStringContainsString('SCORE(1)', $query['SELECT']);
+		$this->assertSame('score DESC, t.topic_time DESC', $query['ORDER_BY']);
 	}
 
 	public function test_oracle_search_period_uses_unix_timestamp()

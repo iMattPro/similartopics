@@ -78,6 +78,7 @@ class oracle implements driver_interface
 				AND t.topic_status <> ' . ITEM_MOVED . '
 				AND t.topic_visibility = ' . ITEM_APPROVED . '
 				AND t.topic_id <> ' . (int) $topic_id . $sql_time,
+			'ORDER_BY'	=> 'score DESC, t.topic_time DESC',
 		);
 	}
 
