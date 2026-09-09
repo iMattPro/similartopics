@@ -1,5 +1,27 @@
 ## Changelog
 
+### 1.8.0 - 2026-09-06
+
+- NEW FEATURE: Completely redesigned the Administration Control Panel settings page with a clearer, mobile-friendly layout, live value displays and warnings about unsaved changes.
+- IMPROVEMENT: Saving settings is now faster and more reliable on boards with many forums.
+- IMPROVEMENT: Live similar-topic suggestions are now faster and more reliable, especially on SQLite boards.
+- IMPROVEMENT: The search sensitivity setting is now clearly marked as unavailable on MSSQL and SQLite boards, where it has no effect.
+- IMPROVEMENT: Setting the search period to 0 now correctly searches topics from any date on every supported database.
+- IMPROVEMENT: Improved compatibility with MySQL, PostgreSQL, MSSQL and Oracle database search features.
+- IMPROVEMENT: Changing settings or removing the extension will no longer remove database search indexes created by phpBB, an administrator or another extension.
+- IMPROVEMENT: Updated Administration Control Panel translations across all 21 included languages, with additional Polish and Serbian corrections.
+- SECURITY: Improved validation of PostgreSQL search settings.
+- FIX: MSSQL boards are no longer incorrectly reported as incompatible when the required search support is available.
+- FIX: Existing MSSQL search configuration is now preserved when changing settings or removing the extension.
+- FIX: Similar-topic searches now work correctly on Oracle boards.
+- FIX: PostgreSQL searches now work correctly when topic titles contain punctuation or apostrophes.
+- FIX: SQLite search results now show topics with more matching words first.
+- FIX: Quotes and other special characters in topic titles now display correctly in live similar-topic suggestions.
+- FIX: Live suggestions now open reliably in new tabs, always show results for the current title and appear in the correct position for both left-to-right and right-to-left languages.
+- FIX: Topics from forums a user is not allowed to read no longer reduce the number of visible similar-topic results.
+- FIX: Invalid or outdated forum selections and other invalid settings are now handled safely.
+- FIX: Fixed display problems with we_clearblue style.
+
 ### 1.7.0 - 2025-12-16
 
 - NEW FEATURE: Dynamically show similar topics to users as they title their new posts.
